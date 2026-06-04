@@ -127,9 +127,21 @@ def integer_left_kernel(c: list[list[int]]) -> list[list[int]]:
 
 
 def ceiling_reached(n: int) -> bool:
-    """True iff every relation k in Lambda_N has sum k_r = 0 (mod 4)."""
+    """True iff every relation k in Lambda_N has sum k_r = 0 (mod 4) (node-0 target phi=pi/2)."""
     ker = integer_left_kernel(sin_coords(n))
     return all(sum(k) % 4 == 0 for k in ker)
+
+
+def antipodal_reached(n: int) -> bool:
+    """Even N: node j=N/2 target phi_r = pi/2 + pi r; saturates iff sum k_r + 2 sum r k_r = 0 (mod 4).
+
+    For even N the antipodal node carries the same ceiling U_N (|a_{r,N/2}| = a_{r,0}), so A_N = U_N iff
+    node 0 OR node N/2 reaches it. We confirm the second never enlarges the saturating set (k indexed
+    from 0, so frequency index r = i + 1)."""
+    if n % 2:
+        return False
+    ker = integer_left_kernel(sin_coords(n))
+    return all((sum(k) + 2 * sum((i + 1) * k[i] for i in range(len(k)))) % 4 == 0 for k in ker)
 
 
 def u_ceiling(n: int) -> float:
@@ -211,6 +223,13 @@ def main() -> int:
     print(f"    -> on N<=160, A_N=U_N holds exactly for prime and 2^m, never for composite N: {'OK' if pure else 'COMPOSITE FOUND'}")
     print("    The mod-4 criterion thus *explains* why only prime / 2^m saturate: their distinct")
     print("    frequencies are rationally independent (Lambda_N = {0}), so the criterion is vacuous.")
+
+    print("\n(E) Even N: the antipodal node j=N/2 (target phi_r=pi/2+pi r) never enlarges the locus")
+    enlarge = [n for n in range(4, 161, 2) if antipodal_reached(n) and not ceiling_reached(n)]
+    e_ok = not enlarge
+    ok &= e_ok
+    print(f"    antipodal-only saturators (nodeN2 but not node0), N<=160: {enlarge if enlarge else 'NONE'}")
+    print(f"    -> for even N both conditions coincide, so A_N=U_N locus is unchanged: {'OK' if e_ok else 'FAIL'}")
 
     print("\n" + "=" * 74)
     print("RESULT:", "CEILING CRITERION VERIFIED" if ok else "CHECK FAILED")

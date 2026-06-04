@@ -73,16 +73,17 @@ scripts.
 \section{Introduction}
 
 A localized disturbance on a homogeneous one-dimensional medium does not amplify: for the
-continuous wave equation the classical bound of Zhukovsky and Lurie gives $|\sigma(x,t)|\le F$~\cite{Zhukovsky}.
+continuous wave equation the classical bound of Zhukovsky gives $|\sigma(x,t)|\le F$~\cite{Zhukovsky}.
 On the \emph{discrete} chain this is false~\cite{KMF,MF03,FM}. The discreteness of the spectrum, together
 with the finiteness of the number of modes, allows many modes to come into phase and to produce a
 local peak that grows with the number of nodes $N$. This is the \emph{large-wave effect}; related
 phenomena include the splash effect~\cite{FMM} and its Schr\"odinger analogue~\cite{F23}.
 
 The effect is genuinely discrete: it disappears in the continuum limit. The mechanism is the
-\emph{finite, discrete spectrum}---finitely many modes whose frequencies are rationally related can be
-brought exactly into phase; on the infinite chain the spectrum is continuous, no exact alignment
-occurs, and the amplification is absent. It is thus a finite-size spectral resonance rather than a
+\emph{finite, discrete spectrum}---finitely many discrete modes can be brought into near-coincidence of
+phase (exactly so when their frequencies are rationally \emph{independent}, by Kronecker, and otherwise
+as far as the relation lattice allows); on the infinite chain the spectrum is continuous, no exact
+alignment occurs, and the amplification is absent. It is thus a finite-size spectral resonance rather than a
 feature of the limiting partial differential equation. (For the discrete Schr\"odinger propagator the
 absence of a continuum large wave is explicit: its single-site kernel is the Bessel function
 $J_n(2t)$, whose peak over sites decays like $t^{-1/3}$, Section~\ref{sec:schr}.) This discrete--continuous gap,
@@ -190,8 +191,10 @@ difference between $\sqrt{\lambda_r}$ and $\lambda_r$ in the propagator phase.
 of a Generalized Locally Toeplitz (GLT) sequence~\cite{GLT} with symbol $f(\theta)=4\sin^2(\theta/2)$.
 The spectral-zeta density \eqref{eq:zeta-density} and the Szeg\H{o} asymptotics are the GLT spectral
 distribution specialized to this symbol; beyond the uniform $d$-torus settled in
-Section~\ref{sec:dim}, the GLT calculus extends every spectral statement here to variable-coefficient
-lattices (non-uniform masses) and anisotropic or graph Laplacians, the natural setting for future work.
+Section~\ref{sec:dim}, the GLT calculus extends the \emph{asymptotic spectral-distribution} statements
+(the Szeg\H{o}/zeta density) to variable-coefficient lattices (non-uniform masses) and anisotropic or
+graph Laplacians; the \emph{arithmetic} results---the cyclotomic ranks, the mod-$4$ criterion, and the
+reachability of the ceiling---do not transfer automatically and are the natural setting for future work.
 
 \medskip
 \noindent\textbf{A different face of energy concentration.} The discrete Laplacian concentrates energy
@@ -218,7 +221,7 @@ $L_{\mathrm{pre}}$ is heuristic, not a proven bound. (ii)~The ceiling criterion
 (Theorem~\ref{thm:ceiling}) is exact, but whether any \emph{composite} $N$ satisfies it is verified only
 to $N\le160$ (none does); the algebraic value of $A_N$ for individual composite $N$ is computed, not
 bounded in closed form. (iii)~The Schr\"odinger order $B_N=\Theta(\sqrt N)$ is proved, but the optimal
-constant $\lim B_N/\sqrt N\in[0.63,1]$ is open, and the segment constant $C=4/\pi^2$
+constant $\lim B_N/\sqrt N\in[0.6086,1]$ is open, and the segment constant $C=4/\pi^2$
 (Section~\ref{sub:filimonov}) is identified numerically and by a limiting integral rather than a fully
 rigorous bound. (iv)~The segment rank \eqref{eq:segrank} is verified to $N\le30$ and conjectured in
 general. (v)~Part~II is \emph{computational and exploratory}: its rigorous statements (the Hamiltonian
@@ -243,9 +246,10 @@ $1/\pi$; certified numerical brackets for individual composite $N$ follow from t
 hierarchy (Section~\ref{sec:exact}).
 \item Determine the exact constant $\lim_{N\to\infty}B_N/\sqrt N$ for the Schr\"odinger propagator. The
 order $B_N=\Theta(\sqrt N)$ is now settled (Theorems~\ref{thm:schr},~\ref{thm:schr-lower}): the lower
-bound $c\gtrsim0.63$ comes from the unwrapped Bessel front at $t=N/8$, the upper bound $1$ from
-unitarity, and a $t$-scan (including the Talbot times $t=\pi a/N$) gives $\sup_N B_N/\sqrt N\approx0.88$--$0.96$;
-the optimal constant in $[0.63,1]$ is an almost-periodic / Gauss-sum supremum
+bound $\liminf_N B_N/\sqrt N\ge\tfrac12 c_0\approx0.6086$ ($c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$) comes
+from the unwrapped Bessel front at $t=N/8$, the upper bound $1$ from unitarity, and a $t$-scan
+(including the Talbot times $t=\pi a/N$) gives $\sup_N B_N/\sqrt N\approx0.88$--$0.96$; the optimal
+constant in $[0.6086,1]$ is an almost-periodic / Gauss-sum supremum
 (\texttt{verify\_open\_problems.py}).
 \item A rigorous nonlinear theory of the discrete NLS \eqref{eq:dnls} on the ring
 (Section~\ref{sec:rogue}): existence and stability of discrete breathers, the role of the $\LN$

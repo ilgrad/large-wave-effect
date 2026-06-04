@@ -184,7 +184,8 @@ for continuous $F$,
   \qquad f(\theta)=4\sin^2(\theta/2),
 \end{equation}
 so spectral sums such as $U_N$ and $(\LN^{+})_{jj}$ are Riemann sums of the symbol; the logarithmic
-growth of $U_N$ is exactly the integrable singularity of $f^{-1/2}$ at $\theta=0$. (Szeg\H{o}'s theorem
+growth of $U_N$ is exactly the borderline (logarithmically divergent) singularity
+$f^{-1/2}\sim|\theta|^{-1}$ at $\theta=0$. (Szeg\H{o}'s theorem
 proper requires continuous $F$; the \emph{singular} sums $U_N=\tfrac1{2N}\sum\lambda_r^{-1/2}$ and
 $(\LN^{+})_{jj}=\tfrac1N\sum\lambda_r^{-1}$ are made rigorous by Euler--Maclaurin at the band edge,
 Appendix~\ref{app:bernoulli}, the singularity producing the logarithm and the $N^2$ growth.) The propagators
@@ -279,7 +280,7 @@ through different lenses; the $\ell^1\!\to\!\ell^\infty$ corner---weakest input,
 precisely the large wave $A_N$.
 
 \emph{Variational principle.} The energy norm has the direct reading: maximizing the deflection at a
-node over the energy sphere $E(u_0,v_0)\le E_0$ is a constrained quadratic problem solved by Lagrange
+node over the energy sphere $E(u_0,v_0)\le E_0$ on $\mathcal H_0$ is a constrained quadratic problem solved by Lagrange
 multipliers,
 \[
   \sup_{E(u_0,v_0)\le E_0}\ \max_j|u_j(t)| = \sqrt{2E_0\,(\LN^{+})_{jj}}=\sqrt{\tfrac{E_0(N^2-1)}{6N}}=M_N,
@@ -400,9 +401,12 @@ numerically the subtorus defect on the ring is $A_N/U_N\in[0.84,0.92]$ in the te
 $A_N/\ln N\in[0.28,0.31]$, consistent with Conjecture~\ref{conj:order} ($A_N=\Theta(\ln N)$).
 
 \begin{proposition}[algebraic composite cases]\label{prop:closed}
-$A_N$ is an algebraic number: substituting $x_r=\cos\varphi_r$, $y_r=\sin\varphi_r$ with
-$x_r^2+y_r^2=1$ turns \eqref{eq:subtorus} into the maximum of a polynomial over a compact semialgebraic
-set, whose value is algebraic. For $N=6$ the relation lattice is one-dimensional and
+$A_N$ is an algebraic number: writing $x_r=\cos\varphi_r$, $y_r=\sin\varphi_r$ with $x_r^2+y_r^2=1$ and
+adjoining, for each generator $k$ of the relation lattice $\Lambda$, the constraints
+$\cos\langle k,\varphi\rangle=1$, $\sin\langle k,\varphi\rangle=0$ that cut out the orbit-closure subtorus
+$\mathbb{T}_N$ (polynomials in the $x_r,y_r$ through the Chebyshev/addition formulas), turns
+\eqref{eq:subtorus} into the maximum of a polynomial over a compact semialgebraic set defined over $\Q$,
+whose value is algebraic by the Tarski--Seidenberg theorem (real quantifier elimination). For $N=6$ the relation lattice is one-dimensional and
 \[
   A_6=\frac{\sqrt3}{9}+\frac{(3+\sqrt3)\,\sqrt[4]{3}}{12\sqrt2}\approx0.55942 ,
 \]
@@ -438,20 +442,27 @@ A sharp arithmetic criterion decides exactly when the ceiling is reached.
 
 \begin{theorem}[ceiling criterion]\label{thm:ceiling}
 Let $\Lambda=\{k\in\Z^m:\sum_r k_r\omega_r=0\}$ be the relation lattice of the distinct positive
-frequencies $\omega_r=2\sin(\pi r/N)$, $1\le r\le m=\lfloor N/2\rfloor$. Then
+frequencies $\omega_r=2\sin(\pi r/N)$, $1\le r\le m=\lfloor N/2\rfloor$. Then $A_N=U_N$ if and only if
 \[
-  A_N=U_N\quad\Longleftrightarrow\quad \sum_{r}k_r\equiv0\ (\mathrm{mod}\ 4)\quad\text{for every }k\in\Lambda .
+  \sum_{r}k_r\equiv0\ (\mathrm{mod}\ 4)\quad\text{for every }k\in\Lambda
 \]
+or, when $N$ is even, the antipodal variant $\sum_r k_r+2\sum_r rk_r\equiv0\ (\mathrm{mod}\ 4)$ holds for
+every $k\in\Lambda$. The two conditions coincide for all $N\le160$ (where only $N$ prime and $N=2^m$
+saturate, Corollary~\ref{cor:density}).
 \end{theorem}
 
 \begin{proof}
-Always $A_N\le U_N$, with $U_N=\sum_r a_{r0}$ the node-$0$ ceiling and $|a_{rj}|\le a_{r0}$, so no node can
-exceed $U_N$ and the question is whether node $0$ attains it. There the coefficients $a_{r0}>0$, so the
-value $U_N$ is reached iff all $\sin(\omega_r t)$ can be driven to $1$ simultaneously, i.e.\ the target
-phase $\varphi_\ast=(\tfrac\pi2,\dots,\tfrac\pi2)$ lies in the orbit closure $\mathbb{T}_N$. By
-Kronecker, $\varphi_\ast\in\mathbb{T}_N$ iff $\langle k,\varphi_\ast\rangle\equiv0\ (2\pi)$ for every
-$k\in\Lambda$; and $\langle k,\varphi_\ast\rangle=\tfrac\pi2\sum_r k_r\equiv0\ (2\pi)$ iff
-$\sum_r k_r\equiv0\ (4)$.
+Always $A_N\le U_N$, with $U_N=\sum_r a_{r0}$ the node-$0$ ceiling. As $a_{rj}=a_{r0}\cos(2\pi rj/N)$ we
+have $|a_{rj}|\le a_{r0}$, so no node exceeds $U_N$, and $|a_{rj}|=a_{r0}$ for \emph{all} $r$ forces
+$|\cos(2\pi rj/N)|=1$, i.e.\ $2j/N\in\Z$: only $j=0$ and---for even $N$---$j=N/2$ can attain the ceiling.
+At $j=0$ the coefficients $a_{r0}>0$, so $U_N$ is reached iff all $\sin(\omega_r t)$ can be driven to $1$
+simultaneously, i.e.\ the target $\varphi_\ast=(\tfrac\pi2,\dots,\tfrac\pi2)$ lies in the orbit closure
+$\mathbb{T}_N$. By Kronecker, $\varphi_\ast\in\mathbb{T}_N$ iff $\langle k,\varphi_\ast\rangle=
+\tfrac\pi2\sum_r k_r\equiv0\ (2\pi)$ for every $k\in\Lambda$, i.e.\ $\sum_r k_r\equiv0\ (4)$. At $j=N/2$
+(even $N$) the signs $\cos(\pi r)=(-1)^r$ give the alternating target $\varphi_r=\tfrac\pi2+\pi r$, and the
+same argument yields $\langle k,\varphi\rangle=\tfrac\pi2\sum_r k_r+\pi\sum_r rk_r\equiv0\ (2\pi)$, i.e.\
+$\sum_r k_r+2\sum_r rk_r\equiv0\ (4)$. The ceiling is attained iff one of the two admissible nodes
+realizes its target, giving the stated disjunction (\texttt{verify\_ceiling\_criterion.py}).
 \end{proof}
 
 This refines the independence test: $\Q$-independence means $\Lambda=\{0\}$, which satisfies the
@@ -496,9 +507,10 @@ $24$ & composite & $12$ & $4$ & $3,3,3,3$ & no\\
 
 \begin{corollary}[the saturating set is thin]\label{cor:density}
 The two proven saturating families, the primes and the powers of two, both have natural density zero.
-The criterion finds no further saturating $N\le160$, so there $\{N:A_N=U_N\}=\{N\text{ prime}\}\cup\{2^m\}$
-and an asymptotically full set of $N$ satisfies $A_N<U_N$. Whether any composite $N$ saturates at all is
-decided, for each $N$, by Theorem~\ref{thm:ceiling}.
+An exhaustive criterion scan finds no further saturating $N\le160$, so on this range
+$\{N:A_N=U_N\}=\{N\text{ prime}\}\cup\{2^m\}$. Whether any composite $N$ saturates at all---and hence
+whether the saturating set is genuinely of density zero---remains open, decided for each $N$ by
+Theorem~\ref{thm:ceiling}.
 \end{corollary}
 
 \medskip\noindent\textbf{The composite gap.} For every composite $N\le160$, then, $A_N<U_N$. The gap is
@@ -514,9 +526,12 @@ holds, extending Theorems~\ref{thm:prime}--\ref{thm:two} to an infinite family o
 \end{proposition}
 
 \begin{proof}
-The prefix $\{\omega_1,\dots,\omega_{p-1}\}$ equals the spectrum of the Dirichlet segment on $p-1$
-nodes, which is $\Q$-independent because $(p-1)+1=p$ is prime \eqref{eq:segrank}; the only remaining
-frequency is the rational $\omega_p=2$, of weight $\tfrac1{2N}$. With the degeneracy
+The prefix $\{\omega_1,\dots,\omega_{p-1}\}=\{2\sin(\pi r/2p):1\le r\le p-1\}$ is $\Q$-independent: in
+$\Q(\zeta_{4p})$, where $\Phi_{4p}(x)=\Phi_p(-x^2)$ has degree $\varphi(4p)=2(p-1)$, the values
+$2\mathrm i\sin(\pi r/2p)=\zeta_{4p}^{\,r}-\zeta_{4p}^{-r}$ ($1\le r\le p-1$) are linearly independent over
+$\Q$ (the prime analogue of Theorem~\ref{thm:prime}; exact integer rank $=p-1$,
+\texttt{verify\_2p\_family.py}), so the sole $\Q$-dependent frequency is the rational $\omega_p=2$, of
+weight $\tfrac1{2N}$. With the degeneracy
 $\omega_r=\omega_{N-r}$ the node-$0$ response is
 $u_0(t)=\tfrac2N\sum_{r=1}^{p-1}\omega_r^{-1}\sin(\omega_r t)+\tfrac1{2N}\sin 2t$. By Kronecker the
 independent prefix can be driven to $\sin(\omega_r t)\to1$ simultaneously, and since
@@ -640,13 +655,16 @@ Define the finite-horizon amplitude
 \]
 Reaching
 $(1-\varepsilon)U_N$ requires $\sin(\omega_r t)\approx1$ for all $m=\lfloor N/2\rfloor$ frequencies at
-once---a simultaneous Diophantine approximation of the phases to $\tfrac\pi2$. By Dirichlet, aligning
-$m$ phases to tolerance $\delta$ costs time up to $\sim\delta^{-m}$, so the recurrence time
+once---a simultaneous Diophantine approximation of the phases to $\tfrac\pi2$. By Dirichlet, such an
+alignment to tolerance $\delta$ \emph{exists} by time $\sim\delta^{-m}$---a crude exponential
+\emph{upper} bound on the recurrence time
 \[
-  T_\varepsilon(N)=\inf\{T:A_N(T)\ge(1-\varepsilon)U_N\}
+  T_\varepsilon(N)=\inf\{T:A_N(T)\ge(1-\varepsilon)U_N\}.
 \]
-grows at least exponentially in $N$.
-Numerically, for primes $\log T_{0.2}(N)$ grows by $\approx0.63$ per unit $N$
+A matching \emph{lower} bound (that one must wait at least exponentially long) does \emph{not} follow
+from Dirichlet, which bounds the wait from above; it would require Diophantine lower bounds on the
+badly-approximable phase vector, and is left open. Numerically the wait does grow exponentially: for
+primes $\log T_{0.2}(N)$ grows by $\approx0.63$ per unit $N$
 (\texttt{verify\_finite\_time.py}, Figure~\ref{fig:reach}), and at a \emph{fixed} horizon $T$ the efficiency $A_N(T)/U_N$
 \emph{decreases} with $N$ (from $\approx1.0$ at $N=5$ to $\approx0.70$ at $N=29$ for $T=300$): more
 frequencies are harder to align in bounded time. Thus the logarithmic law is an infinite-time ceiling; a physical large wave is the
@@ -700,8 +718,9 @@ and $\rank_\Q\{\lambda_r\}$ is strictly smaller than $\rank_\Q\{\omega_r\}$ for 
 \end{theorem}
 
 \begin{theorem}[Schr\"odinger lower bound]\label{thm:schr-lower}
-$B_N\ge c\sqrt N$ with an absolute constant $c>0$ (numerically $c\gtrsim0.63$). With
-Theorem~\ref{thm:schr}(2), $B_N=\Theta(\sqrt N)$.
+$B_N\ge c\sqrt N$ with an absolute constant $c>0$; in fact $\liminf_N B_N/\sqrt N\ge\tfrac12 c_0$ with
+$c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$, i.e.\ $\liminf_N B_N/\sqrt N\ge0.6086$, and one may take $c=0.60$
+for all $N$. With Theorem~\ref{thm:schr}(2), $B_N=\Theta(\sqrt N)$.
 \end{theorem}
 
 \begin{proof}
@@ -713,21 +732,24 @@ $|j+\ell N|\ge N/2$, contribute an exponentially small amount. Hence
 $\sum_{j}|K_N(j,N/8)|=(1+o(1))\sum_{n\in\Z}|J_n(N/4)|$. The classical $\ell^1$ Bessel asymptotics
 $\sum_{n}|J_n(x)|\sim c_0\sqrt x$, $c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)\approx1.217$ (the envelope
 $|J_n(x)|\approx\sqrt{2/(\pi\sqrt{x^2-n^2})}$ integrated against $\langle|\cos|\rangle=2/\pi$), give
-$\sum_n|J_n(N/4)|\sim c_0\sqrt{N/4}$. Therefore $B_N\ge\sum_j|K_N(j,N/8)|\ge c\sqrt N$; the upper bound
-is Theorem~\ref{thm:schr}(2).
+$\sum_n|J_n(N/4)|\sim c_0\sqrt{N/4}=\tfrac12 c_0\sqrt N$ with $\tfrac12 c_0\approx0.6086$. Therefore
+$\liminf_N B_N/\sqrt N\ge\lim_N\sum_j|K_N(j,N/8)|/\sqrt N=\tfrac12 c_0$, so $B_N\ge0.60\sqrt N$ for all $N$
+(the finite-$N$ values decrease to $\tfrac12 c_0$ from above, Table~\ref{tab:bn}); the upper bound is
+Theorem~\ref{thm:schr}(2).
 \end{proof}
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
 (upper from unitarity, lower from Theorem~\ref{thm:schr-lower}), and every step of the proof---the
-periodization, the negligible aliasing at $t=N/8$, the $\sqrt N$ growth with $c\gtrsim0.63$, and the
-$c_0\sqrt x$ Bessel asymptotics---is reproduced numerically (\texttt{verify\_schrodinger\_lower.py},
+periodization, the negligible aliasing at $t=N/8$, the $\sqrt N$ growth with constant
+$\tfrac12 c_0\approx0.6086$, and the $c_0\sqrt x$ Bessel asymptotics---is reproduced numerically (\texttt{verify\_schrodinger\_lower.py},
 \texttt{verify\_theorem3\_schrodinger.py}, \texttt{verify\_bessel\_kernel.py}). The constant itself is
 mapped in Table~\ref{tab:bn}.
 
 \begin{table}[ht]\centering
 \caption{The constant in $B_N=\Theta(\sqrt N)$. A refined $t$-scan (uniform grid $+$ Talbot times
 $t=\pi a/N$) gives $B_N/\sqrt N$; the proven Bessel point $t=N/8$ gives the lower row. The empirical
-$\sup_N B_N/\sqrt N\approx0.96$ lies inside the rigorous band $(0.63,1]$, and the exact limit is open
+$\sup_N B_N/\sqrt N\approx0.96$ lies inside the rigorous band $[\tfrac12 c_0,1]\approx[0.6086,1]$, and the
+exact limit is open
 (\texttt{verify\_bn\_constant.py}).}\label{tab:bn}
 \begin{tabular}{lcccccc}
 \toprule
@@ -855,7 +877,7 @@ quantity & dynamics / functional & leading asymptotic & sharp class\\
 \midrule
 $U_N$ & ring, velocity ceiling & $\tfrac1\pi\ln N+\tfrac1\pi(\gamma+\ln\tfrac2\pi)$ & all $N$\\
 $A_N$ & ring, $\sup_t\max_j|G_N(j,\cdot)|$ & $\tfrac1\pi\ln N$ & prime, $2^m$, $2p$\\
-$B_N$ & ring, $\ell^\infty\!\to\!\ell^\infty$ Schr\"odinger & $\Theta(\sqrt N)$, const $\in[0.63,1]$ & all $N$\\
+$B_N$ & ring, $\ell^\infty\!\to\!\ell^\infty$ Schr\"odinger & $\Theta(\sqrt N)$, const $\in[0.6086,1]$ & all $N$\\
 $d_j^N$ & segment, $\sup_t|z_j(\cdot)|$ Schr\"odinger & $\tfrac4{\pi^2}\ln j$ & prime, $2^m$\\
 $U_N^{(d)}$ & $d$-torus, velocity ceiling & $\tfrac1\pi\ln N$ ($d{=}1$), $\ O(1)$ ($d{\ge}2$) & $d_s=1$\\
 \bottomrule
@@ -1067,9 +1089,11 @@ $U_G=|V|^{-1}\sum_{\lambda_r>0}\lambda_r^{-1/2}$ ($\lambda_r$ the Laplacian spec
 If the integrated density of states obeys $N(\lambda)\sim\lambda^{d_s/2}$ near $0$---defining the
 \emph{spectral dimension} $d_s$---then $\rho(\lambda)\sim\lambda^{d_s/2-1}$ and
 $U_G\sim\int_0\lambda^{-1/2}\rho(\lambda)\,d\lambda\sim\int_0\lambda^{(d_s-3)/2}\,d\lambda$, which
-converges at the origin iff $d_s>1$. Hence the large wave occurs precisely at the critical spectral
-dimension $d_s=1$ (logarithmic growth), is absent for $d_s>1$ (bounded ceiling), and would be power-law
-for $d_s<1$; the $d$-torus is the case $d_s=d$. The criterion is geometric rather than metric: any
+converges at the origin iff $d_s>1$. Hence the \emph{ceiling} $U_G$ grows logarithmically precisely at
+the critical spectral dimension $d_s=1$, is bounded for $d_s>1$, and is power-law for $d_s<1$; the
+$d$-torus is the case $d_s=d$. For $d_s>1$ this rigorously \emph{forbids} a large wave
+($A_N\le U_G=O(1)$); at $d_s=1$ the ceiling permits one, but whether it is dynamically reached is the
+same arithmetic reachability question as on the ring (Conjecture~\ref{conj:order}). The criterion is geometric rather than metric: any
 \emph{quasi-one-dimensional} lattice---a ladder $C_N\times C_2$ or a tube $C_N\times C_w$ of bounded
 width $w$---still has $d_s=1$ and retains the logarithmic large wave, now with reduced prefactor
 $U_G\sim\tfrac1{\pi w}\ln N$ (only one of the $w$ transverse channels is gapless, Figure~\ref{fig:specdim}).
