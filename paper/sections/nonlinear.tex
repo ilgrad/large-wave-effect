@@ -1,0 +1,382 @@
+% Part II --- Nonlinear extension.
+% Included from large-wave-effect.tex; preamble macros (\LN, \Q, \eu, ...), \graphicspath and the
+% bibliography all live in the root file. Add further nonlinear sections (breathers, FPUT, chaos) here.
+
+\noindent\emph{The results of Part~II are primarily computational and exploratory. They outline natural
+nonlinear continuations of the linear theory---and the energy-concentration thread that unifies
+them---rather than claiming a complete nonlinear theory; each is reproduced by a verification script,
+and the open analytical questions are flagged as such.}
+
+\section{Rogue waves and the discrete NLS}\label{sec:rogue}
+
+Restoring a cubic on-site interaction turns the linear Schr\"odinger ring of Section~\ref{sec:schr}
+into the discrete nonlinear Schr\"odinger (DNLS) equation
+\begin{equation}\label{eq:dnls}
+  \mathrm i\,\dot z_j = -(\LN z)_j + \gamma\,|z_j|^2 z_j,\qquad \gamma>0\ \text{(focusing)},
+\end{equation}
+whose linear part is exactly $\LN$ and whose continuum limit (lattice spacing $\to0$, $\lambda_r\to k^2$)
+is the \emph{focusing} nonlinear Schr\"odinger equation
+\begin{equation}\label{eq:nls}
+  \mathrm i\,\psi_t + \psi_{xx} + 2|\psi|^2\psi = 0,
+\end{equation}
+the canonical envelope model of deep-water and optical rogue waves~\cite{Zakharov,KharifPelinovsky,Onorato,Solli}.
+(The literal limit is $\mathrm i\psi_t=\psi_{xx}+\gamma|\psi|^2\psi$, equal to \eqref{eq:nls} up to the
+symmetry $\psi\mapsto\bar\psi$ and the rescaling $z\mapsto cz$ that sets $\gamma=2$.) Thus the very operator $\LN$ that
+governs the linear large wave sits at the heart of the rogue-wave problem, and the two amplification
+mechanisms can be compared on the same lattice (\texttt{verify\_rogue\_dnls.py}).
+
+\begin{proposition}[Hamiltonian structure and conservation]\label{prop:dnls-cons}
+The DNLS \eqref{eq:dnls} is Hamiltonian, $\mathrm i\dot z_j=\partial H/\partial\bar z_j$ with
+\[
+  H(z)=-\sum_j|z_{j+1}-z_j|^2+\frac\gamma2\sum_j|z_j|^4,
+\]
+and conserves both $H$ and the power $P(z)=\sum_j|z_j|^2$; consequently the flow is global and
+norm-preserving on $\mathbb C^N$.
+\end{proposition}
+
+\begin{proof}
+$\tfrac{d}{dt}P=2\,\mathrm{Re}\sum_j\dot z_j\bar z_j
+ =2\,\mathrm{Re}\bigl[-\mathrm i\bigl(\langle\LN z,z\rangle-\gamma\textstyle\sum_j|z_j|^4\bigr)\bigr]=0$,
+since $\langle\LN z,z\rangle$ and $\sum_j|z_j|^4$ are real (so $-\mathrm i(\cdot)$ is purely imaginary); and
+$\partial H/\partial\bar z_j=(z_{j+1}+z_{j-1}-2z_j)+\gamma|z_j|^2z_j=-(\LN z)_j+\gamma|z_j|^2z_j$, so
+$\mathrm i\dot z=\partial H/\partial\bar z$ and $H$ is conserved along the flow. With $P$ bounded, no
+finite-time blow-up occurs. Both invariants are reproduced numerically: the norm-preserving split-step
+integrator holds $P$ to $10^{-12}$ and $H$ to $O(\Delta t^2)$ (\texttt{verify\_dnls\_selftrapping.py}).
+\end{proof}
+
+\emph{Peregrine soliton.} Equation~\eqref{eq:nls} possesses the rational solution~\cite{Peregrine}
+\begin{equation}\label{eq:peregrine}
+  \psi_P(x,t) = \left[\,1 - \frac{4(1+4\mathrm i t)}{1+4x^2+16t^2}\,\right]\eu^{2\mathrm i t},
+\end{equation}
+localized in both space and time, with unit background $|\psi|\to1$ and peak $|\psi_P(0,0)|=3$: the
+threefold amplification ``appearing from nowhere and disappearing without a trace'' that defines a
+rogue wave (Figure~\ref{fig:peregrine}). We verified that \eqref{eq:peregrine} solves \eqref{eq:nls}
+to a PDE residual vanishing under grid refinement. The Peregrine breather is the limit of the
+space-periodic Akhmediev and time-periodic Kuznetsov--Ma breather families produced by the Darboux
+transformation~\cite{Akhmediev}. These exact breathers exist because the focusing NLS \eqref{eq:nls}
+is \emph{completely integrable}---the compatibility condition of the Zakharov--Shabat linear system,
+solved by the inverse scattering transform~\cite{ZakharovShabat}, on which the Darboux dressing rests.
+
+\emph{Modulational instability.} The seed of these structures is the Benjamin--Feir
+instability~\cite{BenjaminFeir,ZakharovOstrovsky}, the mechanism by which Zakharov's deep-water
+envelope equation~\cite{Zakharov} destabilizes a uniform train. The uniform train
+$z_j=A\,\eu^{-\mathrm i\gamma A^2 t}$ solves \eqref{eq:dnls} ($\LN\mathbf1=0$); writing
+$z_j=[A+p_j(t)]\eu^{-\mathrm i\gamma A^2 t}$ and keeping terms linear in $p$, the cubic contributes
+$\gamma A^2(2p_j+\bar p_j)$, leaving
+\[
+  \mathrm i\dot p_j=-(\LN p)_j+\gamma A^2(p_j+\bar p_j).
+\]
+The Fourier ansatz $p_j=u\,\eu^{\mathrm i\kappa j+\sigma t}+\bar v\,\eu^{-\mathrm i\kappa j+\sigma t}$
+(eigenvalue $\lambda_\kappa$ of $\LN$ on $\eu^{\mathrm i\kappa j}$) reduces this to the $2\times2$ system
+$\mathrm i\sigma u=(\gamma A^2-\lambda_\kappa)u+\gamma A^2v$, $-\mathrm i\sigma v=\gamma A^2u+(\gamma A^2-\lambda_\kappa)v$,
+whose solvability condition $\sigma^2+(\gamma A^2-\lambda_\kappa)^2=(\gamma A^2)^2$ gives the growth rate
+\begin{equation}\label{eq:mi}
+  \sigma(\kappa)=\sqrt{\lambda_\kappa\,(2\gamma A^2-\lambda_\kappa)},\qquad \lambda_\kappa=4\sin^2\tfrac\kappa2,
+\end{equation}
+so the band $\lambda_\kappa<2\gamma A^2$ is unstable (continuum form $\sigma=|k|\sqrt{2\gamma A^2-k^2}$, the
+classical $|k|\sqrt{4A^2-k^2}$ at $\gamma=2$). This linear-stability computation is exact:
+
+\begin{proposition}[modulational-instability band]\label{prop:mi}
+The uniform state $z_j=A\,\eu^{-\mathrm i\gamma A^2t}$ of \eqref{eq:dnls} is linearly unstable to the
+Fourier mode $\kappa$ if and only if $\lambda_\kappa<2\gamma A^2$, with growth rate
+$\sigma(\kappa)=\sqrt{\lambda_\kappa(2\gamma A^2-\lambda_\kappa)}$; the rate is maximal,
+$\sigma_{\max}=\gamma A^2$, at $\lambda_\kappa=\gamma A^2$.
+\end{proposition} A direct split-step simulation of \eqref{eq:dnls} reproduces
+\eqref{eq:mi} to better than $1\%$ across the band interior (Figure~\ref{fig:mi}); the fastest mode
+does not grow without bound but saturates into an Akhmediev breather---the periodic avatar of the
+rogue spike.
+
+\emph{From thin tails to heavy tails.} The statistical signature is the sharpest contrast with the
+linear theory. Seeded by a noisy plane wave, \eqref{eq:dnls} on the ring spawns localized bursts
+exceeding twice the root-mean-square amplitude---the oceanographic rogue threshold---and the amplitude
+distribution develops a heavy, \emph{leptokurtic} tail (kurtosis $>3$) lying well above the Rayleigh
+law of a linear Gaussian sea (Figure~\ref{fig:rogue}). This inverts the linear picture, whose
+Bohr--Jessen value law is \emph{platykurtic} (Section~\ref{sec:stats}): linear amplification is a rare
+phase alignment of bounded, thin-tailed oscillations, whereas nonlinear focusing manufactures genuine
+heavy-tailed extremes. The two regimes share the lattice operator $\LN$ but reach large amplitudes by
+opposite routes---interference versus self-focusing.
+
+A rigorous nonlinear theory on the ring---existence and stability of discrete breathers, the precise
+role of the $\LN$ spectrum in the instability band, and integrable discretizations of
+\eqref{eq:nls}---is left to future work; equation~\eqref{eq:dnls} is recorded here as the natural
+nonlinear continuation of the linear large wave.
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.86\textwidth]{fig_peregrine.pdf}
+\caption{Peregrine soliton~\eqref{eq:peregrine} of the focusing NLS~\eqref{eq:nls}: a rogue peak
+localized in space and time (left), with the threefold amplification over the unit background at
+$t=0$ (right).}\label{fig:peregrine}
+\end{figure}
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.66\textwidth]{fig_mi.pdf}
+\caption{Modulational (Benjamin--Feir) instability gain~\eqref{eq:mi} of the plane wave under the
+DNLS~\eqref{eq:dnls}: lattice rate (solid), continuum approximation (dotted) and simulated growth
+rates (squares), with unstable band edge $\kappa=\pi/2$ and maximal rate
+$\sigma_{\max}=\gamma A^2$.}\label{fig:mi}
+\end{figure}
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.92\textwidth]{fig_rogue_dnls.pdf}
+\caption{DNLS~\eqref{eq:dnls} on the ring seeded by a noisy plane wave. Left: space-time amplitude
+$|z_j(t)|$ with localized rogue spikes. Right: the amplitude exceedance distribution develops a heavy
+tail above the Rayleigh law (dashed) of a linear Gaussian sea, crossing the rogue threshold---the
+opposite of the platykurtic linear value law.}\label{fig:rogue}
+\end{figure}
+
+\section{Discrete breathers and self-trapping}\label{sec:breather}
+
+Nonlinearity does not only sharpen extremes; it can \emph{localize}. Seed the DNLS \eqref{eq:dnls} with a
+single excited site, $z_j(0)=A\,\delta_{j0}$ (norm $\Lambda=\sum_j|z_j|^2=A^2$), and track the
+\emph{participation ratio}
+\begin{equation}\label{eq:pr}
+  P=\frac{\bigl(\sum_j|z_j|^2\bigr)^2}{\sum_j|z_j|^4}\in[1,N],
+\end{equation}
+which is $1$ for a single occupied site and $\sim N$ when the excitation spreads over the ring. A
+norm-conserving split-step integrator (norm exact to $10^{-12}$, $H$ to $O(\Delta t^2)$) shows a sharp
+\emph{self-trapping transition} at the on-site nonlinear frequency $\gamma|z_0|^2\approx4$---exactly the
+top of the spectrum of $\LN$, the band $[0,4]$. Below it the excitation disperses ($P\to N$); above it the
+site detunes out of the linear band and freezes into a stationary, exponentially localized \emph{discrete
+breather} $z_j(t)=\phi_j\eu^{-\mathrm i\Omega t}$, whose real profile solves
+$\Omega\phi_j=-(\LN\phi)_j+\gamma\phi_j^3$ with frequency $\Omega\approx\gamma|z_0|^2$ pushed above the
+whole phonon band $[0,4]$, so no extended mode can resonate (Figure~\ref{fig:selftrapping}; the trapped
+profile is steady, the temporal standard deviation of $|z_j|$ staying below $0.02$). This is the dynamical
+\emph{opposite} of the linear large wave, a fully delocalized interference of all $N$ modes ($P\sim N$):
+the same operator $\LN$ supports both a spread-out resonance (linear) and a pinned soliton (nonlinear),
+selected by the size of the cubic term (\texttt{verify\_dnls\_selftrapping.py}).
+
+\emph{Two thresholds.} An anti-continuum estimate places the \emph{stationary} single-site breather at
+$\gamma|\phi_0|^2\gtrsim2$: from $\Omega\phi_j=-(\LN\phi)_j+\gamma\phi_j^3$ with $\phi\approx\sqrt P\,\delta_{j0}$
+one gets $\Omega\approx\gamma P-2$, which clears the band \emph{top} ($\Omega>0$) at $\gamma P\gtrsim2$. The
+larger \emph{dynamical} threshold $\gamma|z_0|^2\approx4$ measured from a single-site \emph{launch} is the
+bandwidth: the spreading excitation must outrun the entire band $[0,4]$, not merely its edge. Existence and
+stability of these breathers (MacKay--Aubry theory) and the precise dynamical threshold are the rigorous
+sequel left open here.
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.92\textwidth]{fig_selftrapping.pdf}
+\caption{DNLS self-trapping ($N=128$, single-site seed). Left: the participation ratio $P$ collapses from
+$\sim N$ (dispersed) to $\sim1$ (trapped) as the nonlinearity crosses the band top $\gamma\approx4$.
+Right: above threshold the excitation is a stationary discrete breather---a localized column in
+space-time.}\label{fig:selftrapping}
+\end{figure}
+
+\section{FPUT recurrence and the route to chaos}\label{sec:chaos}
+
+The cubic coupling also makes the lattice a testbed for Hamiltonian chaos. The
+Fermi--Pasta--Ulam--Tsingou (FPUT) $\beta$-ring
+\begin{equation}\label{eq:fput}
+  \ddot u_j=(u_{j+1}-2u_j+u_{j-1})+\beta\bigl[(u_{j+1}-u_j)^3-(u_j-u_{j-1})^3\bigr]
+\end{equation}
+has linear part $\ddot u=-\LN u$ and Hamiltonian
+$H=\sum_j\bigl[\tfrac12\dot u_j^2+\tfrac12(u_{j+1}-u_j)^2+\tfrac{\beta}{4}(u_{j+1}-u_j)^4\bigr]$. Seeding
+all energy in mode~$1$ and integrating symplectically (velocity Verlet; $H$ conserved to $6\times10^{-4}$
+with no secular drift), at low energy the energy does \emph{not} thermalize: it sloshes to a few
+neighbouring modes and \emph{returns} to mode~$1$---the FPUT recurrence (Figure~\ref{fig:fput}), the
+near-integrable face of the nonlinear lattice: its long-wave limit is a Korteweg--de Vries-type
+equation, a completely integrable Hamiltonian system~\cite{ZakharovFaddeev} whose invariant tori the
+weakly nonlinear lattice shadows, so energy returns rather than equipartitioning. Only a handful of low
+modes are ever active, the dynamics
+is quasi-periodic, and the maximal Lyapunov exponent is $\lambda_{\max}\approx0$---just as for the
+integrable linear large wave.
+
+Raising the energy breaks integrability. Measured by the Benettin method (a tangent vector co-evolved
+with the variational equations and periodically renormalized,
+$\lambda_{\max}=T^{-1}\sum\log\lVert\delta\rVert/d_0$), the maximal Lyapunov exponent turns on with
+energy (Figure~\ref{fig:lyapunov}): $\lambda_{\max}\approx0.001$ in the regular regime, rising through a
+weak-chaos knee to $\lambda_{\max}\approx0.05$ in the strongly chaotic regime, where the energy
+thermalizes across all modes. The same lattice---linear core $\LN$---thus interpolates between integrable
+tori and deterministic chaos as the amplitude grows (\texttt{verify\_fput\_recurrence.py},
+\texttt{verify\_lyapunov.py}). The transition is visible directly in phase space: in the three
+odd-mode energy coordinates $(E_1,E_3,E_5)$ (a mode-$1$ seed excites only odd modes by parity) the orbit
+lies on a thin quasi-periodic torus at low energy and fills a chaotic cloud at high energy
+(Figure~\ref{fig:phase3d}).
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.72\textwidth]{fig_fput.pdf}
+\caption{FPUT-$\beta$ recurrence ($N=32$, mode-1 seed). The harmonic energy of mode~$1$ drops almost to
+zero and recurs to its initial value, sloshing quasi-periodically with the low modes instead of
+thermalizing.}\label{fig:fput}
+\end{figure}
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.66\textwidth]{fig_lyapunov.pdf}
+\caption{Route to chaos. The maximal Lyapunov exponent of the FPUT-$\beta$ ring is $\approx0$ at low
+energy (regular, the recurrence regime) and turns on past an energy threshold, reaching
+$\lambda_{\max}\approx0.05$ in the chaotic regime.}\label{fig:lyapunov}
+\end{figure}
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.92\textwidth]{fig_phase3d.pdf}
+\caption{FPUT phase portrait in the odd-mode energy space $(E_1,E_3,E_5)$. Left: at low energy the orbit
+lies on a thin quasi-periodic torus (regular). Right: at high energy it fills a three-dimensional
+chaotic cloud---the same regular-to-chaotic transition measured by $\lambda_{\max}$.}\label{fig:phase3d}
+\end{figure}
+
+\section{Diagnostics and the fate of the large wave}\label{sec:fate}
+
+The linear large wave and its nonlinear continuations are cleanly separated by a small set of dynamical
+diagnostics---localization (participation ratio $P$), value statistics (kurtosis $\kappa$) and chaos
+(Lyapunov exponent $\lambda_{\max}$)---all built on the \emph{same} lattice operator $\LN$
+(Table~\ref{tab:diagnostics}). The linear large wave is a delocalized, thin-tailed, integrable resonance
+($P\sim N$, $\kappa<3$, $\lambda_{\max}=0$); nonlinearity opens three distinct routes to a large local
+amplitude---\emph{self-focusing} into rogue extremes (heavy tails, $\kappa>3$), \emph{self-trapping} into
+a pinned breather ($P\sim1$), and \emph{chaotic} thermalization ($\lambda_{\max}>0$). Which one is
+realized is set by the sign and strength of the nonlinearity and by the energy; the linear theory of
+Part~I is the $\beta,\gamma\to0$ corner of this picture, and supplies the spectral data ($\LN$, the band
+$[0,4]$, the modal frequencies) that organize every regime. A rigorous nonlinear theory on the
+ring---existence and stability of the discrete breathers, the precise role of the $\LN$ spectrum in the
+modulational band, and the energy threshold for chaos---is the natural sequel.
+
+\begin{table}[ht]\centering
+\caption{The large wave and its nonlinear continuations, separated by dynamical diagnostics on the common
+operator $\LN$. ($P$: participation ratio; $\kappa$: kurtosis; $\lambda_{\max}$: largest Lyapunov
+exponent; ``---'' marks a diagnostic not characteristic of that regime.)}\label{tab:diagnostics}
+\begin{tabular}{lllll}
+\hline
+Regime & Model & Localization $P$ & Statistics $\kappa$ & $\lambda_{\max}$\\
+\hline
+Linear large wave & $\ddot u=-\LN u$ & delocalized $\sim N$ & platykurtic $<3$ & $0$\\
+Rogue / self-focusing & DNLS, noisy plane wave & localized bursts & leptokurtic $>3$ & ---\\
+Discrete breather & DNLS, $\gamma|z_0|^2>4$ & pinned $\sim1$ & --- & $0$\\
+FPUT recurrence & FPUT-$\beta$, low $E$ & few active modes & --- & $\approx0$\\
+Chaos & FPUT-$\beta$, high $E$ & thermalized $\sim N$ & --- & $>0$\\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Higher dimensions: nonlinear localization beyond the one-dimensional large wave}\label{sec:highd}
+
+Part~I established that the \emph{linear} large wave is one-dimensional: on the $d$-torus the ceiling
+$U_N^{(d)}$ is bounded for $d\ge2$ (Section~\ref{sec:dim}), so a localized linear disturbance cannot
+amplify in two or three dimensions. Nonlinearity removes the obstruction. On the $2$-torus $(\Z_N)^2$
+the DNLS with the block-circulant Laplacian $\LN^{(2)}$ (eigenvalues
+$\lambda_{\mathbf r}=4\sin^2\frac{\pi r_1}{N}+4\sin^2\frac{\pi r_2}{N}$, band $[0,8]$, with the
+dispersion surface of Figure~\ref{fig:dispersion3d}) self-traps a single-site excitation into a
+stationary, exponentially localized \emph{two-dimensional discrete breather} once the on-site nonlinear
+frequency crosses the $2$D band top, $\gamma|z|^2\approx8$: the norm is conserved to $10^{-12}$ and the
+participation ratio collapses from $\sim N^2$ to $O(1)$ across the threshold
+(Figure~\ref{fig:breather2d}, \texttt{verify\_dnls\_2d.py}). A large, localized amplitude therefore
+survives in $2$D (and, identically, $3$D) by a mechanism---self-focusing self-trapping---absent from the
+linear theory: the dimensional threshold of Part~I is a property of the \emph{linear} resonance, not of
+the lattice.
+
+This multidimensional, strongly nonlinear regime is the home of Zakharov's wider program: the
+Zakharov--Kuznetsov equation~\cite{ZakharovKuznetsov} is the multidimensional generalization of the
+long-wave (KdV-type) limit of \eqref{eq:fput}, and the statistics of the thermalizing lattice are the
+subject of the weak-turbulence (Kolmogorov--Zakharov) theory of wave spectra~\cite{ZakharovLvovFalkovich},
+whose underlying wave kinetic equation has only recently been derived rigorously~\cite{DengHani}. These
+connect the discrete large-wave problem to the broad theory of nonlinear wave dynamics
+(Section~\ref{sec:fate}).
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.6\textwidth]{fig_breather2d.pdf}
+\caption{Two-dimensional discrete breather: a single-site seed under the $2$D DNLS self-traps into a
+stationary localized hump above the $2$D band top ($\gamma\approx8$). Nonlinearity restores a large
+localized amplitude in $2$D, where the linear large wave is bounded.}\label{fig:breather2d}
+\end{figure}
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.58\textwidth]{fig_dispersion3d.pdf}
+\caption{Dispersion surface
+$\omega(\theta_x,\theta_y)=2\sqrt{\sin^2(\theta_x/2)+\sin^2(\theta_y/2)}$ of the block-circulant
+Laplacian on the $2$-torus: zero at the corners, band top $2\sqrt2$ at the centre.}\label{fig:dispersion3d}
+\end{figure}
+
+\section{Caustics and the concentration of energy}\label{sec:caustic}
+
+The thread running through this paper is the \emph{concentration of energy} into a large local
+amplitude. Part~I concentrates it by modal interference (the linear large wave); Part~II so far by
+nonlinear self-focusing (rogue waves, breathers). A third, purely \emph{linear} route is refractive: in
+a slowly varying medium a wave follows rays $\dot{\mathbf x}=\nabla_{\mathbf k}\omega$,
+$\dot{\mathbf k}=-\nabla_{\mathbf x}\omega$, and where neighbouring rays cross, the ray density---and with
+it the amplitude---diverges on a \emph{caustic}. Caustics are classified by catastrophe
+theory~\cite{BerryUpstill}: the generic fold (Airy diffraction) and cusp (the bright curve at the bottom
+of a teacup); diffraction regularizes the divergence to a finite but large peak with a universal scaling.
+
+\emph{Rays and their envelopes.} Geometric optics is the skeleton. For waves crossing a current the
+Doppler term refracts the rays, and a bundle of initially parallel rays entering a current jet
+converges and \emph{folds}: its Jacobian $\partial x/\partial x_0$ passes through zero at a finite
+focal distance, where the ray density $1/|\partial x/\partial x_0|$---and with it the linear
+amplitude---diverges, regularized by diffraction (Figure~\ref{fig:raycaustic},
+\texttt{verify\_ray\_caustic.py}).
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.66\textwidth]{fig_raycaustic.pdf}
+\caption{Ray tracing in a current jet. A bundle of parallel rays is refracted toward the jet, crosses
+on a caustic (the fold near $z\approx8$, then re-focusing), where the ray density and the linear
+amplitude concentrate.}\label{fig:raycaustic}
+\end{figure}
+
+\emph{The discrete front is a caustic.} The lattice already contains one. For the discrete Schr\"odinger
+equation (Section~\ref{sec:schr}) the group velocity $v_g(k)=2\sin k$ is extremal at $k=\tfrac\pi2$---a
+degenerate stationary-phase point, a fold---so the propagator front is exactly the Airy function,
+\begin{equation}\label{eq:airy}
+  J_n(2t)\sim t^{-1/3}\,\mathrm{Ai}\!\Bigl(2^{1/3}\,\tfrac{n-2t}{(2t)^{1/3}}\Bigr),
+\end{equation}
+with the universal fold scaling $\max_n|J_n(2t)|\sim0.536\,t^{-1/3}$ (Figure~\ref{fig:caustic},
+\texttt{verify\_caustic\_airy.py}). The discrete large-wave front \emph{is} a fold caustic, the
+$t^{-1/3}$ being the Airy exponent.
+
+\emph{The cusp and the teacup.} The next generic caustic is the \emph{cusp}---the bright curve at the
+bottom of a sunlit teacup, whose ray version (parallel rays reflected inside a circle) is a
+\emph{nephroid} and whose universal diffraction is the Pearcey integral
+$\mathrm{Pe}(X,Y)=\int_{-\infty}^{\infty}\exp\!\bigl[\mathrm i(s^4+Xs^2+Ys)\bigr]\,\mathrm ds$ over the
+cusp catastrophe, with geometric caustic $8X^3+27Y^2=0$. Its cusp-point value is
+$|\mathrm{Pe}(0,0)|=\tfrac12\Gamma(\tfrac14)=1.8128$, and the intensity concentrates inside the cusp and
+falls off in the geometric shadow (Figure~\ref{fig:cusp}, \texttt{verify\_cusp\_pearcey.py}).
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.92\textwidth]{fig_cusp.pdf}
+\caption{The cusp caustic. Left: the everyday teacup caustic---parallel rays reflected inside a circle
+have a nephroid envelope. Right: the universal Pearcey diffraction $|\mathrm{Pe}(X,Y)|^2$ of the cusp,
+bright inside the cusp and dark in the shadow.}\label{fig:cusp}
+\end{figure}
+
+\emph{Ocean rogue hot spots.} The same refraction sets the geography of ocean rogue waves. Swell from
+Southern-Ocean storms running into the opposing Agulhas current off south-east Africa is refracted and
+focused into caustics---the classic rogue ``hot spot''~\cite{Lavrenov,WhiteFornberg,Slunyaev}. A spatially random
+current produces a cascade of caustics, \emph{branched flow}: a uniform incident wave develops bright
+filaments and focal hot spots whose intensity is heavy-tailed, the linear precursor of rogue
+statistics~\cite{YingHeller}. The paraxial model
+$\mathrm i\,\partial_z\psi=-\tfrac12\partial_{xx}\psi+V(x)\psi$ with a weak random current $V$ reproduces
+it exactly (Figure~\ref{fig:branched}): from a flat wave the scintillation index
+$\max_x|\psi|^2/\langle|\psi|^2\rangle$ rises from $1$ to ${\sim}13$ at a focal distance, and the
+focal-plane intensity is heavy-tailed---its tail an order of magnitude above the exponential law of a
+structureless field (\texttt{verify\_branched\_flow.py}). Tidal (lunar) currents modulate the refracting
+flow, a secondary effect.
+
+\emph{The lens seeds self-focusing.} The two routes cooperate. A linear caustic concentrates energy
+until the local steepness crosses the modulational threshold, whereupon nonlinear self-focusing takes
+over---rogue waves are ``the nonlinear stage of the modulational instability''~\cite{ZakharovShamin}.
+Seeding the focusing NLS with a converging (lens) beam (Figure~\ref{fig:caustic_mi}), the linear caustic
+amplifies a weak flat input ${\sim}7\times$, and the nonlinearity then sharpens the focal peak by a
+further ${\sim}11\%$, whereas a lensless plane wave never spikes---the lens is what localizes
+(\texttt{verify\_caustic\_mi.py}). In one dimension the nonlinear enhancement is modest (the NLS being
+$L^2$-subcritical); the dramatic collapsing self-focusing is the two-dimensional Zakharov regime. The
+discrete operator $\LN$ thus organizes the concentration of energy in all three guises---interference,
+refraction, and self-focusing---on a single lattice.
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.94\textwidth]{fig_caustic_mi.pdf}
+\caption{A linear caustic seeds nonlinear self-focusing (focusing NLS, lens-seeded beam). Left: the peak
+amplitude---the lens focuses a weak flat input ${\sim}7\times$ (caustic), the nonlinearity adds a further
+${\sim}11\%$, while the lensless plane wave stays flat. Right: at the focus the nonlinearity sharpens and
+heightens the peak.}\label{fig:caustic_mi}
+\end{figure}
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.92\textwidth]{fig_caustic.pdf}
+\caption{The discrete-Schr\"odinger front as a fold caustic. Left: the rescaled fronts $t^{1/3}J_n(2t)$
+for $t=50,200,800$ collapse onto the Airy function $\mathrm{Ai}(s)$, $s=2^{1/3}(n-2t)/(2t)^{1/3}$
+(Eq.~\eqref{eq:airy}). Right: the front peak follows the universal fold scaling
+$0.536\,t^{-1/3}$.}\label{fig:caustic}
+\end{figure}
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.94\textwidth]{fig_branched.pdf}
+\caption{Branched flow of a wave in a weak random current (paraxial model). Left: a uniform incident
+wave ($z=0$) develops bright caustic filaments and focal hot spots as it propagates. Right: the
+scintillation index rises from $1$ to ${\sim}13$ at the first focal distance---the linear, refractive
+route to a rogue hot spot.}\label{fig:branched}
+\end{figure}

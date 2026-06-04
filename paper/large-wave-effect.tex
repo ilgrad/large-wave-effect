@@ -1,0 +1,368 @@
+\documentclass[11pt,reqno]{amsart}
+
+% ---------------------------------------------------------------------------
+% Large-Wave Amplification on the Periodic Discrete Chain.
+% Draft generated from the project notes (docs/) and the numerical certificates
+% (numerics/).  Every theorem below is either proved here or verified numerically
+% by the named script.  Bibliographic entries marked "% VERIFY" are taken from the
+% project notes and must be checked against the primary source before submission.
+% ---------------------------------------------------------------------------
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{tikz}
+\setlength{\emergencystretch}{4em}  % avoid overfull lines (long verify_*.py names have no break points)
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\LN}{L_N}
+\newcommand{\eu}{\mathrm{e}}
+\DeclareMathOperator{\circm}{circ}
+\DeclareMathOperator{\rank}{rank}
+
+\begin{document}
+
+\title[Large-wave amplification on discrete lattices]{Large-wave amplification on periodic discrete lattices: linear theory and a nonlinear extension}
+\author{Ilia Gradina}
+\date{June 2026 (draft)}
+
+\begin{abstract}
+We study the large-wave effect for free oscillations of the periodic discrete chain
+(the ring of $N$ beads) and for the discrete Schr\"odinger equation on the same ring.
+Writing $A_N=\sup_{t}\max_j|u_j(t)|$ for the unit-impulse Green's function, we show that the
+supremum is, by Bohr's theorem, the $\ell^1$ mass of the Fourier coefficients whenever the
+frequencies $\{2\sin(\pi r/N)\}$ are linearly independent over $\Q$, and we prove this
+independence for $N$ an odd prime and for $N=2^m$ by a cyclotomic argument. Consequently
+$A_N=U_N:=\tfrac1{2N}\sum_{r=1}^{N-1}\csc(\pi r/N)=\tfrac1\pi\ln N+\tfrac1\pi(\gamma+\ln\tfrac2\pi)+o(1)$
+unconditionally on these classes, and the same sharp constant holds for the composite family $N=2p$.
+For every $N$ the upper bound $A_N\le U_N=\tfrac1\pi\ln N+O(1)$ is rigorous; the orbit-closure subtorus
+has dimension exactly $\tfrac12\varphi(2N)$, and $A_N=U_N$ holds \emph{if and only if} every integer
+relation among the frequencies has coefficient-sum divisible by four---an arithmetic criterion met by the
+prime and $2^m$ cases (and by no composite $N\le160$). A low-mode prefix gives strong evidence that $A_N=\Theta(\ln N)$ for
+all $N$, which we leave as a conjecture, and we separate the infinite-time ceiling from the
+finite-time (Diophantine) amplitude actually reached. For the discrete Schr\"odinger propagator
+$\eu^{-\mathrm{i}t\LN}$, unitarity forbids amplification of a localized state, while the
+$\ell^\infty\!\to\!\ell^\infty$ amplification satisfies $B_N=\Theta(\sqrt N)$ (upper bound from
+unitarity, matching lower bound from a Bessel-front estimate). Proved results are separated throughout
+from computational evidence and conjectures; all quantitative claims are reproduced by the accompanying
+scripts.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+A localized disturbance on a homogeneous one-dimensional medium does not amplify: for the
+continuous wave equation the classical bound of Zhukovsky and Lurie gives $|\sigma(x,t)|\le F$~\cite{Zhukovsky}.
+On the \emph{discrete} chain this is false~\cite{KMF,MF03,FM}. The discreteness of the spectrum, together
+with the finiteness of the number of modes, allows many modes to come into phase and to produce a
+local peak that grows with the number of nodes $N$. This is the \emph{large-wave effect}; related
+phenomena include the splash effect~\cite{FMM} and its Schr\"odinger analogue~\cite{F23}.
+
+The effect is genuinely discrete: it disappears in the continuum limit. The mechanism is the
+\emph{finite, discrete spectrum}---finitely many modes whose frequencies are rationally related can be
+brought exactly into phase; on the infinite chain the spectrum is continuous, no exact alignment
+occurs, and the amplification is absent. It is thus a finite-size spectral resonance rather than a
+feature of the limiting partial differential equation. (For the discrete Schr\"odinger propagator the
+absence of a continuum large wave is explicit: its single-site kernel is the Bessel function
+$J_n(2t)$, whose peak over sites decays like $t^{-1/3}$, Section~\ref{sec:schr}.) This discrete--continuous gap,
+together with the appearance of discrete Laplacians in quantum walks, photonic lattices, non-Hermitian
+lattice optics~\cite{Longhi}, and discrete nonlinear models of anomalous (rogue) waves, motivates
+studying the lattice in its own right.
+
+\smallskip
+\noindent\textbf{Contributions.} (i) We identify $\sup_t G_N(0,t)=U_N$ through Bohr's theorem under
+rational independence of the frequencies (Section~3), and prove this independence for $N$ prime and
+$N=2^m$ by a cyclotomic argument (Theorems~\ref{thm:prime},~\ref{thm:two}), giving the unconditional
+asymptotics $A_N\sim\tfrac1\pi\ln N$ with the explicit constant of Lemma~\ref{lem:asym}; the same sharp
+constant extends to the composite family $N=2p$ (Proposition~\ref{prop:2p}). (ii) For every
+$N$ the upper bound $A_N\le U_N$ is rigorous, and we reduce $A_N$ \emph{exactly} to an optimization over
+the orbit-closure subtorus, whose dimension we compute in closed form as $\tfrac12\varphi(2N)$
+(Theorem~\ref{thm:qrank}); a sharp arithmetic criterion---coefficient-sums divisible by four---decides
+exactly when $A_N=U_N$ (Theorem~\ref{thm:ceiling}), while a $\Q$-independent low-mode prefix gives strong
+numerical evidence, but not yet a proof, that $A_N=\Theta(\ln N)$ in general (Conjecture~\ref{conj:order}).
+(iii) For composite $N$ the value is algebraic with increasing arithmetic complexity
+(Proposition~\ref{prop:closed}); we further separate the infinite-time ceiling from the finite-time
+amplitude and show both the finite-horizon recurrence time and the effect of mass disorder
+(Section~\ref{sec:reach}). (iv) For the discrete Schr\"odinger equation a localized state is never
+amplified (unitarity, rigorous), and the $\ell^\infty\!\to\!\ell^\infty$ norm satisfies
+$B_N=\Theta(\sqrt N)$, both bounds rigorous (Theorems~\ref{thm:schr},~\ref{thm:schr-lower}). (v)~As a
+nonlinear outlook we connect $\LN$
+to the rogue-wave problem (Section~\ref{sec:rogue}): the discrete NLS
+$\mathrm i\dot z=-\LN z+\gamma|z|^2z$ has $\LN$ as its linear part and the focusing NLS as its
+continuum limit, and we verify the Peregrine rogue solution, the modulational-instability gain, and
+the emergence of heavy-tailed amplitude statistics in sharp contrast with the platykurtic linear value
+law. Every quantitative claim is reproduced by a standalone, version-controlled script.
+
+\smallskip
+\noindent\textbf{Relation to prior work.} The large-wave \emph{phenomenon}---that on the discrete bead
+string a localized disturbance amplifies, growing without bound at bounded energy on suitable $N$---is
+classical, due to the Kurchanov--Myshkis--Filimonov line of work~\cite{KMF,MF03,FM}, with the $\ln$-type
+asymptotics on the Dirichlet segment in~\cite{MF03} and the Schr\"odinger analogue in~\cite{F23}. Our
+contribution is \emph{quantitative and structural}: the explicit ring constant $\tfrac1\pi$ and the
+next term $-\tfrac{\pi}{72}N^{-2}$ (Lemma~\ref{lem:asym}); the closed-form subtorus dimension
+$\tfrac12\varphi(2N)$ for every $N$ and the cyclotomic independence proof for $N$ prime and $N=2^m$
+(Theorems~\ref{thm:qrank},~\ref{thm:prime},~\ref{thm:two}); the exact $\bmod\,4$ criterion for reaching
+the ceiling (Theorem~\ref{thm:ceiling}); the new composite family $N=2p$ (Proposition~\ref{prop:2p}); the
+spectral-zeta systematization; the finite-time/disorder dichotomy (Section~\ref{sec:reach}); and the
+sharp $B_N=\Theta(\sqrt N)$ growth of the discrete Schr\"odinger propagator
+(Theorem~\ref{thm:schr-lower}). We do not claim the amplification effect itself as new.
+
+\smallskip
+\noindent\fbox{\parbox{0.97\linewidth}{\textbf{Main results at a glance.}
+\begin{itemize}[leftmargin=1.4em,itemsep=1pt,topsep=2pt]
+\item[\textbf{T1}] $A_N=U_N=\tfrac1\pi\ln N+\tfrac1\pi(\gamma+\ln\tfrac2\pi)-\tfrac{\pi}{72N^2}+\cdots$
+for $N$ prime and $N=2^m$ (independence); $A_N=U_N-O(1/N)$ with the same constant $\tfrac1\pi$ for $N=2p$
+(Thms.~\ref{thm:prime},~\ref{thm:two}, Prop.~\ref{prop:2p}).
+\item[\textbf{T2}] The orbit-closure subtorus has dimension $\tfrac12\varphi(2N)$ for \emph{every} $N$
+(Thm.~\ref{thm:qrank}).
+\item[\textbf{T3}] \emph{Ceiling criterion}: $A_N=U_N$ iff every integer frequency relation has
+coefficient-sum $\equiv0\ (\mathrm{mod}\ 4)$ (Thm.~\ref{thm:ceiling}); on $N\le160$ the saturating set is
+exactly $\{\text{prime}\}\cup\{2^m\}$, of density $0$ (Cor.~\ref{cor:density}).
+\item[\textbf{T4}] Discrete Schr\"odinger: localized states never amplify (unitarity), yet
+$B_N=\Theta(\sqrt N)$ in $\ell^\infty$ (Thms.~\ref{thm:schr},~\ref{thm:schr-lower}).
+\item[\textbf{T5}] The large wave lives exactly at spectral dimension $d_s=1$ (incl.\ quasi-1D), and is
+an infinite-time ceiling: the finite-time amplitude is Diophantine-limited
+(\S\ref{sec:dim},~\S\ref{sec:reach}).
+\item[\textbf{C}] \emph{Open:} $A_N=\Theta(\ln N)$ for \emph{all} $N$ (Conj.~\ref{conj:order})---numerically
+$A_N/\ln N\in[0.28,0.34]$ throughout.
+\end{itemize}}}
+
+We treat the periodic chain (the ring) with \emph{free} oscillations, and contrast it with the
+discrete Schr\"odinger dynamics on the same ring. The central quantity is
+\[
+  A_N=\sup_{t\ge0}\ \max_{0\le j<N}|u_j(t)|,
+\]
+where $u_j(t)$ is the response to a unit velocity impulse. Our tools are the theory of
+almost-periodic functions (Bohr), equidistribution (Kronecker--Weyl), and the arithmetic of
+cyclotomic fields. The main message is that $A_N$ grows like $\ln N$, that the growth constant is
+exactly $1/\pi$ on an explicit family of $N$, and that the obstruction on the remaining $N$ is a
+purely number-theoretic one (rational relations among the frequencies).
+
+\part{Linear theory}
+
+\input{sections/linear}
+
+\part{Nonlinear extension}
+
+\input{sections/nonlinear}
+
+\section{Discussion}
+
+The ring and the Dirichlet segment realize the same mechanism---constructive phase alignment of a
+logarithmically weighted family of modes---through different arithmetic. On the segment the
+frequencies $2\sin(\pi k/2N)$ lie in $\Q(\zeta_{4N})$; on the ring $2\sin(\pi r/N)\in\Q(\zeta_{2N})$,
+with the twofold degeneracy $\omega_r=\omega_{N-r}$ that halves the number of independent phases and
+(as the time-averaged $\mathrm{RMS}_t|G_N(0,\cdot)|=\sqrt{(N^2-1)/(12N^2)}\to1/\sqrt{12}$ shows) doubles the typical energy
+relative to a naive independent count. The growth constant $1/\pi$ is identical on the classes where
+the frequencies are rationally independent; the composite defect is a sub-torus phenomenon that, on the
+evidence of Section~\ref{sec:exact}, does not lower the order below $\Theta(\ln N)$ (Conjecture~\ref{conj:order}).
+
+The discrete Schr\"odinger equation occupies the opposite extreme. Its phases are governed by
+$\lambda_r=2-2\cos(2\pi r/N)$, which lie in the real cyclotomic field $\Q(\zeta_N)^+$ and always
+satisfy the affine relation $\sum_r\lambda_r=2N$. Unitarity caps the response to a localized state,
+and the genuine amplification---ballistic, of order $\sqrt N$---is carried by spread-out
+$\ell^\infty$ data. The contrast $\ln N$ (wave) versus $\sqrt N$ (Schr\"odinger) traces back to the
+difference between $\sqrt{\lambda_r}$ and $\lambda_r$ in the propagator phase.
+
+\medskip
+\noindent\textbf{GLT context.} The sequence $\{\LN\}$ is a circulant---hence locally Toeplitz---instance
+of a Generalized Locally Toeplitz (GLT) sequence~\cite{GLT} with symbol $f(\theta)=4\sin^2(\theta/2)$.
+The spectral-zeta density \eqref{eq:zeta-density} and the Szeg\H{o} asymptotics are the GLT spectral
+distribution specialized to this symbol; beyond the uniform $d$-torus settled in
+Section~\ref{sec:dim}, the GLT calculus extends every spectral statement here to variable-coefficient
+lattices (non-uniform masses) and anisotropic or graph Laplacians, the natural setting for future work.
+
+\medskip
+\noindent\textbf{A different face of energy concentration.} The discrete Laplacian concentrates energy
+beyond wave dynamics. In the dielectric-breakdown (Laplacian-growth) model of lightning~\cite{NPW}, the
+electrostatic potential solves the discrete Laplace equation $\LN^{(2)}\phi=0$ off the leader, which
+advances toward the strongest field; the result is a branched, fractal discharge (fractal dimension
+$\approx1.5$ in our run) with the field---and the energy---concentrated at its tips, the same operator
+and branched morphology as the refractive caustics of Section~\ref{sec:caustic} but by a distinct
+(elliptic, dissipative) mechanism (Figure~\ref{fig:lightning}, \texttt{verify\_laplacian\_lightning.py}).
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.56\textwidth]{fig_lightning.pdf}
+\caption{Lightning as Laplacian growth: the leader (white) advances cloud-to-ground where the field is
+strongest, the potential $\phi$ solving the discrete Laplace equation $\LN^{(2)}\phi=0$ off it. A
+branched fractal discharge with the energy concentrated at its tips---energy concentration on the same
+discrete Laplacian, electrostatically.}\label{fig:lightning}
+\end{figure}
+
+\medskip\noindent\textbf{Limitations.} We mark the boundaries of what is established. (i)~The quantitative
+law $A_N=\Theta(\ln N)$ is \emph{proved} only on the prime, $2^m$, and $2p$ classes; for general $N$ only
+$A_N\le U_N$ is rigorous, and the matching lower bound (Conjecture~\ref{conj:order}) is open---the
+obstruction is the destructive interference of the out-of-prefix modes, so the prefix budget
+$L_{\mathrm{pre}}$ is heuristic, not a proven bound. (ii)~The ceiling criterion
+(Theorem~\ref{thm:ceiling}) is exact, but whether any \emph{composite} $N$ satisfies it is verified only
+to $N\le160$ (none does); the algebraic value of $A_N$ for individual composite $N$ is computed, not
+bounded in closed form. (iii)~The Schr\"odinger order $B_N=\Theta(\sqrt N)$ is proved, but the optimal
+constant $\lim B_N/\sqrt N\in[0.63,1]$ is open, and the segment constant $C=4/\pi^2$
+(Section~\ref{sub:filimonov}) is identified numerically and by a limiting integral rather than a fully
+rigorous bound. (iv)~The segment rank \eqref{eq:segrank} is verified to $N\le30$ and conjectured in
+general. (v)~Part~II is \emph{computational and exploratory}: its rigorous statements (the Hamiltonian
+conservation laws, Proposition~\ref{prop:dnls-cons}, and the linear modulational band,
+Proposition~\ref{prop:mi}) are classical, while the genuinely hard nonlinear results---existence and
+stability of discrete breathers, the precise dynamical self-trapping threshold, and the route to
+chaos---are simulated, not proved. (vi)~The
+supremum $A_N$ is an \emph{infinite-time} quantity; the amplitude reached on any physical horizon is
+Diophantine-limited (Section~\ref{sec:reach}). Proved statements are separated throughout from numerical
+evidence and from the conjectures, and every quantitative claim is reproduced by a standalone script.
+
+\section{Open problems}
+
+\begin{enumerate}
+\item Prove $A_N=\Theta(\ln N)$ (Conjecture~\ref{conj:order}), and the sharp constant
+$A_N\sim\tfrac1\pi\ln N$, for \emph{general} $N$. Both are rigorous on the prime, $2^m$, and $N=2p$
+classes (Theorems~\ref{thm:prime}--\ref{thm:two}, Proposition~\ref{prop:2p}); for general $N$ only the
+upper bound $A_N\le U_N$ is proved, and the lower bound is open (the obstruction is the control of the
+out-of-prefix interference, Observation~\ref{obs:prefix}). Numerically the defect closes,
+$A_N/U_N\to1$ (e.g.\ $0.92\to0.999$ along $N=2p$ up to $N=46$), so the constant appears universally
+$1/\pi$; certified numerical brackets for individual composite $N$ follow from the Lasserre moment--SOS
+hierarchy (Section~\ref{sec:exact}).
+\item Determine the exact constant $\lim_{N\to\infty}B_N/\sqrt N$ for the Schr\"odinger propagator. The
+order $B_N=\Theta(\sqrt N)$ is now settled (Theorems~\ref{thm:schr},~\ref{thm:schr-lower}): the lower
+bound $c\gtrsim0.63$ comes from the unwrapped Bessel front at $t=N/8$, the upper bound $1$ from
+unitarity, and a $t$-scan (including the Talbot times $t=\pi a/N$) gives $\sup_N B_N/\sqrt N\approx0.88$--$0.96$;
+the optimal constant in $[0.63,1]$ is an almost-periodic / Gauss-sum supremum
+(\texttt{verify\_open\_problems.py}).
+\item A rigorous nonlinear theory of the discrete NLS \eqref{eq:dnls} on the ring
+(Section~\ref{sec:rogue}): existence and stability of discrete breathers, the role of the $\LN$
+spectrum in the modulational-instability band, and a Klein--Gordon analogue.
+\item The multidimensional nonlinear large wave (Section~\ref{sec:highd}): existence, stability, and
+the energy threshold of the $2$D/$3$D discrete breathers, and the long-wave dynamics in the
+Zakharov--Kuznetsov regime~\cite{ZakharovKuznetsov}---a nonlinear counterpart to the dimensional
+threshold of Section~\ref{sec:dim}.
+\item Whether the statistics of the thermalizing lattice are governed by the weak-turbulence
+(Kolmogorov--Zakharov) wave kinetic description~\cite{ZakharovLvovFalkovich,DengHani}, and the rate of
+approach to energy equipartition.
+\item The interplay of the two energy-concentration routes (Section~\ref{sec:caustic}): when does a
+linear refractive caustic raise the local steepness enough to trigger the modulational instability of
+Section~\ref{sec:rogue}, and what rogue-amplitude statistics result on the lattice?
+\end{enumerate}
+
+\appendix
+
+\section{Derivation of the ring spectrum}\label{app:spectrum}
+Seeking $\LN\varphi=\lambda\varphi$ with $\varphi_{j+N}=\varphi_j$, the constant-coefficient recurrence
+$-\varphi_{j+1}+(2-\lambda)\varphi_j-\varphi_{j-1}=0$ has characteristic equation
+$p^2-(2-\lambda)p+1=0$ with $p_1p_2=1$ (Vieta). Nontrivial bounded solutions require conjugate roots
+$p_{1,2}=\eu^{\pm\mathrm i\theta}$ on the unit circle, so $2-\lambda=2\cos\theta$. The periodicity
+$\varphi_{j+N}=\varphi_j$ forces $\eu^{\mathrm i\theta N}=1$, i.e.\ $\theta=2\pi r/N$, whence
+\[
+  \lambda_r=2-2\cos\tfrac{2\pi r}{N}=4\sin^2\tfrac{\pi r}{N},\qquad
+  \varphi^{(r)}_j=\eu^{2\pi\mathrm i rj/N}\ \ (r=0,\dots,N-1),
+\]
+with the real basis $1,\ \cos\frac{2\pi rj}{N},\ \sin\frac{2\pi rj}{N},\ (-1)^j$. Each level is doubly
+degenerate, $\lambda_r=\lambda_{N-r}$, except $\lambda_0=0$ and---for even $N$---$\lambda_{N/2}=4$.
+The Dirichlet segment is identical with the closure $\sin\bigl(\theta(N{+}1)\bigr)=0$, giving
+$\theta=\pi k/(N{+}1)$ and $\lambda^{\mathrm{Dir}}_k=4\sin^2\frac{\pi k}{2(N+1)}$ (all simple).
+
+\section{Asymptotics of the cosecant sum}\label{app:bernoulli}
+We derive Lemma~\ref{lem:asym}. The sum $S_N=\sum_{r=1}^{N-1}\csc(\pi r/N)$ has reciprocal singularities
+at \emph{both} ends---$\csc(\pi r/N)\sim N/(\pi r)$ as $r\to0$ and $\sim N/(\pi(N-r))$ as $r\to N$---which
+we subtract symmetrically:
+\[
+  S_N=\frac N\pi\sum_{r=1}^{N-1}\Bigl(\frac1r+\frac1{N-r}\Bigr)
+      +\sum_{r=1}^{N-1}\underbrace{\Bigl[\csc\tfrac{\pi r}N-\frac N{\pi r}-\frac N{\pi(N-r)}\Bigr]}_{=\,R(r/N)} .
+\]
+The first sum is $\tfrac{2N}\pi H_{N-1}=\tfrac{2N}\pi(\ln N+\gamma)+O(1/N)$. The integrand
+$R(x)=\csc\pi x-\tfrac1{\pi x}-\tfrac1{\pi(1-x)}$ is smooth and bounded on $[0,1]$ (both poles cancel), so
+the second sum is a Riemann sum, $\sum_{r=1}^{N-1}R(r/N)=N\!\int_0^1\!R(x)\,dx+O(1)$, and the integral is
+elementary (using $\int\csc\pi x\,dx=\tfrac1\pi\ln\tan\tfrac{\pi x}2$):
+\[
+  \int_0^1\!R(x)\,dx=\frac1\pi\Bigl[\ln\frac{(1-x)\tan(\pi x/2)}{x}\Bigr]_0^1=\frac2\pi\ln\frac2\pi .
+\]
+Hence the leading asymptotics, with additive constant $\tfrac1\pi(\gamma+\ln\tfrac2\pi)=0.03999\ldots$,
+\[
+  S_N=\frac{2N}\pi\Bigl(\ln N+\gamma+\ln\tfrac2\pi\Bigr)+O(1),
+  \qquad U_N=\frac{S_N}{2N}=\frac1\pi\ln N+\frac1\pi\Bigl(\gamma+\ln\tfrac2\pi\Bigr)+o(1).
+\]
+The next correction is the Euler--Maclaurin endpoint term of $R$ (a Bernoulli-$B_2$ contribution); it is
+even in $1/N$ and evaluates to
+\[
+  U_N=\frac1\pi\ln N+\frac1\pi\Bigl(\gamma+\ln\tfrac2\pi\Bigr)-\frac{\pi}{72}\,\frac1{N^2}+O(N^{-4}),
+  \qquad -\frac{\pi}{72}=-\frac{\zeta(2)}{12\pi},
+\]
+confirmed to six digits by Richardson extrapolation ($a_2=-0.043633$). The correction is thus tied to the
+same $\zeta(2)$ that governs $\zeta_{\LN}(2)$ in Section~\ref{sec:zeta}; see
+\texttt{verify\_asymptotic\_corrections.py}.
+
+\section{Reproducible code}\label{app:code}
+Every quantitative claim is reproduced by a standalone script run with \texttt{uv run} (inline
+PEP~723 dependencies); the figures are generated by \texttt{make\_figures.py}, and the core routines
+(ring spectrum, Bohr ceiling, cyclotomic ranks, Schr\"odinger kernel) live in a tested package
+\texttt{large\_wave\_effect} with a \texttt{pytest} suite. The scripts are listed in
+Section~\ref{sec:repro}.
+
+\begin{thebibliography}{99}
+\bibitem{Bohr} H.~Bohr, \emph{Almost Periodic Functions}, Chelsea, New York, 1947.
+\bibitem{Weyl} H.~Weyl, \emph{\"Uber die Gleichverteilung von Zahlen mod.\ Eins}, Math.\ Ann.\ \textbf{77} (1916), 313--352.
+\bibitem{Niven} I.~Niven, \emph{Irrational Numbers}, Carus Math.\ Monographs \textbf{11}, MAA, 1956.
+\bibitem{CJ} J.~H.~Conway and A.~J.~Jones, \emph{Trigonometric Diophantine equations (on vanishing sums of roots of unity)}, Acta Arith.\ \textbf{30} (1976), 229--240.
+\bibitem{Watson} G.~N.~Watson, \emph{A Treatise on the Theory of Bessel Functions}, Cambridge Univ.\ Press, 1944.
+\bibitem{Gray} R.~M.~Gray, \emph{Toeplitz and Circulant Matrices: A Review}, Found.\ Trends Commun.\ Inf.\ Theory \textbf{2} (2006), 155--239.
+\bibitem{Lasserre} J.~B.~Lasserre, \emph{Global optimization with polynomials and the problem of moments}, SIAM J.\ Optim.\ \textbf{11} (2001), 796--817.
+\bibitem{Levinson} N.~Levinson, \emph{The Wiener RMS error criterion in filter design and prediction}, J.\ Math.\ Phys.\ \textbf{25} (1947), 261--278.
+\bibitem{Durbin} J.~Durbin, \emph{The fitting of time-series models}, Rev.\ Inst.\ Internat.\ Statist.\ \textbf{28} (1960), 233--244.
+\bibitem{Trench} W.~F.~Trench, \emph{An algorithm for the inversion of finite Toeplitz matrices}, J.\ SIAM \textbf{12} (1964), 515--522.
+\bibitem{GS} I.~C.~Gohberg, A.~A.~Semencul, \emph{On the inversion of finite Toeplitz matrices and their continuous analogues}, Mat.\ Issled.\ \textbf{7} (1972), 201--223.
+\bibitem{GrenanderSzego} U.~Grenander, G.~Szeg\H{o}, \emph{Toeplitz Forms and Their Applications}, Univ.\ of California Press, 1958.
+\bibitem{BS} A.~B\"ottcher, B.~Silbermann, \emph{Introduction to Large Truncated Toeplitz Matrices}, Springer, 1999.
+\bibitem{GVL} G.~H.~Golub, C.~F.~Van Loan, \emph{Matrix Computations}, 4th ed., Johns Hopkins Univ.\ Press, 2013.
+\bibitem{GLT} C.~Garoni, S.~Serra-Capizzano, \emph{Generalized Locally Toeplitz Sequences: Theory and Applications}, Vol.~I, Springer, 2017.
+\bibitem{AAW} I.~V.~Andrianov, J.~Awrejcewicz, D.~Weichert, \emph{Improved continuous models for discrete media}, Math.\ Probl.\ Eng.\ \textbf{2010} (2010), art.\ 986242. \texttt{doi:10.1155/2010/986242}.
+\bibitem{Longhi} S.~Longhi, \emph{Kramers--Kronig potentials for the discrete Schr\"odinger equation}, Phys.\ Rev.\ A \textbf{96} (2017), 042106. \texttt{doi:10.1103/PhysRevA.96.042106}.
+\bibitem{Gradina12} Ilia Gradina, \emph{Solving the basic problems of linear algebra for Toeplitz matrices}, term paper, MIIT, 2012 (unpublished).
+% Filimonov-group references below verified via Crossref (DOIs included); MF03 from info/ PDF.
+\bibitem{MF03} A.~D.~Myshkis, A.~M.~Filimonov, \emph{About the string with beads}, Mat.\ Fiz.\ Anal.\ Geom.\ \textbf{10} (2003), no.~3, 301--306. (Segment $\ln$-asymptotics.)
+\bibitem{KMF} P.~F.~Kurchanov, A.~D.~Myshkis, A.~M.~Filimonov, \emph{Vibrations of rolling stock and a theorem of Kronecker}, J.~Appl.\ Math.\ Mech.\ \textbf{55} (1991), no.~6, 870--876 (Russian original: Prikl.\ Mat.\ Mekh.\ \textbf{55}(6), 989--995). \texttt{doi:10.1016/0021-8928(91)90140-P}.
+\bibitem{FMM} A.~M.~Filimonov, X.~Mao, S.~Maslov, \emph{Splash effect and ergodic properties of solutions of the classical difference--differential equation}, J.~Difference Equ.\ Appl.\ \textbf{6} (2000), no.~3, 319--328. \texttt{doi:10.1080/10236190008808231}.
+\bibitem{FM} A.~M.~Filimonov, A.~D.~Myshkis, \emph{On properties of the large wave effect in the classical problem of bead string vibration}, J.~Difference Equ.\ Appl.\ \textbf{10} (2004), no.~13--15, 1171--1175. \texttt{doi:10.1080/10236190410001652757}.
+\bibitem{F23} A.~M.~Filimonov, \emph{Sufficient conditions for the large wave phenomenon in the Schr\"odinger equation with discrete spatial variable}, J.~Math.\ Sci.\ \textbf{269} (2023), no.~6, 792--795. \texttt{doi:10.1007/s10958-023-06316-1}.
+\bibitem{Zhukovsky} N.~E.~Zhukovsky, \emph{Collected Works} (the railway train start-up problem), vol.~VIII, 1937 (classical; not DOI-indexed).
+
+\bibitem{Zakharov} V.~E.~Zakharov, \emph{Stability of periodic waves of finite amplitude on the surface of a deep fluid}, J.~Appl.\ Mech.\ Tech.\ Phys.\ \textbf{9} (1968), 190--194. \texttt{doi:10.1007/BF00913182}.
+\bibitem{ZakharovShabat} V.~E.~Zakharov, A.~B.~Shabat, \emph{Exact theory of two-dimensional self-focusing and one-dimensional self-modulation of waves in nonlinear media}, Zh.\ Eksp.\ Teor.\ Fiz.\ \textbf{61} (1971), 118--134 [Sov.\ Phys.\ JETP \textbf{34} (1972), 62--69].
+\bibitem{ZakharovFaddeev} V.~E.~Zakharov, L.~D.~Faddeev, \emph{Korteweg--de Vries equation: a completely integrable Hamiltonian system}, Funct.\ Anal.\ Appl.\ \textbf{5} (1971), 280--287. \texttt{doi:10.1007/BF01086739}.
+\bibitem{ZakharovOstrovsky} V.~E.~Zakharov, L.~A.~Ostrovsky, \emph{Modulation instability: the beginning}, Phys.\ D \textbf{238} (2009), 540--548. \texttt{doi:10.1016/j.physd.2008.12.002}.
+\bibitem{ZakharovKuznetsov} V.~E.~Zakharov, E.~A.~Kuznetsov, \emph{On three-dimensional solitons}, Zh.\ Eksp.\ Teor.\ Fiz.\ \textbf{66} (1974), 594--597 [Sov.\ Phys.\ JETP \textbf{39} (1974), 285--286].
+\bibitem{ZakharovLvovFalkovich} V.~E.~Zakharov, V.~S.~L'vov, G.~Falkovich, \emph{Kolmogorov Spectra of Turbulence~I: Wave Turbulence}, Springer, 1992.
+\bibitem{DengHani} Y.~Deng, Z.~Hani, \emph{Full derivation of the wave kinetic equation}, Invent.\ Math.\ \textbf{233} (2023), 543--724. \texttt{doi:10.1007/s00222-023-01189-2}.
+\bibitem{BerryUpstill} M.~V.~Berry, C.~Upstill, \emph{Catastrophe optics: morphologies of caustics and their diffraction patterns}, Prog.\ Opt.\ \textbf{18} (1980), 257--346. \texttt{doi:10.1016/S0079-6638(08)70215-4}.
+\bibitem{WhiteFornberg} B.~S.~White, B.~Fornberg, \emph{On the chance of freak waves at sea}, J.~Fluid Mech.\ \textbf{355} (1998), 113--138. \texttt{doi:10.1017/S0022112097007751}.
+\bibitem{Lavrenov} I.~V.~Lavrenov, \emph{The wave energy concentration at the Agulhas current off South Africa}, Nat.\ Hazards \textbf{17} (1998), 117--127. \texttt{doi:10.1023/A:1007978326982}.
+\bibitem{YingHeller} L.~H.~Ying, Z.~Zhuang, E.~J.~Heller, L.~Kaplan, \emph{Linear and nonlinear rogue wave statistics in the presence of random currents}, Nonlinearity \textbf{24} (2011), R67--R87. \texttt{doi:10.1088/0951-7715/24/11/R01}.
+\bibitem{ZakharovShamin} V.~E.~Zakharov, R.~V.~Shamin, \emph{Probability of the occurrence of freak waves}, JETP Lett.\ \textbf{91} (2010), 62--65. \texttt{doi:10.1134/S0021364010020025}.
+\bibitem{Slunyaev} A.~V.~Slunyaev, D.~E.~Pelinovsky, E.~N.~Pelinovsky, \emph{Rogue waves in the sea: observations, physics, and mathematics}, Phys.\ Usp.\ \textbf{66} (2023), 148--172. \texttt{doi:10.3367/UFNe.2021.08.039038}.
+\bibitem{NPW} L.~Niemeyer, L.~Pietronero, H.~J.~Wiesmann, \emph{Fractal dimension of dielectric breakdown}, Phys.\ Rev.\ Lett.\ \textbf{52} (1984), 1033--1036. \texttt{doi:10.1103/PhysRevLett.52.1033}.
+\bibitem{BenjaminFeir} T.~B.~Benjamin, J.~E.~Feir, \emph{The disintegration of wave trains on deep water. Part 1. Theory}, J.~Fluid Mech.\ \textbf{27} (1967), 417--430. \texttt{doi:10.1017/S002211206700045X}.
+\bibitem{Peregrine} D.~H.~Peregrine, \emph{Water waves, nonlinear Schr\"odinger equations and their solutions}, J.~Austral.\ Math.\ Soc.\ Ser.~B \textbf{25} (1983), 16--43. \texttt{doi:10.1017/S0334270000003891}.
+\bibitem{Akhmediev} N.~N.~Akhmediev, V.~I.~Korneev, \emph{Modulation instability and periodic solutions of the nonlinear Schr\"odinger equation}, Theoret.\ Math.\ Phys.\ \textbf{69} (1986), 1089--1093. \texttt{doi:10.1007/BF01037866}.
+\bibitem{KharifPelinovsky} C.~Kharif, E.~Pelinovsky, \emph{Physical mechanisms of the rogue wave phenomenon}, Eur.\ J.\ Mech.\ B/Fluids \textbf{22} (2003), 603--634. \texttt{doi:10.1016/j.euromechflu.2003.09.002}.
+\bibitem{Solli} D.~R.~Solli, C.~Ropers, P.~Koonath, B.~Jalali, \emph{Optical rogue waves}, Nature \textbf{450} (2007), 1054--1057. \texttt{doi:10.1038/nature06402}.
+\bibitem{Onorato} M.~Onorato, S.~Residori, U.~Bortolozzo, A.~Montina, F.~T.~Arecchi, \emph{Rogue waves and their generating mechanisms in different physical contexts}, Phys.\ Rep.\ \textbf{528} (2013), 47--89. \texttt{doi:10.1016/j.physrep.2013.03.001}.
+\end{thebibliography}
+
+\end{document}

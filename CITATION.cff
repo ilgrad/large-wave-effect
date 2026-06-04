@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "Large-wave amplification on periodic discrete lattices: linear theory and a nonlinear extension"
+authors:
+  - family-names: Gradina
+    given-names: Ilia
+type: software
+license: Apache-2.0
+keywords:
+  - "large-wave effect"
+  - "discrete Laplacian"
+  - "Toeplitz matrices"
+  - "circulant matrices"
+  - "almost-periodic functions"
+  - "cyclotomic fields"
+  - "rogue waves"
+  - "discrete nonlinear Schrödinger"
+# On first GitHub release, add:  version, date-released, repository-code, and the Zenodo doi.

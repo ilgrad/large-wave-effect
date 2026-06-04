@@ -1,0 +1,26 @@
+[project]
+name = "large-wave-effect"
+version = "0.1.0"
+description = "Large-wave amplification on the periodic discrete chain: core routines and tests."
+requires-python = ">=3.11"
+dependencies = ["numpy>=2"]
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# numerics/ are standalone reproducibility scripts with explanatory prose docstrings;
+# the library (src/) and tests/ stay strict on line length.
+"numerics/**" = ["E501"]

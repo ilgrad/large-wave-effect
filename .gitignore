@@ -216,3 +216,19 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- LaTeX build artifacts (keep *.pdf: figures and the compiled paper are committed) ---
+paper*/*.aux
+paper*/*.log
+paper*/*.out
+paper*/*.toc
+paper*/*.fls
+paper*/*.fdb_latexmk
+paper*/*.synctex.gz
+paper*/*.bbl
+paper*/*.blg
+
+# project-local scratch (not part of the academic artifact)
+/info/
+/thesis/
+/docs/scratch/
