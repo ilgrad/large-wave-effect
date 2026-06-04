@@ -4,10 +4,10 @@ Rigorous study of the **large-wave effect** on periodic discrete chains: a local
 homogeneous one-dimensional *lattice* amplifies into a peak that grows with the number of nodes — a
 genuinely discrete resonance with no continuum counterpart.
 
-One paper (`paper/`), in two parts built on a shared spectral core (the ring Laplacian `L_N`,
+One paper (`paper/`), in two parts built on a shared spectral core (the ring Laplacian $L_N$,
 Toeplitz/circulant methods):
 
-- **Part I — Linear theory** (rigorous core). Amplitude `A_N = sup_t max_j |u_j(t)|` of the velocity
+- **Part I — Linear theory** (rigorous core). Amplitude $A_N = \sup_t \max_j |u_j(t)|$ of the velocity
   Green's function on the ring; cyclotomic independence, the mod-4 ceiling criterion, the discrete
   Schrödinger contrast, spectral zeta, operator norms, statistics, and the dimensional threshold.
 - **Part II — Nonlinear extension**. The discrete NLS (Peregrine soliton, modulational instability,
@@ -22,35 +22,39 @@ Proved results are kept strictly separate from numerical evidence and the one op
 
 **Linear theory (Part I).**
 
-- **T1 — exact amplitude (saturating `N`).** `A_N = U_N = (1/π)ln N + (1/π)(γ + ln(2/π)) − π/(72N²) + …`,
-  proved unconditionally for `N` prime, `N = 2^m`, and the composite family `N = 2p`
-  (cyclotomic independence + Bohr almost-periodicity).
-- **T2 — subtorus dimension (all `N`, theorem).** The orbit-closure subtorus has dimension exactly
-  `φ(2N)/2` — a closed form valid for *every* `N`.
-- **T3 — ceiling criterion (theorem).** `A_N = U_N` **iff** every integer frequency relation has
-  coefficient-sum `≡ 0 (mod 4)`. On `N ≤ 160` the saturating set is exactly {primes} ∪ {2^m} (density
-  zero); whether any composite `N` ever saturates is decided, per `N`, by the criterion.
+- **T1 — exact amplitude (saturating $N$).**
+  $A_N = U_N = \tfrac1\pi\ln N + \tfrac1\pi\bigl(\gamma + \ln\tfrac2\pi\bigr) - \tfrac{\pi}{72N^2} + \cdots$,
+  proved for $N$ prime and $N = 2^m$, with the same sharp constant $\tfrac1\pi$ on the composite family
+  $N = 2p$ (cyclotomic independence + Bohr almost-periodicity).
+- **T2 — subtorus dimension (theorem).** The orbit-closure subtorus has dimension exactly
+  $\tfrac12\varphi(2N)$ for *every* $N$.
+- **T3 — ceiling criterion (theorem).** $A_N = U_N$ **iff** every integer frequency relation has
+  coefficient-sum $\equiv 0 \pmod 4$. On $N \le 160$ the saturating set is exactly
+  $\{\text{primes}\}\cup\{2^m\}$ (density zero); whether any composite $N$ ever saturates is decided,
+  per $N$, by the criterion.
 - **T4 — discrete Schrödinger (two settings).** A localized state is never amplified (unitarity), yet the
-  `ℓ∞ → ℓ∞` amplification is `B_N = Θ(√N)` — **both bounds rigorous** (upper from unitarity, lower from a
-  Bessel-front estimate at `t = N/8`). On the **Dirichlet segment** (uniform initial state) the amplitude
-  at site `j` grows as `d_j^N ~ (4/π²) ln j` for `N` prime or `2^m` (Filimonov 2023, reproduced — we
-  identify the constant `C = 4/π²`). Three distinct large-wave laws thus live on one Laplacian:
-  `A_N ~ (1/π)ln N` (ring, system size), `B_N ~ √N` (ring, ℓ∞ norm), `d_j^N ~ (4/π²)ln j` (segment, site).
-- **T5 — dimensionality & reachability.** The large wave lives exactly at spectral dimension `d_s = 1`
-  (incl. quasi-1D ladders/tubes; `O(1)` for `d_s ≥ 2`). It is an *infinite-time* ceiling: the
-  finite-time amplitude is Diophantine-limited (recurrence time grows exponentially in `N`), and mass
+  $\ell^\infty\!\to\!\ell^\infty$ amplification is $B_N = \Theta(\sqrt N)$ — **both bounds rigorous**
+  (upper from unitarity, lower from a Bessel-front estimate at $t = N/8$). On the **Dirichlet segment**
+  (uniform initial state) the amplitude at site $j$ grows as $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ for $N$
+  prime or $2^m$ (Filimonov 2023, reproduced — we identify the constant $C = 4/\pi^2$). Three large-wave
+  laws thus live on one Laplacian: $A_N \sim \tfrac1\pi\ln N$ (ring, system size),
+  $B_N \sim \sqrt N$ (ring, $\ell^\infty$ norm), $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ (segment, site).
+- **T5 — dimensionality & reachability.** The large wave lives exactly at spectral dimension $d_s = 1$
+  (incl. quasi-1D ladders/tubes; $O(1)$ for $d_s \ge 2$). It is an *infinite-time* ceiling: the
+  finite-time amplitude is Diophantine-limited (recurrence time grows exponentially in $N$), and mass
   disorder trades the arithmetic obstruction for an exploding recurrence time.
-- **Open conjecture.** `A_N = Θ(ln N)` for *all* `N` (the sharp constant `1/π` is proved only on the
-  classes above). Numerically `A_N/ln N ∈ [0.28, 0.34]` (including the hardest `N = pq`, `p,q ~ √N`), and
-  the alignable independent low-mode prefix carries a budget `~ 0.26 ln N` — strong evidence, but **not** a
-  proof: the out-of-prefix modes may interfere (the open step). The Dirichlet segment is full-rank
-  (`A_N = U_N`) iff `N+1` is prime or `2^m`.
+- **Open conjecture.** $A_N = \Theta(\ln N)$ for *all* $N$ (the sharp constant $\tfrac1\pi$ is proved only
+  on the classes above). Numerically $A_N/\ln N \in [0.28, 0.34]$ (including the hardest $N = pq$,
+  $p,q \sim \sqrt N$), and the alignable independent low-mode prefix carries a budget $\sim 0.26\ln N$ —
+  strong evidence, but **not** a proof: the out-of-prefix modes may interfere. The Dirichlet segment is
+  full-rank ($A_N = U_N$) iff $N+1$ is prime or $2^m$.
 
-**Nonlinear extension (Part II).** The same `L_N` is the linear part of the focusing DNLS and the FPUT
-lattice. Peregrine factor 3, Benjamin–Feir modulational instability, heavy-tailed (leptokurtic)
-statistics; self-trapping into discrete breathers above the band top (`γ ≈ 4`); FPUT recurrence and a
-Lyapunov transition to chaos; and a third, refractive route — Airy-fold and cusp (Pearcey) caustics,
-branched flow in random currents, and lightning as Laplacian growth — all on the same `L_N`. Part II is
+**Nonlinear extension (Part II).** The same $L_N$ is the linear part of the focusing DNLS and the FPUT
+lattice. Peregrine factor $3$, Benjamin–Feir modulational instability, heavy-tailed (leptokurtic)
+statistics; self-trapping into discrete breathers above the band top ($\gamma \approx 4$); FPUT
+recurrence and a Lyapunov transition to chaos; and a third, refractive route — Airy-fold and cusp
+(Pearcey) caustics, branched flow in random currents, and lightning as Laplacian growth — all on the
+same $L_N$. Part II is
 primarily computational/exploratory; its rigorous statements (Hamiltonian conservation laws, the
 modulational-instability band) are flagged as classical, while the hard nonlinear results (breather
 existence/stability, the precise self-trapping threshold, the route to chaos) are simulated, not proved.
