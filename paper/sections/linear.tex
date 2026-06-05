@@ -273,7 +273,7 @@ of one row of $G_N$, and Parseval gives
   \ \le\ \frac1N\sum_{r}\omega_r^{-2}=\frac{\zeta_{\LN}(1)}N,
 \]
 hence $\sup_t\|S_N(t)\|_{2\to\infty}\le\sqrt{\zeta_{\LN}(1)/N}\sim\sqrt{N/12}$, with equality iff all
-$\sin^2(t\omega_r)=1$ simultaneously---rational independence ($N$ prime, $2^m$, $2p$). Finally
+$\sin^2(t\omega_r)=1$ simultaneously---rational independence ($N$ prime, $2^m$). Finally
 $\|S_N(t)\|_{1\to\infty}=\max_{j,k}|S_N(t)_{jk}|=\max_m|G_N(m,t)|$, whose time-supremum is, by definition,
 $A_N\le\sum_r|a_r|=U_N$. The three corners thus read the spectral sums $\sum_r\omega_r^{-p}$ ($p=1,2$)
 through different lenses; the $\ell^1\!\to\!\ell^\infty$ corner---weakest input, strongest output---is
@@ -301,9 +301,10 @@ $\ell^1\!\to\!\ell^\infty$ & $A_N\le U_N=\zeta_{\LN}(1/2)/N$ & $\tfrac1\pi\ln N$
 \bottomrule
 \end{tabular}
 \caption{Three growth laws from one propagator. The $\ell^2\!\to\!\ell^2$ supremum is exact and
-unconditional; the other two equal the listed ceilings on the $\Q$-independent classes ($N$ prime,
-$2^m$, $2p$) and are bounded by them in general. The large wave is the $\ell^1\!\to\!\ell^\infty$
-corner.}\label{tab:opnorm}
+unconditional; the other two equal the listed ceilings on the $\Q$-independent classes $N$ prime and
+$N=2^m$ (for $N=2p$, Proposition~\ref{prop:2p} gives only an $O(N^{-1})$ gap for the
+$\ell^1\!\to\!\ell^\infty$ large wave) and are bounded by them in general. The large wave is the
+$\ell^1\!\to\!\ell^\infty$ corner.}\label{tab:opnorm}
 \end{table}
 
 \section{Independence theorems and unconditional growth}\label{sec:prime}
@@ -349,7 +350,7 @@ and by Kronecker both sines reach $1$ at a common near-alignment time, so
 \[
   A_5=U_5=\tfrac15\bigl(\csc36^\circ+\csc72^\circ\bigr)=0.5506,
 \]
-the ceiling attained with no gap (in contrast to the composite $N=12$ below;
+the supremum equal to the ceiling, approached arbitrarily closely (in contrast to the composite $N=12$ below;
 \texttt{verify\_exact\_AN.py}).
 
 \begin{observation}[low-mode prefix]\label{obs:prefix}
@@ -382,7 +383,7 @@ and the same minus-eigenspace argument gives the subtorus dimension
   \qquad(\text{verified for }N\le30,\ \text{conjectured in general}),
 \end{equation}
 which is full ($=N$, whence $A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}\sim\frac1\pi\ln N$ by Bohr)
-\emph{iff $N+1$ is prime or a power of two}---the exact analogue of Theorems~\ref{thm:prime}--\ref{thm:two}
+when $N+1$ is prime or a power of two (and, assuming \eqref{eq:segrank}, only then)---the exact analogue of Theorems~\ref{thm:prime}--\ref{thm:two}
 shifted by the boundary (the ring uses modulus $2N$, the segment $4(N+1)$). The $\Q$-independent low-mode
 prefix again supports $A_N^{\mathrm{Dir}}=\Theta(\ln N)$ for every $N$ numerically, subject to the same
 out-of-prefix gap as Conjecture~\ref{conj:order} (\texttt{verify\_segment\_lower\_bound.py}).
@@ -395,8 +396,9 @@ $2\mathrm{i}\sin(\pi r/N)$ in $\Q(\zeta_{2N})$) the attainable phases are $\{\va
 \begin{equation}\label{eq:subtorus}
   \sup_t u_j(t)=\max_{\psi\in\R^p}\sum_r a_{rj}\sin\big((C\psi)_r\big),\qquad p=\varphi(2N),
 \end{equation}
-a finite-dimensional trigonometric maximization solved exactly (\texttt{verify\_exact\_AN.py},
-validated on primes where it returns $A_N=U_N$). This makes the composite case computable for each $N$:
+a finite-dimensional trigonometric maximization, reduced exactly and then evaluated numerically
+(\texttt{verify\_exact\_AN.py}, returning $A_N=U_N$ on primes; a certified global bracket is given for
+$N=6$ below). This makes the composite case computable for each $N$:
 numerically the subtorus defect on the ring is $A_N/U_N\in[0.84,0.92]$ in the tested range, so
 $A_N/\ln N\in[0.28,0.31]$, consistent with Conjecture~\ref{conj:order} ($A_N=\Theta(\ln N)$).
 
@@ -483,8 +485,9 @@ and $\omega_4+\omega_5=\omega_1+2\omega_2+\omega_3$ ($N=15$) all have coefficien
 \begin{table}[ht]\centering
 \caption{Relation lattices $\Lambda_N$ of the distinct frequencies $\omega_r$ and the mod-4 criterion.
 Primes and powers of two have $\Lambda_N=\{0\}$ and saturate; every composite $N$ listed carries a
-relation with coefficient-sum $\not\equiv0\ (\mathrm{mod}\ 4)$, hence $A_N<U_N$
-(\texttt{verify\_relation\_lattices.py}).}\label{tab:lattices}
+relation with coefficient-sum $\not\equiv0\ (\mathrm{mod}\ 4)$, hence $A_N<U_N$; for even $N$ the
+antipodal sums $\sum_r k_r+2\sum_r rk_r$ are violated likewise (\texttt{verify\_ceiling\_criterion.py},
+check~E).}\label{tab:lattices}
 \begin{tabular}{rlccl c}
 \toprule
 $N$ & class & \#freq & $\operatorname{rank}\Lambda_N$ & coeff-sums $\bmod\,4$ & $A_N=U_N$?\\
@@ -505,7 +508,7 @@ $24$ & composite & $12$ & $4$ & $3,3,3,3$ & no\\
 \end{tabular}
 \end{table}
 
-\begin{corollary}[the saturating set is thin]\label{cor:density}
+\begin{corollary}[saturating families and a finite scan]\label{cor:density}
 The two proven saturating families, the primes and the powers of two, both have natural density zero.
 An exhaustive criterion scan finds no further saturating $N\le160$, so on this range
 $\{N:A_N=U_N\}=\{N\text{ prime}\}\cup\{2^m\}$. Whether any composite $N$ saturates at all---and hence
@@ -529,8 +532,12 @@ holds, extending Theorems~\ref{thm:prime}--\ref{thm:two} to an infinite family o
 The prefix $\{\omega_1,\dots,\omega_{p-1}\}=\{2\sin(\pi r/2p):1\le r\le p-1\}$ is $\Q$-independent: in
 $\Q(\zeta_{4p})$, where $\Phi_{4p}(x)=\Phi_p(-x^2)$ has degree $\varphi(4p)=2(p-1)$, the values
 $2\mathrm i\sin(\pi r/2p)=\zeta_{4p}^{\,r}-\zeta_{4p}^{-r}$ ($1\le r\le p-1$) are linearly independent over
-$\Q$ (the prime analogue of Theorem~\ref{thm:prime}; exact integer rank $=p-1$,
-\texttt{verify\_2p\_family.py}), so the sole $\Q$-dependent frequency is the rational $\omega_p=2$, of
+$\Q$. Indeed, if $\sum_{r=1}^{p-1}c_r(\zeta_{4p}^{\,r}-\zeta_{4p}^{-r})=0$ with $c_r\in\Q$, multiplying by
+$\zeta_{4p}^{\,p-1}$ gives $Q(\zeta_{4p})=0$, where $Q(x)=\sum_{r=1}^{p-1}c_r(x^{p-1+r}-x^{p-1-r})$ has
+degree $\le2p-2=\deg\Phi_{4p}$; as $\Phi_{4p}$ is the minimal polynomial of $\zeta_{4p}$, this forces
+$Q=C\,\Phi_{4p}$, but $Q(1)=0$ while $\Phi_{4p}(1)=\Phi_p(-1)=1$, so $C=0$ and $Q\equiv0$, and since the
+exponent sets $\{p-1+r\}_r$ and $\{p-1-r\}_r$ are disjoint, every $c_r=0$ (exact integer rank $=p-1$,
+\texttt{verify\_2p\_family.py}). Thus the sole $\Q$-dependent frequency is the rational $\omega_p=2$, of
 weight $\tfrac1{2N}$. With the degeneracy
 $\omega_r=\omega_{N-r}$ the node-$0$ response is
 $u_0(t)=\tfrac2N\sum_{r=1}^{p-1}\omega_r^{-1}\sin(\omega_r t)+\tfrac1{2N}\sin 2t$. By Kronecker the
@@ -661,7 +668,9 @@ alignment to tolerance $\delta$ \emph{exists} by time $\sim\delta^{-m}$---a crud
 \[
   T_\varepsilon(N)=\inf\{T:A_N(T)\ge(1-\varepsilon)U_N\}.
 \]
-A matching \emph{lower} bound (that one must wait at least exponentially long) does \emph{not} follow
+(This targets $U_N$, so $T_\varepsilon(N)$ is finite only on the saturating classes $N$ prime and $2^m$;
+for non-saturating $N$, where $A_N<U_N$, one replaces $U_N$ by $A_N$.) A matching \emph{lower} bound
+(that one must wait at least exponentially long) does \emph{not} follow
 from Dirichlet, which bounds the wait from above; it would require Diophantine lower bounds on the
 badly-approximable phase vector, and is left open. Numerically the wait does grow exponentially: for
 primes $\log T_{0.2}(N)$ grows by $\approx0.63$ per unit $N$
@@ -675,8 +684,10 @@ fraction of $U_N$ reachable \emph{quickly}.
 \subsection{Disorder}
 Unequal masses $m_j=1+\varepsilon\xi_j$ turn the chain into the generalized problem $\LN v=\omega^2 Mv$,
 $M=\operatorname{diag}(m_j)$, with node-$0$ response $x_0(t)=\sum_r c_r\sin(\omega_r t)$,
-$c_r=v_r(0)^2/\omega_r>0$ and incoherent ceiling $C=\sum_r c_r$. Generic masses destroy every rational
-relation almost surely, so the obstruction of Theorem~\ref{thm:ceiling} disappears and \emph{every} $N$
+$c_r=v_r(0)^2/\omega_r>0$ ($M$-orthonormal modes $v_r^\top M v_s=\delta_{rs}$, unit velocity impulse) and
+incoherent ceiling $C=\sum_r c_r$. Generic masses destroy every rational relation almost surely (each
+relation is a nontrivial real-analytic condition on the masses, and a countable union of such conditions
+still has measure zero), so the obstruction of Theorem~\ref{thm:ceiling} disappears and \emph{every} $N$
 can in principle reach its ceiling. We verify (\texttt{verify\_disorder.py}) that the exact resonance
 residual of a composite $N$ jumps from $0$ to $O(\varepsilon)$ under disorder, and that over a long
 horizon the achievable efficiency $A/C$ rises above the blocked ordered value (e.g.\ $N=15$:
@@ -688,8 +699,8 @@ finite-time amplification does not.
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.92\textwidth]{fig_reachability.pdf}
-\caption{Reachability of the ceiling. Left: the recurrence time $T_{0.2}(N)$ to reach $0.8\,U_N$ grows
-exponentially in $N$ (primes, log scale). Right: at a fixed horizon $T$ the finite-time efficiency
+\caption{Reachability of the ceiling. Left: the recurrence time $T_{0.2}(N)$ to reach $0.8\,U_N$ appears to grow
+exponentially over the tested prime range (log scale). Right: at a fixed horizon $T$ the finite-time efficiency
 $A_N(T)/U_N$ \emph{decreases} with $N$---more frequencies are harder to align in bounded time. The
 logarithmic law is an infinite-time ceiling.}\label{fig:reach}
 \end{figure}
@@ -719,8 +730,9 @@ and $\rank_\Q\{\lambda_r\}$ is strictly smaller than $\rank_\Q\{\omega_r\}$ for 
 
 \begin{theorem}[Schr\"odinger lower bound]\label{thm:schr-lower}
 $B_N\ge c\sqrt N$ with an absolute constant $c>0$; in fact $\liminf_N B_N/\sqrt N\ge\tfrac12 c_0$ with
-$c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$, i.e.\ $\liminf_N B_N/\sqrt N\ge0.6086$, and one may take $c=0.60$
-for all $N$. With Theorem~\ref{thm:schr}(2), $B_N=\Theta(\sqrt N)$.
+$c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$, i.e.\ $\liminf_N B_N/\sqrt N\ge0.6086$, so for every $c<0.6086$ one has $B_N\ge c\sqrt N$ for all large
+$N$ (a finite check of the small cases then gives an absolute $c>0$). With Theorem~\ref{thm:schr}(2),
+$B_N=\Theta(\sqrt N)$.
 \end{theorem}
 
 \begin{proof}
@@ -733,7 +745,8 @@ $\sum_{j}|K_N(j,N/8)|=(1+o(1))\sum_{n\in\Z}|J_n(N/4)|$. The classical $\ell^1$ B
 $\sum_{n}|J_n(x)|\sim c_0\sqrt x$, $c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)\approx1.217$ (the envelope
 $|J_n(x)|\approx\sqrt{2/(\pi\sqrt{x^2-n^2})}$ integrated against $\langle|\cos|\rangle=2/\pi$), give
 $\sum_n|J_n(N/4)|\sim c_0\sqrt{N/4}=\tfrac12 c_0\sqrt N$ with $\tfrac12 c_0\approx0.6086$. Therefore
-$\liminf_N B_N/\sqrt N\ge\lim_N\sum_j|K_N(j,N/8)|/\sqrt N=\tfrac12 c_0$, so $B_N\ge0.60\sqrt N$ for all $N$
+$\liminf_N B_N/\sqrt N\ge\lim_N\sum_j|K_N(j,N/8)|/\sqrt N=\tfrac12 c_0$, so for every $c<\tfrac12 c_0$ one
+has $B_N\ge c\sqrt N$ for all large $N$, and a finite scan of the small cases supplies an absolute $c>0$
 (the finite-$N$ values decrease to $\tfrac12 c_0$ from above, Table~\ref{tab:bn}); the upper bound is
 Theorem~\ref{thm:schr}(2).
 \end{proof}
@@ -746,9 +759,9 @@ $\tfrac12 c_0\approx0.6086$, and the $c_0\sqrt x$ Bessel asymptotics---is reprod
 mapped in Table~\ref{tab:bn}.
 
 \begin{table}[ht]\centering
-\caption{The constant in $B_N=\Theta(\sqrt N)$. A refined $t$-scan (uniform grid $+$ Talbot times
-$t=\pi a/N$) gives $B_N/\sqrt N$; the proven Bessel point $t=N/8$ gives the lower row. The empirical
-$\sup_N B_N/\sqrt N\approx0.96$ lies inside the rigorous band $[\tfrac12 c_0,1]\approx[0.6086,1]$, and the
+\caption{The constant in $B_N=\Theta(\sqrt N)$. A refined $t$-scan (uniform grid $+$ structured candidate times
+$t=\pi a/N$) gives $B_N/\sqrt N$; the proven Bessel point $t=N/8$ gives the lower row. The largest value in the
+finite scan, $\approx0.96$, lies inside the rigorous band $[\tfrac12 c_0,1]\approx[0.6086,1]$, and the
 exact limit is open
 (\texttt{verify\_bn\_constant.py}).}\label{tab:bn}
 \begin{tabular}{lcccccc}
@@ -786,13 +799,15 @@ $n\approx2t$ (dotted) whose height decays as $(2t)^{-1/3}$. On the ring this ker
 \end{figure}
 
 \subsection{Arithmetic dynamics: revivals and Gauss sums}
-The recurrence structure of $\eu^{-\mathrm i t\LN}$ is arithmetic. Since $2\cos(2\pi r/N)$ is rational
-only for $N\in\{1,2,3,4,6\}$ (Niven's theorem~\cite{Niven}), the tight-binding spectrum is generically
+The recurrence structure of $\eu^{-\mathrm i t\LN}$ is arithmetic. Since $2\cos(2\pi/N)$ is rational
+only for $N\in\{1,2,3,4,6\}$ (Niven's theorem~\cite{Niven}; for general $r$, $2\cos(2\pi r/N)$ is
+rational only when $r/N$ reduces to such a denominator), the tight-binding spectrum is generically
 incommensurate: $\eu^{-\mathrm i t\LN}$ has \emph{no finite revival period}, and the return amplitude
 $|K_N(0,t)|$ is almost-periodic, approaching $1$ along a wandering sequence of near-revival times
 (\texttt{verify\_revivals\_gauss.py}). In the long-wave limit $\lambda_r\approx(2\pi r/N)^2$ the model
 approaches the \emph{quadratic} dispersion of a free particle, where the dynamics becomes exactly
-arithmetic: at the Talbot times $t=2\pi s/q$ the propagator kernel is a quadratic Gauss sum, and for
+arithmetic: at the Talbot times $t=2\pi s/q$ (in the rescaled time $\tau=(2\pi/N)^2 t$ of this quadratic
+limit) the propagator kernel is a quadratic Gauss sum, and for
 odd $q$ with $\gcd(a,q)=1$,
 \[
   \Bigl|\sum_{n=0}^{q-1}\eu^{2\pi\mathrm i a n^2/q}\Bigr|=\sqrt q,
@@ -858,9 +873,12 @@ on two facts: the sign-pairing $\omega_{N-k}=-\omega_k$ together with the elemen
 $\max(|x+y|,|x-y|)=|x|+|y|$ lets each pair reach $|a_k|+|a_{N-k}|$, and the distinct $|\omega_k|$ must be
 $\Q$-independent so that all pairs align simultaneously (Kronecker). This independence---the cosine
 analogue of Theorems~\ref{thm:prime}--\ref{thm:two}, via $2\cos(\pi k/N)=\zeta_{2N}^k+\zeta_{2N}^{-k}$ in
-the \emph{plus}-eigenspace---has full rank $\lfloor(N-1)/2\rfloor$ exactly for $N$ prime or $N=2^m$, and
-fails for composite $N$ (\texttt{verify\_filimonov\_schrodinger.py}). So Filimonov's sufficient condition
-$N=2^m$ in fact extends to prime $N$, while a composite $N$ leaves a gap $\sup_t|z_j|<d_j^N$.
+the \emph{plus}-eigenspace---has full rank $\lfloor(N-1)/2\rfloor$ exactly for $N$ prime or $N=2^m$
+(\texttt{verify\_filimonov\_schrodinger.py}), which \emph{suffices} for $\sup_t|z_j|=d_j^N$ at every site
+$j$; so Filimonov's $N=2^m$ extends to prime $N$. Full rank is not \emph{necessary}, however: composite
+$N$ can still saturate at individual sites---numerically $\sup_t|z_j|=d_j^N$ already at $j=1$ for
+$N=6,9,10,12$, the alignment there needing only the active frequencies and the sign-pairing---so a
+complete classification of composite saturation is open.
 
 \emph{Three laws on one Laplacian.} The discrete Laplacian thus carries several distinct large-wave
 asymptotics, one per dynamics and functional (Table~\ref{tab:laws}): $A_N\sim\tfrac1\pi\ln N$ (ring,
@@ -878,7 +896,7 @@ quantity & dynamics / functional & leading asymptotic & sharp class\\
 $U_N$ & ring, velocity ceiling & $\tfrac1\pi\ln N+\tfrac1\pi(\gamma+\ln\tfrac2\pi)$ & all $N$\\
 $A_N$ & ring, $\sup_t\max_j|G_N(j,\cdot)|$ & $\tfrac1\pi\ln N$ & prime, $2^m$, $2p$\\
 $B_N$ & ring, $\ell^\infty\!\to\!\ell^\infty$ Schr\"odinger & $\Theta(\sqrt N)$, const $\in[0.6086,1]$ & all $N$\\
-$d_j^N$ & segment, $\sup_t|z_j(\cdot)|$ Schr\"odinger & $\tfrac4{\pi^2}\ln j$ & prime, $2^m$\\
+$d_j^N$ & segment, $\sup_t|z_j(\cdot)|$ Schr\"odinger & $\tfrac4{\pi^2}\ln j$ & prime, $2^m$ (suff.)\\
 $U_N^{(d)}$ & $d$-torus, velocity ceiling & $\tfrac1\pi\ln N$ ($d{=}1$), $\ O(1)$ ($d{\ge}2$) & $d_s=1$\\
 \bottomrule
 \end{tabular}
@@ -922,13 +940,14 @@ is, by Bohr's theorem (for $N=2^m$), $\sup_t\max_j u_j(t)=\bar\alpha+\max_j\sum_
 all $N$, where $\bar\alpha=(N-1)/N$ and $A_{r,j}$ are the modal amplitudes. Earlier numerical work
 reported peaks $1.617\to1.397$ for $N=32,\dots,1024$; these are finite-time scan values, and their
 \emph{decrease} with $N$ is the expected worsening of the scan undershoot for an almost-periodic
-supremum (the true maximum is attained only at near-recurrence times). The present analysis thus
+supremum (the true maximum is only approached, at near-recurrence times). The present analysis thus
 reproduces the effect and corrects the value to $\approx2$ (\texttt{verify\_thesis\_peaks.py}).
 
 \section{Numerical experiments}\label{sec:experiments}
 
 Table~\ref{tab:experiments} reports both dynamics over the three families $N=2^m$, prime, composite.
-The wave $A_N$ is the exact orbit-closure value of Section~\ref{sec:exact}; it equals the ceiling
+The wave $A_N$ is the orbit-closure value of Section~\ref{sec:exact} (exact reduction, evaluated
+numerically); it equals the ceiling
 $U_N$ for prime and $2^m$ (Theorems~\ref{thm:prime},~\ref{thm:two}) and sits modestly below for
 composite $N$. The Schr\"odinger $B_N/\sqrt N$ stays $O(1)$ across all families. Figures~\ref{fig:ring}
 and~\ref{fig:schr} display the two growth laws---$\ln N$ for the wave, $\sqrt N$ for Schr\"odinger.
@@ -1034,7 +1053,8 @@ This is the change of variables: $\tfrac{d\lambda}{dx}=4\pi\sin2\pi x=2\pi\sqrt{
 $\sin2\pi x=\tfrac12\sqrt{\lambda(4-\lambda)}$), and each $\lambda\in(0,4)$ has \emph{two} preimages in
 $[0,1]$, so $\rho(\lambda)=2/(d\lambda/dx)=1/(\pi\sqrt{\lambda(4-\lambda)})$---the classical density of
 states of the one-dimensional discrete Laplacian (Figure~\ref{fig:dos}); the frequencies have
-$\rho(\omega)=2/(\pi\sqrt{4-\omega^2})$ on $[0,2]$. Both fit to Kolmogorov--Smirnov distance $O(N^{-1/2})$.
+$\rho(\omega)=2/(\pi\sqrt{4-\omega^2})$ on $[0,2]$. Both fit to Kolmogorov--Smirnov distance $O(N^{-1})$
+(a deterministic quantile grid: the empirical CDF lies within $2/N$ of the limit, the $1/N$ jump floor).
 
 \emph{Value distribution.} For prime $N$ the impulse response $u_0(t)$ is almost-periodic with
 $\Q$-independent frequencies, so by the Bohr--Jessen theorem its values possess a limiting distribution
@@ -1083,9 +1103,12 @@ the velocity Green's function---and with it the large-wave amplification---is \e
 on the $2$- and $3$-torus. The large wave is intrinsically one-dimensional, a sharp dimensional
 threshold set by the integrability of $1/\omega$ (\texttt{verify\_torus\_dimension.py}).
 
-\medskip\noindent\textbf{Spectral dimension.} The threshold is not metric but \emph{spectral}, and the
-same argument applies to any finite graph. The relevant ceiling is
-$U_G=|V|^{-1}\sum_{\lambda_r>0}\lambda_r^{-1/2}$ ($\lambda_r$ the Laplacian spectrum, $\omega_r=\sqrt{\lambda_r}$).
+\medskip\noindent\textbf{Spectral dimension.} The threshold is not metric but \emph{spectral}. For
+vertex-transitive (Fourier-flat) graph families the local ceiling reduces to the normalized spectral sum
+$U_G=|V|^{-1}\sum_{\lambda_r>0}\lambda_r^{-1/2}$ ($\lambda_r$ the Laplacian spectrum,
+$\omega_r=\sqrt{\lambda_r}$); for a general graph the ceiling at $(j,k)$ is
+$\sum_{\lambda_r>0}|\phi_r(j)\phi_r(k)|\lambda_r^{-1/2}$ and also reflects eigenvector localization through
+the local spectral measure, not the global density of states alone.
 If the integrated density of states obeys $N(\lambda)\sim\lambda^{d_s/2}$ near $0$---defining the
 \emph{spectral dimension} $d_s$---then $\rho(\lambda)\sim\lambda^{d_s/2-1}$ and
 $U_G\sim\int_0\lambda^{-1/2}\rho(\lambda)\,d\lambda\sim\int_0\lambda^{(d_s-3)/2}\,d\lambda$, which
@@ -1095,7 +1118,7 @@ $d$-torus is the case $d_s=d$. For $d_s>1$ this rigorously \emph{forbids} a larg
 ($A_N\le U_G=O(1)$); at $d_s=1$ the ceiling permits one, but whether it is dynamically reached is the
 same arithmetic reachability question as on the ring (Conjecture~\ref{conj:order}). The criterion is geometric rather than metric: any
 \emph{quasi-one-dimensional} lattice---a ladder $C_N\times C_2$ or a tube $C_N\times C_w$ of bounded
-width $w$---still has $d_s=1$ and retains the logarithmic large wave, now with reduced prefactor
+width $w$---still has $d_s=1$ and retains a logarithmically divergent ceiling, now with reduced prefactor
 $U_G\sim\tfrac1{\pi w}\ln N$ (only one of the $w$ transverse channels is gapless, Figure~\ref{fig:specdim}).
 Bounded transverse width does not destroy the concentration; a genuine second extended dimension does
 (\texttt{verify\_spectral\_dimension.py}).
@@ -1104,7 +1127,7 @@ Bounded transverse width does not destroy the concentration; a genuine second ex
 \includegraphics[width=.62\textwidth]{fig_spectral_dim.pdf}
 \caption{Spectral-dimension threshold. The ceiling $U_G=|V|^{-1}\sum\lambda^{-1/2}$ grows like $\ln N$
 for $d_s=1$---the ring and, with reduced slope $1/(\pi w)$, the quasi-1D ladder and tube---but saturates
-for the $d_s=2$ square torus. The large wave is a critical-dimension ($d_s=1$) phenomenon.}\label{fig:specdim}
+for the $d_s=2$ square torus. The ceiling is a critical-dimension ($d_s=1$) phenomenon.}\label{fig:specdim}
 \end{figure}
 
 \begin{figure}[ht]\centering

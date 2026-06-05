@@ -17,8 +17,10 @@ Filimonov, Theorem 2:  lim_{N->inf} d_j^N = C ln j + O(1).
 This script reproduces all of it AND adds two findings:
   * the constant is identified explicitly:  C = 4/pi^2 ~ 0.4053  (R^2 = 1, plus the limiting integral
     d_j^inf = (2/pi) int_0^{pi/2} cot(theta) |sin(2 j theta)| d theta ~ (2/pi)(2/pi) ln j);
-  * the independence of {cos(pi k/N)} that powers Theorem 1 holds for PRIME N as well as N=2^m
-    (rank = (N-1)//2), failing for composite N -- so the law extends to primes (Filimonov states 2^m).
+  * the independence of {cos(pi k/N)} (rank = (N-1)//2) holds for PRIME N as well as N=2^m, which
+    SUFFICES for sup_t|z_j| = d_j^N at every site -- so the law extends to primes (Filimonov states 2^m).
+    Full rank is NOT necessary, though: composite N can still saturate at individual sites (e.g. j=1),
+    so a complete classification of composite saturation is open.
 """
 
 from __future__ import annotations
@@ -147,7 +149,7 @@ def main() -> int:
     print(f"    limiting integral (2/pi)int cot|sin 2j th|: slope vs ln j = {cint:.4f} (~4/pi^2): "
           f"{'OK' if abs(cint - c_pred) < 0.02 else 'FAIL'}")
 
-    print("\n(C) Theorem 1:  sup_t|z_j| = d_j^N needs {cos(pi k/N)} Q-independent => prime or 2^m")
+    print("\n(C) Full cos-rank (N-1)//2 holds exactly for prime/2^m: SUFFICIENT for sup_t|z_j|=d_j^N (all j)")
     print(f"    {'N':>4} {'class':>10} {'rank':>5} {'(N-1)//2':>9} {'indep?':>7}")
     for nn in (8, 16, 32, 7, 11, 13, 9, 12, 15, 21):
         rk = cos_rank(nn)
@@ -175,9 +177,30 @@ def main() -> int:
     ok &= hold
     print(f"    N=256: max_t|z_j| <= d_j^N at j=16,64,128: {hold} (finite scan undershoots the sup)")
 
+    print("\n(E) Full rank is NOT necessary: composite N still saturates sup_t|z_j|=d_j^N at some site")
+    e_ok = True
+    for nn in (6, 9, 10, 12):
+        d = d_jN(nn)
+        kk = np.arange(1, nn)
+        a = a_coeffs(nn)
+        w = np.cos(np.pi * kk / nn)
+        ts = np.linspace(0.0, 4000.0, 120000)
+        ratio = 0.0
+        for jq in range(1, nn):
+            amp = a * np.sin(np.pi * kk * jq / nn)
+            z = np.abs((amp[None, :] * np.exp(-2j * np.outer(ts, w))).sum(axis=1))
+            ratio = max(ratio, z.max() / max(d[jq - 1], 1e-15))
+        e_ok &= ratio > 0.999
+        print(f"    N={nn:>3} (composite): max_j sup_t|z_j|/d_j^N = {ratio:.4f}  "
+              f"{'saturates' if ratio > 0.999 else 'GAP'}")
+    ok &= e_ok
+    print("    -> composite N reaches the ceiling at individual sites; full cos-rank is a SUFFICIENT,")
+    print("       not necessary, condition, so composite saturation needs a separate classification.")
+
     print("\n" + "=" * 78)
     print("RESULT:", "FILIMONOV SCHRODINGER LARGE WAVE REPRODUCED" if ok else "CHECK FAILED")
-    print("Thm 1 (sup=d_j^N) + Thm 2 (d_j^N ~ C ln j); identified C = 4/pi^2; independence = prime/2^m.")
+    print("Thm 1 (sup=d_j^N) + Thm 2 (d_j^N ~ C ln j); identified C = 4/pi^2. Full cos-rank (prime/2^m)")
+    print("is SUFFICIENT for saturation at all sites, not necessary -- composite N can saturate too.")
     print("=" * 78)
     return 0 if ok else 1
 

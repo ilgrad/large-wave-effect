@@ -83,12 +83,12 @@ $\sigma(\kappa)=\sqrt{\lambda_\kappa(2\gamma A^2-\lambda_\kappa)}$; the rate is 
 $\sigma_{\max}=\gamma A^2$, at $\lambda_\kappa=\gamma A^2$.
 \end{proposition} A direct split-step simulation of \eqref{eq:dnls} reproduces
 \eqref{eq:mi} to better than $1\%$ across the band interior (Figure~\ref{fig:mi}); the fastest mode
-does not grow without bound but saturates into an Akhmediev breather---the periodic avatar of the
-rogue spike.
+does not grow without bound but develops into a recurrent breather-like modulation reminiscent of the
+Akhmediev scenario of the continuum integrable NLS---a periodic avatar of the rogue spike.
 
 \emph{From thin tails to heavy tails.} The statistical signature is the sharpest contrast with the
-linear theory. Seeded by a noisy plane wave, \eqref{eq:dnls} on the ring spawns localized bursts
-exceeding twice the root-mean-square amplitude---the oceanographic rogue threshold---and the amplitude
+linear theory. Seeded by a noisy plane wave, \eqref{eq:dnls} on the ring spawns localized bursts exceeding an operational envelope threshold of twice
+the root-mean-square amplitude (analogous to common rogue-wave criteria)---and the amplitude
 distribution develops a heavy, \emph{leptokurtic} tail (kurtosis $>3$) lying well above the Rayleigh
 law of a linear Gaussian sea (Figure~\ref{fig:rogue}). This inverts the linear picture, whose
 Bohr--Jessen value law is \emph{platykurtic} (Section~\ref{sec:stats}): linear amplification is a rare
@@ -136,8 +136,8 @@ which is $1$ for a single occupied site and $\sim N$ when the excitation spreads
 norm-conserving split-step integrator (norm exact to $10^{-12}$, $H$ to $O(\Delta t^2)$) shows a sharp
 \emph{self-trapping transition} at the on-site nonlinear frequency $\gamma|z_0|^2\approx4$---exactly the
 top of the spectrum of $\LN$, the band $[0,4]$. Below it the excitation disperses ($P\to N$); above it the
-site detunes out of the linear band and freezes into a stationary, exponentially localized \emph{discrete
-breather} $z_j(t)=\phi_j\eu^{-\mathrm i\Omega t}$, whose real profile solves
+site detunes out of the linear band and forms a long-lived, exponentially localized \emph{breather-like
+state} $z_j(t)\approx\phi_j\eu^{-\mathrm i\Omega t}$ consistent with the stationary DNLS branch, whose real profile solves
 $\Omega\phi_j=-(\LN\phi)_j+\gamma\phi_j^3$ with frequency $\Omega\approx\gamma|z_0|^2$ pushed above the
 whole phonon band $[0,4]$, so no extended mode can resonate (Figure~\ref{fig:selftrapping}; the trapped
 profile is steady, the temporal standard deviation of $|z_j|$ staying below $0.02$). This is the dynamical
@@ -150,14 +150,14 @@ $\gamma|\phi_0|^2\gtrsim2$: from $\Omega\phi_j=-(\LN\phi)_j+\gamma\phi_j^3$ with
 one gets $\Omega\approx\gamma P-2$, which clears the band \emph{top} ($\Omega>0$) at $\gamma P\gtrsim2$. The
 larger \emph{dynamical} threshold $\gamma|z_0|^2\approx4$ measured from a single-site \emph{launch} is the
 bandwidth: the spreading excitation must outrun the entire band $[0,4]$, not merely its edge. Existence and
-stability of these breathers (MacKay--Aubry theory) and the precise dynamical threshold are the rigorous
-sequel left open here.
+stability of these breathers (MacKay--Aubry theory~\cite{MacKayAubry}) and the precise dynamical threshold
+are the rigorous sequel left open here.
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.92\textwidth]{fig_selftrapping.pdf}
 \caption{DNLS self-trapping ($N=128$, single-site seed). Left: the participation ratio $P$ collapses from
 $\sim N$ (dispersed) to $\sim1$ (trapped) as the nonlinearity crosses the band top $\gamma\approx4$.
-Right: above threshold the excitation is a stationary discrete breather---a localized column in
+Right: above threshold the excitation is a persistent localized breather-like state---a localized column in
 space-time.}\label{fig:selftrapping}
 \end{figure}
 
@@ -253,7 +253,7 @@ amplify in two or three dimensions. Nonlinearity removes the obstruction. On the
 the DNLS with the block-circulant Laplacian $\LN^{(2)}$ (eigenvalues
 $\lambda_{\mathbf r}=4\sin^2\frac{\pi r_1}{N}+4\sin^2\frac{\pi r_2}{N}$, band $[0,8]$, with the
 dispersion surface of Figure~\ref{fig:dispersion3d}) self-traps a single-site excitation into a
-stationary, exponentially localized \emph{two-dimensional discrete breather} once the on-site nonlinear
+long-lived, exponentially localized \emph{two-dimensional breather-like state} once the on-site nonlinear
 frequency crosses the $2$D band top, $\gamma|z|^2\approx8$: the norm is conserved to $10^{-12}$ and the
 participation ratio collapses from $\sim N^2$ to $O(1)$ across the threshold
 (Figure~\ref{fig:breather2d}, \texttt{verify\_dnls\_2d.py}). A large, localized amplitude therefore
@@ -261,18 +261,20 @@ survives in $2$D (and, identically, $3$D) by a mechanism---self-focusing self-tr
 linear theory: the dimensional threshold of Part~I is a property of the \emph{linear} resonance, not of
 the lattice.
 
-This multidimensional, strongly nonlinear regime is the home of Zakharov's wider program: the
-Zakharov--Kuznetsov equation~\cite{ZakharovKuznetsov} is the multidimensional generalization of the
-long-wave (KdV-type) limit of \eqref{eq:fput}, and the statistics of the thermalizing lattice are the
-subject of the weak-turbulence (Kolmogorov--Zakharov) theory of wave spectra~\cite{ZakharovLvovFalkovich},
-whose underlying wave kinetic equation has only recently been derived rigorously~\cite{DengHani}. These
+This multidimensional, strongly nonlinear regime points toward Zakharov's wider program: a possible
+multidimensional long-wave asymptotic direction is the Zakharov--Kuznetsov regime~\cite{ZakharovKuznetsov}
+(we do not carry out the multiscale derivation from \eqref{eq:fput} here), and the statistics of the
+thermalizing lattice suggest a connection to the weak-turbulence (Kolmogorov--Zakharov) theory of wave
+spectra~\cite{ZakharovLvovFalkovich}. The rigorous wave-kinetic results of~\cite{DengHani} concern a
+different weakly nonlinear, large-box scaling (dimension $d\ge3$) and do not directly justify the finite
+one-dimensional lattice here. These
 connect the discrete large-wave problem to the broad theory of nonlinear wave dynamics
 (Section~\ref{sec:fate}).
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.6\textwidth]{fig_breather2d.pdf}
 \caption{Two-dimensional discrete breather: a single-site seed under the $2$D DNLS self-traps into a
-stationary localized hump above the $2$D band top ($\gamma\approx8$). Nonlinearity restores a large
+persistent localized hump above the $2$D band top ($\gamma\approx8$). Nonlinearity restores a large
 localized amplitude in $2$D, where the linear large wave is bounded.}\label{fig:breather2d}
 \end{figure}
 
