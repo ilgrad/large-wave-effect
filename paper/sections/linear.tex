@@ -148,7 +148,7 @@ $G_N(0,t)=\sum_{r=1}^{\lfloor N/2\rfloor}b_r\sin(\omega_r t)$ with $b_r=2/(N\ome
 (the term $r=N/2$, if present, has coefficient $1/(N\omega_{N/2})$). The triangle inequality
 gives $|G_N(j,t)|\le\frac1N\sum_{r=1}^{N-1}\omega_r^{-1}=U_N$ for all $j$. If the $\omega_r$ are
 $\Q$-independent, then by Kronecker--Weyl the orbit $\{(\omega_r t)_r\}$ is dense in the torus, so
-$\sin(\omega_r t)\to1$ simultaneously and the bound is attained at $j=0$. (Bohr's theorem:
+$\sin(\omega_r t)\to1$ simultaneously and the supremum at $j=0$ equals the bound. (Bohr's theorem:
 $\sup_t\sum b_r\sin(\omega_r t)=\sum|b_r|$.)
 \end{proof}
 
@@ -440,7 +440,7 @@ the subtorus maximization~\eqref{eq:subtorus} numerically gives
 the two relations pulling the optimal phases off $\varphi_r=\tfrac\pi2$ by just enough to cost $9\%$ of the
 ceiling (\texttt{verify\_relation\_lattices.py}, \texttt{verify\_exact\_AN.py}).
 
-A sharp arithmetic criterion decides exactly when the ceiling is reached.
+A sharp arithmetic criterion decides exactly when $A_N=U_N$ (the supremum equalling the ceiling).
 
 \begin{theorem}[ceiling criterion]\label{thm:ceiling}
 Let $\Lambda=\{k\in\Z^m:\sum_r k_r\omega_r=0\}$ be the relation lattice of the distinct positive
@@ -456,15 +456,15 @@ saturate, Corollary~\ref{cor:density}).
 \begin{proof}
 Always $A_N\le U_N$, with $U_N=\sum_r a_{r0}$ the node-$0$ ceiling. As $a_{rj}=a_{r0}\cos(2\pi rj/N)$ we
 have $|a_{rj}|\le a_{r0}$, so no node exceeds $U_N$, and $|a_{rj}|=a_{r0}$ for \emph{all} $r$ forces
-$|\cos(2\pi rj/N)|=1$, i.e.\ $2j/N\in\Z$: only $j=0$ and---for even $N$---$j=N/2$ can attain the ceiling.
-At $j=0$ the coefficients $a_{r0}>0$, so $U_N$ is reached iff all $\sin(\omega_r t)$ can be driven to $1$
-simultaneously, i.e.\ the target $\varphi_\ast=(\tfrac\pi2,\dots,\tfrac\pi2)$ lies in the orbit closure
+$|\cos(2\pi rj/N)|=1$, i.e.\ $2j/N\in\Z$: only $j=0$ and---for even $N$---$j=N/2$ can have time-supremum $U_N$.
+At $j=0$ the coefficients $a_{r0}>0$, so $\sup_t G_N(0,t)=U_N$ iff all $\sin(\omega_r t)$ can be brought
+simultaneously arbitrarily close to $1$, i.e.\ the target $\varphi_\ast=(\tfrac\pi2,\dots,\tfrac\pi2)$ lies in the orbit closure
 $\mathbb{T}_N$. By Kronecker, $\varphi_\ast\in\mathbb{T}_N$ iff $\langle k,\varphi_\ast\rangle=
 \tfrac\pi2\sum_r k_r\equiv0\ (2\pi)$ for every $k\in\Lambda$, i.e.\ $\sum_r k_r\equiv0\ (4)$. At $j=N/2$
 (even $N$) the signs $\cos(\pi r)=(-1)^r$ give the alternating target $\varphi_r=\tfrac\pi2+\pi r$, and the
 same argument yields $\langle k,\varphi\rangle=\tfrac\pi2\sum_r k_r+\pi\sum_r rk_r\equiv0\ (2\pi)$, i.e.\
-$\sum_r k_r+2\sum_r rk_r\equiv0\ (4)$. The ceiling is attained iff one of the two admissible nodes
-realizes its target, giving the stated disjunction (\texttt{verify\_ceiling\_criterion.py}).
+$\sum_r k_r+2\sum_r rk_r\equiv0\ (4)$. Thus $A_N=U_N$ iff one of the two admissible nodes can realize
+its target, giving the stated disjunction (\texttt{verify\_ceiling\_criterion.py}).
 \end{proof}
 
 This refines the independence test: $\Q$-independence means $\Lambda=\{0\}$, which satisfies the
@@ -551,8 +551,8 @@ we get $\sup_t u_0(t)\ge U_N-\tfrac1N$. As $A_N\le U_N$ always, $A_N\in[U_N-\tfr
 \includegraphics[width=.78\textwidth]{fig_ring.pdf}
 \caption{Ring large wave $A_N$ versus $\ln N$. The ceiling $U_N$ (Lemma~\ref{lem:asym}) grows as
 $\tfrac1\pi\ln N+0.040$; for primes and $N=2^m$ the supremum equals $U_N$
-(Theorems~\ref{thm:prime},~\ref{thm:two}); for composite $N$ the exact subtorus value lies slightly
-below, and conjecturally $A_N=\Theta(\ln N)$ for every $N$ (Conjecture~\ref{conj:order}).}\label{fig:ring}
+(Theorems~\ref{thm:prime},~\ref{thm:two}); for composite $N$ the (numerically evaluated) subtorus value
+lies slightly below, and conjecturally $A_N=\Theta(\ln N)$ for every $N$ (Conjecture~\ref{conj:order}).}\label{fig:ring}
 \end{figure}
 
 \subsection{Weyl equidistribution and the lower-bound problem}\label{sub:weyl}
@@ -852,7 +852,7 @@ For $\alpha_j\equiv1$ and $N=2^m$, $\ \sup_t|z_j(t)|=d_j^N$, and
 \end{theorem}
 
 \noindent Thus the Schr\"odinger amplitude at the \emph{observation site} $j$ grows without bound
-(logarithmically) as $j\to\infty$---a large wave at the far end of the chain, attained along the
+(logarithmically) as $j\to\infty$---a large wave at the far end of the chain, approached along the
 relatively dense set of near-revival times (the modulus is almost-periodic, \cite{Bohr}). Two refinements
 complete the picture (\texttt{verify\_filimonov\_schrodinger.py}).
 
@@ -997,7 +997,7 @@ Independence, $N=p$ (exact rank) & \texttt{verify\_lemma1\_prime.py}\\
 $\Q$-rank map (prime/$2^m$/composite) & \texttt{verify\_independence\_rank.py}\\
 Lebesgue constant, Bessel decay & \texttt{verify\_lemma3\_lebesgue.py}\\
 Prefix budget for all $N$ & \texttt{verify\_lemma4\_prefix.py}\\
-Exact $A_N$ via subtorus & \texttt{verify\_exact\_AN.py}\\
+Exact subtorus reduction of $A_N$ & \texttt{verify\_exact\_AN.py}\\
 Closed form $N=6$, relation $N=12$ & \texttt{verify\_AN\_closed\_form.py}\\
 Segment vs ring degeneracy & \texttt{verify\_segment\_vs\_ring.py}\\
 Schr\"odinger contrast & \texttt{verify\_theorem3\_schrodinger.py}\\
