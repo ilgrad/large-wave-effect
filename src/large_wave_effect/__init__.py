@@ -1,7 +1,6 @@
 """Large-wave amplification on the periodic discrete chain: reusable core routines.
 
-Experiments and certificates live in ``numerics/``; this package holds the tested core used by
-both the paper and the GWTL time-series work (work #2).
+Experiments and certificates live in ``numerics/``; this package holds the tested core they build on.
 """
 
 from __future__ import annotations

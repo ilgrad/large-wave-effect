@@ -89,11 +89,6 @@ paper/
   large-wave-effect.pdf  compiled paper
 ```
 
-## Related
-
-- **gwtl-net** — applied companion: Gated Wave-Toeplitz-Levinson networks for time series (the same
-  Toeplitz/Levinson machinery as a neural inductive bias).
-
 ## Provenance
 
 This work continues the author's 2015 undergraduate diploma on the large-wave effect; the original

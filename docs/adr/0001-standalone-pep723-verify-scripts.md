@@ -29,8 +29,8 @@ as the **tested reference core** exercised only by `tests/` (pytest).
 - Cost: the core (`cyclotomic`, `power_mod`, rank, ceiling) is copied across ~13 scripts; a bug fix must
   be applied in each place (this happened during development). Mitigated by the pytest-covered `src/`
   acting as the canonical implementation to diff against.
-- `src/` is therefore small (~3.5% of the code) and load-bearing only for the tests and the companion
-  `gwtl-net` work, not for the paper's numerics.
+- `src/` is therefore small (~3.5% of the code) and load-bearing only for the tests, not for the
+  paper's numerics.
 
 ## Alternatives considered
 
