@@ -29,7 +29,9 @@ OUT = __file__.rsplit("/", 2)[0] + "/paper/figures"
 
 def _save(fig: Figure, name: str) -> None:
     fig.tight_layout()
-    fig.savefig(f"{OUT}/{name}.pdf")
+    # dpi controls only rasterized artists (the pcolormesh density plots); vector
+    # elements (axes, text, lines) stay vector. Keeps fig_branched et al. small.
+    fig.savefig(f"{OUT}/{name}.pdf", dpi=200)
     plt.close(fig)
 
 
@@ -208,7 +210,7 @@ def fig_heatmap() -> None:
     ts = np.linspace(0.0, 6.0 * n, 500)
     field = np.array([np.abs(_green(n, float(t))) for t in ts])  # |u_j(t)|, shape (T, N)
     fig, ax = plt.subplots(figsize=(6.4, 4.4))
-    im = ax.pcolormesh(np.arange(n), ts, field, shading="auto", cmap="magma")
+    im = ax.pcolormesh(np.arange(n), ts, field, shading="auto", cmap="magma", rasterized=True)
     fig.colorbar(im, ax=ax, label=r"$|u_j(t)|$")
     ax.set_xlabel(r"site $j$")
     ax.set_ylabel(r"time $t$")
@@ -250,7 +252,7 @@ def fig_peregrine() -> None:
     t = np.linspace(-2, 2, 400)
     amp = np.abs(_peregrine(x, t))
     fig, (axl, axr) = plt.subplots(1, 2, figsize=(8.6, 3.7), width_ratios=[1.25, 1])
-    im = axl.pcolormesh(x, t, amp, shading="auto", cmap="inferno", vmin=0, vmax=3)
+    im = axl.pcolormesh(x, t, amp, shading="auto", cmap="inferno", vmin=0, vmax=3, rasterized=True)
     fig.colorbar(im, ax=axl, label=r"$|\psi(x,t)|$")
     axl.set_xlabel(r"$x$")
     axl.set_ylabel(r"$t$")
@@ -316,7 +318,7 @@ def fig_rogue_dnls() -> None:
     rms = float(np.sqrt(np.mean(amps**2)))
 
     fig, (axl, axr) = plt.subplots(1, 2, figsize=(8.8, 3.8), width_ratios=[1.15, 1])
-    im = axl.pcolormesh(np.arange(n), times, field, shading="auto", cmap="magma")
+    im = axl.pcolormesh(np.arange(n), times, field, shading="auto", cmap="magma", rasterized=True)
     fig.colorbar(im, ax=axl, label=r"$|z_j(t)|$")
     axl.set_xlabel(r"site $j$")
     axl.set_ylabel(r"time $t$")
@@ -446,7 +448,7 @@ def fig_selftrapping() -> None:
     axl.set_ylabel(r"participation ratio $P$")
     axl.set_title("Self-trapping transition")
     axl.grid(alpha=0.3)
-    im = axr.pcolormesh(np.arange(n) - n // 2, tt, field, shading="auto", cmap="viridis")
+    im = axr.pcolormesh(np.arange(n) - n // 2, tt, field, shading="auto", cmap="viridis", rasterized=True)
     fig.colorbar(im, ax=axr, label=r"$|\psi_j|$")
     axr.set_xlabel(r"site $j$")
     axr.set_ylabel(r"time $t$")
@@ -632,7 +634,7 @@ def fig_branched() -> None:
     field, zs, sci = np.array(fields), np.array(zs), np.array(sci)
     fig, (axl, axr) = plt.subplots(1, 2, figsize=(9.0, 4.0), width_ratios=[1.3, 1])
     im = axl.pcolormesh(np.arange(n), zs, np.log10(field + 1e-3), shading="auto",
-                        cmap="inferno", vmin=-1, vmax=1.2)
+                        cmap="inferno", vmin=-1, vmax=1.2, rasterized=True)
     fig.colorbar(im, ax=axl, label=r"$\log_{10}|\psi|^2$")
     axl.set_xlabel(r"transverse $x$")
     axl.set_ylabel(r"propagation $z$")
@@ -809,7 +811,7 @@ def fig_lightning() -> None:
     field = _laplace(leader)
     field[leader] = np.nan
     fig, ax = plt.subplots(figsize=(5.6, 4.8))
-    im = ax.pcolormesh(field, shading="auto", cmap="cividis")
+    im = ax.pcolormesh(field, shading="auto", cmap="cividis", rasterized=True)
     fig.colorbar(im, ax=ax, label=r"potential $\phi$ (field $=\nabla\phi$)")
     yy, xx = np.where(leader)
     ax.scatter(xx + 0.5, yy + 0.5, c="white", s=2)
