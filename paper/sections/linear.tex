@@ -403,6 +403,16 @@ by the crude bound $\sin\ge-1$, which suffices because Lemma~\ref{lem:prefix} ma
 carry $2L_{\mathrm{pre}}-U_N=(1-o(1))U_N$ of the ceiling. The exact saturation locus $A_N=U_N$ is the
 sharper question settled by Theorem~\ref{thm:classification}.
 
+\begin{remark}[the defect is essentially bounded]\label{rem:defect}
+The same estimate bounds the deficit on the non-saturating $N$: $U_N-A_N\le2(U_N-L_{\mathrm{pre}})=
+\tfrac2N\sum_{r=\frac12\varphi(2N)+1}^{\lfloor N/2\rfloor}\csc\tfrac{\pi r}N=\tfrac2\pi\ln\tfrac{N}{\varphi(2N)}+O(1)$.
+Since $\varphi(2N)\ge2N/(\eu^\gamma\ln\ln2N+\cdots)$, this is $O(\ln\ln\ln N)$---so $U_N-A_N$ grows slower than
+any iterate of the logarithm and is, for every practical purpose, bounded (numerically
+$U_N-A_N<0.18$ for all composite $N\le60$, depending on the odd part of $N$ and converging within each
+$2^a m$ family, \texttt{verify\_exact\_AN.py}). Its exact value is algebraic for each $N$
+(Proposition~\ref{prop:closed}) with no apparent universal closed form.
+\end{remark}
+
 \subsection{The Dirichlet segment}\label{sub:segment}
 The segment chain $\mathrm{tridiag}(-1,2,-1)$ with Dirichlet ends has the \emph{simple} spectrum
 $\mu_k=2\sin\frac{\pi k}{2(N+1)}$ ($k=1,\dots,N$): no degeneracy, the structural advantage over the
