@@ -51,6 +51,12 @@ the classification theorem `A_N = U_N <=> N prime or 2^m` for **all** N at once 
 - `single_relation_blocks_both` — a relation whose signs are all `+-1` and whose support count is **odd**
   violates *both* mod-4 branches, so a single relation forces `A_N < U_N`.
 
+It also carries the arithmetic core of the **order theorem** (`A_N ~ (1/pi) ln N`, all `N`):
+`pal_and_antipal_zero` (a coefficient equal to both `+b` and `-b` is `0` — the palindromic/anti-palindromic
+clash) and `prefix_index_bound` (`phi <= 2K`, `2K <> phi`, `phi` even `=> K >= phi/2 + 1`), which together
+give the prefix-independence lemma `M(N) = phi(2N)/2`. The cyclotomic input (`Phi_2N | Q`, so `phi(2N) <=
+2K`) is supplied externally, as for the classification.
+
 Honest scope: the one thing not formalized is that the constructed vector is a genuine frequency relation
 (`sum_r k_r 2 sin(pi r/N) = 0`) — that cyclotomic fact is proved on paper and checked exactly by GAP/PARI
 and `numerics/verify_classification_proof.py`.

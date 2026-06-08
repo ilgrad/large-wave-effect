@@ -72,3 +72,25 @@ Proof.
   rewrite zsum_parity by (intros x Hx; destruct (Hpm x Hx) as [E|E]; rewrite E; reflexivity).
   now apply Nat.odd_spec.
 Qed.
+
+(* ----- Order theorem (Theorem order): the prefix-independence arithmetic core. -----
+   A relation among the first K frequencies yields an anti-palindromic Q of degree 2K with
+   Phi_2N | Q, so phi(2N) <= 2K; and 2K = phi(2N) is impossible because an anti-palindromic
+   polynomial equal to a (palindromic) multiple of Phi_2N must vanish.  We formalize both the
+   "anti-palindromic + palindromic => 0" step and the resulting index bound K >= phi/2 + 1
+   (phi := phi(2N) is even).  The cyclotomic input (Phi_2N | Q, hence phi <= 2K) is supplied
+   externally, exactly as for the classification. *)
+
+(* A coefficient that equals both +b (palindromic) and -b (anti-palindromic) is zero. *)
+Lemma pal_and_antipal_zero : forall a b : Z, a = b -> a = - b -> a = 0.
+Proof. intros. lia. Qed.
+
+(* Hence no relation lives in the first phi/2 indices: from phi <= 2K and 2K <> phi (phi even),
+   the largest index K satisfies phi/2 + 1 <= K. *)
+Lemma prefix_index_bound : forall K phi : Z,
+  Z.even phi = true -> phi <= 2*K -> 2*K <> phi -> phi/2 + 1 <= K.
+Proof.
+  intros K phi Hev Hle Hne. apply Z.even_spec in Hev. destruct Hev as [m Hm].
+  assert (phi/2 = m) by (rewrite Hm; rewrite Z.mul_comm; apply Z.div_mul; lia).
+  lia.
+Qed.

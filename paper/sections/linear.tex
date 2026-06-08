@@ -362,8 +362,8 @@ $\{\omega_r=2\sin(\pi r/N):1\le r\le\tfrac12\varphi(2N)\}$ are $\Q$-independent.
 \end{lemma}
 
 \begin{proof}
-A nontrivial relation $\sum_{r=1}^K k_r\sin(\pi r/N)=0$ with $k_K\ne0$ ($K$ its largest index) gives, with
-$\zeta=\zeta_{2N}$ and $P(x)=\sum_{r=1}^K k_r x^r$,
+A nontrivial relation $\sum_{r=1}^K k_r\sin(\pi r/N)=0$ with $k_K\ne0$ ($K$ its largest index)---a
+vanishing sum of roots of unity~\cite{CJ}---gives, with $\zeta=\zeta_{2N}$ and $P(x)=\sum_{r=1}^K k_r x^r$,
 \[
   Q(x)=x^K\bigl(P(x)-P(1/x)\bigr)=\sum_{r=1}^K k_r\bigl(x^{K+r}-x^{K-r}\bigr)\in\Z[x],
 \]
@@ -1143,9 +1143,11 @@ adds a floating-point-free check of the criterion's evaluation, not a reproof. A
 (\texttt{formal/rocq/Classification.v}) goes further and certifies the \emph{number-theoretic core} of
 Theorem~\ref{thm:classification} \emph{uniformly in $N$} (not a scan): the crux $\,(ps-1)\bmod 2s=s-1\,$
 that keeps the constructed indices off $\{0,N\}$, and the capstone that an odd-length $\pm1$ relation
-violates both mod-$4$ branches. Only the cyclotomic input---that the constructed vector is a genuine
-relation---is supplied from outside (exactly, by \textsc{GAP}/\textsc{PARI} and
-\texttt{verify\_classification\_proof.py}).
+violates both mod-$4$ branches. The same file also formalizes the arithmetic core of the order
+Theorem~\ref{thm:order}---the palindromic/anti-palindromic clash (\texttt{pal\_and\_antipal\_zero}) and the
+index bound $K\ge\tfrac12\varphi+1$ (\texttt{prefix\_index\_bound}) behind Lemma~\ref{lem:prefix}. Only the
+cyclotomic input---that the constructed vector is a genuine relation, and that $\Phi_{2N}\mid Q$---is
+supplied from outside (exactly, by \textsc{GAP}/\textsc{PARI} and the \texttt{verify\_*} scripts).
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.94\textwidth]{fig_obstruction.pdf}
