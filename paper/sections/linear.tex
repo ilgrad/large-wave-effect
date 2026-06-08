@@ -353,26 +353,55 @@ and by Kronecker both sines reach $1$ at a common near-alignment time, so
 the supremum equal to the ceiling, approached arbitrarily closely (in contrast to the composite $N=12$ below;
 \texttt{verify\_exact\_AN.py}).
 
-\begin{observation}[low-mode prefix]\label{obs:prefix}
-Let $M(N)$ be the largest $M$ with $\{\sin(\pi r/N):r\le M\}$ $\Q$-independent; by Kronecker these modes
-can be brought simultaneously into phase, contributing
-$L_{\mathrm{pre}}(N)=\tfrac1N\sum_{r=1}^{M(N)}\csc(\pi r/N)$, which numerically satisfies
-$L_{\mathrm{pre}}(N)\ge 0.25\,\ln N$ for all tested $N\le256$ (including the highly composite
-$N=210,240$). This does \emph{not} by itself bound $A_N$ from below: the out-of-prefix modes may
-interfere destructively, and controlling that interference is the open step.
-\end{observation}
+The low modes carry most of the ceiling, and---crucially---a \emph{long} independent prefix can always be
+aligned. Let $M(N)$ be the largest $M$ with $\{\omega_1,\dots,\omega_M\}$ $\Q$-independent.
 
-\begin{conjecture}[order, all $N$]\label{conj:order}
-$A_N=\Theta(\ln N)$ for every $N$; more precisely $A_N\sim\tfrac1\pi\ln N$. This is proved for $N$ prime,
-$N=2^m$, and $N=2p$ (Theorems~\ref{thm:prime}--\ref{thm:two}, Proposition~\ref{prop:2p}); for general
-$N$ it is supported by Observation~\ref{obs:prefix} and by the exact subtorus computation of
-Section~\ref{sec:exact}, where $A_N/\ln N$ stays in $[0.28,0.34]$ across the tested range (the composite,
-non-saturating values lying in $[0.28,0.31]$, the saturating prime/$2^m$ values reaching $U_N/\ln N$ up to
-$0.34$)
-(\texttt{verify\_lemma4\_prefix.py}, \texttt{verify\_open\_problems.py}), but is not proved. The exact
-saturation locus $A_N=U_N$ is settled by the arithmetic criterion of Theorem~\ref{thm:ceiling}; the open
-content is the \emph{lower} order of $A_N$ on the non-saturating $N$.
-\end{conjecture}
+\begin{lemma}[prefix independence]\label{lem:prefix}
+$M(N)=\tfrac12\varphi(2N)$: the first $\tfrac12\varphi(2N)$ frequencies
+$\{\omega_r=2\sin(\pi r/N):1\le r\le\tfrac12\varphi(2N)\}$ are $\Q$-independent.
+\end{lemma}
+
+\begin{proof}
+A nontrivial relation $\sum_{r=1}^K k_r\sin(\pi r/N)=0$ with $k_K\ne0$ ($K$ its largest index) gives, with
+$\zeta=\zeta_{2N}$ and $P(x)=\sum_{r=1}^K k_r x^r$,
+\[
+  Q(x)=x^K\bigl(P(x)-P(1/x)\bigr)=\sum_{r=1}^K k_r\bigl(x^{K+r}-x^{K-r}\bigr)\in\Z[x],
+\]
+nonzero of degree $2K$ (leading coefficient $k_K$), with $Q(\zeta)=\zeta^K\sum_r k_r(\zeta^r-\zeta^{-r})=0$.
+Hence $\Phi_{2N}\mid Q$ and $\varphi(2N)=\deg\Phi_{2N}\le2K$. But $Q$ is \emph{anti}-palindromic,
+$x^{2K}Q(1/x)=-Q(x)$, whereas $\Phi_{2N}$ is palindromic; so $2K=\varphi(2N)$ is impossible (it would force
+$Q=k_K\Phi_{2N}$, simultaneously palindromic and anti-palindromic, hence $0$). Thus $2K>\varphi(2N)$, and as
+both are even, $K\ge\tfrac12\varphi(2N)+1$. No relation has all its indices $\le\tfrac12\varphi(2N)$, so
+$\{\omega_1,\dots,\omega_{\varphi(2N)/2}\}$ are independent and $M(N)\ge\tfrac12\varphi(2N)$; with
+$M(N)\le\operatorname{rank}_\Q\{\omega_r\}=\tfrac12\varphi(2N)$ (Theorem~\ref{thm:qrank}), equality holds. \end{proof}
+
+\begin{theorem}[order]\label{thm:order}
+$A_N\sim\tfrac1\pi\ln N$ for \emph{every} $N$; precisely $A_N=\tfrac1\pi\ln N+O(\ln\ln\ln N)$.
+\end{theorem}
+
+\begin{proof}
+The upper bound is $A_N\le U_N=\tfrac1\pi\ln N+O(1)$ (Proposition~\ref{prop:bohr}, Lemma~\ref{lem:asym}). For
+the lower bound, write $b_r=2/(N\omega_r)>0$, $L_{\mathrm{pre}}=\sum_{r=1}^M b_r$, $M=\tfrac12\varphi(2N)$.
+By Lemma~\ref{lem:prefix} the $\omega_1,\dots,\omega_M$ are $\Q$-independent, so by Kronecker there are
+times $t$ with $\sin(\omega_r t)\to1$ for all $r\le M$ at once; at such $t$, since the remaining
+$\sin(\omega_r t)\ge-1$,
+\[
+  A_N\ \ge\ \sup_t G_N(0,t)\ \ge\ L_{\mathrm{pre}}-\!\!\sum_{r=M+1}^{\lfloor N/2\rfloor}\!\!b_r\ =\ 2L_{\mathrm{pre}}-U_N .
+\]
+As $\sin(\pi r/N)\le\pi r/N$, $\,b_r=1/(N\sin(\pi r/N))\ge1/(\pi r)$, so
+$L_{\mathrm{pre}}\ge\tfrac1\pi\sum_{r=1}^M\tfrac1r\ge\tfrac1\pi\ln M$, giving
+\[
+  A_N\ \ge\ \tfrac2\pi\ln M-U_N\ =\ \tfrac1\pi\ln\frac{M^2}{N}-O(1)
+        \ =\ \tfrac1\pi\Bigl(2\ln\tfrac{\varphi(2N)}2-\ln N\Bigr)-O(1).
+\]
+By the Rosser--Schoenfeld bound $\varphi(2N)\ge 2N/\!\left(\eu^{\gamma}\ln\ln 2N+3/\ln\ln 2N\right)$~\cite{RS62},
+the bracket is $\ln N-O(\ln\ln\ln N)$; hence $A_N\ge\tfrac1\pi\ln N-O(\ln\ln\ln N)$, and with the upper
+bound $A_N=\tfrac1\pi\ln N+O(\ln\ln\ln N)$ (\texttt{verify\_order\_theorem.py}). \end{proof}
+
+\noindent The former obstruction---the destructive interference of the out-of-prefix modes---is dispatched
+by the crude bound $\sin\ge-1$, which suffices because Lemma~\ref{lem:prefix} makes the alignable prefix
+carry $2L_{\mathrm{pre}}-U_N=(1-o(1))U_N$ of the ceiling. The exact saturation locus $A_N=U_N$ is the
+sharper question settled by Theorem~\ref{thm:classification}.
 
 \subsection{The Dirichlet segment}\label{sub:segment}
 The segment chain $\mathrm{tridiag}(-1,2,-1)$ with Dirichlet ends has the \emph{simple} spectrum
@@ -409,9 +438,10 @@ Bohr) iff $N+1$ is prime or a power of two---otherwise $A_N^{\mathrm{Dir}}<U_N^{
 (\texttt{verify\_segment\_classification.py}; the prime case also recovers Proposition~\ref{prop:2p}). \end{proof}
 
 \noindent This is the exact analogue of the ring classification (Theorem~\ref{thm:classification}), shifted
-by the boundary (the ring uses modulus $2N$, the segment $4(N+1)$). The $\Q$-independent low-mode
-prefix again supports $A_N^{\mathrm{Dir}}=\Theta(\ln N)$ for every $N$ numerically, subject to the same
-out-of-prefix gap as Conjecture~\ref{conj:order} (\texttt{verify\_segment\_lower\_bound.py}).
+by the boundary (the ring uses modulus $2N$, the segment $4(N+1)$). The order Theorem~\ref{thm:order}
+transfers verbatim: Lemma~\ref{lem:prefix} holds with modulus $4(N+1)$ in place of $2N$ (same
+palindromic argument), so the independent prefix has length $\tfrac12\varphi(4(N+1))$ and
+$A_N^{\mathrm{Dir}}\sim\tfrac1\pi\ln N$ for \emph{every} $N$ (\texttt{verify\_segment\_lower\_bound.py}).
 
 \section{Exact \texorpdfstring{$A_N$}{A\_N} for composite \texorpdfstring{$N$}{N}}\label{sec:exact}
 
@@ -425,7 +455,7 @@ a finite-dimensional trigonometric maximization, reduced exactly and then evalua
 (\texttt{verify\_exact\_AN.py}, returning $A_N=U_N$ on primes; a certified global bracket is given for
 $N=6$ below). This makes the composite case computable for each $N$:
 numerically the subtorus defect on the ring is $A_N/U_N\in[0.84,0.92]$ in the tested range, so
-$A_N/\ln N\in[0.28,0.31]$, consistent with Conjecture~\ref{conj:order} ($A_N=\Theta(\ln N)$).
+$A_N/\ln N\in[0.28,0.31]$, consistent with Theorem~\ref{thm:order} ($A_N\sim\tfrac1\pi\ln N$).
 
 \begin{proposition}[algebraic composite cases]\label{prop:closed}
 $A_N$ is an algebraic number: writing $x_r=\cos\varphi_r$, $y_r=\sin\varphi_r$ with $x_r^2+y_r^2=1$ and
@@ -613,7 +643,7 @@ we get $\sup_t u_0(t)\ge U_N-\tfrac1N$. As $A_N\le U_N$ always, $A_N\in[U_N-\tfr
 \caption{Ring large wave $A_N$ versus $\ln N$. The ceiling $U_N$ (Lemma~\ref{lem:asym}) grows as
 $\tfrac1\pi\ln N+0.040$; for primes and $N=2^m$ the supremum equals $U_N$
 (Theorems~\ref{thm:prime},~\ref{thm:two}); for composite $N$ the (numerically evaluated) subtorus value
-lies slightly below, and conjecturally $A_N=\Theta(\ln N)$ for every $N$ (Conjecture~\ref{conj:order}).}\label{fig:ring}
+lies slightly below, and $A_N\sim\tfrac1\pi\ln N$ for every $N$ (Theorem~\ref{thm:order}).}\label{fig:ring}
 \end{figure}
 
 \subsection{Weyl equidistribution and the lower-bound problem}\label{sub:weyl}
@@ -660,39 +690,29 @@ formula. Hence \eqref{eq:subtorus} is \emph{exactly}
 \]
 For any $S$ with
 $\{\omega_r\}_{r\in S}$ $\Q$-independent, the projection of $\mathbb{T}_N$ onto the $S$-coordinates is
-the full torus $\mathbb{T}^{|S|}$, so those phases align and contribute $(2/N)\sum_{r\in S}\omega_r^{-1}$;
-for the independent low-mode prefix this is the budget $L_{\mathrm{pre}}(N)\gtrsim\tfrac14\ln N$
-(Observation~\ref{obs:prefix}). This is \emph{not} yet a lower bound on $A_N$: the out-of-prefix modes
-contribute through the relation lattice $\Lambda$ and may interfere destructively, which is the gap to a
-proof of Conjecture~\ref{conj:order}.
+the full torus $\mathbb{T}^{|S|}$, so those phases align and contribute $(2/N)\sum_{r\in S}\omega_r^{-1}$.
+Taking $S=\{1,\dots,M(N)\}$ the independent prefix, $M(N)=\tfrac12\varphi(2N)$ by Lemma~\ref{lem:prefix},
+this is the budget $L_{\mathrm{pre}}$ of the order Theorem~\ref{thm:order}.
 
 \smallskip
-\noindent\textbf{Open problem.} Prove $A_N\ge c\ln N$ for all $N$ with an absolute constant $c>0$
-(equivalently, a sharp lower bound on the subtorus maximum). \emph{Soft bounds do not suffice}: the
-time-averaged second moment gives only $\sup_t|G_N(0,t)|\ge\mathrm{RMS}_t\to1/\sqrt{12}$, and the single
-slowest mode only $b_1\to1/\pi$, both $O(1)$; the $\ln N$ must come from the simultaneous near-alignment of
-$\Theta(\ln N)$ modes. A certified value for each $N$ is available from the Lasserre moment--SOS hierarchy;
-the analytic obstruction is the control of the rational relations among $\{2\sin(\pi r/N)\}$ (vanishing
-sums of roots of unity~\cite{CJ})---a question in the arithmetic of cyclotomic fields.
-The evidence is strong on two fronts (Table~\ref{tab:order}): the exact $A_N$ keeps $A_N/\ln N$ in the
-narrow band $[0.28,0.34]$ across all classes---including the hardest $N=pq$ with $p,q\sim\sqrt N$, where
-in fact $A_N/\ln N\in[0.320,0.322]$ and $A_N/U_N\ge0.98$ for the consecutive-prime products
-$N=143,221,323,19\cdot23=437$ (\texttt{verify\_order\_extended.py})---and the $\Q$-independent low-mode
-prefix carries a budget $L_{\mathrm{pre}}(N)\gtrsim0.26\ln N$ even for the most composite $N$
-(e.g.\ $N=210,330,510$). The gap to a proof is precisely the interference of the out-of-prefix
-modes (Observation~\ref{obs:prefix}): aligning the prefix to $\sin=1$ leaves the remaining modes, of total
-weight $U_N-L_{\mathrm{pre}}$---a \emph{constant fraction} of $U_N$, not $O(1/N)$---uncontrolled, so
-$L_{\mathrm{pre}}$ is a heuristic budget, not a proven lower bound. Only when that residual weight is
-$O(1/N)$, as for $N=2p$ (Proposition~\ref{prop:2p}), does the prefix contribution provably survive; the
-analogous sub-cycle alignment ($C_p\hookrightarrow C_N$) fails for the same reason. What is missing is the
-control of this interference for general $N$.
+\noindent\textbf{The lower bound, settled.} The earlier obstruction---that the out-of-prefix modes might
+interfere destructively---is dispatched by the crude bound $\sin\ge-1$: it costs at most
+$U_N-L_{\mathrm{pre}}$, and because Lemma~\ref{lem:prefix} makes the prefix \emph{long}
+($M(N)=\tfrac12\varphi(2N)$, within a $\ln\ln N$ factor of $N/2$), the surviving amount
+$2L_{\mathrm{pre}}-U_N=(1-o(1))U_N$ still grows like $\tfrac1\pi\ln N$. \emph{Soft} bounds had failed here
+for a structural reason---the time-averaged second moment gives only $\mathrm{RMS}_t\to1/\sqrt{12}$ and the
+slowest single mode only $b_1\to1/\pi$, both $O(1)$---so the $\ln N$ genuinely needed the simultaneous
+alignment of $\Theta(\ln N)$ \emph{arithmetically independent} modes, which Lemma~\ref{lem:prefix} supplies.
+Table~\ref{tab:order} shows the resulting band: the exact $A_N/\ln N$ stays in $[0.28,0.34]$ across all
+classes (including the hardest $N=pq$, $p,q\sim\sqrt N$, where $A_N/U_N\ge0.98$), consistent with
+Theorem~\ref{thm:order}.
 
 \begin{table}[ht]\centering
-\caption{Evidence for Conjecture~\ref{conj:order}. Left: the exact node-$0$ amplitude keeps $A_N/\ln N$
+\caption{Illustration of Theorem~\ref{thm:order}. Left: the exact node-$0$ amplitude keeps $A_N/\ln N$
 tightly banded. Right: the $\Q$-independent prefix contributes
 $L_{\mathrm{pre}}(N)=\tfrac1N\sum_{r\le M(N)}\csc\tfrac{\pi r}N$, exceeding $0.26\ln N$ even for highly
-composite $N$ (a heuristic budget, \emph{not} a proven lower bound on $A_N$---the out-of-prefix modes may
-interfere, Observation~\ref{obs:prefix}). $U_N/\ln N\to1/\pi=0.3183$
+composite $N$ (now a \emph{proven} ingredient: $M(N)=\tfrac12\varphi(2N)$ frequencies are independent,
+Lemma~\ref{lem:prefix}). $U_N/\ln N\to1/\pi=0.3183$
 (\texttt{verify\_conj\_order\_map.py}).}\label{tab:order}
 \begin{tabular}{rlcc@{\qquad\qquad}rrc}
 \toprule
@@ -1191,6 +1211,7 @@ Disorder vs.\ resonance (gen.\ eig.) & \texttt{verify\_disorder.py}\\
 Order map $A_N/\ln N$, prefix (Table~\ref{tab:order}) & \texttt{verify\_conj\_order\_map.py}\\
 Extended order run ($N\!\sim\!1000$, criterion $\le500$) & \texttt{verify\_order\_extended.py}\\
 Filimonov segment law $d_j^N\!\sim\!\tfrac4{\pi^2}\ln j$ & \texttt{verify\_filimonov\_schrodinger.py}\\
+Order $A_N\!\sim\!\tfrac1\pi\ln N$, all $N$ (Thm.~\ref{thm:order}, Lem.~\ref{lem:prefix}) & \texttt{verify\_order\_theorem.py}\\
 Classification $A_N{=}U_N\!\Leftrightarrow\!$ prime$/2^m$ (Thm.~\ref{thm:classification}) & \texttt{verify\_classification\_proof.py}\\
 Segment rank \& classification (Thm.~\ref{thm:segrank}) & \texttt{verify\_segment\_classification.py}\\
 Exact GAP/PARI/Rocq layer, cross-check & \texttt{verify\_exact\_layer.py}\\
@@ -1277,8 +1298,9 @@ $U_G\sim\int_0\lambda^{-1/2}\rho(\lambda)\,d\lambda\sim\int_0\lambda^{(d_s-3)/2}
 converges at the origin iff $d_s>1$. Hence the \emph{ceiling} $U_G$ grows logarithmically precisely at
 the critical spectral dimension $d_s=1$, is bounded for $d_s>1$, and is power-law for $d_s<1$; the
 $d$-torus is the case $d_s=d$. For $d_s>1$ this rigorously \emph{forbids} a large wave
-($A_N\le U_G=O(1)$); at $d_s=1$ the ceiling permits one, but whether it is dynamically reached is the
-same arithmetic reachability question as on the ring (Conjecture~\ref{conj:order}). The criterion is geometric rather than metric: any
+($A_N\le U_G=O(1)$); at $d_s=1$ the ceiling permits one and \emph{is} reached on the ring
+($A_N\sim\tfrac1\pi\ln N$, Theorem~\ref{thm:order}), the same question for a general quasi-1D lattice being
+the natural next case. The criterion is geometric rather than metric: any
 \emph{quasi-one-dimensional} lattice---a ladder $C_N\times C_2$ or a tube $C_N\times C_w$ of bounded
 width $w$---still has $d_s=1$ and retains a logarithmically divergent ceiling, now with reduced prefactor
 $U_G\sim\tfrac1{\pi w}\ln N$ (only one of the $w$ transverse channels is gapless, Figure~\ref{fig:specdim}).
