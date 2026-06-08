@@ -521,12 +521,40 @@ $24$ & composite & $12$ & $4$ & $3,3,3,3$ & no\\
 \begin{corollary}[saturating families and a finite scan]\label{cor:density}
 The two proven saturating families, the primes and the powers of two, both have natural density zero.
 An exhaustive criterion scan finds no further saturating $N\le160$, so on this range
-$\{N:A_N=U_N\}=\{N\text{ prime}\}\cup\{2^m\}$. Whether any composite $N$ saturates at all---and hence
-whether the saturating set is genuinely of density zero---remains open, decided for each $N$ by
-Theorem~\ref{thm:ceiling}.
+$\{N:A_N=U_N\}=\{N\text{ prime}\}\cup\{2^m\}$. Theorem~\ref{thm:classification} promotes this to all $N$:
+the saturating set is \emph{exactly} the primes and the powers of two, hence of density zero.
 \end{corollary}
 
-\medskip\noindent\textbf{The composite gap.} For every composite $N\le160$, then, $A_N<U_N$. The gap is
+\begin{theorem}[classification of saturation]\label{thm:classification}
+$A_N=U_N$ if and only if $N$ is prime or a power of two.
+\end{theorem}
+
+\begin{proof}
+If $N$ is prime or $N=2^m$ then $\Lambda_N=\{0\}$ (Theorems~\ref{thm:prime},~\ref{thm:two}) and
+Theorem~\ref{thm:ceiling} gives $A_N=U_N$. Conversely, let $N$ be composite and not a power of two, and
+let $p$ be an odd prime factor, so $N=ps$ with $s=N/p\ge2$ and $q:=2N/p=2s$. As
+$\zeta_{2N}^{\,q}=\eu^{2\pi\mathrm i/p}$ is a primitive $p$th root of unity,
+\[
+  \sum_{j=0}^{p-1}\zeta_{2N}^{\,1+qj}=\zeta_{2N}\sum_{j=0}^{p-1}\bigl(\zeta_{2N}^{\,q}\bigr)^{j}=\zeta_{2N}\cdot0=0,
+\]
+and taking imaginary parts, $\sum_{j=0}^{p-1}\sin\frac{\pi(1+qj)}{N}=0$. Reduce each term to a distinct
+frequency: with $e_j:=(1+qj)\bmod 2N$ one has $\sin\frac{\pi(1+qj)}{N}=\sigma_j\sin\frac{\pi r_j}{N}$, where
+$r_j\in\{1,\dots,\lfloor N/2\rfloor\}$ and $\sigma_j=+1$ if $e_j\in(0,N)$, $\sigma_j=-1$ if $e_j\in(N,2N)$.
+\emph{No $e_j$ lies in $\{0,N\}$:} $e_j\equiv0$ would need $qj\equiv-1\ (2N)$, impossible since $q\mid 2N$
+and $q>1$; $e_j\equiv N$ would need $q\mid N-1$, but $p$ odd gives $ps\equiv s\ (2s)$, hence
+$N-1\equiv s-1\ (2s)$ with $0<s-1<2s$, so $2s\nmid N-1$. Thus every $\sigma_j=\pm1$, and the vector $k$
+with $k_r=\sum_{j:\,r_j=r}\sigma_j$ satisfies $\sum_r k_r\,2\sin\frac{\pi r}N=\sum_j\sigma_j\,2\sin\frac{\pi r_j}N=0$,
+i.e.\ $k\in\Lambda_N$, with
+\[
+  \sum_r k_r=\sum_{j=0}^{p-1}\sigma_j\equiv p\equiv1\pmod 2 .
+\]
+So $\sum_r k_r$ is odd: then $\sum_r k_r\not\equiv0\ (4)$, and $\sum_r k_r+2\sum_r rk_r$ is also odd, hence
+$\not\equiv0\ (4)$. The single relation $k$ violates \emph{both} branches of Theorem~\ref{thm:ceiling}, so
+neither the node $j=0$ nor (for even $N$) the node $j=N/2$ can saturate, and $A_N<U_N$
+(\texttt{verify\_classification\_proof.py}). \end{proof}
+
+\medskip\noindent\textbf{The composite gap.} For every composite $N$, then, $A_N<U_N$
+(Theorem~\ref{thm:classification}). The gap is
 \emph{certified} for $N=6$: the lone relation $2\omega_1=\omega_3$ has coefficient-sum
 $2+0-1\equiv3\ (4)\ne0$, so by Theorem~\ref{thm:ceiling} $A_6<U_6$; quantitatively a Lipschitz-grid
 certificate on the two-dimensional subtorus---the elementary level of the Lasserre moment--SOS
@@ -1030,8 +1058,10 @@ Python core and with each other (\texttt{numerics/verify\_exact\_layer.py}).
 (integer coordinates of $\zeta_{2N}^{\,r}-\zeta_{2N}^{-r}$ in $\Q(\zeta_{2N})$, integer kernel of the
 relation lattice) we recompute the $\Q$-rank and the mod-$4$ criterion and confirm
 $\operatorname{rank}_\Q\{2\sin(\pi r/N)\}=\tfrac12\varphi(2N)$ and the saturation classification
-$A_N=U_N\Leftrightarrow N\text{ prime or }2^m$ for \emph{all} $N\le800$---extending the $N\le160$ of
-Corollary~\ref{cor:density} by an order of magnitude (\texttt{exact/gap/scan\_classification.g}).
+$A_N=U_N\Leftrightarrow N\text{ prime or }2^m$ for \emph{all} $N\le800$---an exact, independent
+corroboration of Theorem~\ref{thm:classification} (\texttt{exact/gap/scan\_classification.g}); the explicit
+obstruction $k$ of that theorem is itself recertified for all composite $N\le600$ by
+\texttt{verify\_classification\_proof.py}.
 \textsc{PARI/GP} supplies a second, structurally different exact implementation of the same $\Q$-rank and
 checks the cyclotomic-degree identities $\Phi_{2p}(x)=\Phi_p(-x)$, $\Phi_{2^{m+1}}(x)=x^{2^m}+1$ and
 $\Phi_{4p}(1)=\Phi_p(-1)=1$ that drive Theorems~\ref{thm:prime},~\ref{thm:two} and
@@ -1043,10 +1073,10 @@ Laurent series and the constants of Appendix~\ref{app:bernoulli} symbolically
 For $N=p^2$ with $p$ an odd prime, the minimal mod-$4$ obstruction---the shortest frequency relation with
 coefficient-sum $\not\equiv0\ (4)$---has support exactly $p$, on the comb of indices
 $\{1\}\cup\{kp\pm1:1\le k\le\tfrac{p-1}2\}$ with alternating $\pm1$ coefficients
-(Figure~\ref{fig:obstruction}; verified for $p\le13$, \texttt{exact/gap/prime\_square.g}). This explicit,
-uniformly structured obstruction is a lead toward a constructive proof of the classification---which would
-upgrade the saturation half of Corollary~\ref{cor:density} from a finite scan to a theorem---though we do
-not prove it here.
+(Figure~\ref{fig:obstruction}; \texttt{exact/gap/prime\_square.g}). This is the $N=p^2$ case of the
+root-of-unity obstruction that proves Theorem~\ref{thm:classification}: the comb is exactly the reduction
+of $\sum_{j=0}^{p-1}\sin\frac{\pi(1+2pj)}{p^2}=0$, and it was the computer-algebra mining of this structure
+that suggested the general construction.
 \end{observation}
 
 \medskip\noindent\textbf{A machine-checked certificate.} The combinatorial heart of
@@ -1063,7 +1093,8 @@ is proved by reflection (\texttt{vm\_compute}), with no floating point anywhere
 (\texttt{formal/rocq/\allowbreak Mod4Criterion.v}). \emph{Scope, stated honestly:} Rocq certifies the criterion's
 \emph{evaluation} on the supplied lattices; that those lattices are genuine frequency relations rests on
 the cyclotomic theory (proved on paper, checked exactly by \textsc{GAP}/\textsc{PARI}), which is not
-itself formalized, and the general classification remains open.
+itself formalized. The general classification is Theorem~\ref{thm:classification} (proved above); Rocq
+adds a floating-point-free check of the criterion's evaluation, not a reproof.
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.94\textwidth]{fig_obstruction.pdf}
@@ -1129,6 +1160,7 @@ Disorder vs.\ resonance (gen.\ eig.) & \texttt{verify\_disorder.py}\\
 Order map $A_N/\ln N$, prefix (Table~\ref{tab:order}) & \texttt{verify\_conj\_order\_map.py}\\
 Extended order run ($N\!\sim\!1000$, criterion $\le500$) & \texttt{verify\_order\_extended.py}\\
 Filimonov segment law $d_j^N\!\sim\!\tfrac4{\pi^2}\ln j$ & \texttt{verify\_filimonov\_schrodinger.py}\\
+Classification $A_N{=}U_N\!\Leftrightarrow\!$ prime$/2^m$ (Thm.~\ref{thm:classification}) & \texttt{verify\_classification\_proof.py}\\
 Exact GAP/PARI/Rocq layer, cross-check & \texttt{verify\_exact\_layer.py}\\
 Exact classification $A_N{=}U_N$, $N\le800$ (GAP) & \texttt{exact/gap/scan\_classification.g}\\
 Cyclotomic identities cross-check (PARI) & \texttt{exact/pari/crosscheck.gp}\\

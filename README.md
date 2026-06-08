@@ -28,10 +28,11 @@ Proved results are kept strictly separate from numerical evidence and the one op
   $N = 2p$ (cyclotomic independence + Bohr almost-periodicity).
 - **T2 — subtorus dimension (theorem).** The orbit-closure subtorus has dimension exactly
   $\tfrac12\varphi(2N)$ for *every* $N$.
-- **T3 — ceiling criterion (theorem).** $A_N = U_N$ **iff** every integer frequency relation has
-  coefficient-sum $\equiv 0 \pmod 4$. On $N \le 160$ the saturating set is exactly
-  $\{\text{primes}\}\cup\{2^m\}$ (density zero); whether any composite $N$ ever saturates is decided,
-  per $N$, by the criterion.
+- **T3 — ceiling criterion + classification (theorem).** $A_N = U_N$ **iff** every integer frequency
+  relation has coefficient-sum $\equiv 0 \pmod 4$ (antipodal variant for even $N$); via an explicit
+  root-of-unity obstruction for every composite $N$, this holds **exactly when $N$ is prime or a power of
+  two**, so $\{N : A_N = U_N\} = \{\text{primes}\}\cup\{2^m\}$ (density zero). Certified for all composite
+  $N \le 600$ by `verify_classification_proof.py`, corroborated to $N \le 800$ in exact GAP arithmetic.
 - **T4 — discrete Schrödinger (two settings).** A localized state is never amplified (unitarity), yet the
   $\ell^\infty\!\to\!\ell^\infty$ amplification is $B_N = \Theta(\sqrt N)$ — **both bounds rigorous**
   (upper from unitarity, lower from a Bessel-front estimate at $t = N/8$). On the **Dirichlet segment**

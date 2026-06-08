@@ -58,7 +58,8 @@ unconditionally on these classes, and the same sharp constant holds for the comp
 For every $N$ the upper bound $A_N\le U_N=\tfrac1\pi\ln N+O(1)$ is rigorous; the orbit-closure subtorus
 has dimension exactly $\tfrac12\varphi(2N)$, and $A_N=U_N$ holds \emph{if and only if} every integer
 relation among the frequencies has coefficient-sum divisible by four (with an antipodal variant for even
-$N$)---an arithmetic criterion met by the prime and $2^m$ cases (and by no composite $N\le160$). A low-mode prefix gives strong evidence that $A_N=\Theta(\ln N)$ for
+$N$)---an arithmetic criterion met \emph{exactly} by the primes and the powers of two
+(Theorem~\ref{thm:classification}), and by no composite $N$. A low-mode prefix gives strong evidence that $A_N=\Theta(\ln N)$ for
 all $N$, which we leave as a conjecture, and we separate the infinite-time ceiling from the
 finite-time (Diophantine) amplitude actually reached. For the discrete Schr\"odinger propagator
 $\eu^{-\mathrm{i}t\LN}$, unitarity forbids amplification of a localized state, while the
@@ -100,8 +101,10 @@ constant extends to the composite family $N=2p$ (Proposition~\ref{prop:2p}). (ii
 $N$ the upper bound $A_N\le U_N$ is rigorous, and we reduce $A_N$ \emph{exactly} to an optimization over
 the orbit-closure subtorus, whose dimension we compute in closed form as $\tfrac12\varphi(2N)$
 (Theorem~\ref{thm:qrank}); a sharp arithmetic criterion---coefficient-sums divisible by four (plus an antipodal variant for even
-$N$)---decides exactly when $A_N=U_N$ (Theorem~\ref{thm:ceiling}), while a $\Q$-independent low-mode prefix gives strong
-numerical evidence, but not yet a proof, that $A_N=\Theta(\ln N)$ in general (Conjecture~\ref{conj:order}).
+$N$)---decides exactly when $A_N=U_N$ (Theorem~\ref{thm:ceiling}), and an explicit root-of-unity
+obstruction settles the saturation locus completely: $A_N=U_N$ \emph{iff} $N$ is prime or a power of two
+(Theorem~\ref{thm:classification}). A $\Q$-independent low-mode prefix gives strong numerical evidence, but
+not yet a proof, that $A_N=\Theta(\ln N)$ on the non-saturating $N$ too (Conjecture~\ref{conj:order}).
 (iii) For composite $N$ the value is algebraic with increasing arithmetic complexity
 (Proposition~\ref{prop:closed}); we further separate the infinite-time ceiling from the finite-time
 amplitude and show both the finite-horizon recurrence time and the effect of mass disorder
@@ -154,10 +157,11 @@ for $N$ prime and $N=2^m$ (independence); $A_N=U_N-O(1/N)$ with the same constan
 (Thms.~\ref{thm:prime},~\ref{thm:two}, Prop.~\ref{prop:2p}).
 \item[\textbf{T2}] The orbit-closure subtorus has dimension $\tfrac12\varphi(2N)$ for \emph{every} $N$
 (Thm.~\ref{thm:qrank}).
-\item[\textbf{T3}] \emph{Ceiling criterion}: $A_N=U_N$ iff every integer frequency relation has
-coefficient-sum $\equiv0\ (\mathrm{mod}\ 4)$ (or, $N$ even, an antipodal variant; Thm.~\ref{thm:ceiling});
-no composite $N\le160$ saturates, so there $\{N:A_N=U_N\}=\{\text{prime}\}\cup\{2^m\}$. Whether any
-composite saturates is open (Cor.~\ref{cor:density}).
+\item[\textbf{T3}] \emph{Ceiling criterion and classification}: $A_N=U_N$ iff every integer frequency
+relation has coefficient-sum $\equiv0\ (\mathrm{mod}\ 4)$ (or, $N$ even, an antipodal variant;
+Thm.~\ref{thm:ceiling}); this holds \emph{exactly} for $N$ prime or $N=2^m$, so
+$\{N:A_N=U_N\}=\{\text{prime}\}\cup\{2^m\}$ (Thm.~\ref{thm:classification}, via an explicit
+root-of-unity obstruction for every composite $N$).
 \item[\textbf{T4}] Discrete Schr\"odinger: localized states never amplify (unitarity), yet
 $B_N=\Theta(\sqrt N)$ in $\ell^\infty$ (Thms.~\ref{thm:schr},~\ref{thm:schr-lower}).
 \item[\textbf{T5}] The incoherent \emph{ceiling} has critical spectral dimension $d_s=1$ (incl.\ quasi-1D);
@@ -235,10 +239,10 @@ discrete Laplacian, electrostatically.}\label{fig:lightning}
 law $A_N=\Theta(\ln N)$ is \emph{proved} only on the prime, $2^m$, and $2p$ classes; for general $N$ only
 $A_N\le U_N$ is rigorous, and the matching lower bound (Conjecture~\ref{conj:order}) is open---the
 obstruction is the destructive interference of the out-of-prefix modes, so the prefix budget
-$L_{\mathrm{pre}}$ is heuristic, not a proven bound. (ii)~The ceiling criterion
-(Theorem~\ref{thm:ceiling}) is exact, but whether any \emph{composite} $N$ satisfies it is verified only
-to $N\le160$ (none does); the algebraic value of $A_N$ for individual composite $N$ is computed, not
-bounded in closed form. (iii)~The Schr\"odinger order $B_N=\Theta(\sqrt N)$ is proved, but the optimal
+$L_{\mathrm{pre}}$ is heuristic, not a proven bound. (ii)~The saturation locus is now settled---no
+composite $N$ saturates (Theorem~\ref{thm:classification})---but the \emph{value} $A_N$ on the
+non-saturating $N$ is only computed per $N$, not bounded in closed form, and its $\Theta(\ln N)$ order
+there is Conjecture~\ref{conj:order}. (iii)~The Schr\"odinger order $B_N=\Theta(\sqrt N)$ is proved, but the optimal
 constant is open: $\liminf_N B_N/\sqrt N\ge0.6086$ and $\limsup_N B_N/\sqrt N\le1$, with existence of the
 limit unknown. The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
 published Myshkis--Filimonov value~\cite[Thm.~2]{MF03}, which the Schr\"odinger ceiling inherits because the
