@@ -1020,6 +1020,59 @@ reflections off the periodic geometry, and the focusing recurrences that build t
 \label{fig:heatmap}
 \end{figure}
 
+\section{Exact arithmetic and a machine-checked certificate}\label{sec:formal}
+
+The arithmetic underlying Theorems~\ref{thm:qrank} and~\ref{thm:ceiling} is verified independently of the
+floating-point experiments by two computer-algebra systems and one proof assistant; all agree with the
+Python core and with each other (\texttt{numerics/verify\_exact\_layer.py}).
+
+\medskip\noindent\textbf{Two exact reimplementations.} In \textsc{GAP}'s exact cyclotomic arithmetic
+(integer coordinates of $\zeta_{2N}^{\,r}-\zeta_{2N}^{-r}$ in $\Q(\zeta_{2N})$, integer kernel of the
+relation lattice) we recompute the $\Q$-rank and the mod-$4$ criterion and confirm
+$\operatorname{rank}_\Q\{2\sin(\pi r/N)\}=\tfrac12\varphi(2N)$ and the saturation classification
+$A_N=U_N\Leftrightarrow N\text{ prime or }2^m$ for \emph{all} $N\le800$---extending the $N\le160$ of
+Corollary~\ref{cor:density} by an order of magnitude (\texttt{exact/gap/scan\_classification.g}).
+\textsc{PARI/GP} supplies a second, structurally different exact implementation of the same $\Q$-rank and
+checks the cyclotomic-degree identities $\Phi_{2p}(x)=\Phi_p(-x)$, $\Phi_{2^{m+1}}(x)=x^{2^m}+1$ and
+$\Phi_{4p}(1)=\Phi_p(-1)=1$ that drive Theorems~\ref{thm:prime},~\ref{thm:two} and
+Proposition~\ref{prop:2p} (\texttt{exact/pari/crosscheck.gp}); \textsc{FriCAS} reproduces the $\csc$
+Laurent series and the constants of Appendix~\ref{app:bernoulli} symbolically
+(\texttt{exact/fricas/asymptotics.input}).
+
+\begin{observation}[structure of the composite obstruction]\label{obs:psq}
+For $N=p^2$ with $p$ an odd prime, the minimal mod-$4$ obstruction---the shortest frequency relation with
+coefficient-sum $\not\equiv0\ (4)$---has support exactly $p$, on the comb of indices
+$\{1\}\cup\{kp\pm1:1\le k\le\tfrac{p-1}2\}$ with alternating $\pm1$ coefficients
+(Figure~\ref{fig:obstruction}; verified for $p\le13$, \texttt{exact/gap/prime\_square.g}). This explicit,
+uniformly structured obstruction is a lead toward a constructive proof of the classification---which would
+upgrade the saturation half of Corollary~\ref{cor:density} from a finite scan to a theorem---though we do
+not prove it here.
+\end{observation}
+
+\medskip\noindent\textbf{A machine-checked certificate.} The combinatorial heart of
+Theorem~\ref{thm:ceiling}---that the mod-$4$ verdict, evaluated on the relation lattices, matches the
+prime/$2^m$ classification---is checked by the \textsc{Rocq} proof assistant (formerly Coq). The exact
+$\Lambda_N$ computed by \textsc{GAP} are embedded as integer vectors, the criterion
+$\mathrm{saturates}(N,B)=\bigl(\forall k\in B:\textstyle\sum_r k_r\equiv0\bigr)\vee\bigl(N\text{ even}\wedge
+\forall k:\textstyle\sum_r k_r+2\sum_r rk_r\equiv0\bigr)\ (\mathrm{mod}\,4)$ is defined over $\Z$, and
+\[
+  \texttt{mod4\_criterion\_matches\_prime\_2pow}:\quad
+  \operatorname{map}\bigl(\lambda(N,B).\ \mathrm{saturates}\,N\,B\bigr)\,\mathit{certs}=\mathit{expected}
+\]
+is proved by reflection (\texttt{vm\_compute}), with no floating point anywhere
+(\texttt{formal/rocq/\allowbreak Mod4Criterion.v}). \emph{Scope, stated honestly:} Rocq certifies the criterion's
+\emph{evaluation} on the supplied lattices; that those lattices are genuine frequency relations rests on
+the cyclotomic theory (proved on paper, checked exactly by \textsc{GAP}/\textsc{PARI}), which is not
+itself formalized, and the general classification remains open.
+
+\begin{figure}[ht]\centering
+\includegraphics[width=.94\textwidth]{fig_obstruction.pdf}
+\caption{The composite obstruction for $N=p^2$ (Observation~\ref{obs:psq},
+\texttt{exact/gap/prime\_square.g}). Left: the \textsc{GAP}-computed minimal mod-$4$ obstruction at
+$N=49$ ($p=7$)---coefficients $\pm1$ on the comb $\{1,6,8,13,15,20,22\}=\{1\}\cup\{7k\pm1\}$. Right: the
+support comb $\{1\}\cup\{kp\pm1\}$ for $p=3,5,7,11,13$, of size $p$.}\label{fig:obstruction}
+\end{figure}
+
 \section{Reproducibility}\label{sec:repro}
 
 Every claim above is reproduced by a standalone script (run via \texttt{uv run --script}); all pass.
@@ -1076,6 +1129,11 @@ Disorder vs.\ resonance (gen.\ eig.) & \texttt{verify\_disorder.py}\\
 Order map $A_N/\ln N$, prefix (Table~\ref{tab:order}) & \texttt{verify\_conj\_order\_map.py}\\
 Extended order run ($N\!\sim\!1000$, criterion $\le500$) & \texttt{verify\_order\_extended.py}\\
 Filimonov segment law $d_j^N\!\sim\!\tfrac4{\pi^2}\ln j$ & \texttt{verify\_filimonov\_schrodinger.py}\\
+Exact GAP/PARI/Rocq layer, cross-check & \texttt{verify\_exact\_layer.py}\\
+Exact classification $A_N{=}U_N$, $N\le800$ (GAP) & \texttt{exact/gap/scan\_classification.g}\\
+Cyclotomic identities cross-check (PARI) & \texttt{exact/pari/crosscheck.gp}\\
+$N{=}p^2$ obstruction comb (GAP, Fig.~\ref{fig:obstruction}) & \texttt{exact/gap/prime\_square.g}\\
+Machine-checked mod-4 criterion (Rocq) & \texttt{formal/rocq/Mod4Criterion.v}\\
 \end{longtable}
 
 \section{Statistics: density of states and value distribution}\label{sec:stats}

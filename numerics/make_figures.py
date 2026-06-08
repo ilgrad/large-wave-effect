@@ -31,7 +31,9 @@ def _save(fig: Figure, name: str) -> None:
     fig.tight_layout()
     # dpi controls only rasterized artists (the pcolormesh density plots); vector
     # elements (axes, text, lines) stay vector. Keeps fig_branched et al. small.
-    fig.savefig(f"{OUT}/{name}.pdf", dpi=200)
+    # metadata CreationDate=None makes the PDF byte-deterministic (no embedded timestamp),
+    # so regenerating figures does not churn the git diff.
+    fig.savefig(f"{OUT}/{name}.pdf", dpi=200, metadata={"CreationDate": None})
     plt.close(fig)
 
 
@@ -240,6 +242,33 @@ def fig_qrank() -> None:
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3)
     _save(fig, "fig_qrank")
+
+
+def fig_obstruction() -> None:
+    # Minimal mod-4 obstruction for N = p^2 (exact, GAP-verified by exact/gap/prime_square.g):
+    # support = p on the index comb {1} U {kp +- 1}, k = 1..(p-1)/2.
+    vec49 = {1: 1, 6: 1, 8: -1, 13: -1, 15: 1, 20: 1, 22: -1}  # p = 7
+    fig, (axl, axr) = plt.subplots(1, 2, figsize=(9.4, 3.6))
+
+    rs = np.arange(1, 25)
+    ks = np.array([vec49.get(int(r), 0) for r in rs])
+    axl.stem(rs, ks, basefmt=" ", linefmt="C0-", markerfmt="C0o")
+    axl.axhline(0, color="k", lw=0.6)
+    axl.set_xlabel(r"frequency index $r$")
+    axl.set_ylabel(r"obstruction coefficient $k_r$")
+    axl.set_title(r"$N=49=7^2$: support $\{1\}\cup\{7k\pm1\}$, $\sum_r k_r\equiv1\ (4)$")
+    axl.set_yticks([-1, 0, 1])
+    axl.grid(alpha=0.3)
+
+    for p in (3, 5, 7, 11, 13):
+        idx = [1] + [k * p + s for k in range(1, (p - 1) // 2 + 1) for s in (-1, 1)]
+        axr.scatter(idx, [p] * len(idx), s=22, color="C3")
+    axr.set_xlabel(r"frequency index $r$")
+    axr.set_ylabel(r"prime $p$ (for $N=p^2$)")
+    axr.set_yticks([3, 5, 7, 11, 13])
+    axr.set_title(r"obstruction support is the comb $\{1\}\cup\{kp\pm1\}$, size $p$")
+    axr.grid(alpha=0.3)
+    _save(fig, "fig_obstruction")
 
 
 def _peregrine(x: np.ndarray, t: np.ndarray) -> np.ndarray:
@@ -998,9 +1027,10 @@ def main() -> int:
               fig_breather2d, fig_phase3d, fig_dispersion3d,
               fig_caustic, fig_branched,
               fig_cusp, fig_raycaustic, fig_caustic_mi, fig_lightning,
-              fig_reachability, fig_spectral_dim, fig_filimonov, fig_largewave):
+              fig_reachability, fig_spectral_dim, fig_filimonov, fig_largewave,
+              fig_obstruction):
         f()
-    print("wrote 29 figures to", OUT)
+    print("wrote 30 figures to", OUT)
     return 0
 
 
