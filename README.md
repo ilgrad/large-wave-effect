@@ -36,7 +36,8 @@ Proved results are kept strictly separate from numerical evidence and the one op
   $\ell^\infty\!\to\!\ell^\infty$ amplification is $B_N = \Theta(\sqrt N)$ — **both bounds rigorous**
   (upper from unitarity, lower from a Bessel-front estimate at $t = N/8$). On the **Dirichlet segment**
   (uniform initial state) the amplitude at site $j$ grows as $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ for $N$
-  prime or $2^m$ (Filimonov 2023, reproduced — we identify the constant $C = 4/\pi^2$). Three large-wave
+  prime or $2^m$ (Filimonov 2023, reproduced; the constant $C = 4/\pi^2$ is the published
+  Myshkis–Filimonov 2003 value, inherited because the wave and Schrödinger ceilings coincide). Three large-wave
   laws thus live on one Laplacian: $A_N \sim \tfrac1\pi\ln N$ (ring, system size),
   $B_N \sim \sqrt N$ (ring, $\ell^\infty$ norm), $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ (segment, site).
 - **T5 — dimensionality & reachability.** The large wave lives exactly at spectral dimension $d_s = 1$

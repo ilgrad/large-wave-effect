@@ -119,7 +119,11 @@ law. Every quantitative claim is reproduced by a standalone, version-controlled 
 \noindent\textbf{Relation to prior work.} The large-wave \emph{phenomenon}---that on the discrete bead
 string a localized disturbance amplifies, growing without bound at bounded energy on suitable $N$---is
 classical, due to the Kurchanov--Myshkis--Filimonov line of work~\cite{KMF,MF03,FM}, with the $\ln$-type
-asymptotics on the Dirichlet segment in~\cite{MF03} and the Schr\"odinger analogue in~\cite{F23}. The
+asymptotics on the Dirichlet segment first in~\cite{FM98} and sharpened in~\cite{MF03}, and the
+Schr\"odinger analogue in~\cite{F23}. The
+linear independence over $\Q$ of the frequencies for $N$ prime or $N=2^m$ is itself due to~\cite{KMF};
+our Theorems~\ref{thm:prime},~\ref{thm:two} reprove it cyclotomically, and Theorem~\ref{thm:qrank}
+subsumes it in a closed-form $\Q$-rank valid for \emph{every} $N$. The
 lineage summarized in~\cite{F23} also includes two early C.~R.~Acad.~Sci.\ notes on the bead
 string~\cite{FKM91,F92}---in particular Filimonov's \emph{multiple-frequency} case~\cite{F92}, which bears
 directly on the rational frequency dependencies studied here---which we have not been able to consult
@@ -128,8 +132,8 @@ therefore stated as novel \emph{to our knowledge}, and~\cite{F92} should be comp
 Theorem~\ref{thm:ceiling} before submission.
 Our contribution is \emph{quantitative and structural}: the explicit ring constant $\tfrac1\pi$ and the
 next term $-\tfrac{\pi}{72}N^{-2}$ (Lemma~\ref{lem:asym}); the closed-form subtorus dimension
-$\tfrac12\varphi(2N)$ for every $N$ and the cyclotomic independence proof for $N$ prime and $N=2^m$
-(Theorems~\ref{thm:qrank},~\ref{thm:prime},~\ref{thm:two}); the exact $\bmod\,4$ criterion for reaching
+$\tfrac12\varphi(2N)$ for every $N$, with a cyclotomic reproof of the prime/$2^m$ independence
+of~\cite{KMF} as its full-rank case (Theorems~\ref{thm:qrank},~\ref{thm:prime},~\ref{thm:two}); the exact $\bmod\,4$ criterion for reaching
 the ceiling (Theorem~\ref{thm:ceiling}); the new composite family $N=2p$ (Proposition~\ref{prop:2p}); the
 spectral-zeta systematization; the finite-time/disorder dichotomy (Section~\ref{sec:reach}); and the
 sharp $B_N=\Theta(\sqrt N)$ growth of the discrete Schr\"odinger propagator
@@ -229,9 +233,9 @@ $L_{\mathrm{pre}}$ is heuristic, not a proven bound. (ii)~The ceiling criterion
 to $N\le160$ (none does); the algebraic value of $A_N$ for individual composite $N$ is computed, not
 bounded in closed form. (iii)~The Schr\"odinger order $B_N=\Theta(\sqrt N)$ is proved, but the optimal
 constant is open: $\liminf_N B_N/\sqrt N\ge0.6086$ and $\limsup_N B_N/\sqrt N\le1$, with existence of the
-limit unknown; and the segment constant $C=4/\pi^2$
-(Section~\ref{sub:filimonov}) is identified numerically and by a limiting integral rather than a fully
-rigorous bound. (iv)~The segment rank \eqref{eq:segrank} is verified to $N\le30$ and conjectured in
+limit unknown. The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
+published Myshkis--Filimonov value~\cite[Thm.~2]{MF03}, which the Schr\"odinger ceiling inherits because the
+two ceilings coincide. (iv)~The segment rank \eqref{eq:segrank} is verified to $N\le30$ and conjectured in
 general. (v)~Part~II is \emph{computational and exploratory}: its rigorous statements (the Hamiltonian
 conservation laws, Proposition~\ref{prop:dnls-cons}, and the linear modulational band,
 Proposition~\ref{prop:mi}) are classical, while the genuinely hard nonlinear results---existence and
@@ -354,6 +358,7 @@ Section~\ref{sec:repro}. The complete repository---scripts, section sources, and
 \bibitem{KMF} P.~F.~Kurchanov, A.~D.~Myshkis, A.~M.~Filimonov, \emph{Vibrations of rolling stock and a theorem of Kronecker}, J.~Appl.\ Math.\ Mech.\ \textbf{55} (1991), no.~6, 870--876 (Russian original: Prikl.\ Mat.\ Mekh.\ \textbf{55}(6), 989--995). \texttt{doi:10.1016/0021-8928(91)90140-P}.
 \bibitem{FKM91} A.~M.~Filimonov, P.~F.~Kurchanov, A.~D.~Myshkis, \emph{Some unexpected results in the classical problem of vibration of the string with $n$ beads when $n$ is large}, C.~R.~Acad.\ Sci.\ Paris S\'er.~I \textbf{313} (1991), no.~13, 961--965. (Cited from the lineage list of~\cite{F23}; not consulted directly.)
 \bibitem{F92} A.~M.~Filimonov, \emph{Some unexpected results on the classical problem of vibrations of the string with $N$ beads. The case of multiple frequencies}, C.~R.~Acad.\ Sci.\ Paris S\'er.~I \textbf{315} (1992), no.~8, 957--961. (Cited from the lineage list of~\cite{F23}; not consulted directly.)
+\bibitem{FM98} A.~M.~Filimonov, A.~D.~Myshkis, \emph{Asymptotic estimate of solution of one mixed difference--differential equation of oscillations theory}, J.~Difference Equ.\ Appl.\ \textbf{4} (1998), no.~1, 13--16. \texttt{doi:10.1080/10236199808808125}. (First $\ln$-growth result; cited from~\cite{MF03}.)
 \bibitem{FMM} A.~M.~Filimonov, X.~Mao, S.~Maslov, \emph{Splash effect and ergodic properties of solutions of the classical difference--differential equation}, J.~Difference Equ.\ Appl.\ \textbf{6} (2000), no.~3, 319--328. \texttt{doi:10.1080/10236190008808231}.
 \bibitem{FM} A.~M.~Filimonov, A.~D.~Myshkis, \emph{On properties of the large wave effect in the classical problem of bead string vibration}, J.~Difference Equ.\ Appl.\ \textbf{10} (2004), no.~13--15, 1171--1175. \texttt{doi:10.1080/10236190410001652757}.
 \bibitem{F23} A.~M.~Filimonov, \emph{Sufficient conditions for the large wave phenomenon in the Schr\"odinger equation with discrete spatial variable}, J.~Math.\ Sci.\ \textbf{269} (2023), no.~6, 792--795. \texttt{doi:10.1007/s10958-023-06316-1}.

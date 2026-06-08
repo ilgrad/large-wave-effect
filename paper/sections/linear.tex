@@ -882,8 +882,11 @@ For $\alpha_j\equiv1$ and $N=2^m$, $\ \sup_t|z_j(t)|=d_j^N$, and
 relatively dense set of near-revival times (the modulus is almost-periodic, \cite{Bohr}). Two refinements
 complete the picture (\texttt{verify\_filimonov\_schrodinger.py}).
 
-\emph{The constant.} Filimonov leaves $C$ unspecified; we identify it. As $N\to\infty$ the ceiling
-\eqref{eq:fil-ak} becomes a Riemann sum for
+\emph{The constant is not new.} It is the value Myshkis--Filimonov established for the \emph{wave}
+problem: their segment ceiling satisfies $\zeta_j^N\to\tfrac{4}{\pi^2}\ln j+O(1)$
+\cite[Thm.~2]{MF03}, and the Schr\"odinger ceiling \eqref{eq:fil-ak} coincides with it term for term
+(both equal $\tfrac2N\sum_{k\ \mathrm{odd}}\bigl|\cot\tfrac{\pi k}{2N}\sin\tfrac{\pi kj}{N}\bigr|$). The same
+limit is immediate here: as $N\to\infty$ the ceiling \eqref{eq:fil-ak} becomes a Riemann sum for
 \begin{equation}\label{eq:fil-int}
   d_j^\infty=\frac2\pi\int_0^{\pi/2}\cot\theta\,\bigl|\sin 2j\theta\bigr|\,d\theta,
 \end{equation}
@@ -892,7 +895,9 @@ $\tfrac2\pi\cdot\tfrac2\pi\ln j$, giving
 \begin{equation}\label{eq:fil-C}
   C=\frac{4}{\pi^2}\approx0.4053 .
 \end{equation}
-The fit $d_j^N=(4/\pi^2)\ln j+O(1)$ holds to $R^2=1.0000$ at $N=2^{12}$ (Figure~\ref{fig:filimonov}).
+The genuinely new content of Theorem~\ref{thm:filimonov} is the Schr\"odinger \emph{attainment}
+$\sup_t|z_j|=d_j^N$ \cite{F23}, not the constant. The fit $d_j^N=(4/\pi^2)\ln j+O(1)$ holds to
+$R^2=1.0000$ at $N=2^{12}$ (Figure~\ref{fig:filimonov}).
 
 \emph{Independence and the scope of Theorem~\ref{thm:filimonov}.} The equality $\sup_t|z_j|=d_j^N$ rests
 on two facts: the sign-pairing $\omega_{N-k}=-\omega_k$ together with the elementary identity
@@ -914,7 +919,7 @@ and $d_j^N\sim\tfrac4{\pi^2}\ln j$ (Dirichlet segment, growth in the observation
 \begin{table}[ht]\centering
 \caption{The large-wave asymptotics carried by the discrete Laplacian, by dynamics and functional; every
 constant is reproduced by the accompanying scripts. ``Sharp class'' is where the leading constant is
-established (proved or, for $d_j^N$, identified here).}\label{tab:laws}
+established (proved here; for $d_j^N$ the constant is the published value of~\cite{MF03}).}\label{tab:laws}
 \begin{tabular}{llll}
 \toprule
 quantity & dynamics / functional & leading asymptotic & sharp class\\
