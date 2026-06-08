@@ -40,3 +40,21 @@ floating point** anywhere in the proof.
 
 In short: Rocq removes any doubt about the *combinatorial evaluation* of the criterion on the
 certificates; the cyclotomic input is supplied, exactly, by GAP and PARI.
+
+## `Classification.v` — the arithmetic core, *uniform in N*
+
+Where `Mod4Criterion.v` checks a finite list, `Classification.v` proves the number-theoretic heart of
+the classification theorem `A_N = U_N <=> N prime or 2^m` for **all** N at once (still stdlib-only):
+
+- `ps_minus1_mod : Z.odd p = true -> 0 < s -> (p*s - 1) mod (2*s) = s - 1` — the crux that keeps the
+  constructed indices `1 + 2 s j` off `{0, N}`, so every reduction sign is `+-1`;
+- `single_relation_blocks_both` — a relation whose signs are all `+-1` and whose support count is **odd**
+  violates *both* mod-4 branches, so a single relation forces `A_N < U_N`.
+
+Honest scope: the one thing not formalized is that the constructed vector is a genuine frequency relation
+(`sum_r k_r 2 sin(pi r/N) = 0`) — that cyclotomic fact is proved on paper and checked exactly by GAP/PARI
+and `numerics/verify_classification_proof.py`.
+
+```bash
+rocq compile formal/rocq/Classification.v
+```

@@ -379,14 +379,32 @@ The segment chain $\mathrm{tridiag}(-1,2,-1)$ with Dirichlet ends has the \emph{
 $\mu_k=2\sin\frac{\pi k}{2(N+1)}$ ($k=1,\dots,N$): no degeneracy, the structural advantage over the
 ring, whose twofold $\mu_r=\mu_{N-r}$ halves the independent phases. Writing $\mu_k=2\sin(2\pi k/M)$ with
 $M=4(N+1)$, the frequencies lie in $\Q(\zeta_M)$ with $2\mathrm{i}\sin(2\pi k/M)=\zeta_M^k-\zeta_M^{-k}$,
-and the same minus-eigenspace argument gives the subtorus dimension
+and the same minus-eigenspace argument bounds the subtorus dimension,
 \begin{equation}\label{eq:segrank}
-  \dim_\Q\operatorname{span}\{\mu_1,\dots,\mu_N\}=\min\!\bigl(N,\ \tfrac12\varphi(4(N+1))\bigr)
-  \qquad(\text{verified for }N\le30,\ \text{conjectured in general}),
+  \dim_\Q\operatorname{span}\{\mu_1,\dots,\mu_N\}\le\tfrac12\varphi(4(N+1))
 \end{equation}
-which is full ($=N$, whence $A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}\sim\frac1\pi\ln N$ by Bohr)
-when $N+1$ is prime or a power of two (and, assuming \eqref{eq:segrank}, only then)---the exact analogue of Theorems~\ref{thm:prime}--\ref{thm:two}
-shifted by the boundary (the ring uses modulus $2N$, the segment $4(N+1)$). The $\Q$-independent low-mode
+(with equality to $\min\!\bigl(N,\tfrac12\varphi(4(N+1))\bigr)$ verified for $N\le60$). This upper bound
+alone settles when the segment saturates.
+
+\begin{proposition}[segment classification]\label{prop:segclass}
+$A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$ if and only if $N+1$ is prime or a power of two.
+\end{proposition}
+
+\begin{proof}
+By the simple spectrum and Bohr, $A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$ iff the $\mu_k$ are
+$\Q$-independent, i.e.\ $\dim_\Q\operatorname{span}\{\mu_k\}=N$. Each $2\mathrm i\mu_k=\zeta_M^k-\zeta_M^{-k}\in V^-$
+($M=4(N+1)$), so by \eqref{eq:segrank} the rank is at most $\tfrac12\varphi(M)$. Write $N+1=2^a m$ with $m$
+odd; then $\tfrac12\varphi(4(N+1))=2^a\varphi(m)$, and $2^a\varphi(m)\ge N=2^am-1$ iff
+$2^a\bigl(m-\varphi(m)\bigr)\le1$, i.e.\ iff $m=1$ ($N+1=2^a$) or $a=0$ with $m$ prime ($N+1$ prime). Thus
+for composite $N+1$ that is not a power of two, $\dim_\Q\operatorname{span}\{\mu_k\}\le\tfrac12\varphi(4(N+1))<N$,
+so the $\mu_k$ are dependent and $A_N^{\mathrm{Dir}}<U_N^{\mathrm{Dir}}$. Conversely, for $N+1=p$ prime the
+$\mu_k=2\sin(\pi k/2p)$ ($1\le k\le p-1$) are $\Q$-independent (Proposition~\ref{prop:2p}), and for
+$N+1=2^m$ the exponents $k$ and $2^{m+1}-k$ are distinct basis powers of $\zeta_{2^{m+2}}$ (the argument of
+Theorem~\ref{thm:two}); in both cases the rank is the full $N$, so $A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$
+(\texttt{verify\_segment\_classification.py}). \end{proof}
+
+\noindent This is the exact analogue of the ring classification (Theorem~\ref{thm:classification}), shifted
+by the boundary (the ring uses modulus $2N$, the segment $4(N+1)$). The $\Q$-independent low-mode
 prefix again supports $A_N^{\mathrm{Dir}}=\Theta(\ln N)$ for every $N$ numerically, subject to the same
 out-of-prefix gap as Conjecture~\ref{conj:order} (\texttt{verify\_segment\_lower\_bound.py}).
 
@@ -645,10 +663,12 @@ proof of Conjecture~\ref{conj:order}.
 
 \smallskip
 \noindent\textbf{Open problem.} Prove $A_N\ge c\ln N$ for all $N$ with an absolute constant $c>0$
-(equivalently, a sharp lower bound on the subtorus maximum). A certified value for each $N$ is
-available from the Lasserre moment--SOS hierarchy; the analytic obstruction is the control of the
-rational relations among $\{2\sin(\pi r/N)\}$ (vanishing sums of roots of unity~\cite{CJ})---a question in
-the arithmetic of cyclotomic fields.
+(equivalently, a sharp lower bound on the subtorus maximum). \emph{Soft bounds do not suffice}: the
+time-averaged second moment gives only $\sup_t|G_N(0,t)|\ge\mathrm{RMS}_t\to1/\sqrt{12}$, and the single
+slowest mode only $b_1\to1/\pi$, both $O(1)$; the $\ln N$ must come from the simultaneous near-alignment of
+$\Theta(\ln N)$ modes. A certified value for each $N$ is available from the Lasserre moment--SOS hierarchy;
+the analytic obstruction is the control of the rational relations among $\{2\sin(\pi r/N)\}$ (vanishing
+sums of roots of unity~\cite{CJ})---a question in the arithmetic of cyclotomic fields.
 The evidence is strong on two fronts (Table~\ref{tab:order}): the exact $A_N$ keeps $A_N/\ln N$ in the
 narrow band $[0.28,0.34]$ across all classes---including the hardest $N=pq$ with $p,q\sim\sqrt N$, where
 in fact $A_N/\ln N\in[0.320,0.322]$ and $A_N/U_N\ge0.98$ for the consecutive-prime products
@@ -1094,7 +1114,13 @@ is proved by reflection (\texttt{vm\_compute}), with no floating point anywhere
 \emph{evaluation} on the supplied lattices; that those lattices are genuine frequency relations rests on
 the cyclotomic theory (proved on paper, checked exactly by \textsc{GAP}/\textsc{PARI}), which is not
 itself formalized. The general classification is Theorem~\ref{thm:classification} (proved above); Rocq
-adds a floating-point-free check of the criterion's evaluation, not a reproof.
+adds a floating-point-free check of the criterion's evaluation, not a reproof. A second Rocq file
+(\texttt{formal/rocq/Classification.v}) goes further and certifies the \emph{number-theoretic core} of
+Theorem~\ref{thm:classification} \emph{uniformly in $N$} (not a scan): the crux $\,(ps-1)\bmod 2s=s-1\,$
+that keeps the constructed indices off $\{0,N\}$, and the capstone that an odd-length $\pm1$ relation
+violates both mod-$4$ branches. Only the cyclotomic input---that the constructed vector is a genuine
+relation---is supplied from outside (exactly, by \textsc{GAP}/\textsc{PARI} and
+\texttt{verify\_classification\_proof.py}).
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.94\textwidth]{fig_obstruction.pdf}
@@ -1161,11 +1187,13 @@ Order map $A_N/\ln N$, prefix (Table~\ref{tab:order}) & \texttt{verify\_conj\_or
 Extended order run ($N\!\sim\!1000$, criterion $\le500$) & \texttt{verify\_order\_extended.py}\\
 Filimonov segment law $d_j^N\!\sim\!\tfrac4{\pi^2}\ln j$ & \texttt{verify\_filimonov\_schrodinger.py}\\
 Classification $A_N{=}U_N\!\Leftrightarrow\!$ prime$/2^m$ (Thm.~\ref{thm:classification}) & \texttt{verify\_classification\_proof.py}\\
+Segment classification (Prop.~\ref{prop:segclass}) & \texttt{verify\_segment\_classification.py}\\
 Exact GAP/PARI/Rocq layer, cross-check & \texttt{verify\_exact\_layer.py}\\
 Exact classification $A_N{=}U_N$, $N\le800$ (GAP) & \texttt{exact/gap/scan\_classification.g}\\
 Cyclotomic identities cross-check (PARI) & \texttt{exact/pari/crosscheck.gp}\\
 $N{=}p^2$ obstruction comb (GAP, Fig.~\ref{fig:obstruction}) & \texttt{exact/gap/prime\_square.g}\\
 Machine-checked mod-4 criterion (Rocq) & \texttt{formal/rocq/Mod4Criterion.v}\\
+Machine-checked classification core, all $N$ (Rocq) & \texttt{formal/rocq/Classification.v}\\
 \end{longtable}
 
 \section{Statistics: density of states and value distribution}\label{sec:stats}

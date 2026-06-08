@@ -82,16 +82,16 @@ def main() -> int:
     else:
         print("[pari]   SKIP (gp not on PATH)")
 
-    # --- Rocq: machine-checked mod-4 certificate ---
+    # --- Rocq: machine-checked certificates ---
     if shutil.which("rocq"):
-        vfile = ROOT / "formal/rocq/Mod4Criterion.v"
-        if vfile.exists():
-            rc, out = run(["rocq", "compile", "formal/rocq/Mod4Criterion.v"], timeout=300)
-            rocq_ok = rc == 0
-            print(f"[rocq]   compile Mod4Criterion.v            : {'PASS' if rocq_ok else 'FAIL'}")
-            ok &= rocq_ok
-        else:
-            print("[rocq]   SKIP (run exact/gap/export_rocq.g first)")
+        for vname in ("formal/rocq/Mod4Criterion.v", "formal/rocq/Classification.v"):
+            if (ROOT / vname).exists():
+                rc, out = run(["rocq", "compile", vname], timeout=300)
+                rocq_ok = rc == 0
+                print(f"[rocq]   compile {Path(vname).name:<22}: {'PASS' if rocq_ok else 'FAIL'}")
+                ok &= rocq_ok
+            else:
+                print(f"[rocq]   SKIP {vname} (regenerate first)")
     else:
         print("[rocq]   SKIP (rocq not on PATH)")
 

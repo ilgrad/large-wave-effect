@@ -21,4 +21,18 @@ output(numeric((2/%pi) * log(2/%pi)))
 output("[4b] -pi/72  [= -zeta(2)/(12 pi), the N^{-2} correction]:")
 output(numeric(-%pi/72))
 
+-- [5] Exact algebraic value A_6 (Proposition closed): from the block max of
+--     f(phi) = (1/3) sin phi + (1/12) sin 2phi  at the stationary point cos phi = (sqrt3-1)/2,
+--     A_6 = sqrt3/9 + max f = sqrt3/9 + (3+sqrt3) 3^{1/4} / (12 sqrt2).  FriCAS rederives the radical
+--     form from the stationary point and matches the closed form to machine precision.  (FriCAS's
+--     zero? is not a complete decision procedure for nested radicals, so we confirm numerically.)
+cp := (sqrt(3) - 1)/2
+A6 := sqrt(3)/9 + sqrt(1 - cp^2)*(1/3 + (1/6)*cp)
+claim := sqrt(3)/9 + (3 + sqrt(3))*3^(1/4)/(12*sqrt(2))
+output("[5] A_6 from the stationary point (radical form):")
+output(A6)
+output("[5] A_6 numeric, and A_6 - closed-form (machine zero):")
+output(A6::Float)
+output((A6 - claim)::Float)
+
 )quit
