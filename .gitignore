@@ -233,6 +233,7 @@ paper*/*.blg
 *.vok
 *.vos
 *.glob
+**/.coq-native/
 formal/**/.*.aux
 .lia.cache
 .nia.cache
