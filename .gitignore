@@ -228,6 +228,15 @@ paper*/*.synctex.gz
 paper*/*.bbl
 paper*/*.blg
 
+# Rocq / Coq build artifacts (keep the generated *.v source)
+*.vo
+*.vok
+*.vos
+*.glob
+formal/**/.*.aux
+.lia.cache
+.nia.cache
+
 # project-local scratch (not part of the academic artifact)
 /info/
 /thesis/

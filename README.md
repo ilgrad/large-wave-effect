@@ -76,11 +76,25 @@ Headline checks: `verify_ceiling_criterion.py` (T3), `verify_qrank_formula.py` (
 `verify_schrodinger_lower.py` (T4), `verify_conj_order_map.py` (order conjecture),
 `verify_relation_lattices.py` (the mod-4 obstruction made explicit).
 
+**Exact-arithmetic + formal layer** (Fedora: `dnf install gap pari-gp fricas rocq-prover`). The
+linear-theory arithmetic is reproduced floating-point-free in **GAP** and **PARI/GP**, symbolically in
+**FriCAS**, and the mod-4 criterion is machine-checked in **Rocq** — see [`exact/`](exact/) and
+[`formal/rocq/`](formal/rocq/). One driver runs the lot and cross-checks against the Python core (missing
+tools are skipped, not failed):
+
+```bash
+uv run --script numerics/verify_exact_layer.py   # GAP + PARI + Rocq + Python cross-check
+gap -q --nointeract exact/gap/scan_classification.g   # A_N=U_N <=> prime/2^m, verified to N<=800
+rocq compile formal/rocq/Mod4Criterion.v              # machine-checked criterion certificate
+```
+
 ## Layout
 
 ```
 src/large_wave_effect/   shared spectral core (ring, cyclotomic, Schrödinger)
 numerics/                verify_*.py (one per claim) + make_figures.py
+exact/                   GAP / PARI / FriCAS exact + symbolic cross-checks (gap/, pari/, fricas/)
+formal/rocq/             Rocq machine-checked mod-4 criterion certificate
 tests/                   pytest suite for the core package
 paper/
   large-wave-effect.tex  root: preamble, front matter, \part dividers, bibliography

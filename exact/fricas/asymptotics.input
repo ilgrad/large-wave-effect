@@ -1,0 +1,24 @@
+-- Independent symbolic checks (FriCAS) of the analytic identities in the linear theory.
+--   fricas -nosman < exact/fricas/asymptotics.input
+--
+-- [1] Laurent series of csc near 0: csc x = 1/x + x/6 + 7 x^3/360 + ...
+--     The x/6 coefficient (Bernoulli B_2 = 1/6) propagates, through Euler-Maclaurin, to the
+--     -pi/72 = -zeta(2)/(12 pi) correction of U_N (Appendix B).
+output("[1] csc Laurent series:")
+output(series(1/sin(x), x = 0))
+
+-- [2] Symbolic antiderivative used in Appendix B: integral csc(pi x) dx = (1/pi) log tan(pi x/2).
+output("[2] integral of csc(pi x) dx (FriCAS symbolic integrator):")
+output(integrate(1/sin(%pi*x), x))
+
+-- [3] integral csc^2 x dx = -cot x  (the sum sum csc^2(pi r/N) = (N^2-1)/3 is its discrete shadow).
+output("[3] integral csc^2 x dx:")
+output(integrate(1/sin(x)^2, x))
+
+-- [4] Numeric values of the two constants that enter U_N's expansion.
+output("[4a] (2/pi) log(2/pi)  [= integral_0^1 R(x) dx, Appendix B]:")
+output(numeric((2/%pi) * log(2/%pi)))
+output("[4b] -pi/72  [= -zeta(2)/(12 pi), the N^{-2} correction]:")
+output(numeric(-%pi/72))
+
+)quit
