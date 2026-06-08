@@ -838,45 +838,53 @@ claim; the leading constant is confirmed to the digits of Table~\ref{tab:bn}.
 \end{proof}
 
 \begin{theorem}[Schr\"odinger lower bound]\label{thm:schr-lower}
-$B_N\ge c\sqrt N$ with an absolute constant $c>0$; in fact $\liminf_N B_N/\sqrt N\ge\tfrac12 c_0$ with
-$c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$, i.e.\ $\liminf_N B_N/\sqrt N\ge0.6086$, so for every $c<0.6086$ one has $B_N\ge c\sqrt N$ for all large
-$N$ (a finite check of the small cases then gives an absolute $c>0$). With Theorem~\ref{thm:schr}(2),
-$B_N=\Theta(\sqrt N)$.
+$\liminf_N B_N/\sqrt N\ge c_0/\sqrt2$ with $c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$, i.e.\
+$\liminf_N B_N/\sqrt N\ge0.8607$. With Theorem~\ref{thm:schr}(2), $B_N=\Theta(\sqrt N)$.
 \end{theorem}
 
 \begin{proof}
-Evaluate the $\ell^1$ mass at $t=N/8$, so $2t=N/4$. By the Poisson periodization \eqref{eq:poisson},
-$K_N(j,N/8)=\sum_{\ell}K_\infty(j+\ell N,N/8)$ with $|K_\infty(n,N/8)|=|J_n(N/4)|$. The Bessel front sits
-at $|n|\approx2t=N/4$; beyond it the bound $|J_n(x)|\le(x/2)^{|n|}/|n|!$ (valid for all $n\ge0$) forces
-super-exponential decay for $|n|>N/4$, so the aliasing copies $\ell\ne0$, supported at
-$|j+\ell N|\ge N/2$, contribute an exponentially small amount. Hence
-$\sum_{j}|K_N(j,N/8)|=(1+o(1))\sum_{n\in\Z}|J_n(N/4)|$. By Lemma~\ref{lem:bessel-l1},
-$\sum_n|J_n(N/4)|\sim c_0\sqrt{N/4}=\tfrac12 c_0\sqrt N$ with $\tfrac12 c_0\approx0.6086$. Therefore
-$\liminf_N B_N/\sqrt N\ge\lim_N\sum_j|K_N(j,N/8)|/\sqrt N=\tfrac12 c_0$, so for every $c<\tfrac12 c_0$ one
-has $B_N\ge c\sqrt N$ for all large $N$, and a finite scan of the small cases supplies an absolute $c>0$
-(the finite-$N$ values decrease to $\tfrac12 c_0$ from above, Table~\ref{tab:bn}); the upper bound is
-Theorem~\ref{thm:schr}(2).
-\end{proof}
+Evaluate the $\ell^1$ mass at the aliasing-free time $t=\tfrac N4(1-\delta)$, so $2t=\tfrac N2(1-\delta)$.
+By the Poisson periodization \eqref{eq:poisson}, $K_N(j,t)=\sum_{\ell}K_\infty(j+\ell N,t)$ with
+$|K_\infty(n,t)|=|J_n(2t)|$. The Bessel front sits at $|n|\approx2t=\tfrac N2(1-\delta)$, and the nearest
+aliased copy ($\ell\ne0$) lies at $|j+\ell N|\ge N-2t=\tfrac N2(1+\delta)>2t$, where the bound
+$|J_n(2t)|\le t^{|n|}/|n|!$ forces super-exponential decay; so
+$\sum_{j}|K_N(j,t)|=(1+o(1))\sum_{n\in\Z}|J_n(2t)|$. By Lemma~\ref{lem:bessel-l1} this is
+$(1+o(1))\,c_0\sqrt{2t}=(1+o(1))\,c_0\sqrt{N/2}\,\sqrt{1-\delta}$; letting $\delta\to0$,
+$\liminf_N B_N/\sqrt N\ge c_0/\sqrt2$. The upper bound $B_N\le\sqrt N$ is Theorem~\ref{thm:schr}(2)
+(\texttt{verify\_bn\_parity.py}). \end{proof}
+
+\noindent The improvement over the cruder $t=N/8$ value $\tfrac12 c_0=0.6086$ is the optimal aliasing-free
+time $t=N/4$, at which the Bessel front exactly fills one half-period.
+
+\begin{remark}[the constant has no limit---it splits by parity]\label{rem:bn-parity}
+$B_N/\sqrt N$ does \emph{not} converge: the aliasing phase $\mathrm i^{-N}$ is real for even $N$ and
+imaginary for odd $N$, so where the two overlapping fronts meet they add differently. Numerically
+(\texttt{verify\_bn\_parity.py}) the sup is at $t=N/4$ for even $N$, giving $B_N/\sqrt N\to c_0/\sqrt2$ (the
+value above), and at $t=N/2$ for odd $N$, where $|K_N(k,N/2)|=\sqrt{J_k(N)^2+J_{N-k}(N)^2}$ admits no
+cancellation and $B_N/\sqrt N\to\beta_{\mathrm{odd}}\approx0.928$. Thus $\liminf_N B_N/\sqrt N=c_0/\sqrt2$
+while $\limsup_N B_N/\sqrt N\ge\beta_{\mathrm{odd}}$, both inside the unitarity band $[c_0/\sqrt2,1]$; the
+exact $\beta_{\mathrm{odd}}$ (a Bessel-envelope double integral) and the matching upper bound are the
+residual questions.
+\end{remark}
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
-(upper from unitarity, lower from Theorem~\ref{thm:schr-lower}), and every step of the proof---the
-periodization, the negligible aliasing at $t=N/8$, the $\sqrt N$ growth with constant
-$\tfrac12 c_0\approx0.6086$, and the $c_0\sqrt x$ Bessel asymptotics---is reproduced numerically (\texttt{verify\_schrodinger\_lower.py},
-\texttt{verify\_theorem3\_schrodinger.py}, \texttt{verify\_bessel\_kernel.py}). The constant itself is
-mapped in Table~\ref{tab:bn}.
+(upper from unitarity, lower from Theorem~\ref{thm:schr-lower}), and every step---the periodization, the
+negligible aliasing at $t=\tfrac N4(1-\delta)$, the $\sqrt N$ growth with constant $c_0/\sqrt2$, and the
+$c_0\sqrt x$ Bessel asymptotics---is reproduced numerically (\texttt{verify\_schrodinger\_lower.py},
+\texttt{verify\_bn\_parity.py}, \texttt{verify\_bessel\_kernel.py}). The parity split is mapped in
+Table~\ref{tab:bn}.
 
 \begin{table}[ht]\centering
-\caption{The constant in $B_N=\Theta(\sqrt N)$. A refined $t$-scan (uniform grid $+$ structured candidate times
-$t=\pi a/N$) gives $B_N/\sqrt N$; the proven Bessel point $t=N/8$ gives the lower row. The largest value in the
-finite scan, $\approx0.96$, lies inside the rigorous band $[\tfrac12 c_0,1]\approx[0.6086,1]$, and the
-exact limit is open
-(\texttt{verify\_bn\_constant.py}).}\label{tab:bn}
-\begin{tabular}{lcccccc}
+\caption{The constant in $B_N=\Theta(\sqrt N)$, by parity (Remark~\ref{rem:bn-parity}). A refined $t$-scan
+gives $B_N/\sqrt N$: even $N$ approach $c_0/\sqrt2=0.8607$ (sup at $t=N/4$), odd $N$ approach
+$\beta_{\mathrm{odd}}\approx0.928$ (sup at $t=N/2$). All lie in the rigorous band
+$[c_0/\sqrt2,1]$; the proved $\liminf$ is $c_0/\sqrt2$ (\texttt{verify\_bn\_parity.py}).}\label{tab:bn}
+\begin{tabular}{lccccc c}
 \toprule
-$N$ & $16$ & $64$ & $256$ & $512$ & $1024$ & $2048$\\
+$N$ & $16,15$ & $64,63$ & $256,255$ & $1024,1023$ & $4096,4095$ & limit\\
 \midrule
-$B_N/\sqrt N$ (scan)            & $0.960$ & $0.907$ & $0.888$ & $0.880$ & $0.875$ & $0.870$\\
-$\|K_N(\cdot,N/8)\|_1/\sqrt N$  & $0.770$ & $0.694$ & $0.658$ & $0.637$ & $0.634$ & $0.626$\\
+even $N$,\ $B_N/\sqrt N$ & $0.923$ & $0.907$ & $0.888$ & $0.878$ & $0.869$ & $c_0/\sqrt2=0.861$\\
+odd $N$,\ $B_N/\sqrt N$  & $0.981$ & $0.960$ & $0.950$ & $0.940$ & $0.935$ & $\beta_{\mathrm{odd}}\approx0.928$\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1207,6 +1215,7 @@ Ceiling criterion (mod $4$) & \texttt{verify\_ceiling\_criterion.py}\\
 Relation lattices $\Lambda_N$ (Table~\ref{tab:lattices}) & \texttt{verify\_relation\_lattices.py}\\
 Schr\"odinger lower bound $\Omega(\sqrt N)$ & \texttt{verify\_schrodinger\_lower.py}\\
 Constant $B_N/\sqrt N$ scan (Table~\ref{tab:bn}) & \texttt{verify\_bn\_constant.py}\\
+$B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{verify\_bn\_parity.py}\\
 Spectral-dimension threshold $d_s{=}1$ & \texttt{verify\_spectral\_dimension.py}\\
 Finite-time recurrence $T_\varepsilon(N)$ & \texttt{verify\_finite\_time.py}\\
 Disorder vs.\ resonance (gen.\ eig.) & \texttt{verify\_disorder.py}\\

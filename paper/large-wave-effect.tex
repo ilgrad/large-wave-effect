@@ -249,9 +249,10 @@ $A_N\sim\tfrac1\pi\ln N$ is now proved for \emph{every} $N$ (Theorem~\ref{thm:or
 pinned analytically is the bounded defect $U_N-A_N$ on the non-saturating $N$ (the sub-leading $O(1)$ term),
 known only numerically ($A_N/U_N\in[0.84,1]$). (ii)~The saturation locus is settled---no composite $N$
 saturates (Theorem~\ref{thm:classification})---and $A_N$ for individual composite $N$ is algebraic
-(Proposition~\ref{prop:closed}) but computed per $N$, not given in closed form. (iii)~The Schr\"odinger order $B_N=\Theta(\sqrt N)$ is proved, but the optimal
-constant is open: $\liminf_N B_N/\sqrt N\ge0.6086$ and $\limsup_N B_N/\sqrt N\le1$, with existence of the
-limit unknown. The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
+(Proposition~\ref{prop:closed}) but computed per $N$, not given in closed form. (iii)~For the Schr\"odinger
+$B_N=\Theta(\sqrt N)$ the constant has \emph{no} limit---it splits by parity (Remark~\ref{rem:bn-parity}),
+with $\liminf_N B_N/\sqrt N=c_0/\sqrt2\approx0.861$ (proved) and $\limsup\ge\beta_{\mathrm{odd}}\approx0.928$;
+what is still open is the exact $\beta_{\mathrm{odd}}$ and a matching upper bound below $1$. The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
 published Myshkis--Filimonov value~\cite[Thm.~2]{MF03}, which the Schr\"odinger ceiling inherits because the
 two ceilings coincide. (iv)~On the Dirichlet segment the rank and saturation are now fully proved
 (Theorem~\ref{thm:segrank}); the only remaining gap there is the same as on the ring---the
@@ -272,14 +273,13 @@ $A_N\sim\tfrac1\pi\ln N$ is now proved for \emph{all} $N$ (Theorem~\ref{thm:orde
 is prime or $2^m$ (Theorem~\ref{thm:classification}); what remains is the precise size of the $O(1)$ deficit
 for composite $N$ (numerically $A_N/U_N\in[0.84,1]$, with $A_N/U_N\to1$ along $N=2p$). Certified per-$N$
 brackets follow from the Lasserre moment--SOS hierarchy (Section~\ref{sec:exact}).
-\item Determine the exact constant $\lim_{N\to\infty}B_N/\sqrt N$ for the Schr\"odinger propagator. The
-order $B_N=\Theta(\sqrt N)$ is now settled (Theorems~\ref{thm:schr},~\ref{thm:schr-lower}): the lower
-bound $\liminf_N B_N/\sqrt N\ge\tfrac12 c_0\approx0.6086$ ($c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$) comes
-from the unwrapped Bessel front at $t=N/8$, the upper bound $1$ from unitarity, and a $t$-scan
-(including the structured candidate times $t=\pi a/N$) gives a largest scanned ratio $\approx0.88$--$0.96$;
-whether $\lim_N B_N/\sqrt N$ exists (with $\liminf\ge0.6086$, $\limsup\le1$) is an almost-periodic /
-Gauss-sum question
-(\texttt{verify\_open\_problems.py}).
+\item Pin down the Schr\"odinger constant $B_N/\sqrt N$. The order $B_N=\Theta(\sqrt N)$ is settled, the
+$\liminf=c_0/\sqrt2\approx0.861$ is proved (Theorem~\ref{thm:schr-lower}, via the aliasing-free front at
+$t=N/4$), and the constant is shown to have \emph{no} limit---it splits by the parity of $N$
+(Remark~\ref{rem:bn-parity}). What remains is (a) the exact $\beta_{\mathrm{odd}}=\limsup B_N/\sqrt N$ (a
+Bessel-envelope double integral, $\approx0.928$, governed by the $\mathrm i^{-N}$ Gauss-sum phase), and
+(b) a matching upper bound strictly below the unitarity value $1$
+(\texttt{verify\_bn\_parity.py}).
 \item A rigorous nonlinear theory of the discrete NLS \eqref{eq:dnls} on the ring
 (Section~\ref{sec:rogue}): existence and stability of discrete breathers, the role of the $\LN$
 spectrum in the modulational-instability band, and a Klein--Gordon analogue.
