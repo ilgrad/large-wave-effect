@@ -4,8 +4,8 @@
 % Large-Wave Amplification on the Periodic Discrete Chain.
 % Draft generated from the project notes (docs/) and the numerical certificates
 % (numerics/).  Every theorem below is either proved here or verified numerically
-% by the named script.  Bibliographic entries marked "% VERIFY" are taken from the
-% project notes and must be checked against the primary source before submission.
+% by the named script.  Bibliographic entries carry DOIs checked via Crossref where available;
+% the Filimonov-group C. R. Acad. Sci. notes are cited from the lineage list of [F23].
 % ---------------------------------------------------------------------------
 
 \usepackage{amsmath,amssymb,amsthm}
@@ -120,9 +120,12 @@ law. Every quantitative claim is reproduced by a standalone, version-controlled 
 string a localized disturbance amplifies, growing without bound at bounded energy on suitable $N$---is
 classical, due to the Kurchanov--Myshkis--Filimonov line of work~\cite{KMF,MF03,FM}, with the $\ln$-type
 asymptotics on the Dirichlet segment in~\cite{MF03} and the Schr\"odinger analogue in~\cite{F23}. The
-lineage summarized in~\cite{F23} also includes early (1991--1992) work on the bead string---in particular
-a multiple-frequency case bearing on the rational frequency dependencies studied here---which we have not
-been able to consult directly; the structural claims below are stated as novel \emph{to our knowledge}.
+lineage summarized in~\cite{F23} also includes two early C.~R.~Acad.~Sci.\ notes on the bead
+string~\cite{FKM91,F92}---in particular Filimonov's \emph{multiple-frequency} case~\cite{F92}, which bears
+directly on the rational frequency dependencies studied here---which we have not been able to consult
+directly (short notes, not digitized in the sources available to us); the structural claims below are
+therefore stated as novel \emph{to our knowledge}, and~\cite{F92} should be compared against
+Theorem~\ref{thm:ceiling} before submission.
 Our contribution is \emph{quantitative and structural}: the explicit ring constant $\tfrac1\pi$ and the
 next term $-\tfrac{\pi}{72}N^{-2}$ (Lemma~\ref{lem:asym}); the closed-form subtorus dimension
 $\tfrac12\varphi(2N)$ for every $N$ and the cyclotomic independence proof for $N$ prime and $N=2^m$
@@ -349,6 +352,8 @@ Section~\ref{sec:repro}. The complete repository---scripts, section sources, and
 % Filimonov-group references below verified via Crossref (DOIs included); MF03 from info/ PDF.
 \bibitem{MF03} A.~D.~Myshkis, A.~M.~Filimonov, \emph{About the string with beads}, Mat.\ Fiz.\ Anal.\ Geom.\ \textbf{10} (2003), no.~3, 301--306. (Segment $\ln$-asymptotics.)
 \bibitem{KMF} P.~F.~Kurchanov, A.~D.~Myshkis, A.~M.~Filimonov, \emph{Vibrations of rolling stock and a theorem of Kronecker}, J.~Appl.\ Math.\ Mech.\ \textbf{55} (1991), no.~6, 870--876 (Russian original: Prikl.\ Mat.\ Mekh.\ \textbf{55}(6), 989--995). \texttt{doi:10.1016/0021-8928(91)90140-P}.
+\bibitem{FKM91} A.~M.~Filimonov, P.~F.~Kurchanov, A.~D.~Myshkis, \emph{Some unexpected results in the classical problem of vibration of the string with $n$ beads when $n$ is large}, C.~R.~Acad.\ Sci.\ Paris S\'er.~I \textbf{313} (1991), no.~13, 961--965. (Cited from the lineage list of~\cite{F23}; not consulted directly.)
+\bibitem{F92} A.~M.~Filimonov, \emph{Some unexpected results on the classical problem of vibrations of the string with $N$ beads. The case of multiple frequencies}, C.~R.~Acad.\ Sci.\ Paris S\'er.~I \textbf{315} (1992), no.~8, 957--961. (Cited from the lineage list of~\cite{F23}; not consulted directly.)
 \bibitem{FMM} A.~M.~Filimonov, X.~Mao, S.~Maslov, \emph{Splash effect and ergodic properties of solutions of the classical difference--differential equation}, J.~Difference Equ.\ Appl.\ \textbf{6} (2000), no.~3, 319--328. \texttt{doi:10.1080/10236190008808231}.
 \bibitem{FM} A.~M.~Filimonov, A.~D.~Myshkis, \emph{On properties of the large wave effect in the classical problem of bead string vibration}, J.~Difference Equ.\ Appl.\ \textbf{10} (2004), no.~13--15, 1171--1175. \texttt{doi:10.1080/10236190410001652757}.
 \bibitem{F23} A.~M.~Filimonov, \emph{Sufficient conditions for the large wave phenomenon in the Schr\"odinger equation with discrete spatial variable}, J.~Math.\ Sci.\ \textbf{269} (2023), no.~6, 792--795. \texttt{doi:10.1007/s10958-023-06316-1}.

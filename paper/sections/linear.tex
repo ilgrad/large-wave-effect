@@ -114,8 +114,8 @@ $O(N\log N)$---the route by which the propagators below are evaluated.
 
 \noindent\textbf{Wiener--Hopf.} On the semi-infinite chain the stiffness is a one-sided Toeplitz
 operator; its inversion is the Wiener--Hopf factorization $f(\theta)=f_+(\theta)f_-(\theta)$ of the
-symbol, which links the finite-$N$ ceilings to the operator-theoretic (Szeg\H{o}) asymptotics of
-Section~\ref{sec:upper}.
+symbol, which links the finite-$N$ ceilings to the operator-theoretic (Szeg\H{o}) asymptotics of large
+truncated Toeplitz matrices~\cite{BS}, Section~\ref{sec:upper}.
 
 \subsection{Three dynamics and the central functional}
 The same lattice carries the wave equation $\ddot u+\LN u=0$ (propagator $\cos(t\sqrt{\LN})$), the
@@ -366,7 +366,9 @@ interfere destructively, and controlling that interference is the open step.
 $A_N=\Theta(\ln N)$ for every $N$; more precisely $A_N\sim\tfrac1\pi\ln N$. This is proved for $N$ prime,
 $N=2^m$, and $N=2p$ (Theorems~\ref{thm:prime}--\ref{thm:two}, Proposition~\ref{prop:2p}); for general
 $N$ it is supported by Observation~\ref{obs:prefix} and by the exact subtorus computation of
-Section~\ref{sec:exact}, where $A_N/\ln N$ stays in $[0.28,0.31]$ throughout the tested range
+Section~\ref{sec:exact}, where $A_N/\ln N$ stays in $[0.28,0.34]$ across the tested range (the composite,
+non-saturating values lying in $[0.28,0.31]$, the saturating prime/$2^m$ values reaching $U_N/\ln N$ up to
+$0.34$)
 (\texttt{verify\_lemma4\_prefix.py}, \texttt{verify\_open\_problems.py}), but is not proved. The exact
 saturation locus $A_N=U_N$ is settled by the arithmetic criterion of Theorem~\ref{thm:ceiling}; the open
 content is the \emph{lower} order of $A_N$ on the non-saturating $N$.
@@ -556,7 +558,7 @@ lies slightly below, and conjecturally $A_N=\Theta(\ln N)$ for every $N$ (Conjec
 \end{figure}
 
 \subsection{Weyl equidistribution and the lower-bound problem}\label{sub:weyl}
-The orbit-closure optimization is rigorous via Weyl's theorem. The frequency vector
+The orbit-closure optimization is rigorous via Weyl's equidistribution theorem~\cite{Weyl}. The frequency vector
 $\omega=(\omega_1,\dots,\omega_m)$ defines the linear flow $t\mapsto t\omega\bmod2\pi$, whose closure is
 the subtorus
 \[
@@ -609,7 +611,8 @@ proof of Conjecture~\ref{conj:order}.
 \noindent\textbf{Open problem.} Prove $A_N\ge c\ln N$ for all $N$ with an absolute constant $c>0$
 (equivalently, a sharp lower bound on the subtorus maximum). A certified value for each $N$ is
 available from the Lasserre moment--SOS hierarchy; the analytic obstruction is the control of the
-rational relations among $\{2\sin(\pi r/N)\}$---a question in the arithmetic of cyclotomic fields.
+rational relations among $\{2\sin(\pi r/N)\}$ (vanishing sums of roots of unity~\cite{CJ})---a question in
+the arithmetic of cyclotomic fields.
 The evidence is strong on two fronts (Table~\ref{tab:order}): the exact $A_N$ keeps $A_N/\ln N$ in the
 narrow band $[0.28,0.34]$ across all classes---including the hardest $N=pq$ with $p,q\sim\sqrt N$, where
 in fact $A_N/\ln N\in[0.320,0.322]$ and $A_N/U_N\ge0.98$ for the consecutive-prime products
@@ -728,6 +731,31 @@ and $\rank_\Q\{\lambda_r\}$ is strictly smaller than $\rank_\Q\{\omega_r\}$ for 
 \end{enumerate}
 \end{theorem}
 
+\begin{lemma}[Bessel $\ell^1$ asymptotics]\label{lem:bessel-l1}
+As $x\to\infty$, $\displaystyle\sum_{n\in\Z}|J_n(x)|=c_0\sqrt x\,(1+o(1))$ with
+$c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)\approx1.217$.
+\end{lemma}
+
+\begin{proof}
+Split at the light cone $|n|=x$. Beyond it ($|n|\ge x(1+\delta)$) the bound $|J_n(x)|\le(x/2)^{|n|}/|n|!$
+gives super-exponential decay; the turning-point band $|n|=x+O(x^{1/3})$ carries $O(x^{1/3})$ terms of
+size $O(x^{-1/3})$, contributing $O(1)$; and the shell $(1-\delta)x\le|n|\le x$ contributes, by the
+integrable amplitude bound below, $O(\delta^{3/4}\sqrt x)$---all $o(\sqrt x)$ after $\delta\to0$. In the
+oscillatory region $|n|\le(1-\delta)x$ the Debye expansion~\cite{Watson} holds uniformly,
+\[
+  J_n(x)=\sqrt{\tfrac{2}{\pi\sqrt{x^2-n^2}}}\,\bigl(\cos\Phi_n+O(x^{-1})\bigr),\qquad
+  \Phi_n=\sqrt{x^2-n^2}-n\arccos\tfrac nx-\tfrac\pi4 ,
+\]
+and the phase increments $\Phi_{n+1}-\Phi_n=-\arccos(n/x)$ vary with $n$, so the $\{\Phi_n\}$
+equidistribute and $|\cos\Phi_n|$ averages to $\langle|\cos|\rangle=2/\pi$ (van der Corput). Hence
+\[
+  \sum_{|n|\le(1-\delta)x}|J_n(x)|=(1+o(1))\,\frac2\pi\sqrt{\tfrac2\pi}\int_{-x}^{x}\frac{dn}{(x^2-n^2)^{1/4}}
+  =(1+o(1))\,(2/\pi)^{3/2}B(\tfrac12,\tfrac34)\,\sqrt x ,
+\]
+the integral equalling $\sqrt x\,B(\tfrac12,\tfrac34)$ (set $n=x\sin\theta$). Letting $\delta\to0$ gives the
+claim; the leading constant is confirmed to the digits of Table~\ref{tab:bn}.
+\end{proof}
+
 \begin{theorem}[Schr\"odinger lower bound]\label{thm:schr-lower}
 $B_N\ge c\sqrt N$ with an absolute constant $c>0$; in fact $\liminf_N B_N/\sqrt N\ge\tfrac12 c_0$ with
 $c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$, i.e.\ $\liminf_N B_N/\sqrt N\ge0.6086$, so for every $c<0.6086$ one has $B_N\ge c\sqrt N$ for all large
@@ -741,9 +769,7 @@ $K_N(j,N/8)=\sum_{\ell}K_\infty(j+\ell N,N/8)$ with $|K_\infty(n,N/8)|=|J_n(N/4)
 at $|n|\approx2t=N/4$; beyond it the bound $|J_n(x)|\le(x/2)^{|n|}/|n|!$ (valid for all $n\ge0$) forces
 super-exponential decay for $|n|>N/4$, so the aliasing copies $\ell\ne0$, supported at
 $|j+\ell N|\ge N/2$, contribute an exponentially small amount. Hence
-$\sum_{j}|K_N(j,N/8)|=(1+o(1))\sum_{n\in\Z}|J_n(N/4)|$. The classical $\ell^1$ Bessel asymptotics
-$\sum_{n}|J_n(x)|\sim c_0\sqrt x$, $c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)\approx1.217$ (the envelope
-$|J_n(x)|\approx\sqrt{2/(\pi\sqrt{x^2-n^2})}$ integrated against $\langle|\cos|\rangle=2/\pi$), give
+$\sum_{j}|K_N(j,N/8)|=(1+o(1))\sum_{n\in\Z}|J_n(N/4)|$. By Lemma~\ref{lem:bessel-l1},
 $\sum_n|J_n(N/4)|\sim c_0\sqrt{N/4}=\tfrac12 c_0\sqrt N$ with $\tfrac12 c_0\approx0.6086$. Therefore
 $\liminf_N B_N/\sqrt N\ge\lim_N\sum_j|K_N(j,N/8)|/\sqrt N=\tfrac12 c_0$, so for every $c<\tfrac12 c_0$ one
 has $B_N\ge c\sqrt N$ for all large $N$, and a finite scan of the small cases supplies an absolute $c>0$
