@@ -379,29 +379,34 @@ The segment chain $\mathrm{tridiag}(-1,2,-1)$ with Dirichlet ends has the \emph{
 $\mu_k=2\sin\frac{\pi k}{2(N+1)}$ ($k=1,\dots,N$): no degeneracy, the structural advantage over the
 ring, whose twofold $\mu_r=\mu_{N-r}$ halves the independent phases. Writing $\mu_k=2\sin(2\pi k/M)$ with
 $M=4(N+1)$, the frequencies lie in $\Q(\zeta_M)$ with $2\mathrm{i}\sin(2\pi k/M)=\zeta_M^k-\zeta_M^{-k}$,
-and the same minus-eigenspace argument bounds the subtorus dimension,
-\begin{equation}\label{eq:segrank}
-  \dim_\Q\operatorname{span}\{\mu_1,\dots,\mu_N\}\le\tfrac12\varphi(4(N+1))
-\end{equation}
-(with equality to $\min\!\bigl(N,\tfrac12\varphi(4(N+1))\bigr)$ verified for $N\le60$). This upper bound
-alone settles when the segment saturates.
+and the same minus-eigenspace argument identifies the rank \emph{exactly}. The $\mu_k$ are the first $N$
+distinct frequencies of the ring on $N'=2(N+1)$ nodes; the excluded middle index $N'/2=N+1$ carries the
+rational frequency $\mu_{N+1}=2$, and Theorem~\ref{thm:qrank} applied to $N'$ gives
+$\dim_\Q\operatorname{span}\{\mu_1,\dots,\mu_N,2\}=\tfrac12\varphi(4(N+1))$.
 
-\begin{proposition}[segment classification]\label{prop:segclass}
-$A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$ if and only if $N+1$ is prime or a power of two.
-\end{proposition}
+\begin{theorem}[segment rank and classification]\label{thm:segrank}
+\begin{equation}\label{eq:segrank}
+  \dim_\Q\operatorname{span}\{\mu_1,\dots,\mu_N\}=\min\!\bigl(N,\ \tfrac12\varphi(4(N+1))\bigr),
+\end{equation}
+and $A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$ if and only if $N+1$ is prime or a power of two.
+\end{theorem}
 
 \begin{proof}
-By the simple spectrum and Bohr, $A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$ iff the $\mu_k$ are
-$\Q$-independent, i.e.\ $\dim_\Q\operatorname{span}\{\mu_k\}=N$. Each $2\mathrm i\mu_k=\zeta_M^k-\zeta_M^{-k}\in V^-$
-($M=4(N+1)$), so by \eqref{eq:segrank} the rank is at most $\tfrac12\varphi(M)$. Write $N+1=2^a m$ with $m$
-odd; then $\tfrac12\varphi(4(N+1))=2^a\varphi(m)$, and $2^a\varphi(m)\ge N=2^am-1$ iff
-$2^a\bigl(m-\varphi(m)\bigr)\le1$, i.e.\ iff $m=1$ ($N+1=2^a$) or $a=0$ with $m$ prime ($N+1$ prime). Thus
-for composite $N+1$ that is not a power of two, $\dim_\Q\operatorname{span}\{\mu_k\}\le\tfrac12\varphi(4(N+1))<N$,
-so the $\mu_k$ are dependent and $A_N^{\mathrm{Dir}}<U_N^{\mathrm{Dir}}$. Conversely, for $N+1=p$ prime the
-$\mu_k=2\sin(\pi k/2p)$ ($1\le k\le p-1$) are $\Q$-independent (Proposition~\ref{prop:2p}), and for
-$N+1=2^m$ the exponents $k$ and $2^{m+1}-k$ are distinct basis powers of $\zeta_{2^{m+2}}$ (the argument of
-Theorem~\ref{thm:two}); in both cases the rank is the full $N$, so $A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$
-(\texttt{verify\_segment\_classification.py}). \end{proof}
+Each $2\mathrm i\mu_k=\zeta_M^k-\zeta_M^{-k}\in V^-$ ($M=4(N+1)$), so $\dim_\Q\operatorname{span}\{\mu_k\}\le\tfrac12\varphi(M)$;
+since adjoining the rational $2$ keeps the rank at $\tfrac12\varphi(M)$, the dimension equals
+$\tfrac12\varphi(M)$ or $\tfrac12\varphi(M)-1$ according as $2\in\operatorname{span}\{\mu_k\}$ or not.
+If $N+1=2^m$, the ring on $N'=2^{m+1}$ is $\Q$-independent (Theorem~\ref{thm:two}); then $2$ is independent
+of the $\mu_k$, so $2\notin\operatorname{span}\{\mu_k\}$ and the rank is $\tfrac12\varphi(M)-1=N$. If instead
+$N+1$ has an odd prime factor $p$, put $a=N+1$; then
+$\sum_{j=0}^{p-1}\zeta_M^{\,a+(M/p)j}=\zeta_M^{\,a}\sum_j\bigl(\zeta_M^{M/p}\bigr)^{j}=0$, and the only term of
+its imaginary part reducing to the middle index $N+1$ is $j=0$ (another would need $(M/p)j\equiv M/2$, i.e.\
+$2j=p$, impossible for $p$ odd), so $\mu_{N+1}=2$ occurs with coefficient $\pm1$ and lies in
+$\operatorname{span}\{\mu_1,\dots,\mu_N\}$; the rank is $\tfrac12\varphi(M)$. An elementary count gives
+$\tfrac12\varphi(4(N+1))=2^a\varphi(m)$ for $N+1=2^am$ ($m$ odd), which exceeds $N$ exactly for $m=1$
+($N+1=2^m$) and is $\le N$ otherwise (with equality iff $N+1$ is prime); so the rank is
+$\min(N,\tfrac12\varphi(4(N+1)))$, and it is full ($=N$, whence $A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$ by
+Bohr) iff $N+1$ is prime or a power of two---otherwise $A_N^{\mathrm{Dir}}<U_N^{\mathrm{Dir}}$
+(\texttt{verify\_segment\_classification.py}; the prime case also recovers Proposition~\ref{prop:2p}). \end{proof}
 
 \noindent This is the exact analogue of the ring classification (Theorem~\ref{thm:classification}), shifted
 by the boundary (the ring uses modulus $2N$, the segment $4(N+1)$). The $\Q$-independent low-mode
@@ -1187,7 +1192,7 @@ Order map $A_N/\ln N$, prefix (Table~\ref{tab:order}) & \texttt{verify\_conj\_or
 Extended order run ($N\!\sim\!1000$, criterion $\le500$) & \texttt{verify\_order\_extended.py}\\
 Filimonov segment law $d_j^N\!\sim\!\tfrac4{\pi^2}\ln j$ & \texttt{verify\_filimonov\_schrodinger.py}\\
 Classification $A_N{=}U_N\!\Leftrightarrow\!$ prime$/2^m$ (Thm.~\ref{thm:classification}) & \texttt{verify\_classification\_proof.py}\\
-Segment classification (Prop.~\ref{prop:segclass}) & \texttt{verify\_segment\_classification.py}\\
+Segment rank \& classification (Thm.~\ref{thm:segrank}) & \texttt{verify\_segment\_classification.py}\\
 Exact GAP/PARI/Rocq layer, cross-check & \texttt{verify\_exact\_layer.py}\\
 Exact classification $A_N{=}U_N$, $N\le800$ (GAP) & \texttt{exact/gap/scan\_classification.g}\\
 Cyclotomic identities cross-check (PARI) & \texttt{exact/pari/crosscheck.gp}\\
