@@ -886,8 +886,16 @@ exact value
 an elliptic-integral average ($\Phi,\Psi$ independent uniform) with no apparent elementary closed form
 (\texttt{verify\_beta\_odd.py}). Evaluation at $t=N/2$ is rigorous, so $\liminf_N B_N/\sqrt N=c_0/\sqrt2$ and
 $\liminf_{\text{odd }N}B_N/\sqrt N\ge\beta_{\mathrm{odd}}$, whence $\limsup_N B_N/\sqrt N\in[\beta_{\mathrm{odd}},1]$.
-The matching upper bound---that no other $t$ does better, i.e.\ that the $\sin^2$ dispersion admits no flat
-(Gauss-sum) revival making $|K_N(\cdot,t)|$ uniform---is the one residual analytic question.
+For the upper side, the triangle inequality with Lemma~\ref{lem:bessel-l1} gives, for \emph{every} $t$,
+$\|K_N(\cdot,t)\|_1\le\sum_{n}|J_n(2t)|=(1+o(1))c_0\sqrt{2t}$, hence with unitarity
+\[
+  \|K_N(\cdot,t)\|_1\ \le\ \min\!\bigl(c_0\sqrt{2t},\ \sqrt N\bigr),
+\]
+which for $t\le N/4$ is $\le c_0/\sqrt2\,\sqrt N$. So any time beating the even value $c_0/\sqrt2$ must lie in
+the overlap region $t>N/4$, where the parity of $\mathrm i^{-N}$ decides the cancellation. The remaining
+gap---a sharp upper bound there, equivalently that the $\sin^2$ dispersion admits no flat (Gauss-sum)
+revival making $|K_N(\cdot,t)|$ uniform---is the one residual analytic question; numerically the sup is
+always at $t=N/2$ (odd) or $t=N/4$ (even), so $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$ is expected.
 \end{remark}
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
