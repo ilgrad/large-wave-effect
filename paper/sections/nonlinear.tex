@@ -44,6 +44,32 @@ finite-time blow-up occurs. Both invariants are reproduced numerically: the norm
 integrator holds $P$ to $10^{-12}$ and $H$ to $O(\Delta t^2)$ (\texttt{verify\_dnls\_selftrapping.py}).
 \end{proof}
 
+\begin{proposition}[the linear large wave persists under weak nonlinearity]\label{prop:dnls-persist}
+Let $u(t)$ solve the DNLS \eqref{eq:dnls} with $u(0)=u_0$, and write $u_{\mathrm{lin}}(t)=\eu^{-\mathrm
+i t\LN}u_0$ for the linear flow. Then for all $t$,
+\[
+  \|u(t)-u_{\mathrm{lin}}(t)\|_\infty\ \le\ \|u(t)-u_{\mathrm{lin}}(t)\|_2\ \le\ |\gamma|\,t\,\|u_0\|_2^3 .
+\]
+In particular, if the linear flow attains a large wave $\|u_{\mathrm{lin}}(t_\ast)\|_\infty=M$ at a time
+$t_\ast$, then $\|u(t_\ast)\|_\infty\ge M-|\gamma|\,t_\ast\,\|u_0\|_2^3$; so whenever
+$|\gamma|<M/(2t_\ast\|u_0\|_2^3)$ the nonlinear solution still exhibits a wave of height $\ge M/2$.
+\end{proposition}
+
+\begin{proof}
+By Duhamel, $u(t)-u_{\mathrm{lin}}(t)=-\mathrm i\gamma\int_0^t\eu^{-\mathrm i(t-s)\LN}(|u|^2u)(s)\,ds$. As
+$\eu^{-\mathrm is\LN}$ is $\ell^2$-unitary, $\|u(t)-u_{\mathrm{lin}}(t)\|_2\le|\gamma|\int_0^t\||u|^2u(s)\|_2\,ds
+\le|\gamma|\int_0^t\|u(s)\|_\infty^2\|u(s)\|_2\,ds$. The power $\|u\|_2^2$ is conserved
+(Proposition~\ref{prop:dnls-cons}), so $\|u(s)\|_2=\|u_0\|_2$ and $\|u(s)\|_\infty\le\|u(s)\|_2=\|u_0\|_2$;
+the integrand is $\le\|u_0\|_2^3$. The last claim is the reverse triangle inequality
+$\|u(t_\ast)\|_\infty\ge\|u_{\mathrm{lin}}(t_\ast)\|_\infty-\|u-u_{\mathrm{lin}}\|_\infty$.
+\end{proof}
+
+\noindent This is a rigorous core for Part~II: the linear large wave is a genuine feature of the weakly
+nonlinear flow, not an artefact of linearisation (\texttt{verify\_dnls\_persistence.py}). Its scope is
+honest---the admissible coupling shrinks with the (Diophantine, possibly large) alignment time $t_\ast$, so
+it does not control the strongly nonlinear regime where the rogue-wave focusing of \S\ref{sec:rogue} lives;
+that remains open.
+
 \emph{Peregrine soliton.} Equation~\eqref{eq:nls} possesses the rational solution~\cite{Peregrine}
 \begin{equation}\label{eq:peregrine}
   \psi_P(x,t) = \left[\,1 - \frac{4(1+4\mathrm i t)}{1+4x^2+16t^2}\,\right]\eu^{2\mathrm i t},

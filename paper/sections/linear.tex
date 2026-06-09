@@ -1261,6 +1261,8 @@ Certified composite gap (SOS) & \texttt{verify\_sos\_certified.py}\\
 Sharp constant for $N=2p$ & \texttt{verify\_2p\_family.py}\\
 Open-problem evidence (defect, $B_N$) & \texttt{verify\_open\_problems.py}\\
 DNLS self-trapping / breather & \texttt{verify\_dnls\_selftrapping.py}\\
+DNLS large-wave persistence (Prop.~\ref{prop:dnls-persist}) & \texttt{verify\_dnls\_persistence.py}\\
+Quasi-1D order criterion, NNN ring (Prop.~\ref{prop:order-criterion}) & \texttt{verify\_quasi1d\_order.py}\\
 FPUT-$\beta$ recurrence (symplectic) & \texttt{verify\_fput\_recurrence.py}\\
 Lyapunov exponent, route to chaos & \texttt{verify\_lyapunov.py}\\
 2D DNLS breather (self-trapping) & \texttt{verify\_dnls\_2d.py}\\
@@ -1379,6 +1381,33 @@ width $w$---still has $d_s=1$ and retains a logarithmically divergent ceiling, n
 $U_G\sim\tfrac1{\pi w}\ln N$ (only one of the $w$ transverse channels is gapless, Figure~\ref{fig:specdim}).
 Bounded transverse width does not destroy the concentration; a genuine second extended dimension does
 (\texttt{verify\_spectral\_dimension.py}).
+
+The order argument is in fact graph-agnostic: the same Kronecker alignment proves $\Theta(\ln N)$ for any
+family meeting two conditions.
+
+\begin{proposition}[order criterion at $d_s=1$]\label{prop:order-criterion}
+Let $\{G_N\}$ be finite graphs whose diagonal velocity Green's function is
+$G_N(t)=\sum_r b_r\sin(\omega_r t)$ with $b_r>0$ and ceiling $U_N=\sum_r b_r$. Suppose
+\textup{(A)} $U_N\sim c\,\ln N$ ($c>0$; the $d_s=1$ logarithmic ceiling), and \textup{(B)} some
+$\Q$-independent subset $S$ of the frequencies carries $\sum_{r\in S}b_r\ge(\tfrac12+\delta)U_N$ for a fixed
+$\delta>0$. Then $A_N:=\sup_t\max_{\mathrm{node}}|G_N(t)|$ obeys $2\delta\,U_N\le A_N\le U_N$, hence
+$A_N=\Theta(\ln N)$.
+\end{proposition}
+
+\begin{proof}
+$A_N\le U_N$ since $|\sin|\le1$. For the lower bound, by Kronecker the $\Q$-independent phases
+$\{\omega_r t\}_{r\in S}$ are simultaneously $\to\pi/2$ at suitable $t$; there $G_N(t)\ge\sum_{r\in S}b_r
+-\sum_{r\notin S}b_r=2\sum_{r\in S}b_r-U_N\ge2\delta U_N$ (the complement bounded below by $\sin\ge-1$).
+\end{proof}
+
+\noindent The ring and Dirichlet segment are the instances where Lemma~\ref{lem:prefix} supplies $S$ (the
+length-$\tfrac12\varphi(2N)$ prefix, carrying $(1-o(1))U_N$, so $\delta\to\tfrac12$). For a quasi-1D lattice
+(A) holds with $c=1/(\pi w)$, while (B)---a long $\Q$-independent prefix---is the per-family analogue of the
+palindromic lemma: e.g.\ the next-nearest-neighbour ring, with
+$\omega_r=2\sin(\tfrac{\pi r}N)\sqrt{2+\cos\tfrac{2\pi r}N}$, is $\Q$-independent at $N=15$ (so it
+\emph{saturates}, $A_N=U_N$) yet carries the degeneracy $\omega_3=\omega_6=2$ at $N=12$
+(\texttt{verify\_quasi1d\_order.py}). Deciding (B) for a general $d_s=1$ lattice is open; the criterion
+isolates exactly what must be shown.
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.62\textwidth]{fig_spectral_dim.pdf}
