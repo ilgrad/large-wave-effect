@@ -67,7 +67,7 @@ def main() -> int:
     if shutil.which("gap"):
         env = "LW_MAXN := 60;;"
         rc, out = run(["gap", "-q", "--nointeract", "-c", env, "exact/gap/scan_classification.g"])
-        gap_ok = "RESULT: PASS" in out
+        gap_ok = rc == 0 and "RESULT: PASS" in out  # require clean exit, like the PARI/Rocq branches
         print(f"[gap]    classification scan N<=60          : {'PASS' if gap_ok else 'FAIL'}")
         ok &= gap_ok
     else:

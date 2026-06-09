@@ -30,6 +30,7 @@ This script certifies (1) exactly (the divisibility mechanism on relation genera
 from __future__ import annotations
 
 import sys
+from itertools import pairwise
 from math import gcd, log
 from pathlib import Path
 
@@ -142,7 +143,7 @@ def main() -> int:
     def bsum(N: int, M: int) -> float:
         return sum(1.0 / (N * np.sin(np.pi * r / N)) for r in range(1, M + 1))
 
-    last_ratio = 0.0
+    ratios = []
     for N in [90, 210, 2310, 30030, 510510]:
         d = phi(2 * N) // 2
         lp, u = bsum(N, d), bsum(N, N // 2)
@@ -151,8 +152,11 @@ def main() -> int:
         if bnd <= 0:
             ok = False
         print(f"    N={N:>7}: 2L_pre-U_N={bnd:6.3f}  ratio to (1/pi)lnN = {ratio:.3f}")
-        last_ratio = ratio
-    if not last_ratio > 0.8:  # monotonically increasing to 1
+        ratios.append(ratio)
+    # the bound is Omega(ln N) (every ratio bounded below) AND the ratio climbs toward 1
+    # (monotone increase along primorials) -- test the trend, not one magic endpoint.
+    increasing = all(b > a - 1e-9 for a, b in pairwise(ratios[1:]))
+    if not (min(ratios) > 0.6 and increasing and ratios[-1] > ratios[0] + 0.1):
         ok = False
 
     print("=" * 64)
