@@ -70,6 +70,30 @@ honest---the admissible coupling shrinks with the (Diophantine, possibly large) 
 it does not control the strongly nonlinear regime where the rogue-wave focusing of \S\ref{sec:rogue} lives;
 that remains open.
 
+A second rigorous ingredient ties the nonlinear instability directly to the $\LN$ spectrum.
+
+\begin{proposition}[modulational-instability band]\label{prop:dnls-mi}
+For \eqref{eq:dnls} with $\gamma>0$ the uniform state $z_j(t)=A\eu^{-\mathrm i\gamma A^2t}$ is an exact
+solution, and the linearisation $z=(A+b)\eu^{-\mathrm i\gamma A^2t}$, $b=x+\mathrm iy$, obeys
+$\dot x=-\LN y$, $\dot y=(\LN-2\gamma A^2)x$. Hence the Fourier mode $Q$ (eigenvalue
+$\lambda_Q=2-2\cos\tfrac{2\pi Q}N$ of $\LN$) grows like $\eu^{\sigma_Q t}$ with
+\[
+  \sigma_Q=\sqrt{\lambda_Q\,(2\gamma A^2-\lambda_Q)}\qquad\text{on the band }0<\lambda_Q<2\gamma A^2,
+\]
+and is neutrally stable otherwise; the fastest growth is $\sigma_{\max}=\gamma A^2$ at $\lambda_Q=\gamma A^2$.
+\end{proposition}
+
+\begin{proof}
+$\LN A=0$ gives the exact solution; substituting and keeping the linear part yields
+$\mathrm i\dot b=-\LN b+\gamma A^2(b+\bar b)$, i.e.\ $\dot x=-\LN y$, $\dot y=(\LN-2\gamma A^2)x$. In mode $Q$
+the generator $\left[\begin{smallmatrix}0&-\lambda_Q\\\lambda_Q-2\gamma A^2&0\end{smallmatrix}\right]$ has
+eigenvalues $\pm\sqrt{\lambda_Q(2\gamma A^2-\lambda_Q)}$, real (unstable) exactly when
+$0<\lambda_Q<2\gamma A^2$ (\texttt{verify\_dnls\_mi.py}). \end{proof}
+
+\noindent So the instability band and its growth rates are read off the $\LN$ spectrum---the linear
+large-wave operator also sets the nonlinear seeding---answering that part of the open problem; the
+saturation/breather dynamics past the linear stage remain the open strongly-nonlinear question.
+
 \emph{Peregrine soliton.} Equation~\eqref{eq:nls} possesses the rational solution~\cite{Peregrine}
 \begin{equation}\label{eq:peregrine}
   \psi_P(x,t) = \left[\,1 - \frac{4(1+4\mathrm i t)}{1+4x^2+16t^2}\,\right]\eu^{2\mathrm i t},
