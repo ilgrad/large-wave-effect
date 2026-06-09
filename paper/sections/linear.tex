@@ -925,8 +925,14 @@ time average $\approx0.79\sqrt N$ and never exceeds the $t=N/2$ value: the $\sin
 dispersive-quantization picture---exact revivals of the periodic Schr\"odinger flow occur only for a
 \emph{quadratic} dispersion (rational times give Gauss sums)~\cite{Olver}, which the discrete
 $\lambda_r=4\sin^2(\pi r/N)$ is not. So the global sup sits at $t=N/2$ and $\limsup_N
-B_N/\sqrt N=\beta_{\mathrm{odd}}$; the one residual is a rigorous upper bound on the multi-copy region
-$t>N/2$, a quantitative no-revival estimate for the non-quadratic dispersion.
+B_N/\sqrt N=\beta_{\mathrm{odd}}$. The residual on $t>N/2$ has a clean form: $K_N(\cdot,t)$ is the inverse DFT
+of the \emph{unimodular} symbol $(\eu^{-\mathrm i t\lambda_r})_r$---a chirp, since $2t\cos(2\pi r/N)$ is
+locally quadratic---so $\|K_N(\cdot,t)\|_1$ is the $\ell^1$ norm of a flat-in-Fourier sequence, and by
+stationary phase the two saddles $\sin(2\pi r_\ast/N)=k/2t$ govern it; the bound then reduces to the
+equidistribution $\bmod\,2\pi$ of their phase difference (a Weyl sum). Numerically the full macroscopic
+profile $\|K_N(\cdot,t)\|_1/\sqrt N$ peaks exactly at the $t=N/2$ value $\beta_{\mathrm{odd}}$ (odd) and is
+strictly subdominant for $t>N/2$ (\texttt{verify\_bn\_parity.py}); the remaining analytic step is that Weyl
+estimate.
 \end{remark}
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
