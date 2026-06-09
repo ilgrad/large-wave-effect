@@ -403,14 +403,20 @@ by the crude bound $\sin\ge-1$, which suffices because Lemma~\ref{lem:prefix} ma
 carry $2L_{\mathrm{pre}}-U_N=(1-o(1))U_N$ of the ceiling. The exact saturation locus $A_N=U_N$ is the
 sharper question settled by Theorem~\ref{thm:classification}.
 
-\begin{remark}[the defect is essentially bounded]\label{rem:defect}
-The same estimate bounds the deficit on the non-saturating $N$: $U_N-A_N\le2(U_N-L_{\mathrm{pre}})=
+\begin{remark}[the defect: an odd-part scaling law]\label{rem:defect}
+The same estimate controls the deficit on the non-saturating $N$: $U_N-A_N\le2(U_N-L_{\mathrm{pre}})=
 \tfrac2N\sum_{r=\frac12\varphi(2N)+1}^{\lfloor N/2\rfloor}\csc\tfrac{\pi r}N=\tfrac2\pi\ln\tfrac{N}{\varphi(2N)}+O(1)$.
-Since $\varphi(2N)\ge2N/(\eu^\gamma\ln\ln2N+\cdots)$, this is $O(\ln\ln\ln N)$---so $U_N-A_N$ grows slower than
-any iterate of the logarithm and is, for every practical purpose, bounded (numerically
-$U_N-A_N<0.18$ for all composite $N\le60$, depending on the odd part of $N$ and converging within each
-$2^a m$ family, \texttt{verify\_exact\_AN.py}). Its exact value is algebraic for each $N$
-(Proposition~\ref{prop:closed}) with no apparent universal closed form.
+Writing $N=2^a m$ with $m$ odd, $N/\varphi(2N)=m/\varphi(m)$ is \emph{independent of $a$}, so the bound is
+the same throughout each family $2^a m$:
+\[
+  U_N-A_N\ \le\ \tfrac2\pi\ln\tfrac{m}{\varphi(m)}+O(1),
+\]
+and the exact defect converges within the family to a limit depending only on the odd part $m$ (numerically
+$U_N-A_N<0.18$ for composite $N\le60$, e.g.\ $0.05,0.08,0.09,0.10$ along $m=3$; \texttt{verify\_exact\_AN.py}).
+Globally, since $m/\varphi(m)\sim\eu^{\gamma}\ln\ln m$ along primorials, this is $O(\ln\ln\ln N)$---slower than
+any iterate of the logarithm. Whether $\sup_m$ of the family limit is finite (the defect truly bounded) or
+grows like $\ln\ln\ln N$ is open; the exact value is algebraic per $N$ (Proposition~\ref{prop:closed}) with
+no apparent universal closed form.
 \end{remark}
 
 \subsection{The Dirichlet segment}\label{sub:segment}
@@ -871,10 +877,17 @@ $B_N/\sqrt N$ does \emph{not} converge: the aliasing phase $\mathrm i^{-N}$ is r
 imaginary for odd $N$, so where the two overlapping fronts meet they add differently. Numerically
 (\texttt{verify\_bn\_parity.py}) the sup is at $t=N/4$ for even $N$, giving $B_N/\sqrt N\to c_0/\sqrt2$ (the
 value above), and at $t=N/2$ for odd $N$, where $|K_N(k,N/2)|=\sqrt{J_k(N)^2+J_{N-k}(N)^2}$ admits no
-cancellation and $B_N/\sqrt N\to\beta_{\mathrm{odd}}\approx0.928$. Thus $\liminf_N B_N/\sqrt N=c_0/\sqrt2$
-while $\limsup_N B_N/\sqrt N\ge\beta_{\mathrm{odd}}$, both inside the unitarity band $[c_0/\sqrt2,1]$; the
-exact $\beta_{\mathrm{odd}}$ (a Bessel-envelope double integral) and the matching upper bound are the
-residual questions.
+cancellation. The Debye envelope $|J_{Nu}(N)|\sim\sqrt{2/\pi N}\,(1-u^2)^{-1/4}|\cos\Phi|$ then yields the
+exact value
+\begin{equation}\label{eq:beta-odd}
+  \beta_{\mathrm{odd}}=\sqrt{\tfrac2\pi}\int_0^1\mathbb E_{\Phi,\Psi}
+     \sqrt{\frac{\cos^2\Phi}{\sqrt{1-u^2}}+\frac{\cos^2\Psi}{\sqrt{u(2-u)}}}\;\mathrm du=0.92798\ldots,
+\end{equation}
+an elliptic-integral average ($\Phi,\Psi$ independent uniform) with no apparent elementary closed form
+(\texttt{verify\_beta\_odd.py}). Evaluation at $t=N/2$ is rigorous, so $\liminf_N B_N/\sqrt N=c_0/\sqrt2$ and
+$\liminf_{\text{odd }N}B_N/\sqrt N\ge\beta_{\mathrm{odd}}$, whence $\limsup_N B_N/\sqrt N\in[\beta_{\mathrm{odd}},1]$.
+The matching upper bound---that no other $t$ does better, i.e.\ that the $\sin^2$ dispersion admits no flat
+(Gauss-sum) revival making $|K_N(\cdot,t)|$ uniform---is the one residual analytic question.
 \end{remark}
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
@@ -1226,6 +1239,7 @@ Relation lattices $\Lambda_N$ (Table~\ref{tab:lattices}) & \texttt{verify\_relat
 Schr\"odinger lower bound $\Omega(\sqrt N)$ & \texttt{verify\_schrodinger\_lower.py}\\
 Constant $B_N/\sqrt N$ scan (Table~\ref{tab:bn}) & \texttt{verify\_bn\_constant.py}\\
 $B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{verify\_bn\_parity.py}\\
+Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
 Spectral-dimension threshold $d_s{=}1$ & \texttt{verify\_spectral\_dimension.py}\\
 Finite-time recurrence $T_\varepsilon(N)$ & \texttt{verify\_finite\_time.py}\\
 Disorder vs.\ resonance (gen.\ eig.) & \texttt{verify\_disorder.py}\\
