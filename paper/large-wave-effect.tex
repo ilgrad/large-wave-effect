@@ -304,8 +304,10 @@ evidence and from the conjectures, and every quantitative claim is reproduced by
 (Theorem~\ref{thm:classification}); the deficit is $O(\ln\ln\ln N)$, depends asymptotically only on the odd
 part of $N$, and (Remark~\ref{rem:defect}) is \emph{unbounded}---numerically it grows with the number of
 distinct odd prime factors (the subtorus optimizer is validated by returning $U_N-A_N=0$ to machine
-precision on primes of the same size), so $\Theta(\ln\ln\ln N)$ along primorials. What remains is a rigorous
-matching \emph{lower} bound and the exact algebraic value per $N$ (certified per-$N$ brackets follow from the
+precision on primes of the same size), so $\Theta(\ln\ln\ln N)$ along primorials. The gap $A_N<U_N$ is
+\emph{rigorously certified} for small $N$ (Lipschitz-grid / elementary Lasserre: $U_N-A_N\ge0.049,0.057,0.030,0.082$
+for $N=6,9,12,15$); what remains is a rigorous \emph{asymptotic} lower bound along primorials (the grid is
+exponential in $\tfrac12\varphi(2N)$) and the exact algebraic value per $N$ (certified per-$N$ brackets follow from the
 Lasserre moment--SOS hierarchy, Section~\ref{sec:exact}).
 \item The Schr\"odinger constant $B_N/\sqrt N$. The order $B_N=\Theta(\sqrt N)$ is settled,
 $\liminf=c_0/\sqrt2\approx0.861$ is proved (Theorem~\ref{thm:schr-lower}), and the constant splits by the

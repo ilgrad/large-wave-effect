@@ -419,8 +419,12 @@ any iterate of the logarithm. The defect is \emph{not} bounded: numerically the 
 number $\omega(m)$ of distinct odd prime factors---$U_N-A_N\approx0.15,\,0.21$ for $\omega(m)=2,3$
 (e.g.\ $N=30$ vs.\ $N=210$), tracking $\tfrac12\cdot\tfrac2\pi\ln\tfrac{m}{\varphi(m)}$---so
 $U_N-A_N=\Theta(\ln\ln\ln N)$ along primorials (\texttt{verify\_defect\_growth.py}); the proven $O(\ln\ln\ln N)$
-upper bound is therefore sharp in order. The exact value is algebraic per $N$ (Proposition~\ref{prop:closed})
-with no universal closed form.
+upper bound is therefore sharp in order. The lower bound is moreover \emph{rigorous} for small $N$: the
+Lipschitz-grid certificate (the elementary member of the Lasserre moment--SOS hierarchy) gives a proof-level
+upper bound on $A_N$, hence $U_N-A_N\ge0.049,\,0.057,\,0.030,\,0.082$ for $N=6,9,12,15$
+(\texttt{verify\_defect\_certified.py}); only the asymptotic growth along primorials remains numerical (the
+grid is exponential in $\tfrac12\varphi(2N)$). The exact value is algebraic per $N$
+(Proposition~\ref{prop:closed}) with no universal closed form.
 \end{remark}
 
 \begin{example}[the whole mechanism at $N=15$]\label{ex:fifteen}
@@ -1288,6 +1292,7 @@ Constant $B_N/\sqrt N$ scan (Table~\ref{tab:bn}) & \texttt{verify\_bn\_constant.
 $B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{verify\_bn\_parity.py}\\
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
+Certified gap $A_N<U_N$, $N\le15$ (Lipschitz grid) & \texttt{verify\_defect\_certified.py}\\
 Spectral-dimension threshold $d_s{=}1$ & \texttt{verify\_spectral\_dimension.py}\\
 Finite-time recurrence $T_\varepsilon(N)$ & \texttt{verify\_finite\_time.py}\\
 Disorder vs.\ resonance (gen.\ eig.) & \texttt{verify\_disorder.py}\\
