@@ -199,9 +199,29 @@ selected by the size of the cubic term (\texttt{verify\_dnls\_selftrapping.py}).
 $\gamma|\phi_0|^2\gtrsim2$: from $\Omega\phi_j=-(\LN\phi)_j+\gamma\phi_j^3$ with $\phi\approx\sqrt P\,\delta_{j0}$
 one gets $\Omega\approx\gamma P-2$, which clears the band \emph{top} ($\Omega>0$) at $\gamma P\gtrsim2$. The
 larger \emph{dynamical} threshold $\gamma|z_0|^2\approx4$ measured from a single-site \emph{launch} is the
-bandwidth: the spreading excitation must outrun the entire band $[0,4]$, not merely its edge. Existence and
-stability of these breathers (MacKay--Aubry theory~\cite{MacKayAubry}) and the precise dynamical threshold
-are the rigorous sequel left open here.
+bandwidth: the spreading excitation must outrun the entire band $[0,4]$, not merely its edge.
+
+On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation---it is a
+compactness statement.
+
+\begin{proposition}[existence of discrete breathers]\label{prop:breather}
+For every $\Omega>0$ the focusing ring DNLS \eqref{eq:dnls} ($\gamma>0$) has a standing-wave breather
+$z_j(t)=\eu^{-\mathrm i\Omega t}\phi_j$ with real $\phi\ne0$ solving $(\LN+\Omega)\phi=\gamma|\phi|^2\phi$;
+for large $\Omega$ it is on-site localized.
+\end{proposition}
+
+\begin{proof}
+$M:=\LN+\Omega$ is positive definite ($\LN\succeq0$, $\Omega>0$). Minimize the continuous $\langle
+M\phi,\phi\rangle$ over the compact set $\{\|\phi\|_4^4=1\}$; a nonzero minimizer $\phi_\ast$ exists. Its
+Lagrange condition is $M\phi_\ast=2\mu\,|\phi_\ast|^2\phi_\ast$, i.e.\ $(\LN+\Omega)\phi_\ast=\gamma|\phi_\ast|^2\phi_\ast$
+with $\gamma=2\mu>0$; the scaling $\phi\mapsto s\phi$ sends $\gamma\mapsto\gamma/s^2$, so every $\gamma>0$ is
+realised. As $\Omega\to\infty$, $\langle M\phi,\phi\rangle\sim\Omega\|\phi\|_2^2$, so the minimizer maximises
+$\|\phi\|_4/\|\phi\|_2$, i.e.\ concentrates on one site (\texttt{verify\_dnls\_breather.py}: the minimizer
+solves the equation to $\sim\!10^{-7}$ and its participation ratio $\to1$). \end{proof}
+
+\noindent So existence is settled on the ring; the anti-continuum estimate $\gamma P\gtrsim2$ matches the
+$\Omega>0$ (above-band) condition. The \emph{stability} of these breathers (and the precise dynamical
+launch threshold $\approx4$) is the rigorous sequel left open.
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.92\textwidth]{fig_selftrapping.pdf}
