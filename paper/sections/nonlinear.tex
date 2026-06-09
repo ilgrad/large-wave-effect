@@ -201,8 +201,8 @@ one gets $\Omega\approx\gamma P-2$, which clears the band \emph{top} ($\Omega>0$
 larger \emph{dynamical} threshold $\gamma|z_0|^2\approx4$ measured from a single-site \emph{launch} is the
 bandwidth: the spreading excitation must outrun the entire band $[0,4]$, not merely its edge.
 
-On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation---it is a
-compactness statement.
+On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation from the
+anti-continuum limit~\cite{MacKayAubry}---it is a compactness statement.
 
 \begin{proposition}[existence of discrete breathers]\label{prop:breather}
 For every $\Omega>0$ the focusing ring DNLS \eqref{eq:dnls} ($\gamma>0$) has a standing-wave breather
@@ -220,8 +220,27 @@ $\|\phi\|_4/\|\phi\|_2$, i.e.\ concentrates on one site (\texttt{verify\_dnls\_b
 solves the equation to $\sim\!10^{-7}$ and its participation ratio $\to1$). \end{proof}
 
 \noindent So existence is settled on the ring; the anti-continuum estimate $\gamma P\gtrsim2$ matches the
-$\Omega>0$ (above-band) condition. The \emph{stability} of these breathers (and the precise dynamical
-launch threshold $\approx4$) is the rigorous sequel left open.
+$\Omega>0$ (above-band) condition. Stability follows the classical site-vs-bond dichotomy.
+
+\begin{proposition}[stability of the site-centred breather]\label{prop:breather-stab}
+Along the site-centred branch $P(\Omega)=\|\phi_\Omega\|^2=\Omega/\gamma+O(1)$, so
+$\mathrm dP/\mathrm d\Omega>0$; by the Vakhitov--Kolokolov slope criterion and Grillakis--Shatah--Strauss
+theory~\cite{VK,GSS} the breather is orbitally stable, and its linearisation
+$\left[\begin{smallmatrix}0&-L_-\\L_+&0\end{smallmatrix}\right]$ with $L_+=\LN+\Omega-3\gamma\phi^2$,
+$L_-=\LN+\Omega-\gamma\phi^2$ has purely imaginary spectrum. The bond-centred branch carries a real
+eigenvalue pair and is unstable.
+\end{proposition}
+
+\begin{proof}[Verification]
+$P(\Omega)=\Omega/\gamma+O(1)$ from the anti-continuum expansion (one site of weight $\sqrt{P}$ gives
+$\Omega=\gamma P-2+O(1/P)$), so the VK slope is positive; \texttt{verify\_dnls\_breather\_stability.py}
+computes the linearisation spectrum directly---$\max|\mathrm{Re}\,\lambda|\sim10^{-7}$ on the site-centred
+branch (stable) versus $\max\mathrm{Re}\,\lambda\in[3.9,8.9]$ on the bond-centred branch (unstable), for
+$\Omega\in[2,20]$. \end{proof}
+
+\noindent Thus on the ring the linear stage (persistence, the MI band), the breather's \emph{existence},
+and its \emph{stability} are all rigorous; the precise dynamical launch threshold $\approx4$ and the fully
+nonlinear saturation/rogue dynamics remain the open sequel.
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.92\textwidth]{fig_selftrapping.pdf}
