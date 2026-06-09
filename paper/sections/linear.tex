@@ -1279,6 +1279,7 @@ DNLS modulational-instability band (Prop.~\ref{prop:dnls-mi}) & \texttt{verify\_
 DNLS breather existence (Prop.~\ref{prop:breather}) & \texttt{verify\_dnls\_breather.py}\\
 DNLS breather stability site/bond (Prop.~\ref{prop:breather-stab}) & \texttt{verify\_dnls\_breather\_stability.py}\\
 Quasi-1D order criterion, NNN ring (Prop.~\ref{prop:order-criterion}) & \texttt{verify\_quasi1d\_order.py}\\
+Order on ring products $C_N\square H$ (Cor.~\ref{cor:product}) & \texttt{verify\_product\_order.py}\\
 FPUT-$\beta$ recurrence (symplectic) & \texttt{verify\_fput\_recurrence.py}\\
 Lyapunov exponent, route to chaos & \texttt{verify\_lyapunov.py}\\
 2D DNLS breather (self-trapping) & \texttt{verify\_dnls\_2d.py}\\
@@ -1425,6 +1426,27 @@ $\omega_r=2\sin(\tfrac{\pi r}N)\sqrt{2+\cos\tfrac{2\pi r}N}$, is $\Q$-independen
 \emph{saturates}, $A_N=U_N$) yet carries the degeneracy $\omega_3=\omega_6=2$ at $N=12$
 (\texttt{verify\_quasi1d\_order.py}). Deciding (B) for a general $d_s=1$ lattice is open; the criterion
 isolates exactly what must be shown.
+
+For one natural class, though, (B) is free---whenever the ring sits inside the lattice as a factor.
+
+\begin{corollary}[order on ring products]\label{cor:product}
+For any fixed connected graph $H$, the large wave on the Cartesian product $C_N\,\square\,H$ satisfies
+$A=\Theta(\ln N)$.
+\end{corollary}
+
+\begin{proof}
+The Laplacian of $C_N\,\square\,H$ has eigenvalues $\lambda_r+\mu_h$, with $\lambda_r=2-2\cos\tfrac{2\pi r}N$
+on $C_N$ and $\mu_h$ on $H$. Only the gapless branch $h=0$ ($\mu_0=0$, $H$-constant eigenvector
+$w_0=|H|^{-1/2}\mathbf1$) has $\omega\to0$, so the ceiling $U\sim\tfrac1{\pi|H|}\ln N$ is carried by it
+while the gapped branches add $O(1)$---condition (A). The $h=0$ frequencies are exactly the ring
+frequencies $2\sin(\pi r/N)$, whose first $\tfrac12\varphi(2N)$ are $\Q$-independent by
+Lemma~\ref{lem:prefix} and contribute $(1-o(1))U>\tfrac12U$---condition (B). Proposition~\ref{prop:order-criterion}
+then gives $A=\Theta(\ln N)$ (\texttt{verify\_product\_order.py}: the prefix bound $2L_{\mathrm{pre}}-U$ is
+positive and grows like $\ln N$ for $H=K_2,P_3$). \end{proof}
+
+\noindent So the order law survives multiplication by any bounded ``cross-section'': ladders, prisms,
+tubes $C_N\,\square\,H$ all carry the $\Theta(\ln N)$ large wave, the embedded ring supplying the
+arithmetic. (Genuine quasi-1D lattices \emph{without} an exact ring factor remain the per-family question.)
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.62\textwidth]{fig_spectral_dim.pdf}
