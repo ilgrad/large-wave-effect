@@ -415,16 +415,22 @@ the same throughout each family $2^a m$:
 and the exact defect converges within the family to a limit depending only on the odd part $m$ (numerically
 $U_N-A_N<0.18$ for composite $N\le60$, e.g.\ $0.05,0.08,0.09,0.10$ along $m=3$; \texttt{verify\_exact\_AN.py}).
 Globally, since $m/\varphi(m)\sim\eu^{\gamma}\ln\ln m$ along primorials, this is $O(\ln\ln\ln N)$---slower than
-any iterate of the logarithm. The defect is \emph{not} bounded: numerically the family limit grows with the
-number $\omega(m)$ of distinct odd prime factors---$U_N-A_N\approx0.15,\,0.21$ for $\omega(m)=2,3$
-(e.g.\ $N=30$ vs.\ $N=210$), tracking $\tfrac12\cdot\tfrac2\pi\ln\tfrac{m}{\varphi(m)}$---so
-$U_N-A_N=\Theta(\ln\ln\ln N)$ along primorials (\texttt{verify\_defect\_growth.py}); the proven $O(\ln\ln\ln N)$
-upper bound is therefore sharp in order. The lower bound is moreover \emph{rigorous} for small $N$: the
-Lipschitz-grid certificate (the elementary member of the Lasserre moment--SOS hierarchy) gives a proof-level
-upper bound on $A_N$, hence $U_N-A_N\ge0.049,\,0.057,\,0.030,\,0.082$ for $N=6,9,12,15$
-(\texttt{verify\_defect\_certified.py}); only the asymptotic growth along primorials remains numerical (the
-grid is exponential in $\tfrac12\varphi(2N)$). The exact value is algebraic per $N$
-(Proposition~\ref{prop:closed}) with no universal closed form.
+any iterate of the logarithm. The defect is \emph{not} bounded, and there is a clean reason: numerically the
+\emph{excess} $A_N-L_{\mathrm{pre}}$ stays in $[0.05,0.10]$ across every tested $N$ ($\omega(m)\le3$, prefix
+dimension up to $48$), so
+\[
+  U_N-A_N=(U_N-L_{\mathrm{pre}})-(A_N-L_{\mathrm{pre}})=\tfrac1\pi\ln\tfrac{m}{\varphi(m)}-O(1)\longrightarrow\infty
+\]
+along primorials ($\Theta(\ln\ln\ln N)$, \texttt{verify\_defect\_growth.py}); the proven $O(\ln\ln\ln N)$
+upper bound is sharp in order. A rigorous \emph{growing} lower bound is thus equivalent to the
+\emph{excess lemma} $A_N\le L_{\mathrm{pre}}+O(1)$---the long alignable prefix captures $A_N$ up to a
+constant---a sup-side cancellation statement on the relation lattice (a primal analogue of
+McGehee--Pigno--Smith), overwhelmingly supported numerically but open. For small $N$ the strict gap
+$A_N<U_N$ is \emph{certified rigorously}: the Lipschitz-grid certificate gives
+$U_N-A_N\ge0.049,0.057,0.030,0.082$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}), and a
+trigonometric Lasserre moment--SOS sharpens it (exact $U_N-A_N=0.1475$ at $N=15$) and reaches $N=105$
+($M=24$), though too loosely there to certify the growth (\texttt{verify\_defect\_moment\_sos.py}). The exact
+value is algebraic per $N$ (Proposition~\ref{prop:closed}) with no universal closed form.
 \end{remark}
 
 \begin{example}[the whole mechanism at $N=15$]\label{ex:fifteen}
@@ -931,12 +937,17 @@ dispersive-quantization picture---exact revivals of the periodic Schr\"odinger f
 $\lambda_r=4\sin^2(\pi r/N)$ is not. So the global sup sits at $t=N/2$ and $\limsup_N
 B_N/\sqrt N=\beta_{\mathrm{odd}}$. The residual on $t>N/2$ has a clean form: $K_N(\cdot,t)$ is the inverse DFT
 of the \emph{unimodular} symbol $(\eu^{-\mathrm i t\lambda_r})_r$---a chirp, since $2t\cos(2\pi r/N)$ is
-locally quadratic---so $\|K_N(\cdot,t)\|_1$ is the $\ell^1$ norm of a flat-in-Fourier sequence, and by
-stationary phase the two saddles $\sin(2\pi r_\ast/N)=k/2t$ govern it; the bound then reduces to the
-equidistribution $\bmod\,2\pi$ of their phase difference (a Weyl sum). Numerically the full macroscopic
-profile $\|K_N(\cdot,t)\|_1/\sqrt N$ peaks exactly at the $t=N/2$ value $\beta_{\mathrm{odd}}$ (odd) and is
-strictly subdominant for $t>N/2$ (\texttt{verify\_bn\_parity.py}); the remaining analytic step is that Weyl
-estimate.
+locally quadratic---so $B_N/\sqrt N$ is the maximal $L^1$-flatness ratio $\|P\|_1/\|P\|_2$ of a unimodular
+trigonometric polynomial. The limiting macroscopic profile of $\|K_N(\cdot,t)\|_1/\sqrt N$ is a
+\emph{multi-copy} Debye average over the Poisson copies (\texttt{verify\_bn\_residual\_profile.py}: it
+matches the FFT to $0.5\%$ across all $N\bmod4$, peaks at $t=N/2$ with $\beta_{\mathrm{odd}}$, and is
+strictly subdominant for $t>N/2$, stably out to $t=5N$), reducing the bound to the joint equidistribution
+$\bmod\,2\pi$ of the coherent multi-copy Debye phases (a multidimensional Weyl sum). The difficulty is
+intrinsic: the \emph{quadratic} chirp (Gauss--Fresnel/Talbot) is $L^1$-flat with ratio $\to1$, and ultraflat
+unimodular polynomials exist~\cite{BombieriBourgain}, so $\limsup<1$ is an \emph{anti}-flatness statement
+particular to the non-quadratic $\sin^2$ dispersion---no generic argument supplies it. (A single-period
+saddle van der Corput estimate fails: it predicts $0.61$ against the actual $0.93$, missing the Poisson-copy
+coherence.)
 \end{remark}
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
@@ -1313,6 +1324,8 @@ $N{=}p^2$ obstruction comb (GAP, Fig.~\ref{fig:obstruction}) & \texttt{exact/gap
 Machine-checked mod-4 criterion (Rocq) & \texttt{formal/rocq/Mod4Criterion.v}\\
 Machine-checked classification core, all $N$ (Rocq) & \texttt{formal/rocq/Classification.v}\\
 F92 splash table: segment $4/\pi^2$ vs ring $1/\pi$ & \texttt{verify\_filimonov\_table.py}\\
+$B_N$ multi-copy profile, $t>N/2$ subdominant & \texttt{verify\_bn\_residual\_profile.py}\\
+Defect moment--SOS certified bounds & \texttt{verify\_defect\_moment\_sos.py}\\
 \end{longtable}
 
 \section{Statistics: density of states and value distribution}\label{sec:stats}
