@@ -419,6 +419,24 @@ grows like $\ln\ln\ln N$ is open; the exact value is algebraic per $N$ (Proposit
 no apparent universal closed form.
 \end{remark}
 
+\begin{example}[the whole mechanism at $N=15$]\label{ex:fifteen}
+The seven frequencies are $\omega_r=2\sin(\pi r/15)$, $r=1,\dots,7$ (with $\omega_5=2\sin\tfrac\pi3=\sqrt3$).
+Here $\varphi(2N)=\varphi(30)=8$, so the rank is $\tfrac12\varphi(30)=4$: by Lemma~\ref{lem:prefix} the
+prefix $\omega_1,\dots,\omega_4$ is $\Q$-independent and \emph{no} relation can live in indices $\le4$.
+The first relation appears at index $5=\tfrac12\varphi(30)+1$---exactly the palindromic bound, here
+sharp---namely
+\[
+  \omega_4+\omega_5=\omega_1+2\omega_2+\omega_3,\qquad\text{i.e.}\quad k=(-1,-2,-1,1,1,0,0).
+\]
+Its coefficient sum $\sum_r k_r=-2\equiv2\pmod4$ is nonzero mod $4$, so by the criterion of
+Theorem~\ref{thm:ceiling} the target $(\tfrac\pi2,\dots,\tfrac\pi2)$ is off the subtorus and
+$A_{15}<U_{15}$: composite $15$ does not saturate (Theorem~\ref{thm:classification}). Numerically
+$U_{15}=0.902$, $A_{15}=0.754$, a defect $0.148$---the largest among small composites because the odd part
+$m=15$ carries two prime factors (Remark~\ref{rem:defect}). The lower bound of Theorem~\ref{thm:order}
+aligns the four-mode prefix: $A_{15}\ge2L_{\mathrm{pre}}-U_{15}=0.47$, comfortably inside the band
+$A_N\sim\tfrac1\pi\ln N$.
+\end{example}
+
 \subsection{The Dirichlet segment}\label{sub:segment}
 The segment chain $\mathrm{tridiag}(-1,2,-1)$ with Dirichlet ends has the \emph{simple} spectrum
 $\mu_k=2\sin\frac{\pi k}{2(N+1)}$ ($k=1,\dots,N$): no degeneracy, the structural advantage over the

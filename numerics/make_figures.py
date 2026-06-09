@@ -24,6 +24,23 @@ from scipy.sparse import lil_matrix
 from scipy.sparse.linalg import spsolve
 from scipy.special import airy, gamma, jv
 
+# Match the paper's serif body: STIX gives a complete serif text + math face that pairs with Libertinus.
+plt.rcParams.update({
+    "font.family": "serif",
+    "font.serif": ["STIXGeneral", "DejaVu Serif"],
+    "mathtext.fontset": "stix",
+    "axes.titlesize": 12,
+    "axes.labelsize": 11,
+    "xtick.labelsize": 9,
+    "ytick.labelsize": 9,
+    "legend.fontsize": 9,
+    "figure.titlesize": 13,
+    "axes.linewidth": 0.8,
+    "lines.linewidth": 1.6,
+    "grid.alpha": 0.35,
+    "legend.framealpha": 0.9,
+})
+
 OUT = __file__.rsplit("/", 2)[0] + "/paper/figures"
 
 
