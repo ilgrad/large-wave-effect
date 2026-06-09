@@ -415,9 +415,12 @@ the same throughout each family $2^a m$:
 and the exact defect converges within the family to a limit depending only on the odd part $m$ (numerically
 $U_N-A_N<0.18$ for composite $N\le60$, e.g.\ $0.05,0.08,0.09,0.10$ along $m=3$; \texttt{verify\_exact\_AN.py}).
 Globally, since $m/\varphi(m)\sim\eu^{\gamma}\ln\ln m$ along primorials, this is $O(\ln\ln\ln N)$---slower than
-any iterate of the logarithm. Whether $\sup_m$ of the family limit is finite (the defect truly bounded) or
-grows like $\ln\ln\ln N$ is open; the exact value is algebraic per $N$ (Proposition~\ref{prop:closed}) with
-no apparent universal closed form.
+any iterate of the logarithm. The defect is \emph{not} bounded: numerically the family limit grows with the
+number $\omega(m)$ of distinct odd prime factors---$U_N-A_N\approx0.15,\,0.21$ for $\omega(m)=2,3$
+(e.g.\ $N=30$ vs.\ $N=210$), tracking $\tfrac12\cdot\tfrac2\pi\ln\tfrac{m}{\varphi(m)}$---so
+$U_N-A_N=\Theta(\ln\ln\ln N)$ along primorials (\texttt{verify\_defect\_growth.py}); the proven $O(\ln\ln\ln N)$
+upper bound is therefore sharp in order. The exact value is algebraic per $N$ (Proposition~\ref{prop:closed})
+with no universal closed form.
 \end{remark}
 
 \begin{example}[the whole mechanism at $N=15$]\label{ex:fifteen}
@@ -902,23 +905,25 @@ is imaginary). The Debye envelope $|J_{Nu}(N)|\sim\sqrt{2/\pi N}\,(1-u^2)^{-1/4}
 limiting value
 \begin{equation}\label{eq:beta-odd}
   \beta_{\mathrm{odd}}=\sqrt{\tfrac2\pi}\int_0^1\mathbb E_{\Phi,\Psi}
-     \sqrt{\frac{\cos^2\Phi}{\sqrt{1-u^2}}+\frac{\cos^2\Psi}{\sqrt{u(2-u)}}}\;\mathrm du=0.92798\ldots,
+     \sqrt{\frac{\cos^2\Phi}{\sqrt{1-u^2}}+\frac{\cos^2\Psi}{\sqrt{u(2-u)}}}\;\mathrm du=0.928019303668909\ldots,
 \end{equation}
-an elliptic-integral average ($\Phi,\Psi$ independent uniform) with no apparent elementary closed form
-(\texttt{verify\_beta\_odd.py}). Evaluation at $t=N/2$ is rigorous, so $\liminf_N B_N/\sqrt N=c_0/\sqrt2$ and
+an elliptic-integral average ($\Phi,\Psi$ independent uniform). Computed to $25$ digits, it matches no
+combination of $\pi,\eu^\gamma,\Gamma(\tfrac14),\sqrt2$, Catalan's constant, $\ldots$, and is not a low-degree
+algebraic number (an integer-relation/\textsc{pslq} search returns nothing): $\beta_{\mathrm{odd}}$ has no
+elementary closed form---it is a new constant defined by \eqref{eq:beta-odd} (\texttt{verify\_beta\_odd.py}). Evaluation at $t=N/2$ is rigorous, so $\liminf_N B_N/\sqrt N=c_0/\sqrt2$ and
 $\liminf_{\text{odd }N}B_N/\sqrt N\ge\beta_{\mathrm{odd}}$, whence $\limsup_N B_N/\sqrt N\in[\beta_{\mathrm{odd}},1]$.
-For the upper side, the triangle inequality (over the Poisson copies) and unitarity give, for \emph{every}
-$t$, the two exact bounds $\|K_N(\cdot,t)\|_1\le\sum_{n}|J_n(2t)|$ and $\|K_N(\cdot,t)\|_1\le\sqrt N$; since
-$\sum_{n}|J_n(2t)|=(1+o(1))c_0\sqrt{2t}$ (Lemma~\ref{lem:bessel-l1}),
-\[
-  \|K_N(\cdot,t)\|_1\ \le\ \min\!\Bigl(\textstyle\sum_{n}|J_n(2t)|,\ \sqrt N\Bigr)
-                       \ =\ \min\!\bigl((1+o(1))c_0\sqrt{2t},\ \sqrt N\bigr),
-\]
-which for $t\le N/4$ is $\le(1+o(1))\,c_0/\sqrt2\,\sqrt N$. So any time beating the even value $c_0/\sqrt2$ must lie in
-the overlap region $t>N/4$, where the parity of $\mathrm i^{-N}$ decides the cancellation. The remaining
-gap---a sharp upper bound there, equivalently that the $\sin^2$ dispersion admits no flat (Gauss-sum)
-revival making $|K_N(\cdot,t)|$ uniform---is the one residual analytic question; numerically the sup is
-always at $t=N/2$ (odd) or $t=N/4$ (even), so $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$ is expected.
+For the upper side, the matching bound holds on the whole window $t\le N/2$. There $2t\le N$, so only the
+two Poisson copies $\ell=0,-1$ survive (the rest are super-exponentially small), $|K_N(k,t)|\le
+|J_k(2t)|+|J_{N-k}(2t)|$, and the Debye envelope turns $\|K_N(\cdot,t)\|_1/\sqrt N$ into the two-copy profile
+$F(2t/N)$, which is maximized at $2t/N=1$---i.e.\ at $t=N/2$---with value $\beta_{\mathrm{odd}}$
+(\texttt{verify\_bn\_parity.py}). Hence $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ for all
+$t\le N/2$, and with the lower bound $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}+o(1))\sqrt N$
+on the odd subsequence. For $t>N/2$ (three or more overlapping copies) only unitarity
+$\|K_N(\cdot,t)\|_1\le\sqrt N$ is rigorous, but numerically the $\ell^1$ mass there falls back toward its
+time average $\approx0.79\sqrt N$ and never exceeds the $t=N/2$ value: the $\sin^2$ dispersion admits no flat
+(Gauss-sum) revival, even at structured Talbot times $t=\pi p/q$. So the global sup sits at $t=N/2$ and
+$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$; the one residual is a rigorous upper bound on the multi-copy
+region $t>N/2$.
 \end{remark}
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
@@ -1271,6 +1276,7 @@ Schr\"odinger lower bound $\Omega(\sqrt N)$ & \texttt{verify\_schrodinger\_lower
 Constant $B_N/\sqrt N$ scan (Table~\ref{tab:bn}) & \texttt{verify\_bn\_constant.py}\\
 $B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{verify\_bn\_parity.py}\\
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
+Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Spectral-dimension threshold $d_s{=}1$ & \texttt{verify\_spectral\_dimension.py}\\
 Finite-time recurrence $T_\varepsilon(N)$ & \texttt{verify\_finite\_time.py}\\
 Disorder vs.\ resonance (gen.\ eig.) & \texttt{verify\_disorder.py}\\

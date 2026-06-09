@@ -16,9 +16,11 @@ J_{N-k} with u -> 1-u), together with the equidistribution of the two Debye phas
              = sqrt(2/pi) * int_0^1 (1/pi^2) int_0^pi int_0^pi sqrt( (1-u^2)^{-1/2} cos^2 phi
                                                                     + (u(2-u))^{-1/2} cos^2 psi ) dphi dpsi du.
 
-This is an elliptic-integral average; it has no apparent elementary closed form, but it is an exact
-definite integral.  Numerically beta_odd = 0.92798...  This script checks that the integral matches the
-direct large-N sum at t = N/2.
+This is an elliptic-integral average.  To 25 digits beta_odd = 0.9280193036689087668528462; a PSLQ /
+inverse-symbolic search against {pi, e^gamma, Gamma(1/4), Gamma(3/4), sqrt2, sqrt(pi), Catalan, log2,
+zeta(3)} and against low-degree algebraicity returns nothing, so beta_odd has no elementary closed form --
+it is a new constant defined by the integral.  This script checks the integral matches the direct large-N
+sum at t = N/2 (the high-precision value and the PSLQ negative are reproduced with mpmath separately).
 """
 
 from __future__ import annotations
@@ -55,7 +57,7 @@ def main() -> int:
     direct = [(n, beta_odd_direct(n)) for n in [20001, 80001, 200001]]
     for n, v in direct:
         print(f"  direct sum at N={n:>7} (t=N/2)  = {v:.6f}")
-    ok = abs(bi - direct[-1][1]) < 3e-3 and abs(bi - 0.92798) < 2e-3
+    ok = abs(bi - direct[-1][1]) < 3e-3 and abs(bi - 0.9280193) < 2e-3
     print("=" * 56)
     print("RESULT:", "PASS -- beta_odd = 0.92798... (exact integral)" if ok else "FAIL")
     return 0 if ok else 1

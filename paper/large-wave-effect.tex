@@ -299,17 +299,20 @@ evidence and from the conjectures, and every quantitative claim is reproduced by
 \section{Open problems}
 
 \begin{enumerate}
-\item Pin down the bounded defect $U_N-A_N$ on the non-saturating $N$. The order
-$A_N\sim\tfrac1\pi\ln N$ is now proved for \emph{all} $N$ (Theorem~\ref{thm:order}), and $A_N=U_N$ iff $N$
-is prime or $2^m$ (Theorem~\ref{thm:classification}); what remains is the precise size of the $O(1)$ deficit
-for composite $N$ (numerically $A_N/U_N\in[0.84,1]$, with $A_N/U_N\to1$ along $N=2p$). Certified per-$N$
-brackets follow from the Lasserre moment--SOS hierarchy (Section~\ref{sec:exact}).
-\item Pin down the Schr\"odinger constant $B_N/\sqrt N$. The order $B_N=\Theta(\sqrt N)$ is settled, the
-$\liminf=c_0/\sqrt2\approx0.861$ is proved (Theorem~\ref{thm:schr-lower}, via the aliasing-free front at
-$t=N/4$), and the constant is shown to have \emph{no} limit---it splits by the parity of $N$
-(Remark~\ref{rem:bn-parity}). What remains is (a) the exact $\beta_{\mathrm{odd}}=\limsup B_N/\sqrt N$ (a
-Bessel-envelope double integral, $\approx0.928$, governed by the $\mathrm i^{-N}$ Gauss-sum phase), and
-(b) a matching upper bound strictly below the unitarity value $1$
+\item The deficit $U_N-A_N$ on the non-saturating $N$. The order $A_N\sim\tfrac1\pi\ln N$ is proved for
+\emph{all} $N$ (Theorem~\ref{thm:order}) and $A_N=U_N$ iff $N$ is prime or $2^m$
+(Theorem~\ref{thm:classification}); the deficit is $O(\ln\ln\ln N)$, depends asymptotically only on the odd
+part of $N$, and (Remark~\ref{rem:defect}) is \emph{unbounded}---numerically it grows with the number of
+distinct odd prime factors, so $\Theta(\ln\ln\ln N)$ along primorials. What remains is a rigorous matching
+\emph{lower} bound and the exact algebraic value per $N$ (certified per-$N$ brackets follow from the
+Lasserre moment--SOS hierarchy, Section~\ref{sec:exact}).
+\item The Schr\"odinger constant $B_N/\sqrt N$. The order $B_N=\Theta(\sqrt N)$ is settled,
+$\liminf=c_0/\sqrt2\approx0.861$ is proved (Theorem~\ref{thm:schr-lower}), and the constant splits by the
+parity of $N$ (Remark~\ref{rem:bn-parity}): the odd-subsequence value $\beta_{\mathrm{odd}}=0.928019303\ldots$
+is determined exactly (an elliptic-integral average, shown by a $25$-digit \textsc{pslq} search to have no
+elementary closed form), and $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ is \emph{proved} for
+$t\le N/2$. The one residual is the rigorous upper bound on the multi-copy region $t>N/2$ (numerically
+subdominant---no Gauss-sum revival), which would give $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$
 (\texttt{verify\_bn\_parity.py}).
 \item A rigorous nonlinear theory of the discrete NLS \eqref{eq:dnls} on the ring
 (Section~\ref{sec:rogue}): existence and stability of discrete breathers, the role of the $\LN$
