@@ -15,8 +15,8 @@ FINDING (the honest outcome): A_N is the supremum of an almost-periodic function
 near-recurrent peaks occur at times that grow rapidly with N (cf. the diploma's t ~ 2e8).
 A uniform t-scan therefore yields only a LOWER bound that keeps rising as the window T
 grows -- so the N-asymptotics of A_N CANNOT be read off a fixed-budget scan. This is why
-the c*log N growth (proved by Myshkis-Filimonov for the Dirichlet segment) is a genuine
-open analytic problem on the ring, not a thing to "measure".
+the c*log N growth is established by the prefix-alignment PROOF (Theorem order; A_N ~ (1/pi) ln N
+for all N, verify_order_theorem.py), not by measurement: a scan only lower-bounds the sup.
 
 What this script does establish, rigorously:
   (A) the in-phase upper bound A_N <= U_N := (1/(2N)) sum csc(pi r/N) ~ (1/pi) ln N;
@@ -138,9 +138,9 @@ def main() -> int:
     print("\n" + "=" * 78)
     print("RESULT:", "PROBE CONSISTENT" if ok else "UNEXPECTED")
     print("Conclusion: the c*log N growth of the ring impulse large wave is NOT obtainable")
-    print("by uniform t-scanning (sup lives at exp-large t). It needs an analytic lower")
-    print("bound (Diophantine / Kronecker) -- the central open result for paper #1. The")
-    print(f"strict ceiling is A_N <= U_N ~ (1/pi) ln N (1/pi={inv_pi:.4f}).")
+    print("by uniform t-scanning (sup lives at exp-large t). It is proved analytically via")
+    print("Kronecker alignment of the independent prefix (Theorem order, verify_order_theorem.py).")
+    print(f"The strict ceiling is A_N <= U_N ~ (1/pi) ln N (1/pi={inv_pi:.4f}).")
     print("=" * 78)
     return 0 if ok else 1
 

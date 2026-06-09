@@ -8,16 +8,17 @@ SUB-CHAIN TARGET (heuristic, NOT a proof). If p = P(N) is the largest prime fact
 embeds in C_N (its modes are rho = s N/p, frequencies 2 sin(pi s/p), Q-independent since p is prime), and
 those modes WOULD contribute (P(N)/N) U_{P(N)} ~ (P(N)/(pi N)) ln P(N) if aligned in isolation. This is
 NOT a rigorous lower bound on A_N: at the aligning instant the remaining modes (total weight
-U_N - (P(N)/N)U_{P(N)}, a constant fraction of U_N) are uncontrolled and may interfere -- exactly the
-open obstruction in Conjecture (order). Empirically A_N still exceeds this target; we report it as
-context, not as a bound.
+U_N - (P(N)/N)U_{P(N)}, a constant fraction of U_N) are uncontrolled and may interfere -- the obstruction
+later dispatched in Theorem (order) by aligning the long independent prefix instead (M(N)=phi(2N)/2; see
+verify_order_theorem.py). Empirically A_N still exceeds this C_p target; we report it as context.
 
 This script honestly (a) checks that the C_p target sits below the optimized A_N (an empirical
 observation); (b) computes the exact A_N/ln N for the hardest N = p*q with p,q ~ sqrt(N) (consecutive
 primes, up to 19*23); (c) maps the Q-independent prefix length M(N)/N for highly composite N; (d)
 confirms the independence locus rank = phi(2N)/2 = floor(N/2) <=> prime/2^m to N <= 500 via the closed
 form (Theorem qrank). The optimized A_N is a valid LOWER bound on the true sup (any achievable phase
-config), compared to the ceiling U_N. The conjecture A_N = Theta(ln N) for ALL N remains OPEN.
+config), compared to the ceiling U_N. The order A_N ~ (1/pi) ln N for ALL N is now PROVED (Theorem order,
+verify_order_theorem.py); this script provides extended numerical corroboration on the hardest N.
 """
 
 from __future__ import annotations
@@ -237,8 +238,9 @@ def main() -> int:
 
     print("\n" + "=" * 84)
     print("RESULT:", "EXTENDED ORDER RUN VERIFIED" if ok else "CHECK FAILED")
-    print("Honest status: A_N/ln N stays in [0.28,0.34] incl. the hardest N=pq with p,q~sqrt(N);")
-    print("full independence (=> A_N=U_N) is prime/2^m only. Conjecture A_N=Theta(ln N) for ALL N: OPEN.")
+    print("Status: A_N/ln N stays in [0.28,0.34] incl. the hardest N=pq with p,q~sqrt(N);")
+    print("full independence (=> A_N=U_N) is prime/2^m only. A_N ~ (1/pi)ln N for ALL N: PROVED")
+    print("(Theorem order; see verify_order_theorem.py). This run is extended corroboration.")
     print("=" * 84)
     return 0 if ok else 1
 

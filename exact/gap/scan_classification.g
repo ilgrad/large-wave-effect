@@ -7,10 +7,10 @@
 # the saturation scan -- extended here well past the N<=160 of the paper.
 #
 #   gap -q --nointeract exact/gap/scan_classification.g
-# Set LW_MAXN below (default 400; the paper reports the verified range N<=800, ~35 s).
+# Set LW_MAXN below (default 800 = the verified range reported in the paper, ~35 s).
 
 Read("exact/gap/relation_lattice.g");
-if not IsBound(LW_MAXN) then LW_MAXN := 400; fi;
+if not IsBound(LW_MAXN) then LW_MAXN := 800; fi;
 
 LW_rankok := true;; LW_sat := [];; LW_t0 := Runtime();;
 for N in [3 .. LW_MAXN] do

@@ -405,7 +405,8 @@ sharper question settled by Theorem~\ref{thm:classification}.
 
 \begin{remark}[the defect: an odd-part scaling law]\label{rem:defect}
 The same estimate controls the deficit on the non-saturating $N$: $U_N-A_N\le2(U_N-L_{\mathrm{pre}})=
-\tfrac2N\sum_{r=\frac12\varphi(2N)+1}^{\lfloor N/2\rfloor}\csc\tfrac{\pi r}N=\tfrac2\pi\ln\tfrac{N}{\varphi(2N)}+O(1)$.
+2\sum_{r=\frac12\varphi(2N)+1}^{\lfloor N/2\rfloor}b_r=\tfrac2\pi\ln\tfrac{N}{\varphi(2N)}+O(1)$ (the tail of the
+ceiling beyond the prefix; $b_{N/2}=\tfrac1{2N}$ when $N$ is even).
 Writing $N=2^a m$ with $m$ odd, $N/\varphi(2N)=m/\varphi(m)$ is \emph{independent of $a$}, so the bound is
 the same throughout each family $2^a m$:
 \[
@@ -894,9 +895,10 @@ time $t=N/4$, at which the Bessel front exactly fills one half-period.
 $B_N/\sqrt N$ does \emph{not} converge: the aliasing phase $\mathrm i^{-N}$ is real for even $N$ and
 imaginary for odd $N$, so where the two overlapping fronts meet they add differently. Numerically
 (\texttt{verify\_bn\_parity.py}) the sup is at $t=N/4$ for even $N$, giving $B_N/\sqrt N\to c_0/\sqrt2$ (the
-value above), and at $t=N/2$ for odd $N$, where $|K_N(k,N/2)|=\sqrt{J_k(N)^2+J_{N-k}(N)^2}$ admits no
-cancellation. The Debye envelope $|J_{Nu}(N)|\sim\sqrt{2/\pi N}\,(1-u^2)^{-1/4}|\cos\Phi|$ then yields the
-exact value
+value above), and at $t=N/2$ for odd $N$, where the two surviving aliasing copies give
+$|K_N(k,N/2)|\approx\sqrt{J_k(N)^2+J_{N-k}(N)^2}$ across the front (no cancellation, since $\mathrm i^{-N}$
+is imaginary). The Debye envelope $|J_{Nu}(N)|\sim\sqrt{2/\pi N}\,(1-u^2)^{-1/4}|\cos\Phi|$ then yields the
+limiting value
 \begin{equation}\label{eq:beta-odd}
   \beta_{\mathrm{odd}}=\sqrt{\tfrac2\pi}\int_0^1\mathbb E_{\Phi,\Psi}
      \sqrt{\frac{\cos^2\Phi}{\sqrt{1-u^2}}+\frac{\cos^2\Psi}{\sqrt{u(2-u)}}}\;\mathrm du=0.92798\ldots,
@@ -904,12 +906,14 @@ exact value
 an elliptic-integral average ($\Phi,\Psi$ independent uniform) with no apparent elementary closed form
 (\texttt{verify\_beta\_odd.py}). Evaluation at $t=N/2$ is rigorous, so $\liminf_N B_N/\sqrt N=c_0/\sqrt2$ and
 $\liminf_{\text{odd }N}B_N/\sqrt N\ge\beta_{\mathrm{odd}}$, whence $\limsup_N B_N/\sqrt N\in[\beta_{\mathrm{odd}},1]$.
-For the upper side, the triangle inequality with Lemma~\ref{lem:bessel-l1} gives, for \emph{every} $t$,
-$\|K_N(\cdot,t)\|_1\le\sum_{n}|J_n(2t)|=(1+o(1))c_0\sqrt{2t}$, hence with unitarity
+For the upper side, the triangle inequality (over the Poisson copies) and unitarity give, for \emph{every}
+$t$, the two exact bounds $\|K_N(\cdot,t)\|_1\le\sum_{n}|J_n(2t)|$ and $\|K_N(\cdot,t)\|_1\le\sqrt N$; since
+$\sum_{n}|J_n(2t)|=(1+o(1))c_0\sqrt{2t}$ (Lemma~\ref{lem:bessel-l1}),
 \[
-  \|K_N(\cdot,t)\|_1\ \le\ \min\!\bigl(c_0\sqrt{2t},\ \sqrt N\bigr),
+  \|K_N(\cdot,t)\|_1\ \le\ \min\!\Bigl(\textstyle\sum_{n}|J_n(2t)|,\ \sqrt N\Bigr)
+                       \ =\ \min\!\bigl((1+o(1))c_0\sqrt{2t},\ \sqrt N\bigr),
 \]
-which for $t\le N/4$ is $\le c_0/\sqrt2\,\sqrt N$. So any time beating the even value $c_0/\sqrt2$ must lie in
+which for $t\le N/4$ is $\le(1+o(1))\,c_0/\sqrt2\,\sqrt N$. So any time beating the even value $c_0/\sqrt2$ must lie in
 the overlap region $t>N/4$, where the parity of $\mathrm i^{-N}$ decides the cancellation. The remaining
 gap---a sharp upper bound there, equivalently that the $\sin^2$ dispersion admits no flat (Gauss-sum)
 revival making $|K_N(\cdot,t)|$ uniform---is the one residual analytic question; numerically the sup is
