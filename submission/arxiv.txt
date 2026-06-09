@@ -1,0 +1,55 @@
+================================================================================
+arXiv submission sheet  --  large-wave-effect
+(copy the fields into the arXiv web form; abstract is plain text with inline $..$)
+================================================================================
+
+TITLE
+  Large-wave amplification on periodic discrete lattices: linear theory and a
+  nonlinear extension
+
+AUTHORS
+  Ilia Gradina
+
+PRIMARY CATEGORY
+  math.SP   (Spectral Theory)
+
+CROSS-LIST
+  math-ph   (Mathematical Physics)
+  math.CA   (Classical Analysis and ODEs)
+  math.NT   (Number Theory)
+  nlin.PS   (Pattern Formation and Solitons)
+
+MSC 2020
+  39A12, 42A75, 11R18, 47B35, 35Q55, 11L07, 33C10
+
+COMMENTS
+  50 pages, figures. Reproducibility layer: standalone PEP 723 verification
+  scripts (one per quantitative claim) plus an exact-arithmetic / proof layer in
+  GAP, PARI/GP, FriCAS and Rocq. Code and paper: https://github.com/ilgrad/large-wave-effect
+
+--------------------------------------------------------------------------------
+ABSTRACT
+--------------------------------------------------------------------------------
+We study the large-wave effect for free oscillations of the periodic discrete
+chain (the ring of $N$ beads) and for the discrete Schrodinger equation on the
+same ring. For the unit-impulse Green's function $A_N=\sup_t\max_j|u_j(t)|$,
+Bohr's theorem identifies the supremum with the $\ell^1$ mass of the Fourier
+coefficients when the frequencies $\{2\sin(\pi r/N)\}$ are rationally independent.
+Our main result is that the order is settled for every $N$: $A_N\sim(1/\pi)\ln N$,
+with $A_N=(1/\pi)\ln N+O(\ln\ln\ln N)$. The lower bound rests on a palindromic
+argument showing the first $\varphi(2N)/2$ frequencies are $\mathbb{Q}$-independent,
+so a $(1-o(1))$ fraction of the ceiling $U_N=(1/2N)\sum\csc(\pi r/N)$ can always be
+aligned. We further prove that $A_N=U_N$ if and only if $N$ is prime or a power of
+two -- equivalently, every integer frequency relation has coefficient-sum divisible
+by four -- via an explicit root-of-unity obstruction; the orbit-closure subtorus has
+dimension exactly $\varphi(2N)/2$. The composite deficit $U_N-A_N$ is $O(\ln\ln\ln N)$,
+and the order law extends to the Dirichlet segment and to every Cartesian product
+$C_N\,\square\,H$. For the discrete Schrodinger propagator $e^{-itL_N}$, unitarity
+forbids amplification of a localized state, while the $\ell^\infty\to\ell^\infty$
+amplification is $B_N=\Theta(\sqrt N)$ with $\liminf B_N/\sqrt N=c_0/\sqrt2$; the
+constant has no limit, splitting by the parity of $N$ with $\limsup\ge\beta_{odd}
+=0.928\ldots$ For the focusing discrete NLS the linear large wave persists under weak
+nonlinearity, the modulational-instability band is read off the $L_N$ spectrum, and
+the on-site breather exists and is stable. Proved results are separated throughout
+from numerical evidence; all quantitative claims are reproduced by accompanying
+scripts and an exact GAP/PARI/FriCAS/Rocq layer.

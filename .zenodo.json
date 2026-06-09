@@ -1,0 +1,40 @@
+{
+  "title": "Large-wave amplification on periodic discrete lattices: linear theory and a nonlinear extension",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "access_right": "open",
+  "license": "Apache-2.0",
+  "creators": [
+    {
+      "name": "Gradina, Ilia",
+      "orcid": "0000-0000-0000-0000"
+    }
+  ],
+  "description": "Paper and full reproducibility layer for the large-wave effect on periodic discrete lattices. Main results: the order law A_N ~ (1/pi) ln N is proved for every N (palindromic prefix-independence lemma); A_N = U_N iff N is prime or a power of two (root-of-unity obstruction); the discrete Schroedinger amplification B_N = Theta(sqrt N) with liminf c0/sqrt2 and a parity-dependent limsup (beta_odd = 0.928..., no elementary closed form); the order law extends to the Dirichlet segment and to ring products C_N x H; and a rigorous chain for the focusing discrete NLS (weak-nonlinear persistence, the modulational-instability band, breather existence and stability). Every quantitative claim is reproduced by a standalone PEP 723 script, with an independent exact-arithmetic / proof layer in GAP, PARI/GP, FriCAS and Rocq.",
+  "keywords": [
+    "large-wave effect",
+    "discrete Schroedinger equation",
+    "periodic lattice",
+    "ring Laplacian",
+    "almost periodic functions",
+    "Bohr theorem",
+    "Kronecker-Weyl equidistribution",
+    "cyclotomic fields",
+    "vanishing sums of roots of unity",
+    "Toeplitz and circulant matrices",
+    "spectral theory",
+    "modulational instability",
+    "discrete breathers",
+    "formal verification",
+    "reproducible research"
+  ],
+  "language": "eng",
+  "notes": "Companion arXiv preprint to be cross-referenced once the identifier is assigned. Fill in the author ORCID before publishing the release.",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/ilgrad/large-wave-effect",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}

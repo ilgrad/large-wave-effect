@@ -89,13 +89,16 @@ $N$)---an arithmetic criterion met \emph{exactly} by the primes and the powers o
 (Theorem~\ref{thm:classification}), and by no composite $N$. Moreover the \emph{order} is now settled for
 \emph{all} $N$: $A_N\sim\tfrac1\pi\ln N$ unconditionally (the lower bound from a palindromic argument
 showing the first $\tfrac12\varphi(2N)$ frequencies are $\Q$-independent, so a $\ln N$ fraction of the
-ceiling can always be aligned). We also separate the infinite-time ceiling from the
-finite-time (Diophantine) amplitude actually reached. For the discrete Schr\"odinger propagator
+ceiling can always be aligned). The composite deficit $U_N-A_N$ is $O(\ln\ln\ln N)$, and the order law extends to the Dirichlet segment
+and to every ring product $C_N\,\square\,H$. For the discrete Schr\"odinger propagator
 $\eu^{-\mathrm{i}t\LN}$, unitarity forbids amplification of a localized state, while the
-$\ell^\infty\!\to\!\ell^\infty$ amplification satisfies $B_N=\Theta(\sqrt N)$ (upper bound from
-unitarity, matching lower bound from a Bessel-front estimate). Proved results are separated throughout
+$\ell^\infty\!\to\!\ell^\infty$ amplification satisfies $B_N=\Theta(\sqrt N)$; here $\liminf B_N/\sqrt N=
+c_0/\sqrt2$ but the constant has \emph{no} limit---it splits by parity, with $\limsup\ge\beta_{\mathrm{odd}}
+=0.928\ldots$ (a Bessel-envelope integral with no elementary closed form). For the focusing discrete NLS the
+linear large wave persists under weak nonlinearity, the modulational-instability band is read off the
+$\LN$ spectrum, and the on-site breather exists and is stable. Proved results are separated throughout
 from computational evidence and conjectures; all quantitative claims are reproduced by the accompanying
-scripts.
+scripts, with a \textsc{Gap}/\textsc{Pari}/\textsc{FriCAS}/\textsc{Rocq} exact-arithmetic layer.
 \end{abstract}
 
 \maketitle

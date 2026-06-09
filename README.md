@@ -18,48 +18,50 @@ Every quantitative claim is reproduced by a standalone, version-controlled scrip
 
 ## Main results
 
-Proved results are kept strictly separate from numerical evidence and the one open conjecture.
+Proved results are kept strictly separate from numerical evidence and the (sharply reduced) open problems.
 
 **Linear theory (Part I).**
 
-- **T1 — exact amplitude (saturating $N$).**
-  $A_N = U_N = \tfrac1\pi\ln N + \tfrac1\pi\bigl(\gamma + \ln\tfrac2\pi\bigr) - \tfrac{\pi}{72N^2} + \cdots$,
-  proved for $N$ prime and $N = 2^m$, with the same sharp constant $\tfrac1\pi$ on the composite family
-  $N = 2p$ (cyclotomic independence + Bohr almost-periodicity).
-- **T2 — subtorus dimension (theorem).** The orbit-closure subtorus has dimension exactly
-  $\tfrac12\varphi(2N)$ for *every* $N$.
-- **T3 — ceiling criterion + classification (theorem).** $A_N = U_N$ **iff** every integer frequency
-  relation has coefficient-sum $\equiv 0 \pmod 4$ (antipodal variant for even $N$); via an explicit
-  root-of-unity obstruction for every composite $N$, this holds **exactly when $N$ is prime or a power of
-  two**, so $\{N : A_N = U_N\} = \{\text{primes}\}\cup\{2^m\}$ (density zero). Certified for all composite
-  $N \le 600$ by `verify_classification_proof.py`, corroborated to $N \le 800$ in exact GAP arithmetic.
-- **T4 — discrete Schrödinger (two settings).** A localized state is never amplified (unitarity), yet the
-  $\ell^\infty\!\to\!\ell^\infty$ amplification is $B_N = \Theta(\sqrt N)$ — **both bounds rigorous**
-  (upper from unitarity, lower from a Bessel-front estimate at $t = N/8$). On the **Dirichlet segment**
-  (uniform initial state) the amplitude at site $j$ grows as $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ for $N$
-  prime or $2^m$ (Filimonov 2023, reproduced; the constant $C = 4/\pi^2$ is the published
-  Myshkis–Filimonov 2003 value, inherited because the wave and Schrödinger ceilings coincide). Three large-wave
-  laws thus live on one Laplacian: $A_N \sim \tfrac1\pi\ln N$ (ring, system size),
-  $B_N \sim \sqrt N$ (ring, $\ell^\infty$ norm), $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ (segment, site).
-- **T5 — dimensionality & reachability.** The large wave lives exactly at spectral dimension $d_s = 1$
-  (incl. quasi-1D ladders/tubes; $O(1)$ for $d_s \ge 2$). It is an *infinite-time* ceiling: the
-  finite-time amplitude is Diophantine-limited (recurrence time grows exponentially in $N$), and mass
-  disorder trades the arithmetic obstruction for an exploding recurrence time.
-- **Open conjecture.** $A_N = \Theta(\ln N)$ for *all* $N$ (the sharp constant $\tfrac1\pi$ is proved only
-  on the classes above). Numerically $A_N/\ln N \in [0.28, 0.34]$ (including the hardest $N = pq$,
-  $p,q \sim \sqrt N$), and the alignable independent low-mode prefix carries a budget $\sim 0.26\ln N$ —
-  strong evidence, but **not** a proof: the out-of-prefix modes may interfere. The Dirichlet segment is
-  full-rank ($A_N = U_N$) iff $N+1$ is prime or $2^m$.
+- **Order law (theorem, all $N$).** $A_N \sim \tfrac1\pi\ln N$ for *every* $N$ — the central result, formerly
+  a conjecture. The lower bound comes from a *palindromic argument*: the first $\tfrac12\varphi(2N)$
+  frequencies $2\sin(\pi r/N)$ are $\mathbb{Q}$-independent, so a $(1-o(1))$ fraction of the ceiling can
+  always be Kronecker-aligned. Precisely $A_N = \tfrac1\pi\ln N + O(\ln\ln\ln N)$.
+- **Exact amplitude / saturation (theorem).**
+  $A_N = U_N = \tfrac1\pi\ln N + \tfrac1\pi(\gamma+\ln\tfrac2\pi) - \tfrac{\pi}{72N^2}+\cdots$ **iff** $N$ is
+  prime or a power of two; equivalently every integer frequency relation has coefficient-sum $\equiv 0
+  \pmod 4$ (antipodal variant for even $N$). Via an explicit root-of-unity obstruction,
+  $\{N : A_N = U_N\} = \{\text{primes}\}\cup\{2^m\}$ (density zero). The orbit-closure subtorus has
+  dimension exactly $\tfrac12\varphi(2N)$. Certified to $N\le600$ (Python) / $N\le800$ (exact GAP).
+- **Composite deficit.** $U_N - A_N = O(\ln\ln\ln N)$, depending asymptotically only on the odd part of $N$;
+  the strict gap $A_N < U_N$ is rigorously certified for small $N$ (Lipschitz-grid and Lasserre moment–SOS).
+- **Discrete Schrödinger.** A localized state is never amplified (unitarity), yet
+  $B_N = \sup_t\|e^{-itL_N}\|_{\ell^\infty\to\ell^\infty} = \Theta(\sqrt N)$. Here
+  $\liminf B_N/\sqrt N = c_0/\sqrt2 = 0.861$ (proved, $c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$), but the
+  constant has **no limit** — it splits by parity, with $\limsup \ge \beta_{\mathrm{odd}} = 0.928\ldots$, an
+  elliptic-integral constant with no elementary closed form. On the **Dirichlet segment**
+  $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ for $N+1$ prime/$2^m$ (the constant $C=4/\pi^2$ is the published
+  Myshkis–Filimonov 2003 value). Three large-wave laws on one Laplacian.
+- **Dimension & products (theorem).** The large wave lives exactly at spectral dimension $d_s = 1$ ($O(1)$
+  for $d_s\ge2$). A graph-agnostic order criterion plus the embedded ring spectrum give $A = \Theta(\ln N)$
+  on *every* Cartesian product $C_N\,\square\,H$ (ladders, prisms, tubes). It is an *infinite-time* ceiling:
+  the finite-time amplitude is Diophantine-limited (recurrence time exponential in $N$).
 
-**Nonlinear extension (Part II).** The same $L_N$ is the linear part of the focusing DNLS and the FPUT
-lattice. Peregrine factor $3$, Benjamin–Feir modulational instability, heavy-tailed (leptokurtic)
-statistics; self-trapping into discrete breathers above the band top ($\gamma \approx 4$); FPUT
-recurrence and a Lyapunov transition to chaos; and a third, refractive route — Airy-fold and cusp
-(Pearcey) caustics, branched flow in random currents, and lightning as Laplacian growth — all on the
-same $L_N$. Part II is
-primarily computational/exploratory; its rigorous statements (Hamiltonian conservation laws, the
-modulational-instability band) are flagged as classical, while the hard nonlinear results (breather
-existence/stability, the precise self-trapping threshold, the route to chaos) are simulated, not proved.
+**Nonlinear extension (Part II), focusing DNLS — now a rigorous chain.** The linear large wave **persists**
+under weak nonlinearity (Duhamel); the **modulational-instability band** $\sigma_Q=\sqrt{\lambda_Q(2\gamma
+A^2-\lambda_Q)}$ is read off the $L_N$ spectrum; the on-site **breather exists** (a finite-dimensional
+variational argument, no MacKay–Aubry continuation) and is **stable** (Vakhitov–Kolokolov / Grillakis–
+Shatah–Strauss), while the bond-centred breather is unstable. The strongly nonlinear regime (saturation,
+the precise self-trapping threshold $\approx 4$, rogue-wave focusing), FPUT recurrence and the route to
+chaos remain computational/exploratory.
+
+**Open problems** (each reduced to a clean statement). (1) The *sharp* $B_N$ upper bound on $t>N/2$
+(proved for $t\le N/2$): an anti-flatness statement for the non-quadratic $\sin^2$ chirp / joint
+equidistribution of the multi-copy Debye phases, which would give $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$.
+(2) A rigorous *growing* lower bound on the deficit, equivalent to the **excess lemma** $A_N\le L_{\mathrm{pre}}+O(1)$.
+(3) The strongly nonlinear DNLS (above). (4) Condition (B) of the order criterion for quasi-1D lattices
+*without* an embedded ring factor. **Priority note:** Filimonov's 1992 C. R. Acad. Sci. note must be obtained
+and compared on the ring before claiming priority (its splash table is reproduced in Andrianov–Awrejcewicz–
+Danishevskyy 2021).
 
 ## Reproduce
 
@@ -73,9 +75,11 @@ uv run --script numerics/make_figures.py       # regenerate paper/figures/*.pdf
 cd paper && latexmk -pdf large-wave-effect.tex # build the paper (run twice to resolve refs)
 ```
 
-Headline checks: `verify_ceiling_criterion.py` (T3), `verify_qrank_formula.py` (T2),
-`verify_schrodinger_lower.py` (T4), `verify_conj_order_map.py` (order conjecture),
-`verify_relation_lattices.py` (the mod-4 obstruction made explicit).
+Headline checks: `verify_order_theorem.py` (the order law + palindromic prefix lemma),
+`verify_classification_proof.py` (saturation classification), `verify_bn_parity.py` and
+`verify_beta_odd.py` (the Schrödinger constant and its parity split), `verify_defect_certified.py`
+(certified $A_N<U_N$), `verify_product_order.py` ($C_N\,\square\,H$), and the DNLS chain
+`verify_dnls_persistence.py` / `verify_dnls_mi.py` / `verify_dnls_breather_stability.py`.
 
 **Exact-arithmetic + formal layer** (Fedora: `dnf install gap pari-gp fricas rocq-prover`). The
 linear-theory arithmetic is reproduced floating-point-free in **GAP** and **PARI/GP**, symbolically in
