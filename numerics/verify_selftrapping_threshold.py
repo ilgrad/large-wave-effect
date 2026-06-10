@@ -60,8 +60,34 @@ def main() -> int:
     mm3, pr3, _ = evolve_extrema(n, p, 3.0 / p, t_final=200.0, steps=40000)
     print(f"  below threshold (gP=3): min max|u|^2 = {mm3:.4f} (dispersal; bound vacuous), PR reaches {pr3:.0f}")
     ok &= mm3 < 0.05  # genuinely disperses below the bandwidth
+
+    # Poincare recurrence (Remark): on the finite ring the maximum RECURS after the dip -- the correct
+    # converse concerns inf_t, not sup_t.  Small ring so the return happens on a feasible horizon.
+    n2, g2 = 32, 3.0
+    lam = 4 * np.sin(np.pi * np.arange(n2) / n2) ** 2
+    u = np.zeros(n2, complex)
+    u[0] = 1.0
+    dt = 0.005
+    half = np.exp(1j * lam * dt / 2)
+    dipped, recovered, dip_val = False, 0.0, np.inf
+    for s in range(4_000_000):
+        u = np.fft.ifft(half * np.fft.fft(u))
+        u = np.exp(-1j * g2 * np.abs(u) ** 2 * dt) * u
+        u = np.fft.ifft(half * np.fft.fft(u))
+        if s % 400 == 0:
+            m = float((np.abs(u) ** 2).max())
+            dip_val = min(dip_val, m)
+            if m < 0.15:
+                dipped = True
+            if dipped and m > 0.5:
+                recovered = m
+                break
+    print(f"  recurrence (N=32, gP=3): dip to {dip_val:.3f}, then recovery to {recovered:.3f} "
+          f"({'observed' if recovered > 0.5 else 'NOT observed in window'})")
+    ok &= dipped and recovered > 0.5
+
     print("=" * 72)
-    print("RESULT:", "PASS -- no dispersal above gamma P = 4 (conservation bounds hold)" if ok else "FAIL")
+    print("RESULT:", "PASS -- no dispersal above gamma P = 4; below it the max dips but recurs" if ok else "FAIL")
     return 0 if ok else 1
 
 

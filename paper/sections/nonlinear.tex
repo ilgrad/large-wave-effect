@@ -207,9 +207,16 @@ $\LN\succeq0$, giving the first bound. Dividing by $\sum|u|^2=P$ gives
 $\max_j|u_j|^2\ge\sum|u|^4/P\ge P-4/\gamma$ and the participation bound (cf.\ the variational excitation
 thresholds of~\cite{Weinstein99}; \texttt{verify\_selftrapping\_threshold.py}). \end{proof}
 
-\noindent The converse direction---that for $\gamma P<4$ the single-site excitation actually disperses (as
-it does numerically, e.g.\ $\max_j|u_j|^2\to0.007$ at $\gamma P=3$)---remains open; it is genuine
-dispersive theory.
+\noindent The converse needs care: on the \emph{finite} ring nothing disperses forever. The flow is
+Hamiltonian, hence preserves Lebesgue measure on the invariant bounded shell
+$\{P-\delta\le\|u\|_2^2\le P\}$, so by Poincar\'e recurrence almost every datum returns arbitrarily close
+to itself: for a.e.\ $u_0$, $\limsup_{t\to\infty}\max_j|u_j(t)|^2=\max_j|u_j(0)|^2$, for \emph{every}
+$\gamma$. Numerically the single-site orbit below threshold behaves exactly so: at $\gamma P=3$ the maximum
+dips to $0.05$ and later recovers past $0.5$ (\texttt{verify\_selftrapping\_threshold.py}). The threshold
+dichotomy therefore concerns the \emph{infimum}: above the bandwidth,
+$\inf_t\max_j|u_j(t)|^2\ge P-4/\gamma$ (Proposition~\ref{prop:threshold}); below it the infimum drops to
+the dispersal scale ($0.05$ at $\gamma P=3$), and proving that drop---the correctly stated converse---is
+the genuinely dispersive open direction.
 
 On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation from the
 anti-continuum limit~\cite{MacKayAubry}---it is a compactness statement.

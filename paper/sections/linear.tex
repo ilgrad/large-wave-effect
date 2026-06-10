@@ -953,7 +953,10 @@ intrinsic: the \emph{quadratic} chirp (Gauss--Fresnel/Talbot) is $L^1$-flat with
 unimodular polynomials exist~\cite{BombieriBourgain}, so $\limsup<1$ is an \emph{anti}-flatness statement
 particular to the non-quadratic $\sin^2$ dispersion---no generic argument supplies it. (A single-period
 saddle van der Corput estimate fails: it predicts $0.61$ against the actual $0.93$, missing the Poisson-copy
-coherence.)
+coherence. A fourth-moment/merit-factor route cannot supply the upper bound either:
+$\max\{\|K\|_1/\sqrt N:\|K\|_2=1,\,N\|K\|_4^4=c\}=1-\Theta(\sqrt{c/N})$, a single spike of mass
+$\sqrt{c/N}$ absorbing any fourth moment at negligible $\ell^1$ cost---so no bound below $1$ can follow
+from $\|K\|_2$ and $\|K\|_4$ alone.)
 \end{remark}
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
@@ -1464,11 +1467,18 @@ $\{A,B\}=\{\pi/2,\pi\}$ and $A=B=2\pi/3$ (excluded by $a\ne b$); hence $a=N/4$, 
 (\texttt{verify\_nnn\_collisions.py}: confirmed \emph{exactly}, in integer arithmetic modulo $\Phi_N$, for
 all $N\le200$). \end{proof}
 
-\noindent Beyond this collision a $100$-digit \textsc{pslq} search finds no further rational relation among
-the NNN frequencies for any $5\le N\le40$; dropping the duplicate when $4\mid N$ then leaves a
-$\Q$-independent set carrying the full ceiling, so on this evidence condition (B)---and with it
-$A=\Theta(\ln N)$---holds throughout the NNN family. Deciding (B) for a \emph{general} $d_s=1$ lattice
-remains open; the criterion isolates exactly what must be shown.
+\noindent The law generalises to every rational coupling: for next-nearest weight $g>0$ the symbol
+factorises as $\omega^2=(1-x)\bigl(2+4g(1+x)\bigr)$, $x=\cos\tfrac{2\pi a}N$, so distinct frequencies
+collide iff $\cos\tfrac{2\pi a}N+\cos\tfrac{2\pi b}N=-\tfrac1{2g}$---again a rational cosine relation
+classified by~\cite{CJ}. For $g=1$ the solutions are $\{\pi/3,\pi\}$, $\{2\pi/5,4\pi/5\}$,
+$\{\pi/2,2\pi/3\}$, so collisions occur exactly at $(N/6,N/2)$, $(N/5,2N/5)$, $(N/4,N/3)$ when $6$, $5$,
+$12$ divide $N$ (verified exactly for $N\le120$); for $g=\tfrac14$ the required value $-2$ forces
+$A=B=\pi$, and there are \emph{no} collisions for any $N$. The degeneracy layer of condition (B) is thus
+settled for the whole one-parameter NNN family. Beyond collisions, a $100$-digit \textsc{pslq} search finds
+no further rational relation among the NNN ($g=\tfrac12$) frequencies for any $5\le N\le40$; dropping the
+duplicate when $4\mid N$ then leaves a $\Q$-independent set carrying the full ceiling, so on this evidence
+condition (B)---and with it $A=\Theta(\ln N)$---holds throughout the family. Deciding (B) for a
+\emph{general} $d_s=1$ lattice remains open; the criterion isolates exactly what must be shown.
 
 For one natural class, though, (B) is free---whenever the ring sits inside the lattice as a factor.
 
