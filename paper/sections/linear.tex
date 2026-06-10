@@ -1295,6 +1295,8 @@ DNLS large-wave persistence (Prop.~\ref{prop:dnls-persist}) & \texttt{verify\_dn
 DNLS modulational-instability band (Prop.~\ref{prop:mi}) & \texttt{verify\_dnls\_mi.py}\\
 DNLS breather existence (Prop.~\ref{prop:breather}) & \texttt{verify\_dnls\_breather.py}\\
 DNLS breather stability site/bond (Prop.~\ref{prop:breather-stab}) & \texttt{verify\_dnls\_breather\_stability.py}\\
+Self-trapping threshold, no dispersal $\gamma P>4$ (Prop.~\ref{prop:threshold}) & \texttt{verify\_selftrapping\_threshold.py}\\
+NNN degeneracy law (Prop.~\ref{prop:nnn}) & \texttt{verify\_nnn\_collisions.py}\\
 Quasi-1D order criterion, NNN ring (Prop.~\ref{prop:order-criterion}) & \texttt{verify\_quasi1d\_order.py}\\
 Order on ring products $C_N\square H$ (Cor.~\ref{cor:product}) & \texttt{verify\_product\_order.py}\\
 FPUT-$\beta$ recurrence (symplectic) & \texttt{verify\_fput\_recurrence.py}\\
@@ -1443,8 +1445,30 @@ length-$\tfrac12\varphi(2N)$ prefix, carrying $(1-o(1))U_N$, so $\delta\to\tfrac
 palindromic lemma: e.g.\ the next-nearest-neighbour ring, with
 $\omega_r=2\sin(\tfrac{\pi r}N)\sqrt{2+\cos\tfrac{2\pi r}N}$, is $\Q$-independent at $N=15$ (so it
 \emph{saturates}, $A_N=U_N$) yet carries the degeneracy $\omega_3=\omega_6=2$ at $N=12$
-(\texttt{verify\_quasi1d\_order.py}). Deciding (B) for a general $d_s=1$ lattice is open; the criterion
-isolates exactly what must be shown.
+(\texttt{verify\_quasi1d\_order.py}). For this family the \emph{degeneracy layer} of (B) can be settled
+completely.
+
+\begin{proposition}[NNN degeneracy law]\label{prop:nnn}
+For the next-nearest-neighbour ring ($g=\tfrac12$), two distinct frequencies coincide,
+$\omega_a=\omega_b$ with $a<b\le\lfloor N/2\rfloor$, \emph{if and only if} $4\mid N$ and
+$(a,b)=(N/4,\,N/2)$, where both equal $2$.
+\end{proposition}
+
+\begin{proof}
+With $x=\cos\tfrac{2\pi a}N$ one has $\omega_a^2=f(x)=2(1-x)(2+x)$, and
+$f(x_a)-f(x_b)=-2(x_a-x_b)(1+x_a+x_b)$. Since $\cos$ is injective on $(0,\pi]$ and $a\ne b$, a collision
+forces $x_a+x_b=-1$, i.e.\ the vanishing of the length-$6$ positive sum
+$2+\zeta^a+\zeta^{-a}+\zeta^b+\zeta^{-b}$ of $N$-th roots of unity. By the Conway--Jones classification of
+rational cosine relations~\cite{CJ}, the rational-angle solutions of $\cos A+\cos B=-1$ are
+$\{A,B\}=\{\pi/2,\pi\}$ and $A=B=2\pi/3$ (excluded by $a\ne b$); hence $a=N/4$, $b=N/2$
+(\texttt{verify\_nnn\_collisions.py}: confirmed \emph{exactly}, in integer arithmetic modulo $\Phi_N$, for
+all $N\le200$). \end{proof}
+
+\noindent Beyond this collision a $100$-digit \textsc{pslq} search finds no further rational relation among
+the NNN frequencies for any $5\le N\le40$; dropping the duplicate when $4\mid N$ then leaves a
+$\Q$-independent set carrying the full ceiling, so on this evidence condition (B)---and with it
+$A=\Theta(\ln N)$---holds throughout the NNN family. Deciding (B) for a \emph{general} $d_s=1$ lattice
+remains open; the criterion isolates exactly what must be shown.
 
 For one natural class, though, (B) is free---whenever the ring sits inside the lattice as a factor.
 

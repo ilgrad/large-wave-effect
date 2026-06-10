@@ -59,8 +59,10 @@ chaos remain computational/exploratory.
 (proved for $t\le N/2$): an anti-flatness statement for the non-quadratic $\sin^2$ chirp / joint
 equidistribution of the multi-copy Debye phases, which would give $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$.
 (2) A rigorous *growing* lower bound on the deficit, equivalent to the **excess lemma** $A_N\le L_{\mathrm{pre}}+O(1)$.
-(3) The strongly nonlinear DNLS (above). (4) Condition (B) of the order criterion for quasi-1D lattices
-*without* an embedded ring factor. **Priority note:** Filimonov's 1992 C. R. Acad. Sci. note must be obtained
+(3) The strongly nonlinear DNLS (above; the no-dispersal side of the launch threshold is now proved with
+the exact constant 4). (4) Condition (B) of the order criterion for quasi-1D lattices *without* an embedded
+ring factor (for the next-nearest-neighbour ring the degeneracy layer is settled: frequencies collide iff
+$4\mid N$, at $(N/4, N/2)$). **Priority note:** Filimonov's 1992 C. R. Acad. Sci. note must be obtained
 and compared on the ring before claiming priority (its splash table is reproduced in Andrianov–Awrejcewicz–
 Danishevskyy 2021).
 

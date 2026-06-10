@@ -184,7 +184,32 @@ selected by the size of the cubic term (\texttt{verify\_dnls\_selftrapping.py}).
 $\gamma|\phi_0|^2\gtrsim2$: from $\Omega\phi_j=-(\LN\phi)_j+\gamma\phi_j^3$ with $\phi\approx\sqrt P\,\delta_{j0}$
 one gets $\Omega\approx\gamma P-2$, which clears the band \emph{top} ($\Omega>0$) at $\gamma P\gtrsim2$. The
 larger \emph{dynamical} threshold $\gamma|z_0|^2\approx4$ measured from a single-site \emph{launch} is the
-bandwidth: the spreading excitation must outrun the entire band $[0,4]$, not merely its edge.
+bandwidth: the spreading excitation must outrun the entire band $[0,4]$, not merely its edge. One side of
+that dynamical threshold is in fact a theorem, with the constant exactly the bandwidth $4$.
+
+\begin{proposition}[no dispersal above the bandwidth]\label{prop:threshold}
+Let $u$ solve \eqref{eq:dnls} with single-site data $u_j(0)=\sqrt P\,\delta_{jj_0}$ ($N\ge3$) and
+$\gamma P>4$. Then for \emph{all} $t$,
+\[
+  \sum_j|u_j(t)|^4\ \ge\ P^2-\tfrac{4P}\gamma,\qquad
+  \max_j|u_j(t)|^2\ \ge\ P-\tfrac4\gamma\ >\ 0,\qquad
+  \mathrm{PR}\bigl(u(t)\bigr)\ \le\ \frac1{1-4/(\gamma P)},
+\]
+where $\mathrm{PR}(u)=\bigl(\sum_j|u_j|^2\bigr)^2\!/\sum_j|u_j|^4$ is the participation ratio: the
+excitation never disperses.
+\end{proposition}
+
+\begin{proof}
+$H=-\langle\LN u,u\rangle+\tfrac\gamma2\sum_j|u_j|^4$ and the power $P$ are conserved
+(Proposition~\ref{prop:dnls-cons}). At $t=0$ the single site has $\langle\LN u_0,u_0\rangle=2P$, so
+$H_0=-2P+\tfrac\gamma2P^2$; at any $t$, $\tfrac\gamma2\sum|u|^4=H_0+\langle\LN u,u\rangle\ge H_0$ since
+$\LN\succeq0$, giving the first bound. Dividing by $\sum|u|^2=P$ gives
+$\max_j|u_j|^2\ge\sum|u|^4/P\ge P-4/\gamma$ and the participation bound (cf.\ the variational excitation
+thresholds of~\cite{Weinstein99}; \texttt{verify\_selftrapping\_threshold.py}). \end{proof}
+
+\noindent The converse direction---that for $\gamma P<4$ the single-site excitation actually disperses (as
+it does numerically, e.g.\ $\max_j|u_j|^2\to0.007$ at $\gamma P=3$)---remains open; it is genuine
+dispersive theory.
 
 On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation from the
 anti-continuum limit~\cite{MacKayAubry}---it is a compactness statement.
