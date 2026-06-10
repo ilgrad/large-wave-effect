@@ -435,6 +435,27 @@ to five decimals, at solver tolerance) and reaches $N=105$
 value is algebraic per $N$ (Proposition~\ref{prop:closed}) with no universal closed form.
 \end{remark}
 
+The numerical picture condenses into a single clean implication.
+
+\begin{proposition}[conditional defect law]\label{prop:defect-cond}
+Assume the two-sided excess lemma: there is an absolute constant $C$ with
+$|A_N-L_{\mathrm{pre}}|\le C$ for all $N$. Then, writing $N=2^am$ with $m$ odd,
+\[
+  U_N-A_N\ =\ \tfrac1\pi\ln\frac{m}{\varphi(m)}\ +\ O(1):
+\]
+the deficit depends, to $O(1)$, only on the odd part of $N$, is unbounded, and is
+$\Theta(\ln\ln\ln N)$ along primorials---so the proven $O(\ln\ln\ln N)$ upper bound is sharp in order.
+\end{proposition}
+
+\begin{proof}
+$U_N-A_N=(U_N-L_{\mathrm{pre}})-(A_N-L_{\mathrm{pre}})$; the second bracket is $O(1)$ by hypothesis, and
+the first equals $\tfrac1\pi\ln\bigl(N/\varphi(2N)\bigr)+O(1)=\tfrac1\pi\ln\bigl(m/\varphi(m)\bigr)+O(1)$
+(the tail computation of Remark~\ref{rem:defect}); along primorials $m/\varphi(m)\sim\eu^\gamma\ln\ln m$.
+\end{proof}
+
+\noindent The hypothesis is exactly what the experiments support ($A_N-L_{\mathrm{pre}}\in[0.05,0.12]$
+through $\omega(m)=4$, prefix dimension $240$); proving it is the open core.
+
 \begin{example}[the whole mechanism at $N=15$]\label{ex:fifteen}
 The seven frequencies are $\omega_r=2\sin(\pi r/15)$, $r=1,\dots,7$ (with $\omega_5=2\sin\tfrac\pi3=\sqrt3$).
 Here $\varphi(2N)=\varphi(30)=8$, so the rank is $\tfrac12\varphi(30)=4$: by Lemma~\ref{lem:prefix} the
@@ -626,7 +647,9 @@ $24$ & composite & $12$ & $4$ & $3,3,3,3$ & no\\
 The two proven saturating families, the primes and the powers of two, both have natural density zero.
 An exhaustive criterion scan finds no further saturating $N\le160$, so on this range
 $\{N:A_N=U_N\}=\{N\text{ prime}\}\cup\{2^m\}$. Theorem~\ref{thm:classification} promotes this to all $N$:
-the saturating set is \emph{exactly} the primes and the powers of two, hence of density zero.
+the saturating set is \emph{exactly} the primes and the powers of two, hence of density zero. This set is
+OEIS~A174090~\cite{OEIS}, with the curious equivalent description: the ring saturates exactly when $N$
+\emph{cannot} be written as a sum of three or more consecutive positive integers.
 \end{corollary}
 
 \begin{theorem}[classification of saturation]\label{thm:classification}
@@ -951,9 +974,12 @@ trigonometric polynomial. The limiting macroscopic profile of $\|K_N(\cdot,t)\|_
 matches the FFT to $0.5\%$ across all $N\bmod4$, peaks at $t=N/2$ with $\beta_{\mathrm{odd}}$, and is
 strictly subdominant for $t>N/2$, stably out to $t=5N$), reducing the bound to the joint equidistribution
 $\bmod\,2\pi$ of the coherent multi-copy Debye phases (a multidimensional Weyl sum). The difficulty is
-intrinsic: the \emph{quadratic} chirp (Gauss--Fresnel/Talbot) is $L^1$-flat with ratio $\to1$, and ultraflat
-unimodular polynomials exist~\cite{BombieriBourgain}, so $\limsup<1$ is an \emph{anti}-flatness statement
-particular to the non-quadratic $\sin^2$ dispersion---no generic argument supplies it. (A single-period
+intrinsic: Erd\H{o}s asked whether every unimodular polynomial must satisfy
+$\max|P|\ge(1+c)\sqrt{n}$~\cite{Erdos57}; Kahane's ultraflat polynomials answered no~\cite{Kahane80}, with
+the sharpest construction in~\cite{BombieriBourgain}, and the \emph{quadratic} chirp
+(Gauss--Fresnel/Talbot) is even $L^1$-flat with ratio $\to1$. So $\limsup<1$ is an \emph{anti}-flatness
+statement particular to the non-quadratic $\sin^2$ dispersion---precisely an Erd\H{o}s-type flatness
+question for one structured family, and no generic argument supplies it. (A single-period
 saddle van der Corput estimate fails: it predicts $0.61$ against the actual $0.93$, missing the Poisson-copy
 coherence. A fourth-moment/merit-factor route cannot supply the upper bound either:
 $\max\{\|K\|_1/\sqrt N:\|K\|_2=1,\,N\|K\|_4^4=c\}=1-\Theta(\sqrt{c/N})$, a single spike of mass
