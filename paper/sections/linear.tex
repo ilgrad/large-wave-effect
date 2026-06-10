@@ -416,8 +416,9 @@ and the exact defect converges within the family to a limit depending only on th
 $U_N-A_N<0.18$ for composite $N\le60$, e.g.\ $0.05,0.08,0.09,0.10$ along $m=3$; \texttt{verify\_exact\_AN.py}).
 Globally, since $m/\varphi(m)\sim\eu^{\gamma}\ln\ln m$ along primorials, this is $O(\ln\ln\ln N)$---slower than
 any iterate of the logarithm. On all the numerical evidence the defect is \emph{not} bounded, and for a
-clean reason: the \emph{excess} $A_N-L_{\mathrm{pre}}$ stays in $[0.05,0.10]$ across every tested $N$
-($\omega(m)\le3$, prefix dimension up to $48$), so numerically
+clean reason: the \emph{excess} $A_N-L_{\mathrm{pre}}$ stays in $[0.05,0.12]$ across every tested $N$
+($\omega(m)\le4$, up to $N=1155$ with prefix dimension $240$; the optimized $A_N$ is a lower bound, so
+these are lower estimates of the excess), so numerically
 \[
   U_N-A_N=(U_N-L_{\mathrm{pre}})-(A_N-L_{\mathrm{pre}})=\tfrac1\pi\ln\tfrac{m}{\varphi(m)}-O(1)\longrightarrow\infty
 \]
@@ -936,8 +937,9 @@ $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ for all
 $t\le N/2$, and with the lower bound $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}+o(1))\sqrt N$
 on the odd subsequence. For $t>N/2$ (three or more overlapping copies) only unitarity
 $\|K_N(\cdot,t)\|_1\le\sqrt N$ is rigorous, but numerically the $\ell^1$ mass there falls back toward its
-time average $\approx0.79\sqrt N$ and never exceeds the $t=N/2$ value: the $\sin^2$ dispersion admits no flat
-(Gauss-sum) revival, even at structured Talbot times $t=\pi p/q$. This is consistent with the
+time average $\approx0.79\sqrt N$ and never exceeds the $t=N/2$ value (checked out to $t=5N$ at
+$N=2^{20}$, where the $t>N/2$ supremum trails the $t=N/2$ value by a stable margin): the $\sin^2$
+dispersion admits no flat (Gauss-sum) revival, even at structured Talbot times $t=\pi p/q$. This is consistent with the
 dispersive-quantization picture---exact revivals of the periodic Schr\"odinger flow occur only for a
 \emph{quadratic} dispersion (rational times give Gauss sums)~\cite{Olver}, which the discrete
 $\lambda_r=4\sin^2(\pi r/N)$ is not. So numerically the global sup sits at $t=N/2$, and $\limsup_N
@@ -1299,6 +1301,7 @@ DNLS modulational-instability band (Prop.~\ref{prop:mi}) & \texttt{verify\_dnls\
 DNLS breather existence (Prop.~\ref{prop:breather}) & \texttt{verify\_dnls\_breather.py}\\
 DNLS breather stability site/bond (Prop.~\ref{prop:breather-stab}) & \texttt{verify\_dnls\_breather\_stability.py}\\
 Self-trapping threshold, no dispersal $\gamma P>4$ (Prop.~\ref{prop:threshold}) & \texttt{verify\_selftrapping\_threshold.py}\\
+Weak-coupling dispersal (Prop.~\ref{prop:dispersal}) & \texttt{verify\_dispersal\_weak.py}\\
 NNN degeneracy law (Prop.~\ref{prop:nnn}) & \texttt{verify\_nnn\_collisions.py}\\
 Quasi-1D order criterion, NNN ring (Prop.~\ref{prop:order-criterion}) & \texttt{verify\_quasi1d\_order.py}\\
 Order on ring products $C_N\square H$ (Cor.~\ref{cor:product}) & \texttt{verify\_product\_order.py}\\

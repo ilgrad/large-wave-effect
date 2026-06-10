@@ -215,8 +215,36 @@ $\gamma$. Numerically the single-site orbit below threshold behaves exactly so: 
 dips to $0.05$ and later recovers past $0.5$ (\texttt{verify\_selftrapping\_threshold.py}). The threshold
 dichotomy therefore concerns the \emph{infimum}: above the bandwidth,
 $\inf_t\max_j|u_j(t)|^2\ge P-4/\gamma$ (Proposition~\ref{prop:threshold}); below it the infimum drops to
-the dispersal scale ($0.05$ at $\gamma P=3$), and proving that drop---the correctly stated converse---is
-the genuinely dispersive open direction.
+the dispersal scale ($0.05$ at $\gamma P=3$). In the weak-coupling part of the sub-threshold range that
+drop is a theorem:
+
+\begin{proposition}[quantitative dispersal at weak coupling]\label{prop:dispersal}
+Let $u$ solve \eqref{eq:dnls} with single-site data $u_j(0)=\sqrt P\,\delta_{jj_0}$, and set
+$t_\ast=\bigl(c_L/(3\cdot2^{1/3}\gamma P)\bigr)^{3/4}$, where $c_L=0.7858\ldots$ is Landau's Bessel
+constant~\cite{Landau00}. If $N\ge5t_\ast$ (i.e.\ $N\gtrsim(\gamma P)^{-3/4}$), then
+\[
+  \inf_t\,\max_j|u_j(t)|^2\ \le\ \tfrac{16}{3^{3/2}}\,\bigl(c_L2^{-1/3}\bigr)^{3/2}\,P\sqrt{\gamma P}\,
+  \bigl(1+o(1)\bigr)\ \le\ 1.52\,P\sqrt{\gamma P}\,\bigl(1+o(1)\bigr).
+\]
+In particular for $\gamma P\le0.43$ the infimum sits strictly below $P$: the excitation quantitatively
+disperses, and with Proposition~\ref{prop:threshold} the undecided window of the threshold narrows to
+$\gamma P\in[0.43,\,4)$.
+\end{proposition}
+
+\begin{proof}
+For $t\le N/5$ the aliased copies of the ring kernel are super-exponentially small (the periodization
+estimate of Theorem~\ref{thm:schr-lower}), so by Landau's bound $\max_n|J_n(x)|\le c_Lx^{-1/3}$,
+$\max_j|u_{\mathrm{lin},j}(t)|\le\sqrt P\,c_L(2t)^{-1/3}+\varepsilon_N$. Adding
+$\|u-u_{\mathrm{lin}}\|_\infty\le\gamma P^{3/2}t$ (Proposition~\ref{prop:dnls-persist}),
+\[
+  \max_j|u_j(t)|\ \le\ \sqrt P\,c_L(2t)^{-1/3}+\gamma P^{3/2}t+\varepsilon_N .
+\]
+The right side is minimized at $t=t_\ast$, where it equals
+$4\cdot3^{-3/4}\bigl(c_L2^{-1/3}\bigr)^{3/4}(\gamma P)^{1/4}\sqrt P\,(1+o(1))$; squaring gives the claim
+(\texttt{verify\_dispersal\_weak.py}). \end{proof}
+
+\noindent Proving the drop on the remaining window $\gamma P\in[0.43,4)$---beyond perturbation
+theory---is the genuinely dispersive open direction.
 
 On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation from the
 anti-continuum limit~\cite{MacKayAubry}---it is a compactness statement.
