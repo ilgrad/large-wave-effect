@@ -46,9 +46,10 @@ dimension exactly $\varphi(2N)/2$. The composite deficit $U_N-A_N$ is $O(\ln\ln\
 and the order law extends to the Dirichlet segment and to every Cartesian product
 $C_N\,\square\,H$. For the discrete Schrodinger propagator $e^{-itL_N}$, unitarity
 forbids amplification of a localized state, while the $\ell^\infty\to\ell^\infty$
-amplification is $B_N=\Theta(\sqrt N)$ with $\liminf B_N/\sqrt N=c_0/\sqrt2$; the
-constant has no limit, splitting by the parity of $N$ with $\limsup\ge\beta_{odd}
-=0.928\ldots$ For the focusing discrete NLS the linear large wave persists under weak
+amplification is $B_N=\Theta(\sqrt N)$ with $\liminf B_N/\sqrt N\ge c_0/\sqrt2$ proved;
+the constant splits by the parity of $N$ (numerically even $N\to c_0/\sqrt2$, odd
+$N\to\beta_{odd}=0.928\ldots$, no elementary closed form found), so
+$\limsup\ge\beta_{odd}$. For the focusing discrete NLS the linear large wave persists under weak
 nonlinearity, the modulational-instability band is read off the $L_N$ spectrum, and
 the on-site breather exists and is stable. Proved results are separated throughout
 from numerical evidence; all quantitative claims are reproduced by accompanying

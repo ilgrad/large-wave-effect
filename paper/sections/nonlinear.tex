@@ -45,8 +45,9 @@ integrator holds $P$ to $10^{-12}$ and $H$ to $O(\Delta t^2)$ (\texttt{verify\_d
 \end{proof}
 
 \begin{proposition}[the linear large wave persists under weak nonlinearity]\label{prop:dnls-persist}
-Let $u(t)$ solve the DNLS \eqref{eq:dnls} with $u(0)=u_0$, and write $u_{\mathrm{lin}}(t)=\eu^{-\mathrm
-i t\LN}u_0$ for the linear flow. Then for all $t$,
+Let $u(t)$ solve the DNLS \eqref{eq:dnls} with $u(0)=u_0$, and write $u_{\mathrm{lin}}(t)=\eu^{\mathrm
+i t\LN}u_0$ for the linear flow of \eqref{eq:dnls} (the complex conjugate of the Schr\"odinger propagator
+$\eu^{-\mathrm it\LN}$ of Section~\ref{sec:schr}, with the same $\ell^p$ operator norms). Then for all $t$,
 \[
   \|u(t)-u_{\mathrm{lin}}(t)\|_\infty\ \le\ \|u(t)-u_{\mathrm{lin}}(t)\|_2\ \le\ |\gamma|\,t\,\|u_0\|_2^3 .
 \]
@@ -56,8 +57,8 @@ $|\gamma|<M/(2t_\ast\|u_0\|_2^3)$ the nonlinear solution still exhibits a wave o
 \end{proposition}
 
 \begin{proof}
-By Duhamel, $u(t)-u_{\mathrm{lin}}(t)=-\mathrm i\gamma\int_0^t\eu^{-\mathrm i(t-s)\LN}(|u|^2u)(s)\,ds$. As
-$\eu^{-\mathrm is\LN}$ is $\ell^2$-unitary, $\|u(t)-u_{\mathrm{lin}}(t)\|_2\le|\gamma|\int_0^t\||u|^2u(s)\|_2\,ds
+By Duhamel, $u(t)-u_{\mathrm{lin}}(t)=-\mathrm i\gamma\int_0^t\eu^{\mathrm i(t-s)\LN}(|u|^2u)(s)\,ds$. As
+$\eu^{\mathrm is\LN}$ is $\ell^2$-unitary, $\|u(t)-u_{\mathrm{lin}}(t)\|_2\le|\gamma|\int_0^t\||u|^2u(s)\|_2\,ds
 \le|\gamma|\int_0^t\|u(s)\|_\infty^2\|u(s)\|_2\,ds$. The power $\|u\|_2^2$ is conserved
 (Proposition~\ref{prop:dnls-cons}), so $\|u(s)\|_2=\|u_0\|_2$ and $\|u(s)\|_\infty\le\|u(s)\|_2=\|u_0\|_2$;
 the integrand is $\le\|u_0\|_2^3$. The last claim is the reverse triangle inequality
@@ -70,29 +71,8 @@ honest---the admissible coupling shrinks with the (Diophantine, possibly large) 
 it does not control the strongly nonlinear regime where the rogue-wave focusing of \S\ref{sec:rogue} lives;
 that remains open.
 
-A second rigorous ingredient ties the nonlinear instability directly to the $\LN$ spectrum.
-
-\begin{proposition}[modulational-instability band]\label{prop:dnls-mi}
-For \eqref{eq:dnls} with $\gamma>0$ the uniform state $z_j(t)=A\eu^{-\mathrm i\gamma A^2t}$ is an exact
-solution, and the linearisation $z=(A+b)\eu^{-\mathrm i\gamma A^2t}$, $b=x+\mathrm iy$, obeys
-$\dot x=-\LN y$, $\dot y=(\LN-2\gamma A^2)x$. Hence the Fourier mode $Q$ (eigenvalue
-$\lambda_Q=2-2\cos\tfrac{2\pi Q}N$ of $\LN$) grows like $\eu^{\sigma_Q t}$ with
-\[
-  \sigma_Q=\sqrt{\lambda_Q\,(2\gamma A^2-\lambda_Q)}\qquad\text{on the band }0<\lambda_Q<2\gamma A^2,
-\]
-and is neutrally stable otherwise; the fastest growth is $\sigma_{\max}=\gamma A^2$ at $\lambda_Q=\gamma A^2$.
-\end{proposition}
-
-\begin{proof}
-$\LN A=0$ gives the exact solution; substituting and keeping the linear part yields
-$\mathrm i\dot b=-\LN b+\gamma A^2(b+\bar b)$, i.e.\ $\dot x=-\LN y$, $\dot y=(\LN-2\gamma A^2)x$. In mode $Q$
-the generator $\left[\begin{smallmatrix}0&-\lambda_Q\\\lambda_Q-2\gamma A^2&0\end{smallmatrix}\right]$ has
-eigenvalues $\pm\sqrt{\lambda_Q(2\gamma A^2-\lambda_Q)}$, real (unstable) exactly when
-$0<\lambda_Q<2\gamma A^2$ (\texttt{verify\_dnls\_mi.py}). \end{proof}
-
-\noindent So the instability band and its growth rates are read off the $\LN$ spectrum---the linear
-large-wave operator also sets the nonlinear seeding---answering that part of the open problem; the
-saturation/breather dynamics past the linear stage remain the open strongly-nonlinear question.
+A second rigorous ingredient---the modulational-instability band, which ties the nonlinear seeding
+directly to the $\LN$ spectrum---is Proposition~\ref{prop:mi} below.
 
 \emph{Peregrine soliton.} Equation~\eqref{eq:nls} possesses the rational solution~\cite{Peregrine}
 \begin{equation}\label{eq:peregrine}
@@ -131,10 +111,13 @@ The uniform state $z_j=A\,\eu^{-\mathrm i\gamma A^2t}$ of \eqref{eq:dnls} is lin
 Fourier mode $\kappa$ if and only if $\lambda_\kappa<2\gamma A^2$, with growth rate
 $\sigma(\kappa)=\sqrt{\lambda_\kappa(2\gamma A^2-\lambda_\kappa)}$; the rate is maximal,
 $\sigma_{\max}=\gamma A^2$, at $\lambda_\kappa=\gamma A^2$.
-\end{proposition} A direct split-step simulation of \eqref{eq:dnls} reproduces
+\end{proposition} The spectrum of the full $2N\times2N$ linearised generator matches $\sigma(\kappa)$
+exactly (\texttt{verify\_dnls\_mi.py}), and a direct split-step simulation of \eqref{eq:dnls} reproduces
 \eqref{eq:mi} to better than $1\%$ across the band interior (Figure~\ref{fig:mi}); the fastest mode
 does not grow without bound but develops into a recurrent breather-like modulation reminiscent of the
-Akhmediev scenario of the continuum integrable NLS---a periodic avatar of the rogue spike.
+Akhmediev scenario of the continuum integrable NLS---a periodic avatar of the rogue spike. The
+instability band and its growth rates are thus read off the $\LN$ spectrum: the linear large-wave
+operator also sets the nonlinear seeding.
 
 \emph{From thin tails to heavy tails.} The statistical signature is the sharpest contrast with the
 linear theory. Seeded by a noisy plane wave, \eqref{eq:dnls} on the ring spawns localized bursts exceeding an operational envelope threshold of twice
@@ -146,10 +129,12 @@ phase alignment of bounded, thin-tailed oscillations, whereas nonlinear focusing
 heavy-tailed extremes. The two regimes share the lattice operator $\LN$ but reach large amplitudes by
 opposite routes---interference versus self-focusing.
 
-A rigorous nonlinear theory on the ring---existence and stability of discrete breathers, the precise
-role of the $\LN$ spectrum in the instability band, and integrable discretizations of
-\eqref{eq:nls}---is left to future work; equation~\eqref{eq:dnls} is recorded here as the natural
-nonlinear continuation of the linear large wave.
+Of the rigorous nonlinear programme, three pieces are settled in this paper: the weak-nonlinearity
+persistence (Proposition~\ref{prop:dnls-persist}), the modulational-instability band---the role of the
+$\LN$ spectrum---(Proposition~\ref{prop:mi}), and the existence and stability of the discrete breathers
+(Propositions~\ref{prop:breather},~\ref{prop:breather-stab} in Section~\ref{sec:breather}). Integrable
+discretizations of \eqref{eq:nls} and the fully nonlinear saturation/rogue regime are left to future work;
+equation~\eqref{eq:dnls} is the natural nonlinear continuation of the linear large wave.
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.86\textwidth]{fig_peregrine.pdf}

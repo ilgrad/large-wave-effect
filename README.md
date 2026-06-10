@@ -36,9 +36,10 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   the strict gap $A_N < U_N$ is rigorously certified for small $N$ (Lipschitz-grid and Lasserre moment–SOS).
 - **Discrete Schrödinger.** A localized state is never amplified (unitarity), yet
   $B_N = \sup_t\|e^{-itL_N}\|_{\ell^\infty\to\ell^\infty} = \Theta(\sqrt N)$. Here
-  $\liminf B_N/\sqrt N = c_0/\sqrt2 = 0.861$ (proved, $c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$), but the
-  constant has **no limit** — it splits by parity, with $\limsup \ge \beta_{\mathrm{odd}} = 0.928\ldots$, an
-  elliptic-integral constant with no elementary closed form. On the **Dirichlet segment**
+  $\liminf B_N/\sqrt N \ge c_0/\sqrt2 = 0.861$ is proved ($c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$; attained
+  numerically on even $N$), and the constant splits by parity — numerically even $N \to c_0/\sqrt2$, odd
+  $N \to \beta_{\mathrm{odd}} = 0.928\ldots$, an elliptic-integral constant for which no elementary closed
+  form was found — so $\limsup \ge \beta_{\mathrm{odd}}$. On the **Dirichlet segment**
   $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ for $N+1$ prime/$2^m$ (the constant $C=4/\pi^2$ is the published
   Myshkis–Filimonov 2003 value). Three large-wave laws on one Laplacian.
 - **Dimension & products (theorem).** The large wave lives exactly at spectral dimension $d_s = 1$ ($O(1)$

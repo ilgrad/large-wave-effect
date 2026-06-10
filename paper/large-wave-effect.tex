@@ -71,7 +71,7 @@
 
 \title[Large-wave amplification on discrete lattices]{Large-wave amplification on periodic discrete lattices: linear theory and a nonlinear extension}
 \author{Ilia Gradina}
-\date{June 2026 (draft)}
+\date{June 2026}
 
 \begin{abstract}
 We study the large-wave effect for free oscillations of the periodic discrete chain
@@ -92,9 +92,10 @@ showing the first $\tfrac12\varphi(2N)$ frequencies are $\Q$-independent, so a $
 ceiling can always be aligned). The composite deficit $U_N-A_N$ is $O(\ln\ln\ln N)$, and the order law extends to the Dirichlet segment
 and to every ring product $C_N\,\square\,H$. For the discrete Schr\"odinger propagator
 $\eu^{-\mathrm{i}t\LN}$, unitarity forbids amplification of a localized state, while the
-$\ell^\infty\!\to\!\ell^\infty$ amplification satisfies $B_N=\Theta(\sqrt N)$; here $\liminf B_N/\sqrt N=
-c_0/\sqrt2$ but the constant has \emph{no} limit---it splits by parity, with $\limsup\ge\beta_{\mathrm{odd}}
-=0.928\ldots$ (a Bessel-envelope integral with no elementary closed form). For the focusing discrete NLS the
+$\ell^\infty\!\to\!\ell^\infty$ amplification satisfies $B_N=\Theta(\sqrt N)$; here $\liminf B_N/\sqrt N\ge
+c_0/\sqrt2$ is proved and the constant splits by parity: numerically the even subsequence approaches
+$c_0/\sqrt2$ while the odd one approaches $\beta_{\mathrm{odd}}=0.928\ldots$ (a Bessel-envelope integral for
+which no elementary closed form was found), with the rigorous bound $\limsup\ge\beta_{\mathrm{odd}}$. For the focusing discrete NLS the
 linear large wave persists under weak nonlinearity, the modulational-instability band is read off the
 $\LN$ spectrum, and the on-site breather exists and is stable. Proved results are separated throughout
 from computational evidence and conjectures; all quantitative claims are reproduced by the accompanying
@@ -175,14 +176,19 @@ Filimonov's.} We have consulted only its abstract and this secondary reproductio
 digitized in the sources available to us);~\cite{F92} must be obtained and compared against
 Theorems~\ref{thm:prime}--\ref{thm:two} and~\ref{thm:ceiling} before submission. The structural and quantitative claims below are accordingly
 stated as novel \emph{to our knowledge}.
-Our contribution is \emph{quantitative and structural}: the explicit ring constant $\tfrac1\pi$ and the
+Our contribution is \emph{quantitative and structural}: the order theorem $A_N\sim\tfrac1\pi\ln N$ for
+\emph{every} $N$, via the palindromic prefix-independence lemma (Theorem~\ref{thm:order},
+Lemma~\ref{lem:prefix}); the saturation classification $A_N=U_N\Leftrightarrow N$ prime or $2^m$
+(Theorem~\ref{thm:classification}); the explicit ring constant $\tfrac1\pi$ and the
 next term $-\tfrac{\pi}{72}N^{-2}$ (Lemma~\ref{lem:asym}); the closed-form subtorus dimension
 $\tfrac12\varphi(2N)$ for every $N$, with a cyclotomic reproof of the prime/$2^m$ independence
 of~\cite{KMF} as its full-rank case (Theorems~\ref{thm:qrank},~\ref{thm:prime},~\ref{thm:two}); the exact $\bmod\,4$ criterion for reaching
 the ceiling (Theorem~\ref{thm:ceiling}); the new composite family $N=2p$ (Proposition~\ref{prop:2p}); the
-spectral-zeta systematization; the finite-time/disorder dichotomy (Section~\ref{sec:reach}); and the
+spectral-zeta systematization; the finite-time/disorder dichotomy (Section~\ref{sec:reach}); the
 sharp $B_N=\Theta(\sqrt N)$ growth of the discrete Schr\"odinger propagator
-(Theorem~\ref{thm:schr-lower}). We claim neither the large-wave phenomenon nor its appearance on the ring
+(Theorem~\ref{thm:schr-lower}); the segment rank and classification (Theorem~\ref{thm:segrank}); and the
+order criterion with its ring-product corollary (Proposition~\ref{prop:order-criterion},
+Corollary~\ref{cor:product}). We claim neither the large-wave phenomenon nor its appearance on the ring
 for $N$ prime or $2^m$ as new (the latter is already in~\cite{F92}; see Remark~\ref{rem:f92}). The same
 transient overshoot---coupling forces exceeding the applied load by a spatial redistribution of energy
 absent in homogeneous media---is independently recognized in the elastic-metamaterials and
@@ -210,6 +216,9 @@ $B_N=\Theta(\sqrt N)$ in $\ell^\infty$ (Thms.~\ref{thm:schr},~\ref{thm:schr-lowe
 $\tfrac12\varphi(2N)$ (Lemma~\ref{lem:prefix}, by a palindromic argument).
 \item[\textbf{T6}] The incoherent \emph{ceiling} has critical spectral dimension $d_s=1$ (incl.\ quasi-1D);
 the amplitude is an infinite-time, Diophantine-limited quantity (\S\ref{sec:dim},~\S\ref{sec:reach}).
+\item[\textbf{T7}] Focusing DNLS: the linear large wave persists under weak nonlinearity, the
+modulational-instability band is read off the $\LN$ spectrum, and the on-site breather exists and is
+stable (Props.~\ref{prop:dnls-persist},~\ref{prop:mi},~\ref{prop:breather},~\ref{prop:breather-stab}).
 \end{itemize}}}
 
 We treat the periodic chain (the ring) with \emph{free} oscillations, and contrast it with the
@@ -279,22 +288,27 @@ discrete Laplacian, electrostatically.}\label{fig:lightning}
 
 \medskip\noindent\textbf{Limitations.} We mark the boundaries of what is established. (i)~The order law
 $A_N\sim\tfrac1\pi\ln N$ is now proved for \emph{every} $N$ (Theorem~\ref{thm:order}); the deficit
-$U_N-A_N$ on the non-saturating $N$ is $O(\ln\ln\ln N)$, hence essentially bounded
-(Remark~\ref{rem:defect}), but its exact value is algebraic per $N$ with no apparent closed form
+$U_N-A_N$ on the non-saturating $N$ is $O(\ln\ln\ln N)$ (proved), and on the numerical evidence
+\emph{unbounded}---growing with the number of distinct odd prime factors (Remark~\ref{rem:defect}); its
+exact value is algebraic per $N$ with no apparent closed form
 ($A_N/U_N\in[0.84,1]$). (ii)~The saturation locus is settled---no composite $N$
 saturates (Theorem~\ref{thm:classification})---and $A_N$ for individual composite $N$ is algebraic
 (Proposition~\ref{prop:closed}) but computed per $N$, not given in closed form. (iii)~For the Schr\"odinger
-$B_N=\Theta(\sqrt N)$ the constant has \emph{no} limit---it splits by parity (Remark~\ref{rem:bn-parity}),
-with $\liminf_N B_N/\sqrt N=c_0/\sqrt2\approx0.861$ (proved) and $\limsup\ge\beta_{\mathrm{odd}}\approx0.928$;
-what is still open is the exact $\beta_{\mathrm{odd}}$ and a matching upper bound below $1$. The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
+$B_N=\Theta(\sqrt N)$ the constant splits by parity (Remark~\ref{rem:bn-parity}):
+$\liminf_N B_N/\sqrt N\ge c_0/\sqrt2\approx0.861$ is proved and is attained numerically on the even
+subsequence, while the odd subsequence approaches $\beta_{\mathrm{odd}}\approx0.928$, so on the numerical
+evidence the constant has no limit; what is open is a matching upper bound on $t>N/2$, which would give
+$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$. The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
 published Myshkis--Filimonov value~\cite[Thm.~2]{MF03}, which the Schr\"odinger ceiling inherits because the
-two ceilings coincide. (iv)~On the Dirichlet segment the rank and saturation are now fully proved
-(Theorem~\ref{thm:segrank}); the only remaining gap there is the same as on the ring---the
-$\Theta(\ln N)$ \emph{order} of $A_N^{\mathrm{Dir}}$ on the non-saturating $N+1$. (v)~Part~II is \emph{computational and exploratory}: its rigorous statements (the Hamiltonian
-conservation laws, Proposition~\ref{prop:dnls-cons}, and the linear modulational band,
-Proposition~\ref{prop:mi}) are classical, while the genuinely hard nonlinear results---existence and
-stability of discrete breathers, the precise dynamical self-trapping threshold, and the route to
-chaos---are simulated, not proved. (vi)~The
+two ceilings coincide. (iv)~On the Dirichlet segment the rank, saturation, \emph{and} order are now fully
+proved (Theorem~\ref{thm:segrank}; the order transfers verbatim from Theorem~\ref{thm:order}); what
+remains there, as on the ring, is the exact deficit on the non-saturating $N+1$. (v)~Part~II is in larger
+part computational; its rigorous chain comprises the Hamiltonian conservation laws
+(Proposition~\ref{prop:dnls-cons}), the weak-nonlinearity persistence of the linear large wave
+(Proposition~\ref{prop:dnls-persist}), the modulational-instability band (Proposition~\ref{prop:mi}), and
+the existence and stability of the discrete breathers
+(Propositions~\ref{prop:breather},~\ref{prop:breather-stab}), while the precise dynamical self-trapping
+threshold, the saturation/rogue dynamics, and the route to chaos are simulated, not proved. (vi)~The
 supremum $A_N$ is an \emph{infinite-time} quantity; the amplitude reached on any physical horizon is
 Diophantine-limited (Section~\ref{sec:reach}). Proved statements are separated throughout from numerical
 evidence and from the conjectures, and every quantitative claim is reproduced by a standalone script.
@@ -313,18 +327,20 @@ for $N=6,9,12,15$); what remains is a rigorous \emph{asymptotic} lower bound alo
 exponential in $\tfrac12\varphi(2N)$) and the exact algebraic value per $N$ (certified per-$N$ brackets follow from the
 Lasserre moment--SOS hierarchy, Section~\ref{sec:exact}).
 \item The Schr\"odinger constant $B_N/\sqrt N$. The order $B_N=\Theta(\sqrt N)$ is settled,
-$\liminf=c_0/\sqrt2\approx0.861$ is proved (Theorem~\ref{thm:schr-lower}), and the constant splits by the
-parity of $N$ (Remark~\ref{rem:bn-parity}): the odd-subsequence value $\beta_{\mathrm{odd}}=0.928019303\ldots$
-is determined exactly (an elliptic-integral average, shown by a $25$-digit \textsc{pslq} search to have no
-elementary closed form), and $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ is \emph{proved} for
-$t\le N/2$. The one residual is the rigorous upper bound on the multi-copy region $t>N/2$ (numerically
-subdominant---no Gauss-sum revival), which would give $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$
+$\liminf\ge c_0/\sqrt2\approx0.861$ is proved (Theorem~\ref{thm:schr-lower}; numerically attained on the
+even subsequence), and the constant splits by the parity of $N$ (Remark~\ref{rem:bn-parity}): the
+odd-subsequence value $\beta_{\mathrm{odd}}=0.928019303\ldots$ is the elliptic-integral average
+\eqref{eq:beta-odd} (a $25$-digit \textsc{pslq} search finds no elementary closed form), and
+$\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ holds on $t\le N/2$ (the two-copy reduction is
+rigorous; the profile maximization at $t=N/2$ is verified numerically). The residual is the rigorous upper
+bound on the multi-copy region $t>N/2$ (numerically subdominant---no Gauss-sum revival), which would give
+$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$
 (\texttt{verify\_bn\_parity.py}).
 \item A rigorous nonlinear theory of the discrete NLS \eqref{eq:dnls} on the ring
 (Section~\ref{sec:rogue}). Two pieces are now settled: the linear large wave persists in the weakly
 nonlinear regime (Proposition~\ref{prop:dnls-persist}), and the modulational-instability band and growth
 rates $\sigma_Q=\sqrt{\lambda_Q(2\gamma A^2-\lambda_Q)}$ are read off the $\LN$ spectrum
-(Proposition~\ref{prop:dnls-mi}); breathers \emph{exist} on the ring by a finite-dimensional
+(Proposition~\ref{prop:mi}); breathers \emph{exist} on the ring by a finite-dimensional
 variational argument (Proposition~\ref{prop:breather}); and the site-centred breather is \emph{stable}
 (Vakhitov--Kolokolov, $\mathrm dP/\mathrm d\Omega>0$) while the bond-centred one is unstable
 (Proposition~\ref{prop:breather-stab}). What is open is the \emph{fully} nonlinear regime---saturation, the

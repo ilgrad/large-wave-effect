@@ -4,10 +4,11 @@
 # ///
 """Persistence of the linear large wave under weak nonlinearity (Proposition dnls-persist).
 
-DNLS on the ring:  i u_t = L_N u + gamma |u|^2 u,  L_N the graph Laplacian (eigenvalues 4 sin^2(pi r/N)).
-Duhamel + mass conservation give the rigorous bound
+DNLS on the ring, the paper's eq:dnls convention:  i u_t = -L_N u + gamma |u|^2 u,  with L_N the graph
+Laplacian (eigenvalues 4 sin^2(pi r/N)); the linear flow is e^{+i t L_N} (the complex conjugate of the
+Schrodinger propagator e^{-i t L_N}, with identical operator norms).  Duhamel + mass conservation give
 
-    || u(t) - e^{-i t L_N} u(0) ||_2  <=  |gamma| t || u(0) ||_2^3 .
+    || u(t) - e^{+i t L_N} u(0) ||_2  <=  |gamma| t || u(0) ||_2^3 .
 
 We integrate the DNLS with a mass-conserving Strang split-step scheme (linear part exact in Fourier,
 nonlinear part an exact pointwise phase rotation) and verify (i) the power ||u||_2^2 is conserved, and
@@ -21,7 +22,8 @@ import numpy as np
 
 
 def lin_step(u: np.ndarray, lam: np.ndarray, dt: float) -> np.ndarray:
-    return np.fft.ifft(np.exp(-1j * lam * dt) * np.fft.fft(u))
+    # i u_t = -L_N u  =>  u(t) = e^{+i t L_N} u(0)
+    return np.fft.ifft(np.exp(1j * lam * dt) * np.fft.fft(u))
 
 
 def integrate(u0: np.ndarray, lam: np.ndarray, gamma: float, t: float, steps: int) -> np.ndarray:

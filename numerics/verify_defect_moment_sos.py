@@ -365,6 +365,7 @@ def main() -> int:
     print("reports primal-feasibility violation).  A fully rigorous bound needs rational rounding of the dual")
     print("SOS multipliers -- not done here; this is a numerically-certified SDP.")
     print("=" * 104)
+    print("RESULT: MOMENT-SOS BOUNDS COMPUTED (numerically certified; omega-growth not certified)")
     return 0
 
 

@@ -415,20 +415,21 @@ the same throughout each family $2^a m$:
 and the exact defect converges within the family to a limit depending only on the odd part $m$ (numerically
 $U_N-A_N<0.18$ for composite $N\le60$, e.g.\ $0.05,0.08,0.09,0.10$ along $m=3$; \texttt{verify\_exact\_AN.py}).
 Globally, since $m/\varphi(m)\sim\eu^{\gamma}\ln\ln m$ along primorials, this is $O(\ln\ln\ln N)$---slower than
-any iterate of the logarithm. The defect is \emph{not} bounded, and there is a clean reason: numerically the
-\emph{excess} $A_N-L_{\mathrm{pre}}$ stays in $[0.05,0.10]$ across every tested $N$ ($\omega(m)\le3$, prefix
-dimension up to $48$), so
+any iterate of the logarithm. On all the numerical evidence the defect is \emph{not} bounded, and for a
+clean reason: the \emph{excess} $A_N-L_{\mathrm{pre}}$ stays in $[0.05,0.10]$ across every tested $N$
+($\omega(m)\le3$, prefix dimension up to $48$), so numerically
 \[
   U_N-A_N=(U_N-L_{\mathrm{pre}})-(A_N-L_{\mathrm{pre}})=\tfrac1\pi\ln\tfrac{m}{\varphi(m)}-O(1)\longrightarrow\infty
 \]
-along primorials ($\Theta(\ln\ln\ln N)$, \texttt{verify\_defect\_growth.py}); the proven $O(\ln\ln\ln N)$
-upper bound is sharp in order. A rigorous \emph{growing} lower bound is thus equivalent to the
+along primorials ($\Theta(\ln\ln\ln N)$, \texttt{verify\_defect\_growth.py}), making the proven
+$O(\ln\ln\ln N)$ upper bound sharp in order. A rigorous \emph{growing} lower bound is thus equivalent to the
 \emph{excess lemma} $A_N\le L_{\mathrm{pre}}+O(1)$---the long alignable prefix captures $A_N$ up to a
 constant---a sup-side cancellation statement on the relation lattice (a primal analogue of
 McGehee--Pigno--Smith), overwhelmingly supported numerically but open. For small $N$ the strict gap
 $A_N<U_N$ is \emph{certified rigorously}: the Lipschitz-grid certificate gives
 $U_N-A_N\ge0.049,0.057,0.030,0.082$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}), and a
-trigonometric Lasserre moment--SOS sharpens it (exact $U_N-A_N=0.1475$ at $N=15$) and reaches $N=105$
+trigonometric Lasserre moment--SOS sharpens it (tight at $N=15$: $U_N-A_N=0.1475$, matching the optimizer
+to five decimals, at solver tolerance) and reaches $N=105$
 ($M=24$), though too loosely there to certify the growth (\texttt{verify\_defect\_moment\_sos.py}). The exact
 value is algebraic per $N$ (Proposition~\ref{prop:closed}) with no universal closed form.
 \end{remark}
@@ -445,8 +446,8 @@ sharp---namely
 Its coefficient sum $\sum_r k_r=-2\equiv2\pmod4$ is nonzero mod $4$, so by the criterion of
 Theorem~\ref{thm:ceiling} the target $(\tfrac\pi2,\dots,\tfrac\pi2)$ is off the subtorus and
 $A_{15}<U_{15}$: composite $15$ does not saturate (Theorem~\ref{thm:classification}). Numerically
-$U_{15}=0.902$, $A_{15}=0.754$, a defect $0.148$---the largest among small composites because the odd part
-$m=15$ carries two prime factors (Remark~\ref{rem:defect}). The lower bound of Theorem~\ref{thm:order}
+$U_{15}=0.902$, $A_{15}=0.754$, a defect $0.148$---the largest among the composites $N\le24$ because the odd
+part $m=15$ carries two prime factors (Remark~\ref{rem:defect}). The lower bound of Theorem~\ref{thm:order}
 aligns the four-mode prefix: $A_{15}\ge2L_{\mathrm{pre}}-U_{15}=0.47$, comfortably inside the band
 $A_N\sim\tfrac1\pi\ln N$.
 \end{example}
@@ -919,14 +920,19 @@ limiting value
 \end{equation}
 an elliptic-integral average ($\Phi,\Psi$ independent uniform). Computed to $25$ digits, it matches no
 combination of $\pi,\eu^\gamma,\Gamma(\tfrac14),\sqrt2$, Catalan's constant, $\ldots$, and is not a low-degree
-algebraic number (an integer-relation/\textsc{pslq} search returns nothing): $\beta_{\mathrm{odd}}$ has no
-elementary closed form---it is a new constant defined by \eqref{eq:beta-odd} (\texttt{verify\_beta\_odd.py}). Evaluation at $t=N/2$ is rigorous, so $\liminf_N B_N/\sqrt N=c_0/\sqrt2$ and
-$\liminf_{\text{odd }N}B_N/\sqrt N\ge\beta_{\mathrm{odd}}$, whence $\limsup_N B_N/\sqrt N\in[\beta_{\mathrm{odd}},1]$.
-For the upper side, the matching bound holds on the whole window $t\le N/2$. There $2t\le N$, so only the
-two Poisson copies $\ell=0,-1$ survive (the rest are super-exponentially small), $|K_N(k,t)|\le
+algebraic number (an integer-relation/\textsc{pslq} search returns nothing): no elementary closed form was
+found, and we treat $\beta_{\mathrm{odd}}$ as a new constant defined by \eqref{eq:beta-odd}
+(\texttt{verify\_beta\_odd.py}). The evaluations at $t=N/4$ and $t=N/2$ give the rigorous lower bounds
+$\liminf_N B_N/\sqrt N\ge c_0/\sqrt2$ (Theorem~\ref{thm:schr-lower}) and
+$\liminf_{\text{odd }N}B_N/\sqrt N\ge\beta_{\mathrm{odd}}$, whence
+$\limsup_N B_N/\sqrt N\in[\beta_{\mathrm{odd}},1]$; numerically the even subsequence attains $c_0/\sqrt2$,
+so the global $\liminf$ equals it.
+For the upper side, on the whole window $t\le N/2$ the two-copy reduction is rigorous: $2t\le N$, so only
+the two Poisson copies $\ell=0,-1$ survive (the rest are super-exponentially small), $|K_N(k,t)|\le
 |J_k(2t)|+|J_{N-k}(2t)|$, and the Debye envelope turns $\|K_N(\cdot,t)\|_1/\sqrt N$ into the two-copy profile
-$F(2t/N)$, which is maximized at $2t/N=1$---i.e.\ at $t=N/2$---with value $\beta_{\mathrm{odd}}$
-(\texttt{verify\_bn\_parity.py}). Hence $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ for all
+$F(2t/N)$. The profile is maximized at $2t/N=1$---i.e.\ at $t=N/2$---with value $\beta_{\mathrm{odd}}$
+(verified numerically, \texttt{verify\_bn\_parity.py}); granting that maximization,
+$\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ for all
 $t\le N/2$, and with the lower bound $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}+o(1))\sqrt N$
 on the odd subsequence. For $t>N/2$ (three or more overlapping copies) only unitarity
 $\|K_N(\cdot,t)\|_1\le\sqrt N$ is rigorous, but numerically the $\ell^1$ mass there falls back toward its
@@ -934,8 +940,8 @@ time average $\approx0.79\sqrt N$ and never exceeds the $t=N/2$ value: the $\sin
 (Gauss-sum) revival, even at structured Talbot times $t=\pi p/q$. This is consistent with the
 dispersive-quantization picture---exact revivals of the periodic Schr\"odinger flow occur only for a
 \emph{quadratic} dispersion (rational times give Gauss sums)~\cite{Olver}, which the discrete
-$\lambda_r=4\sin^2(\pi r/N)$ is not. So the global sup sits at $t=N/2$ and $\limsup_N
-B_N/\sqrt N=\beta_{\mathrm{odd}}$. The residual on $t>N/2$ has a clean form: $K_N(\cdot,t)$ is the inverse DFT
+$\lambda_r=4\sin^2(\pi r/N)$ is not. So numerically the global sup sits at $t=N/2$, and $\limsup_N
+B_N/\sqrt N=\beta_{\mathrm{odd}}$ is expected. The residual on $t>N/2$ has a clean form: $K_N(\cdot,t)$ is the inverse DFT
 of the \emph{unimodular} symbol $(\eu^{-\mathrm i t\lambda_r})_r$---a chirp, since $2t\cos(2\pi r/N)$ is
 locally quadratic---so $B_N/\sqrt N$ is the maximal $L^1$-flatness ratio $\|P\|_1/\|P\|_2$ of a unimodular
 trigonometric polynomial. The limiting macroscopic profile of $\|K_N(\cdot,t)\|_1/\sqrt N$ is a
@@ -1286,7 +1292,7 @@ Sharp constant for $N=2p$ & \texttt{verify\_2p\_family.py}\\
 Open-problem evidence (defect, $B_N$) & \texttt{verify\_open\_problems.py}\\
 DNLS self-trapping / breather & \texttt{verify\_dnls\_selftrapping.py}\\
 DNLS large-wave persistence (Prop.~\ref{prop:dnls-persist}) & \texttt{verify\_dnls\_persistence.py}\\
-DNLS modulational-instability band (Prop.~\ref{prop:dnls-mi}) & \texttt{verify\_dnls\_mi.py}\\
+DNLS modulational-instability band (Prop.~\ref{prop:mi}) & \texttt{verify\_dnls\_mi.py}\\
 DNLS breather existence (Prop.~\ref{prop:breather}) & \texttt{verify\_dnls\_breather.py}\\
 DNLS breather stability site/bond (Prop.~\ref{prop:breather-stab}) & \texttt{verify\_dnls\_breather\_stability.py}\\
 Quasi-1D order criterion, NNN ring (Prop.~\ref{prop:order-criterion}) & \texttt{verify\_quasi1d\_order.py}\\

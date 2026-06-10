@@ -6,8 +6,7 @@
   "license": "Apache-2.0",
   "creators": [
     {
-      "name": "Gradina, Ilia",
-      "orcid": "0000-0000-0000-0000"
+      "name": "Gradina, Ilia"
     }
   ],
   "description": "Paper and full reproducibility layer for the large-wave effect on periodic discrete lattices. Main results: the order law A_N ~ (1/pi) ln N is proved for every N (palindromic prefix-independence lemma); A_N = U_N iff N is prime or a power of two (root-of-unity obstruction); the discrete Schroedinger amplification B_N = Theta(sqrt N) with liminf c0/sqrt2 and a parity-dependent limsup (beta_odd = 0.928..., no elementary closed form); the order law extends to the Dirichlet segment and to ring products C_N x H; and a rigorous chain for the focusing discrete NLS (weak-nonlinear persistence, the modulational-instability band, breather existence and stability). Every quantitative claim is reproduced by a standalone PEP 723 script, with an independent exact-arithmetic / proof layer in GAP, PARI/GP, FriCAS and Rocq.",

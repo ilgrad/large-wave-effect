@@ -153,9 +153,12 @@ def main() -> int:
     print("       is an almost-periodic / Gauss-sum supremum -- precise value remains open.")
 
     print("\n" + "=" * 72)
-    print("CONCLUSION: OP1 has numerical evidence for a universal 1/pi (defect -> 1) but no proof;")
-    print("OP2's constant is bracketed but not pinned; OP3 (nonlinear) is genuinely separate work.")
-    print("The paper states all three as OPEN; this investigation does not overclaim resolution.")
+    print("RESULT: OPEN-PROBLEMS MAP COMPLETE")
+    print("Status (kept in sync with the paper): OP1 is now PROVED -- A_N ~ (1/pi) ln N for all N")
+    print("(Theorem order), and with U_N - A_N = O(ln ln ln N) the ratio A_N/U_N -> 1; this scan is")
+    print("corroboration. OP2: liminf B_N/sqrt(N) >= c_0/sqrt2 is proved and the constant splits by")
+    print("parity; the t > N/2 upper bound (which would give limsup = beta_odd) remains open, and any")
+    print("t-scan here is a lower bound only.")
     print("=" * 72)
     return 0
 
