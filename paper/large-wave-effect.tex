@@ -466,6 +466,9 @@ output(series(1/sin(x), x = 0))        -- csc x = 1/x + x/6 + 7 x^3/360 + ...  (
 output(integrate(1/sin(%pi*x), x))     -- = (1/pi) log tan(pi x/2)   (enters U_N via Euler-Maclaurin)
 output(numeric(-%pi/72))               -- = -zeta(2)/(12 pi), the N^{-2} correction of U_N
 \end{lstlisting}
+Later sections of the same file re-derive, exactly, the NNN symbol factorisation and collision difference
+of Proposition~\ref{prop:nnn}, the minimisation identity behind Proposition~\ref{prop:dispersal}, and the
+modulational-instability solvability condition of Proposition~\ref{prop:mi}.
 
 \begin{thebibliography}{99}
 \bibitem{Bohr} H.~Bohr, \emph{Almost Periodic Functions}, Chelsea, New York, 1947.
@@ -478,7 +481,8 @@ output(numeric(-%pi/72))               -- = -zeta(2)/(12 pi), the N^{-2} correct
 \bibitem{BombieriBourgain} E.~Bombieri, J.~Bourgain, \emph{On Kahane's ultraflat polynomials}, J.\ Eur.\ Math.\ Soc.\ \textbf{11} (2009), no.~3, 627--703. \texttt{doi:10.4171/JEMS/163}.
 \bibitem{Erdos57} P.~Erd\H{o}s, \emph{Some unsolved problems}, Michigan Math.\ J.\ \textbf{4} (1957). \texttt{doi:10.1307/mmj/1028997963}.
 \bibitem{Kahane80} J.-P.~Kahane, \emph{Sur les polyn\^omes \`a coefficients unimodulaires}, Bull.\ London Math.\ Soc.\ \textbf{12} (1980), no.~5, 321--342. \texttt{doi:10.1112/blms/12.5.321}.
-\bibitem{OEIS} OEIS Foundation Inc., \emph{The On-Line Encyclopedia of Integer Sequences}, sequence A174090, \url{https://oeis.org/A174090}.
+\bibitem{OEIS} OEIS Foundation Inc., \emph{The On-Line Encyclopedia of Integer Sequences}, sequences A174090 and A055034, \url{https://oeis.org}.
+\bibitem{DLMF} \emph{NIST Digital Library of Mathematical Functions}, F.~W.~J.~Olver et al.\ (eds.), \url{https://dlmf.nist.gov/}.
 \bibitem{Gray} R.~M.~Gray, \emph{Toeplitz and Circulant Matrices: A Review}, Found.\ Trends Commun.\ Inf.\ Theory \textbf{2} (2006), 155--239.
 \bibitem{Lasserre} J.~B.~Lasserre, \emph{Global optimization with polynomials and the problem of moments}, SIAM J.\ Optim.\ \textbf{11} (2001), 796--817.
 \bibitem{Levinson} N.~Levinson, \emph{The Wiener RMS error criterion in filter design and prediction}, J.\ Math.\ Phys.\ \textbf{25} (1947), 261--278.

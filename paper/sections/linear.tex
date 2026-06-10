@@ -456,6 +456,31 @@ the first equals $\tfrac1\pi\ln\bigl(N/\varphi(2N)\bigr)+O(1)=\tfrac1\pi\ln\bigl
 \noindent The hypothesis is exactly what the experiments support ($A_N-L_{\mathrm{pre}}\in[0.05,0.12]$
 through $\omega(m)=4$, prefix dimension $240$); proving it is the open core.
 
+The family limits themselves can be pinned precisely: within each family the node-$0$ defect converges
+geometrically, $d_a=\mathrm{defect}_\infty(m)-c_12^{-a}-c_24^{-a}$ (two-term fits with residuals
+$\sim5\cdot10^{-9}$, the optima polished by Newton iteration on the stationarity system), giving the first
+precise values of the family constants (Table~\ref{tab:famlim}). A \textsc{pslq}/inverse-symbolic search
+over natural logarithmic and radical bases finds no closed form: like $\beta_{\mathrm{odd}}$, they appear
+to be new constants (\texttt{verify\_defect\_family\_limits.py}). The ratio
+$\mathrm{defect}_\infty(m)\big/\bigl[\tfrac1\pi\ln\tfrac m{\varphi(m)}\bigr]$ is \emph{not} universal
+($0.80,\ 0.54,\ \approx0.9$), so the $O(1)$ in Proposition~\ref{prop:defect-cond} genuinely depends on the
+odd part.
+
+\begin{table}[ht]\centering
+\caption{Family limits of the composite defect, $\mathrm{defect}_\infty(m)=\lim_a(U-A)(m\,2^a)$ at node
+$0$, with the leading term of the conditional law. The $m=15$ value is optimization-limited (prefix
+dimension $64$ at $N=240$) and is quoted to fewer digits
+(\texttt{verify\_defect\_family\_limits.py}).}\label{tab:famlim}
+\begin{tabular}{lccc}
+\toprule
+odd part $m$ & $3$ & $5$ & $15$\\
+\midrule
+$\mathrm{defect}_\infty(m)$ & $0.1036816$ & $0.0382385$ & $\approx0.180$\\
+$\tfrac1\pi\ln\bigl(m/\varphi(m)\bigr)$ & $0.1291$ & $0.0710$ & $0.2001$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{example}[the whole mechanism at $N=15$]\label{ex:fifteen}
 The seven frequencies are $\omega_r=2\sin(\pi r/15)$, $r=1,\dots,7$ (with $\omega_5=2\sin\tfrac\pi3=\sqrt3$).
 Here $\varphi(2N)=\varphi(30)=8$, so the rank is $\tfrac12\varphi(30)=4$: by Lemma~\ref{lem:prefix} the
@@ -755,7 +780,8 @@ which therefore has dimension $\dim_\Q V^-=\tfrac12\varphi(2N)$.
 \end{proof}
 
 \noindent The formula is independently confirmed by an exact integer-rank certificate for $N\le64$
-(\texttt{verify\_qrank\_formula.py}). Hence full rank---and therefore $A_N=U_N$---holds \emph{exactly}
+(\texttt{verify\_qrank\_formula.py}); the dimension sequence $\tfrac12\varphi(2N)$ is
+OEIS~A055034~\cite{OEIS}. Hence full rank---and therefore $A_N=U_N$---holds \emph{exactly}
 when $\tfrac12\varphi(2N)=\lfloor N/2\rfloor$, i.e.\ for $N$ prime or $N=2^m$ (Figure~\ref{fig:qrank}):
 precisely the scope of Theorems~\ref{thm:prime} and~\ref{thm:two}, now the full-rank case of one
 formula. Hence \eqref{eq:subtorus} is \emph{exactly}
@@ -936,7 +962,8 @@ imaginary for odd $N$, so where the two overlapping fronts meet they add differe
 (\texttt{verify\_bn\_parity.py}) the sup is at $t=N/4$ for even $N$, giving $B_N/\sqrt N\to c_0/\sqrt2$ (the
 value above), and at $t=N/2$ for odd $N$, where the two surviving aliasing copies give
 $|K_N(k,N/2)|\approx\sqrt{J_k(N)^2+J_{N-k}(N)^2}$ across the front (no cancellation, since $\mathrm i^{-N}$
-is imaginary). The Debye envelope $|J_{Nu}(N)|\sim\sqrt{2/\pi N}\,(1-u^2)^{-1/4}|\cos\Phi|$ then yields the
+is imaginary). The Debye envelope $|J_{Nu}(N)|\sim\sqrt{2/\pi N}\,(1-u^2)^{-1/4}|\cos\Phi|$
+(the uniform large-order asymptotics of~\cite[\S10.19]{DLMF}) then yields the
 limiting value
 \begin{equation}\label{eq:beta-odd}
   \beta_{\mathrm{odd}}=\sqrt{\tfrac2\pi}\int_0^1\mathbb E_{\Phi,\Psi}
@@ -1347,6 +1374,7 @@ Constant $B_N/\sqrt N$ scan (Table~\ref{tab:bn}) & \texttt{verify\_bn\_constant.
 $B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{verify\_bn\_parity.py}\\
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
+Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\
 Certified gap $A_N<U_N$, $N\le15$ (Lipschitz grid) & \texttt{verify\_defect\_certified.py}\\
 Spectral-dimension threshold $d_s{=}1$ & \texttt{verify\_spectral\_dimension.py}\\
 Finite-time recurrence $T_\varepsilon(N)$ & \texttt{verify\_finite\_time.py}\\

@@ -35,4 +35,26 @@ output("[5] A_6 numeric, and A_6 - closed-form (machine zero):")
 output(A6::Float)
 output((A6 - claim)::Float)
 
+-- [6] NNN(g) symbol factorization (Proposition nnn): lambda = 2(1-x) + 4g(1-x^2) = (1-x)(2+4g(1+x)).
+output("[6] NNN symbol factors with the (1-x) gapless factor:")
+output(factor(2*(1-x) + 4*g*(1-x^2)))
+
+-- [7] NNN collision difference: f(x)=(1-x)(2+4g(1+x));  f(a)-f(b) = -(a-b)(4g(a+b)+2),
+--     so distinct frequencies collide iff a+b = -1/(2g) in x = cos coordinates.
+f := (1 - x)*(2 + 4*g*(1 + x))
+output("[7] f(a)-f(b) factored (collision <=> 4g(a+b)+2 = 0):")
+output(factor(eval(f, x = a) - eval(f, x = b)))
+
+-- [8] Dispersal minimization identity (Proposition dispersal): min_t [a t^{-1/3} + b t] equals
+--     4 3^{-3/4} a^{3/4} b^{1/4} at t = (a/(3b))^{3/4}.  With a = 3 b s^4, t = s^3 both sides are
+--     polynomial: lhs = 4 b s^3.  Numeric spot-check at b=2, s=3 (both sides must equal 216).
+output("[8] dispersal min, lhs and rhs at b=2,s=3 (both 216):")
+output(numeric(eval((3*b*s^4)/s + b*s^3, [b = 2, s = 3])))
+output(numeric(eval(4*3^(-3/4)*(3*b*s^4)^(3/4)*b^(1/4), [b = 2, s = 3])))
+
+-- [9] Modulational-instability solvability (Proposition mi): sigma^2 + (gA2 - lam)^2 = gA2^2
+--     gives sigma = +- sqrt(lam (2 gA2 - lam)).
+output("[9] MI growth rate from the 2x2 solvability condition:")
+output(radicalSolve(s^2 + (gA2 - lam)^2 - gA2^2 = 0, s))
+
 )quit
