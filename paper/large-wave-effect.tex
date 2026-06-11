@@ -349,12 +349,15 @@ rates $\sigma_Q=\sqrt{\lambda_Q(2\gamma A^2-\lambda_Q)}$ are read off the $\LN$ 
 variational argument (Proposition~\ref{prop:breather}); and the site-centred breather is \emph{stable}
 (Vakhitov--Kolokolov, $\mathrm dP/\mathrm d\Omega>0$) while the bond-centred one is unstable
 (Proposition~\ref{prop:breather-stab}); one side of the dynamical launch threshold is settled with the
-exact constant $4$---no dispersal for $\gamma P>4$ (Proposition~\ref{prop:threshold}); and the converse is
-settled at weak coupling---quantitative dispersal $\inf_t\max_j|u_j|^2\le1.52P\sqrt{\gamma P}$ for
-$N\gtrsim(\gamma P)^{-3/4}$ (Proposition~\ref{prop:dispersal}; on the finite ring $\sup_t$ recurs by
-Poincar\'e). What is open is the \emph{fully} nonlinear regime---saturation, the threshold window
-$\gamma P\in[0.43,4)$, and the rogue-wave focusing---where the admissible coupling shrinks with the
-Diophantine alignment time.
+\emph{sharp} constant $4=\|\LN\|$---full dispersal is energetically forbidden for $\gamma P>4$, since it
+would force $\langle\LN u,u\rangle\to2P-\tfrac\gamma2P^2<0$ (Proposition~\ref{prop:threshold})---and the
+converse is settled at weak coupling---quantitative dispersal $\inf_t\max_j|u_j|^2\le1.52P\sqrt{\gamma P}$
+for $N\gtrsim(\gamma P)^{-3/4}$ (Proposition~\ref{prop:dispersal}; on the finite ring $\sup_t$ recurs by
+Poincar\'e). The window $\gamma P\in[0.43,4)$ is a \emph{proof gap}, not a behavioural unknown: the seed
+disperses cleanly up to $\gamma P\approx4$ numerically (\texttt{verify\_selftrapping\_transition.py}), but
+the rigorous drop is proven only up to $0.43$. What remains open is this dispersive proof gap together with
+the \emph{fully} nonlinear regime---saturation and the rogue-wave focusing---where the admissible coupling
+shrinks with the Diophantine alignment time.
 \item The multidimensional nonlinear large wave (Section~\ref{sec:highd}): existence, stability, and
 the energy threshold of the $2$D/$3$D discrete breathers, and the long-wave dynamics in the
 Zakharov--Kuznetsov regime~\cite{ZakharovKuznetsov}---a nonlinear counterpart to the dimensional

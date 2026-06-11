@@ -247,8 +247,16 @@ The right side is minimized at $t=t_\ast$, where it equals
 $4\cdot3^{-3/4}\bigl(c_L2^{-1/3}\bigr)^{3/4}(\gamma P)^{1/4}\sqrt P\,(1+o(1))$; squaring gives the claim
 (\texttt{verify\_dispersal\_weak.py}). \end{proof}
 
-\noindent Proving the drop on the remaining window $\gamma P\in[0.43,4)$---beyond perturbation
-theory---is the genuinely dispersive open direction.
+\noindent The threshold constant $4=\|\LN\|$ is \emph{sharp}, not merely sufficient: full dispersal
+($\|u\|_4^4\to0$) forces, by energy conservation, $\langle\LN u,u\rangle\to 2P-\tfrac\gamma2P^2$, which is
+non-negative \emph{iff} $\gamma P\le4$. Above $4$ full dispersal is thus energetically forbidden (the bound
+$P-4/\gamma$); the identity is confirmed to four digits at the dispersal minimum, e.g.\ $\langle\LN
+u,u\rangle\to0.503$ versus $2P-\tfrac\gamma2P^2=0.500$ at $\gamma P=3$ (\texttt{verify\_selftrapping\_transition.py}).
+Numerically the single-site seed disperses cleanly for $\gamma P\lesssim3.5$ and self-traps (tracking
+$P-4/\gamma$) for $\gamma P\gtrsim4.5$, the crossover straddling $4$. So the window $\gamma P\in[0.43,4)$ is a
+\emph{proof gap}---dispersal is the established behaviour, proven (Proposition~\ref{prop:dispersal}) only up
+to $0.43$---rather than a behavioural unknown. Closing it, beyond perturbation theory, is the genuinely
+dispersive open direction.
 
 On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation from the
 anti-continuum limit~\cite{MacKayAubry}---it is a compactness statement.
