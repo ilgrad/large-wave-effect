@@ -188,8 +188,14 @@ selected by the size of the cubic term (\texttt{verify\_dnls\_selftrapping.py}).
 $\gamma|\phi_0|^2\gtrsim2$: from $\Omega\phi_j=-(\LN\phi)_j+\gamma\phi_j^3$ with $\phi\approx\sqrt P\,\delta_{j0}$
 one gets $\Omega\approx\gamma P-2$, which clears the band \emph{top} ($\Omega>0$) at $\gamma P\gtrsim2$. The
 larger \emph{dynamical} threshold $\gamma|z_0|^2\approx4$ measured from a single-site \emph{launch} is the
-bandwidth: the spreading excitation must outrun the entire band $[0,4]$, not merely its edge. One side of
-that dynamical threshold is in fact a theorem, with the constant exactly the bandwidth $4$.
+bandwidth: the spreading excitation must outrun the entire band $[0,4]$, not merely its edge. This
+single-site barrier at $A_*^2=2(\sigma+1)^{1/\sigma}=4$ (cubic $\sigma=1$) was identified by
+Kevrekidis--Espinola-Rocha--Drossinos--Stefanov~\cite{KERDS08} as a \emph{sufficient} trapping condition
+($H_{\mathrm{ss}}<0$); we make that side a theorem with the sharp constant and show it is \emph{energy-sharp}
+(below). One side of the dynamical threshold is thus settled, with the constant exactly the bandwidth $4$.
+(The \emph{static} excitation threshold of~\cite{Weinstein99} is a different object: a positive minimal
+power for a ground state exists only when $\sigma\ge2/d$, so in $1$D cubic there is none---localized modes
+exist at arbitrarily small power, while the dynamical launch barrier $4$ persists.)
 
 \begin{proposition}[no dispersal above the bandwidth]\label{prop:threshold}
 Let $u$ solve \eqref{eq:dnls} with single-site data $u_j(0)=\sqrt P\,\delta_{jj_0}$ ($N\ge3$) and
@@ -279,9 +285,13 @@ moment, $\langle\cos k\rangle_\infty=\gamma P/4$ (equivalent to $\langle\LN u,u\
 above), $<1$ for $\gamma P<4$ but not forcing $\langle v^2\rangle=2-2\langle\cos2k\rangle>0$: a bimodal
 $k=0/\pi$ momentum split has $\langle\cos k\rangle=\gamma P/4$ yet $\langle v^2\rangle=0$. So the dynamics
 avoids the staggered ($k=\pi$) trap (numerically $\langle v^2\rangle>0$) but the conserved quantities do not
-see it. This is exactly where Morawetz/Strichartz arguments stall; \eqref{eq:virial} reduces the open
-problem to a single estimate---a bound on the position-weighted nonlinear term in \eqref{eq:virial}, i.e.\
-on the staggered momentum content $\langle\cos2k\rangle$.
+see it. This is exactly where Morawetz/Strichartz arguments stall: the discrete Strichartz estimates of
+Stefanov--Kevrekidis~\cite{StefanovKevrekidis05} (built on the sharp $t^{-1/3}$ decay~\cite{Landau00,EKT15})
+close small-data scattering only for $\sigma\ge3/d$---in $1$D, power $\ge7$, not the cubic
+here---so they provably cannot reach the window, and the continuum interaction-Morawetz/concentration
+machinery consumes the Galilean invariance the lattice lacks. Equation~\eqref{eq:virial} thus reduces the
+open problem to a single estimate---a bound on the position-weighted nonlinear term, i.e.\ on the staggered
+momentum content $\langle\cos2k\rangle$.
 
 On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation from the
 anti-continuum limit~\cite{MacKayAubry}---it is a compactness statement.
