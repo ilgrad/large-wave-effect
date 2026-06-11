@@ -54,8 +54,10 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   $A = \Theta(\ln N)$ on *every* Cartesian product $C_N\,\square\,H$ (ladders, prisms, tubes) and, beyond
   products, on the **Möbius ladder** $C_{2N}(\{1,N\})$ via its embedded-ring branch. Multi-jump circulants
   $C_N(S)$ ($|S|\ge2$) instead **saturate** ($A_N=U_N$) off explicit Conway–Jones collision congruences —
-  the nested-radical frequencies destroy the ring's mod-4 obstruction (numerical for the no-further-relation
-  step). It is an *infinite-time* ceiling: the finite-time amplitude is Diophantine-limited (recurrence time
+  the nested-radical frequencies destroy the ring's mod-4 obstruction; for the nearest case $S=\{1,2\}$ this
+  is **proved exactly** (Besicovitch–Kummer: no subset product of the $\alpha_r$ is a square in
+  $\mathbb{Q}(\zeta_p)$) for collision-free primes $p\le23$ (`exact/pari/kjump_kummer.gp`). It is an
+  *infinite-time* ceiling: the finite-time amplitude is Diophantine-limited (recurrence time
   exponential in $N$).
 
 **Nonlinear extension (Part II), focusing DNLS — now a rigorous chain.** The linear large wave **persists**

@@ -1670,8 +1670,13 @@ Theorem~\ref{thm:classification}---the \emph{distinct} radicals appear to satisf
 (\textsc{pslq} to $250$ digits, the spurious relation norm diverging with precision). Numerically the
 multi-jump circulant then \emph{saturates}, $A_N=U_N$, for every $N$ off its collision congruences: the
 radical structure destroys the cyclotomic linear relations, so composite $N$ is no longer an obstruction
-(\texttt{verify\_kjump\_order.py}). A rigorous proof of the no-further-relation step is the residual
-(a Kummer-theoretic independence of nested square-roots).
+(\texttt{verify\_kjump\_order.py}). For the nearest case $S=\{1,2\}$ this is no longer only numerical: the
+$\Q$-independence of $\{\sqrt{\alpha_r}\}$, $\alpha_r=4-2\cos\tfrac{2\pi r}p-2\cos\tfrac{4\pi r}p\in
+\Q(\zeta_p)$, is \emph{proved exactly} by the Besicovitch--Kummer criterion---no nonempty subset product
+$\prod_{r\in T}\alpha_r$ is a square in $\Q(\zeta_p)$ (checked over the cyclotomic field, not in
+floating point)---for every collision-free prime $p\le23$, so $A_p=U_p$ there is a theorem
+(\texttt{exact/pari/kjump\_kummer.gp}). The general (all-$N$, all-$S$) statement remains the
+nested-radical independence question.
 \end{remark}
 
 \noindent The remaining genuinely open case is a quasi-1D lattice \emph{without} any embedded ring---e.g.\
