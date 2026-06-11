@@ -426,7 +426,8 @@ along primorials ($\Theta(\ln\ln\ln N)$, \texttt{verify\_defect\_growth.py}), ma
 $O(\ln\ln\ln N)$ upper bound sharp in order. A rigorous \emph{growing} lower bound is thus equivalent to the
 \emph{excess lemma} $A_N\le L_{\mathrm{pre}}+O(1)$---the long alignable prefix captures $A_N$ up to a
 constant---a sup-side cancellation statement on the relation lattice (a primal analogue of
-McGehee--Pigno--Smith), overwhelmingly supported numerically but open. For small $N$ the strict gap
+McGehee--Pigno--Smith, and in the same circle as the Chowla cosine problem on extrema of cosine
+sums~\cite{Bedert25}), overwhelmingly supported numerically but open. For small $N$ the strict gap
 $A_N<U_N$ is \emph{certified rigorously}: the Lipschitz-grid certificate gives
 $U_N-A_N\ge0.049,0.057,0.030,0.082$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}), and a
 trigonometric Lasserre moment--SOS sharpens it (tight at $N=15$: $U_N-A_N=0.1475$, matching the optimizer
@@ -982,7 +983,7 @@ For the upper side, on the whole window $t\le N/2$ the two-copy reduction is rig
 the two Poisson copies $\ell=0,-1$ survive (the rest are super-exponentially small), $|K_N(k,t)|\le
 |J_k(2t)|+|J_{N-k}(2t)|$, and the Debye envelope turns $\|K_N(\cdot,t)\|_1/\sqrt N$ into the two-copy profile
 $F(2t/N)$. This profile is now explicit (Proposition~\ref{prop:bn-profile}): it is maximized at
-$2t/N=1$---i.e.\ at $t=N/2$---with value $\beta_{\mathrm{odd}}$, \emph{proved analytically} on $60\%$ of the
+$2t/N=1$---i.e.\ at $t=N/2$---with value $\beta_{\mathrm{odd}}$, \emph{proved analytically} on $87\%$ of the
 window and reduced on the rest to a one-dimensional monotonicity free of $N$. Granting that maximization,
 $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ for all
 $t\le N/2$, and with the lower bound $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}+o(1))\sqrt N$
@@ -1049,16 +1050,17 @@ $\tfrac12c_0\sqrt{2t}$, giving $c_0\sqrt s$; for $s\ge\tfrac12$ the overlap $u=k
 Debye envelopes, which for odd $N$ add in quadrature, producing $A,B$ after $u\mapsto w$ maps the two
 windows to $[0,1]$. The substitution makes the endpoint singularities $w^{-1/4},(1-w)^{-1/4}$ integrable
 and the integrands smooth in $s$ on $(\tfrac12,1]$; at $s=1$ one recovers exactly \eqref{eq:beta-odd}.
-For the maximizer, the concavity bound $g(a,b)\le\sqrt{(a+b)/2}$ (Jensen, $\mathbb E\cos^2=\tfrac12$)
-furnishes an explicit envelope $F\le F_+$ with $F_+(s)<\beta_{\mathrm{odd}}$ for every $s\in[\tfrac12,\tfrac45]$
----an \emph{analytic} bound on the left $60\%$ of the window, comfortably above the interior dip
-$\min F\approx0.847$ at $s\approx0.56$ and below $\beta_{\mathrm{odd}}$. On $[\tfrac45,1]$ the profile is
-real-analytic (the substitution removes the band-edge singularities) and strictly increasing: a
-Lipschitz--grid bound gives $\inf_{[4/5,1]}F'\ge\min_iF'(s_i)-\max_i|F''|\,\tfrac\delta2\ge0.20>0$ (grid
-spacing $\delta=0.008$, $\min_iF'(s_i)=0.205$, $\max_i|F''|=0.13$), so $F\le F(1)$ there. Since no strict
-majorant of $g$ can stay below $\beta_{\mathrm{odd}}$ at the exact maximizer $s=1$, this last monotonicity is
-the residual step; crucially it is a one-dimensional property of the explicit profile, free of $N$
-(\texttt{verify\_bn\_profile\_max.py}).
+For the maximizer, two analytic majorants of $g$ cover the bulk. Jensen's bound $g(a,b)\le\sqrt{(a+b)/2}$
+($\mathbb E\cos^2=\tfrac12$) gives $F<\beta_{\mathrm{odd}}$ on $[\tfrac12,\tfrac45]$; writing
+$g(a,b)=\sqrt{\max}\,h(\min/\max)$ with $h(\rho)=\mathbb E\sqrt{\cos^2\Phi+\rho\cos^2\Psi}$ \emph{concave}
+($h''<0$ on $(0,1]$), the tangent at $\rho=1$, $h(\rho)\le h(1)+h'(1)(\rho-1)$ with $h(1)=0.95809$,
+$h'(1)=0.23952$, sharpens this to $F<\beta_{\mathrm{odd}}$ on all of $[\tfrac12,0.937]$---an \emph{analytic}
+bound on $87\%$ of the window, clearing the interior dip $\min F\approx0.847$ at $s\approx0.56$. On the
+residual $[0.937,1]$ the profile is real-analytic (the substitution removes the band-edge singularities) and
+strictly increasing: a Lipschitz--grid bound gives $\inf F'\ge\min_iF'(s_i)-\max_i|F''|\,\tfrac\delta2\ge
+0.20>0$ ($\delta=0.008$, $\min_iF'(s_i)=0.205$, $\max_i|F''|=0.13$), so $F\le F(1)$. Since no strict majorant
+of $g$ can stay below $\beta_{\mathrm{odd}}$ at the exact maximizer $s=1$, this last monotonicity is the
+residual step; crucially it is one-dimensional, free of $N$ (\texttt{verify\_bn\_profile\_max.py}).
 \end{proof}
 
 \noindent This sharpens the earlier kernel-level numerics: the $t\le N/2$ supremum
