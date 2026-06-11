@@ -1253,13 +1253,40 @@ toral expectation to under $1\%$, the residual oscillating in sign (so non-syste
 $4\cdot10^3$ to $2.6\cdot10^5$ (\texttt{verify\_debye\_equidistribution.py}).
 \end{proof}
 
+Granting the transfer, the profile \emph{maximizer} is itself controlled rigorously by an elementary
+variance bound.
+
+\begin{lemma}[variance floor; the profile does not beat the $s=1$ peak]\label{lem:varfloor}
+Write $a_\ell=(s^2-(u+\ell)^2)^{-1/4}$ and split the live copies of each parity channel into a $K$-copy
+\emph{core} and a remainder. With $c^2=\tfrac12\sum_{\ell\in\mathrm{rest}}a_\ell^2$,
+\[
+  G(u,s)=\mathbb E\sqrt{X^2+Y^2}\ \le\ F_K(u,s):=\mathbb E_{\mathrm{core}}\sqrt{X_C^2+Y_C^2+c^2},
+\]
+since conditioning on the core, the mean-zero remainder gives $\mathbb E_{\mathrm{rest}}(X^2+Y^2)=
+X_C^2+Y_C^2+c^2$ (cross terms vanish) and $\sqrt{\,\cdot\,}$ is concave. The bound is exact at $K=|L(s)|$,
+monotone in $K$, and $F_K(s):=\sqrt{2/\pi}\int_0^1F_K\,du\ge F(s)$. As $s\to\infty$,
+$\sum_\ell a_\ell^2\to\int_{-s}^s(s^2-x^2)^{-1/2}\,dx=\pi$, the channels become Gaussian $\mathcal N(0,\pi/4)$,
+and $F(s)\to\sqrt\pi/2=0.8862<\beta_{\mathrm{odd}}$, with margin $0.042$.
+\end{lemma}
+
+\noindent The variance-floor bound clears the peak on the compact window: $F_K(s)<\beta_{\mathrm{odd}}$ for
+$s\in(1,6]$ (the binding sliver just above $s=1$, two-copy, has head-room $0.007$; the bulk $0.03$),
+validated by seeded Monte-Carlo with a $3\sigma$ upper-confidence bound and a deterministic FFT cross-check,
+and the tail extends it to all $s$ (\texttt{verify\_bn\_largewave\_tail.py}). So
+$\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$, with the only non-rigorous step a Taylor-model interval
+enclosure of $F_K$ on $(1,6]$.
+
 \noindent What is now \emph{proved}, for every $s>1$: the live Debye phases are jointly equidistributed with
-an explicit $N^{-1/2}$ power saving per frequency combination (Theorem~\ref{thm:joint-equi}), resting only on
-the linear independence of the curvature kernels $g_\ell$---which is exact, their poles being distinct. What
-remains \emph{conjectural}: the uniform-in-$u$ transfer to the $L^1$ limit, hence the identification
-$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$. The honest status is therefore that the multi-copy region is
-reduced from a black-box Weyl-sum problem to a single, sharply localized uniformity estimate at the band
-edges---a strict improvement over the ``only unitarity is rigorous'' status of Remark~\ref{rem:bn-parity}.
+an explicit $N^{-1/2}$ power saving (Theorem~\ref{thm:joint-equi}), resting only on the linear independence of
+the curvature kernels $g_\ell$ (distinct poles); the variance-floor inequality $F\le F_K$ and the tail limit
+$\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). \emph{Two residual estimates}, both validated
+numerically, separate this from an unconditional $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: (i) the
+uniform-in-$u$ band-edge transfer to the $L^1$ limit, and (ii) the interval enclosure of $F_K$ on the compact
+window. The honest status is that the multi-copy region is reduced from a black-box Weyl-sum/anti-flatness
+problem to two sharply localized, interval-arithmetic-shaped estimates---a strict improvement over the ``only
+unitarity is rigorous'' status of Remark~\ref{rem:bn-parity}, and the same flavour as the (now closed)
+$t\le N/2$ residual. The closest published result, an $L^4$ bound for the same discrete chirp, stops short of
+the $L^1$ constant~\cite{FuRenWang}.
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
 (upper from unitarity, lower from Theorem~\ref{thm:schr-lower}), and every step---the periodization, the
@@ -1628,6 +1655,7 @@ Two-copy profile $\max F=\beta_{\mathrm{odd}}$ (Prop.~\ref{prop:bn-profile}) & \
 $\quad$rigorous $F'>0$ on $[0.937,1]$ (interval arith.) & \texttt{verify\_bn\_profile\_rigorous.py}\\
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
 Joint Debye equidistribution (\S\ref{sub:multicopy}) & \texttt{verify\_debye\_equidistribution.py}\\
+Multi-copy profile $\max_{s\ge1}F=\beta_{\mathrm{odd}}$ (Lem.~\ref{lem:varfloor}) & \texttt{verify\_bn\_largewave\_tail.py}\\
 Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\
