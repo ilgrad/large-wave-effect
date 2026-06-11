@@ -293,6 +293,24 @@ machinery consumes the Galilean invariance the lattice lacks. Equation~\eqref{eq
 open problem to a single estimate---a bound on the position-weighted nonlinear term, i.e.\ on the staggered
 momentum content $\langle\cos2k\rangle$.
 
+\emph{An equivalent, position-weight-free form.} The dispersive term is set by the staggered momentum
+$\langle L_2a,a\rangle=2P(1-\langle\cos2k\rangle)$, $\langle\cos2k\rangle=P^{-1}\mathrm{Re}\sum_n\bar a_na_{n+2}$,
+and---because the linear flow preserves every momentum moment $|\hat a_k|^2$---its evolution is purely
+nonlinear and carries \emph{no} position weight:
+\begin{equation}\label{eq:stagger}
+  \frac{d}{dt}\,\mathrm{Re}\!\sum_n\bar a_na_{n+2}
+   =-\gamma\sum_n\bigl(|a_n|^2-|a_{n+2}|^2\bigr)\mathrm{Im}(\bar a_na_{n+2}),\qquad
+  \Bigl|\frac{d}{dt}\,\mathrm{Re}\!\sum_n\bar a_na_{n+2}\Bigr|\le2\gamma\|a\|_4^4
+\end{equation}
+(the identity proven symbolically; the bound by Cauchy--Schwarz; \texttt{verify\_stagger\_morawetz.py}). So
+the whole question rests on the \emph{focusing interaction-Morawetz} spacetime norm
+$\gamma\int_0^\infty\|a\|_4^4\,dt$---the standard scattering criterion---which is numerically bounded for
+$\gamma P<4$ and divergent above (matching the sharp threshold $4$); its focusing-sign obstruction is exactly
+the barrier~\cite{StefanovKevrekidis05} cannot cross at the cubic power. The integrable Ablowitz--Ladik
+cousin, whose hierarchy \emph{conserves} a staggered-momentum functional, motivates~\eqref{eq:stagger}; but
+that functional \emph{drifts} under the non-integrable flow~\eqref{eq:dnls}, the $O(1)$ Ablowitz--Ladik gap
+made quantitative.
+
 On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation from the
 anti-continuum limit~\cite{MacKayAubry}---it is a compactness statement.
 
