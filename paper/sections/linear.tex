@@ -1003,9 +1003,9 @@ so the global $\liminf$ equals it.
 For the upper side, on the whole window $t\le N/2$ the two-copy reduction is rigorous: $2t\le N$, so only
 the two Poisson copies $\ell=0,-1$ survive (the rest are super-exponentially small), $|K_N(k,t)|\le
 |J_k(2t)|+|J_{N-k}(2t)|$, and the Debye envelope turns $\|K_N(\cdot,t)\|_1/\sqrt N$ into the two-copy profile
-$F(2t/N)$. This profile is now explicit (Proposition~\ref{prop:bn-profile}): it is maximized at
-$2t/N=1$---i.e.\ at $t=N/2$---with value $\beta_{\mathrm{odd}}$, \emph{proved analytically} on $87\%$ of the
-window and reduced on the rest to a one-dimensional monotonicity free of $N$. Granting that maximization,
+$F(2t/N)$. This profile is now explicit and its maximizer is \emph{proved}
+(Proposition~\ref{prop:bn-profile}): $\max F=F(1)=\beta_{\mathrm{odd}}$ at $t=N/2$, analytically on
+$[\tfrac12,0.937]$ and by validated interval arithmetic on $[0.937,1]$. Hence
 $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ for all
 $t\le N/2$, and with the lower bound $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}+o(1))\sqrt N$
 on the odd subsequence. For $t>N/2$ (three or more overlapping copies) only unitarity
@@ -1077,17 +1077,21 @@ $g(a,b)=\sqrt{\max}\,h(\min/\max)$ with $h(\rho)=\mathbb E\sqrt{\cos^2\Phi+\rho\
 ($h''<0$ on $(0,1]$), the tangent at $\rho=1$, $h(\rho)\le h(1)+h'(1)(\rho-1)$ with $h(1)=0.95809$,
 $h'(1)=0.23952$, sharpens this to $F<\beta_{\mathrm{odd}}$ on all of $[\tfrac12,0.937]$---an \emph{analytic}
 bound on $87\%$ of the window, clearing the interior dip $\min F\approx0.847$ at $s\approx0.56$. On the
-residual $[0.937,1]$ the profile is real-analytic (the substitution removes the band-edge singularities) and
-strictly increasing: a Lipschitz--grid bound gives $\inf F'\ge\min_iF'(s_i)-\max_i|F''|\,\tfrac\delta2\ge
-0.20>0$ ($\delta=0.008$, $\min_iF'(s_i)=0.205$, $\max_i|F''|=0.13$), so $F\le F(1)$. Since no strict majorant
-of $g$ can stay below $\beta_{\mathrm{odd}}$ at the exact maximizer $s=1$, this last monotonicity is the
-residual step; crucially it is one-dimensional, free of $N$ (\texttt{verify\_bn\_profile\_max.py}).
+remaining $[0.937,1]$ the profile is strictly increasing, $F'(s)>0$, proved by \emph{validated interval
+arithmetic}: two elementary inequalities eliminate the elliptic $g$---the QM--AM bound $g(a,b)\ge
+\tfrac{\sqrt2}\pi(\sqrt a+\sqrt b)$ (from $\sqrt{x^2+y^2}\ge(x+y)/\sqrt2$) and the derivative bound
+$\partial_ag=\mathbb E[\tfrac{\cos^2\Phi}{2\sqrt{\,\cdot\,}}]\le1/(\pi\sqrt a)$---and reduce $F'$ to a lower
+bound $F_{\mathrm{lo}}(s)$ built from \emph{elementary} ($\sqrt{\ }$-only) integrals; an interval
+rectangle-sum enclosure (the band-edge $w^{-1/4}$ singularities removed by $w=t^4$, $w=1-r^4$, powers
+cancelled by hand), with $s$ itself taken as an interval, certifies $F_{\mathrm{lo}}(s)>0$ on every
+subinterval of $[0.937,1]$ (worst case $0.051$, \texttt{verify\_bn\_profile\_rigorous.py}). Hence $F\le F(1)$
+there, and the maximizer $\max_{[0,1]}F=F(1)=\beta_{\mathrm{odd}}$ is proved.
 \end{proof}
 
-\noindent This sharpens the earlier kernel-level numerics: the $t\le N/2$ supremum
-$\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}+o(1))\sqrt N$ now rests on the maximization of one
-explicit elliptic-integral function $F$, proved outright except for the monotonicity of $F$ on
-$[\tfrac45,1]$.
+\noindent This settles the $t\le N/2$ supremum: $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}
++o(1))\sqrt N$, since the maximization of the one explicit elliptic-integral function $F$ is now proved in
+full---analytically on $[\tfrac12,0.937]$ and by validated interval arithmetic on $[0.937,1]$. The only
+remaining piece of the constant is the multi-copy region $t>N/2$ (Remark~\ref{rem:bn-parity}).
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
 (upper from unitarity, lower from Theorem~\ref{thm:schr-lower}), and every step---the periodization, the
@@ -1453,6 +1457,7 @@ Schr\"odinger lower bound $\Omega(\sqrt N)$ & \texttt{verify\_schrodinger\_lower
 Constant $B_N/\sqrt N$ scan (Table~\ref{tab:bn}) & \texttt{verify\_bn\_constant.py}\\
 $B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{verify\_bn\_parity.py}\\
 Two-copy profile $\max F=\beta_{\mathrm{odd}}$ (Prop.~\ref{prop:bn-profile}) & \texttt{verify\_bn\_profile\_max.py}\\
+$\quad$rigorous $F'>0$ on $[0.937,1]$ (interval arith.) & \texttt{verify\_bn\_profile\_rigorous.py}\\
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\

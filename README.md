@@ -43,9 +43,10 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   $N \to \beta_{\mathrm{odd}} = 0.928\ldots$, an elliptic-integral constant for which no elementary closed
   form was found — so $\limsup \ge \beta_{\mathrm{odd}}$. For $t\le N/2$ the limiting $\ell^1$ profile is the
   *explicit* elliptic-integral function $F(2t/N)$ (one-copy term $A(s)={}_2F_1$ in closed form), and its
-  maximizer $\max F=F(1)=\beta_{\mathrm{odd}}$ is **proved analytically on $87\%$ of the window** (Jensen,
-  sharpened by the tangent to a concave $h$), reduced on the rest to a one-dimensional monotonicity free of
-  $N$. On the **Dirichlet segment**
+  maximizer $\max F=F(1)=\beta_{\mathrm{odd}}$ is now **fully proved** — analytically on $[\tfrac12,0.937]$
+  (Jensen, sharpened by the tangent to a concave $h$) and by **validated interval arithmetic** on
+  $[0.937,1]$ ($F'(s)>0$, worst case $0.051$). So the $t\le N/2$ contribution to $B_N$ is settled;
+  only the multi-copy region $t>N/2$ remains. On the **Dirichlet segment**
   $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ for $N+1$ prime/$2^m$ (the constant $C=4/\pi^2$ is the published
   Myshkis–Filimonov 2003 value). Three large-wave laws on one Laplacian.
 - **Dimension, products & circulants (theorem).** The large wave lives exactly at spectral dimension
@@ -68,9 +69,9 @@ strongly nonlinear regime (saturation, rogue-wave focusing), FPUT recurrence and
 computational/exploratory.
 
 **Open problems** (each reduced to a clean statement, with the proven part marked). (1) The *sharp* $B_N$
-upper bound on $t>N/2$: for $t\le N/2$ the limiting profile is explicit and its maximizer is proved on
-$87\%$ of the window; on $t>N/2$ an anti-flatness statement for the non-quadratic $\sin^2$ chirp (an
-Erdős-type flatness question) would give $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$. (2) The **excess lemma**
+upper bound on $t>N/2$: the $t\le N/2$ case is now **fully proved** ($\max F=\beta_{\mathrm{odd}}$, analytic
++ validated interval arithmetic); the open piece is $t>N/2$, an anti-flatness statement for the non-quadratic
+$\sin^2$ chirp (an Erdős-type flatness question) which would give $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$. (2) The **excess lemma**
 $A_N\le L_{\mathrm{pre}}+O(1)$ (equivalent to a rigorous *growing* deficit bound) — now proved when the odd
 part of $N$ is a prime power ($N=2p$ sharp at $1/2N$, $N=4p$), **open only for $\omega(m)\ge2$**; it is a
 quantitative Kronecker–Weyl comparison on the relation-constrained subtorus, the sup-side counterpart of

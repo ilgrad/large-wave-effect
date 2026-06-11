@@ -333,14 +333,14 @@ $\liminf\ge c_0/\sqrt2\approx0.861$ is proved (Theorem~\ref{thm:schr-lower}; num
 even subsequence), and the constant splits by the parity of $N$ (Remark~\ref{rem:bn-parity}): the
 odd-subsequence value $\beta_{\mathrm{odd}}=0.928019303\ldots$ is the elliptic-integral average
 \eqref{eq:beta-odd} (a $25$-digit \textsc{pslq} search finds no elementary closed form), and
-$\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ holds on $t\le N/2$: the two-copy reduction is
-rigorous and the limiting profile is now an \emph{explicit} elliptic-integral function $F(s)$
-(Proposition~\ref{prop:bn-profile}), whose maximization $\max F=F(1)=\beta_{\mathrm{odd}}$ is proved
-analytically on $87\%$ of the window (Jensen, sharpened by the tangent to the concave $h$) and reduced on
-the rest to the monotonicity of $F$ on $[0.937,1]$---a one-dimensional statement free of $N$. The remaining residual is the rigorous upper
-bound on the multi-copy region $t>N/2$ (numerically subdominant---no Gauss-sum revival), which would give
+$\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ holds on $t\le N/2$, now \emph{in full}: the
+two-copy reduction is rigorous, the limiting profile is the \emph{explicit} elliptic-integral function
+$F(s)$ (Proposition~\ref{prop:bn-profile}), and its maximization $\max F=F(1)=\beta_{\mathrm{odd}}$ is
+\emph{proved}---analytically on $[\tfrac12,0.937]$ (Jensen, sharpened by the tangent to the concave $h$) and
+by validated interval arithmetic on $[0.937,1]$. The one remaining piece is the rigorous upper bound on the
+multi-copy region $t>N/2$ (numerically subdominant---no Gauss-sum revival), which would give
 $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$
-(\texttt{verify\_bn\_profile\_max.py}, \texttt{verify\_bn\_parity.py}).
+(\texttt{verify\_bn\_profile\_rigorous.py}, \texttt{verify\_bn\_parity.py}).
 \item A rigorous nonlinear theory of the discrete NLS \eqref{eq:dnls} on the ring
 (Section~\ref{sec:rogue}). Two pieces are now settled: the linear large wave persists in the weakly
 nonlinear regime (Proposition~\ref{prop:dnls-persist}), and the modulational-instability band and growth
