@@ -34,37 +34,53 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   dimension exactly $\tfrac12\varphi(2N)$. Certified to $N\le600$ (Python) / $N\le800$ (exact GAP).
 - **Composite deficit.** $U_N - A_N = O(\ln\ln\ln N)$, depending asymptotically only on the odd part of $N$;
   the strict gap $A_N < U_N$ is rigorously certified for small $N$ (Lipschitz-grid and Lasserre moment–SOS).
+  The per-family limits $\mathrm{defect}_\infty(m)=\lim_a (U-A)(m\,2^a)$ are computed to $10^{-8}$
+  ($0.10368\ldots$, $0.03824\ldots$) — new constants with no closed form.
 - **Discrete Schrödinger.** A localized state is never amplified (unitarity), yet
   $B_N = \sup_t\|e^{-itL_N}\|_{\ell^\infty\to\ell^\infty} = \Theta(\sqrt N)$. Here
   $\liminf B_N/\sqrt N \ge c_0/\sqrt2 = 0.861$ is proved ($c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$; attained
   numerically on even $N$), and the constant splits by parity — numerically even $N \to c_0/\sqrt2$, odd
   $N \to \beta_{\mathrm{odd}} = 0.928\ldots$, an elliptic-integral constant for which no elementary closed
-  form was found — so $\limsup \ge \beta_{\mathrm{odd}}$. On the **Dirichlet segment**
+  form was found — so $\limsup \ge \beta_{\mathrm{odd}}$. For $t\le N/2$ the limiting $\ell^1$ profile is the
+  *explicit* elliptic-integral function $F(2t/N)$ (one-copy term $A(s)={}_2F_1$ in closed form), and its
+  maximizer $\max F=F(1)=\beta_{\mathrm{odd}}$ is **proved analytically on $87\%$ of the window** (Jensen,
+  sharpened by the tangent to a concave $h$), reduced on the rest to a one-dimensional monotonicity free of
+  $N$. On the **Dirichlet segment**
   $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ for $N+1$ prime/$2^m$ (the constant $C=4/\pi^2$ is the published
   Myshkis–Filimonov 2003 value). Three large-wave laws on one Laplacian.
-- **Dimension & products (theorem).** The large wave lives exactly at spectral dimension $d_s = 1$ ($O(1)$
-  for $d_s\ge2$). A graph-agnostic order criterion plus the embedded ring spectrum give $A = \Theta(\ln N)$
-  on *every* Cartesian product $C_N\,\square\,H$ (ladders, prisms, tubes). It is an *infinite-time* ceiling:
-  the finite-time amplitude is Diophantine-limited (recurrence time exponential in $N$).
+- **Dimension, products & circulants (theorem).** The large wave lives exactly at spectral dimension
+  $d_s = 1$ ($O(1)$ for $d_s\ge2$). A graph-agnostic order criterion plus the embedded ring spectrum give
+  $A = \Theta(\ln N)$ on *every* Cartesian product $C_N\,\square\,H$ (ladders, prisms, tubes) and, beyond
+  products, on the **Möbius ladder** $C_{2N}(\{1,N\})$ via its embedded-ring branch. Multi-jump circulants
+  $C_N(S)$ ($|S|\ge2$) instead **saturate** ($A_N=U_N$) off explicit Conway–Jones collision congruences —
+  the nested-radical frequencies destroy the ring's mod-4 obstruction (numerical for the no-further-relation
+  step). It is an *infinite-time* ceiling: the finite-time amplitude is Diophantine-limited (recurrence time
+  exponential in $N$).
 
 **Nonlinear extension (Part II), focusing DNLS — now a rigorous chain.** The linear large wave **persists**
 under weak nonlinearity (Duhamel); the **modulational-instability band** $\sigma_Q=\sqrt{\lambda_Q(2\gamma
 A^2-\lambda_Q)}$ is read off the $L_N$ spectrum; the on-site **breather exists** (a finite-dimensional
 variational argument, no MacKay–Aubry continuation) and is **stable** (Vakhitov–Kolokolov / Grillakis–
-Shatah–Strauss), while the bond-centred breather is unstable. The strongly nonlinear regime (saturation,
-the precise self-trapping threshold $\approx 4$, rogue-wave focusing), FPUT recurrence and the route to
-chaos remain computational/exploratory.
+Shatah–Strauss), while the bond-centred breather is unstable. The **self-trapping threshold is proved
+energy-sharp** at the exact constant $\gamma P=4=\|L_N\|$: above it, full dispersal of the single-site seed
+is energetically forbidden (it would force $\langle L_N u,u\rangle\to 2P-\tfrac\gamma2P^2<0$). The remaining
+strongly nonlinear regime (saturation, rogue-wave focusing), FPUT recurrence and the route to chaos remain
+computational/exploratory.
 
-**Open problems** (each reduced to a clean statement). (1) The *sharp* $B_N$ upper bound on $t>N/2$
-(proved for $t\le N/2$): an anti-flatness statement for the non-quadratic $\sin^2$ chirp / joint
-equidistribution of the multi-copy Debye phases, which would give $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$.
-(2) A rigorous *growing* lower bound on the deficit, equivalent to the **excess lemma** $A_N\le L_{\mathrm{pre}}+O(1)$.
-(3) The strongly nonlinear DNLS (above; the no-dispersal side of the launch threshold is now proved with
-the exact constant 4). (4) Condition (B) of the order criterion for quasi-1D lattices *without* an embedded
-ring factor (for the next-nearest-neighbour ring the degeneracy layer is settled: frequencies collide iff
-$4\mid N$, at $(N/4, N/2)$). **Priority note:** Filimonov's 1992 C. R. Acad. Sci. note must be obtained
-and compared on the ring before claiming priority (its splash table is reproduced in Andrianov–Awrejcewicz–
-Danishevskyy 2021).
+**Open problems** (each reduced to a clean statement, with the proven part marked). (1) The *sharp* $B_N$
+upper bound on $t>N/2$: for $t\le N/2$ the limiting profile is explicit and its maximizer is proved on
+$87\%$ of the window; on $t>N/2$ an anti-flatness statement for the non-quadratic $\sin^2$ chirp (an
+Erdős-type flatness question) would give $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$. (2) The **excess lemma**
+$A_N\le L_{\mathrm{pre}}+O(1)$ (equivalent to a rigorous *growing* deficit bound) — now proved when the odd
+part of $N$ is a prime power ($N=2p$ sharp at $1/2N$, $N=4p$), **open only for $\omega(m)\ge2$**; it is a
+quantitative Kronecker–Weyl comparison on the relation-constrained subtorus, the sup-side counterpart of
+McGehee–Pigno–Smith. (3) A rigorous dispersal proof on the **proof gap** $\gamma P\in[0.43,4)$: the
+threshold $4$ is now energy-sharp and dispersal is the numerically established behaviour up to $\approx4$,
+but the rigorous drop is proven only to $0.43$. (4) Condition (B) of the order criterion for quasi-1D
+lattices *without* an embedded ring (the Möbius ladder and multi-jump circulants are now settled; the
+next-nearest-neighbour degeneracy law holds for all couplings $g$ via Conway–Jones). **Priority note:**
+Filimonov's 1992 C. R. Acad. Sci. note must be obtained and compared on the ring before claiming priority
+(its splash table is reproduced in Andrianov–Awrejcewicz–Danishevskyy 2021).
 
 ## Reproduce
 
@@ -79,10 +95,13 @@ cd paper && latexmk -pdf large-wave-effect.tex # build the paper (run twice to r
 ```
 
 Headline checks: `verify_order_theorem.py` (the order law + palindromic prefix lemma),
-`verify_classification_proof.py` (saturation classification), `verify_bn_parity.py` and
-`verify_beta_odd.py` (the Schrödinger constant and its parity split), `verify_defect_certified.py`
-(certified $A_N<U_N$), `verify_product_order.py` ($C_N\,\square\,H$), and the DNLS chain
-`verify_dnls_persistence.py` / `verify_dnls_mi.py` / `verify_dnls_breather_stability.py`.
+`verify_classification_proof.py` (saturation classification), `verify_bn_parity.py` /
+`verify_beta_odd.py` / `verify_bn_profile_max.py` (the Schrödinger constant, its parity split, and the
+explicit $t\le N/2$ profile maximizer), `verify_defect_certified.py` (certified $A_N<U_N$),
+`verify_excess_smallcases.py` (excess lemma for prime-power odd part), `verify_product_order.py` and
+`verify_kjump_order.py` ($C_N\,\square\,H$, Möbius ladder, $k$-jump saturation), the DNLS chain
+`verify_dnls_persistence.py` / `verify_dnls_mi.py` / `verify_dnls_breather_stability.py`, and
+`verify_selftrapping_transition.py` (the energy-sharp $\gamma P=4$ threshold).
 
 **Exact-arithmetic + formal layer** (Fedora: `dnf install gap pari-gp fricas rocq-prover`). The
 linear-theory arithmetic is reproduced floating-point-free in **GAP** and **PARI/GP**, symbolically in
