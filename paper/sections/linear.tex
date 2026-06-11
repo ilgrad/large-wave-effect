@@ -1433,6 +1433,8 @@ Weak-coupling dispersal (Prop.~\ref{prop:dispersal}) & \texttt{verify\_dispersal
 NNN degeneracy law (Prop.~\ref{prop:nnn}) & \texttt{verify\_nnn\_collisions.py}\\
 Quasi-1D order criterion, NNN ring (Prop.~\ref{prop:order-criterion}) & \texttt{verify\_quasi1d\_order.py}\\
 Order on ring products $C_N\square H$ (Cor.~\ref{cor:product}) & \texttt{verify\_product\_order.py}\\
+M\"obius ladder + $k$-jump saturation (Cor.~\ref{cor:mobius}, Rem.~\ref{rem:kjump}) & \texttt{verify\_kjump\_order.py}\\
+Excess lemma, prime-power odd part (Rem.~\ref{rem:defect}) & \texttt{verify\_excess\_smallcases.py}\\
 FPUT-$\beta$ recurrence (symplectic) & \texttt{verify\_fput\_recurrence.py}\\
 Lyapunov exponent, route to chaos & \texttt{verify\_lyapunov.py}\\
 2D DNLS breather (self-trapping) & \texttt{verify\_dnls\_2d.py}\\
@@ -1632,7 +1634,41 @@ positive and grows like $\ln N$ for $H=K_2,P_3$). \end{proof}
 
 \noindent So the order law survives multiplication by any bounded ``cross-section'': ladders, prisms,
 tubes $C_N\,\square\,H$ all carry the $\Theta(\ln N)$ large wave, the embedded ring supplying the
-arithmetic. (Genuine quasi-1D lattices \emph{without} an exact ring factor remain the per-family question.)
+arithmetic. The same embedded-ring mechanism reaches beyond products.
+
+\begin{corollary}[M\"obius ladder]\label{cor:mobius}
+The large wave on the M\"obius ladder $M_N$---the circulant $C_{2N}(\{1,N\})$ on $2N$ vertices, \emph{not}
+a Cartesian product---satisfies $A(M_N)=\Theta(\ln N)$.
+\end{corollary}
+
+\begin{proof}
+The Laplacian eigenvalues are $\Lambda_r=2\bigl(1-\cos\tfrac{\pi r}{N}\bigr)+\bigl(1-(-1)^r\bigr)$,
+$r=0,\dots,2N-1$. The even branch $r=2j$ gives $\Lambda_{2j}=2\bigl(1-\cos\tfrac{2\pi j}{N}\bigr)=
+4\sin^2(\pi j/N)$---\emph{exactly} the ring $C_N$ spectrum---while the diameter chord gaps the odd branch by
+$1-(-1)^r=2$. So $\omega\to0$ only on the even branch, which carries the ceiling $U\sim\tfrac1{2\pi}\ln N$
+(condition~A); its frequencies are the ring frequencies $2\sin(\pi j/N)$, whose first $\tfrac12\varphi(2N)$
+are $\Q$-independent by Lemma~\ref{lem:prefix} (exact integer-rank certificate, e.g.\ rank
+$128=\tfrac12\varphi(512)$ at $N=256$), contributing $(1-o(1))U$ (condition~B).
+Proposition~\ref{prop:order-criterion} gives $A(M_N)=\Theta(\ln N)$
+(\texttt{verify\_kjump\_order.py}). \end{proof}
+
+\begin{remark}[multi-jump circulants saturate]\label{rem:kjump}
+For a $k$-jump circulant $C_N(S)$, $|S|\ge2$, the frequencies are the nested radicals
+$\omega_r=\bigl(\sum_{s\in S}4\sin^2(\pi sr/N)\bigr)^{1/2}$, and condition~(A) holds with slope
+$1/(\pi\sqrt{\sum_{s\in S}s^2})$. Distinct frequencies coincide only along exact Conway--Jones congruences
+(for $S=\{1,2,3\}$: a collision iff $4\mid N$, $6\mid N$, or $7\mid N$; for $S=\{1,3\}$: iff $8\mid N$ or
+$5\mid N$), and---unlike the single sines of the ring, which carry the composite mod-$4$ obstruction of
+Theorem~\ref{thm:classification}---the \emph{distinct} radicals appear to satisfy no further $\Q$-relation
+(\textsc{pslq} to $250$ digits, the spurious relation norm diverging with precision). Numerically the
+multi-jump circulant then \emph{saturates}, $A_N=U_N$, for every $N$ off its collision congruences: the
+radical structure destroys the cyclotomic linear relations, so composite $N$ is no longer an obstruction
+(\texttt{verify\_kjump\_order.py}). A rigorous proof of the no-further-relation step is the residual
+(a Kummer-theoretic independence of nested square-roots).
+\end{remark}
+
+\noindent The remaining genuinely open case is a quasi-1D lattice \emph{without} any embedded ring---e.g.\
+the open (Dirichlet) triangular ladder, whose spectrum is not cyclotomic; there condition~(A) holds
+($d_s=1$) but (B) has no clean arithmetic and stays per-family.
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.62\textwidth]{fig_spectral_dim.pdf}
