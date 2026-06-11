@@ -981,8 +981,9 @@ so the global $\liminf$ equals it.
 For the upper side, on the whole window $t\le N/2$ the two-copy reduction is rigorous: $2t\le N$, so only
 the two Poisson copies $\ell=0,-1$ survive (the rest are super-exponentially small), $|K_N(k,t)|\le
 |J_k(2t)|+|J_{N-k}(2t)|$, and the Debye envelope turns $\|K_N(\cdot,t)\|_1/\sqrt N$ into the two-copy profile
-$F(2t/N)$. The profile is maximized at $2t/N=1$---i.e.\ at $t=N/2$---with value $\beta_{\mathrm{odd}}$
-(verified numerically, \texttt{verify\_bn\_parity.py}); granting that maximization,
+$F(2t/N)$. This profile is now explicit (Proposition~\ref{prop:bn-profile}): it is maximized at
+$2t/N=1$---i.e.\ at $t=N/2$---with value $\beta_{\mathrm{odd}}$, \emph{proved analytically} on $60\%$ of the
+window and reduced on the rest to a one-dimensional monotonicity free of $N$. Granting that maximization,
 $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ for all
 $t\le N/2$, and with the lower bound $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}+o(1))\sqrt N$
 on the odd subsequence. For $t>N/2$ (three or more overlapping copies) only unitarity
@@ -1013,6 +1014,49 @@ $\max\{\|K\|_1/\sqrt N:\|K\|_2=1,\,N\|K\|_4^4=c\}=1-\Theta(\sqrt{c/N})$, a singl
 $\sqrt{c/N}$ absorbing any fourth moment at negligible $\ell^1$ cost---so no bound below $1$ can follow
 from $\|K\|_2$ and $\|K\|_4$ alone.)
 \end{remark}
+
+\begin{proposition}[two-copy profile and its maximizer]\label{prop:bn-profile}
+For $t=sN/2$ with $s\in[0,1]$, the two-copy Debye approximation of Remark~\ref{rem:bn-parity} gives
+$\|K_N(\cdot,t)\|_1=\bigl(F(s)+o(1)\bigr)\sqrt N$ with the \emph{explicit scalar profile}
+\[
+  F(s)=\begin{cases}
+    c_0\sqrt s, & 0\le s\le\tfrac12,\\[3pt]
+    \sqrt{\tfrac2\pi}\Bigl[\tfrac4\pi(1-s)\,A(s)+(2s-1)^{3/4}B(s)\Bigr], & \tfrac12\le s\le1,
+  \end{cases}
+\]
+\[
+  A(s)=\int_0^1\!\bigl(s^2-(1-s)^2w^2\bigr)^{-1/4}dw,\qquad
+  B(s)=\int_0^1\! g\bigl(\widehat a,\widehat b\bigr)\,dw,
+\]
+where $\widehat a=[(1-w)(1+(2s-1)w)]^{-1/2}$, $\widehat b=[w(2s-(2s-1)w)]^{-1/2}$, and
+$g(a,b)=\mathbb E_{\Phi,\Psi}\sqrt{a\cos^2\Phi+b\cos^2\Psi}$ with $\Phi,\Psi$ independent uniform. Then
+$F(\tfrac12)=c_0/\sqrt2$ and $F(1)=\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd}, and
+\[
+  \max_{s\in[0,1]}F(s)=F(1)=\beta_{\mathrm{odd}} .
+\]
+\end{proposition}
+
+\begin{proof}[Proof]
+The reduction and the closed-form endpoints are the Debye computation of Remark~\ref{rem:bn-parity}: for
+$s\le\tfrac12$ the two Bessel fronts $|n|\approx sN$ are disjoint and each half-line contributes
+$\tfrac12c_0\sqrt{2t}$, giving $c_0\sqrt s$; for $s\ge\tfrac12$ the overlap $u=k/N\in[1-s,s]$ carries both
+Debye envelopes, which for odd $N$ add in quadrature, producing $A,B$ after $u\mapsto w$ maps the two
+windows to $[0,1]$. The substitution makes the endpoint singularities $w^{-1/4},(1-w)^{-1/4}$ integrable
+and the integrands smooth in $s$ on $(\tfrac12,1]$; at $s=1$ one recovers exactly \eqref{eq:beta-odd}.
+For the maximizer, the concavity bound $g(a,b)\le\sqrt{(a+b)/2}$ (Jensen, $\mathbb E\cos^2=\tfrac12$)
+furnishes an explicit envelope $F\le F_+$ with $F_+(s)<\beta_{\mathrm{odd}}$ for every $s\in[\tfrac12,\tfrac45]$
+---an \emph{analytic} bound on the left $60\%$ of the window, comfortably above the interior dip
+$\min F\approx0.847$ at $s\approx0.56$ and below $\beta_{\mathrm{odd}}$. On $[\tfrac45,1]$ the scalar profile
+$F$ is strictly increasing (forward differences $\ge5\cdot10^{-4}$ on a fine grid), so $F\le F(1)$ there.
+Since no strict majorant of $g$ can stay below $\beta_{\mathrm{odd}}$ at the exact maximizer $s=1$, this last
+monotonicity is the residual step; crucially it is a one-dimensional property of the explicit profile, free
+of $N$ (\texttt{verify\_bn\_profile\_max.py}).
+\end{proof}
+
+\noindent This sharpens the earlier kernel-level numerics: the $t\le N/2$ supremum
+$\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}+o(1))\sqrt N$ now rests on the maximization of one
+explicit elliptic-integral function $F$, proved outright except for the monotonicity of $F$ on
+$[\tfrac45,1]$.
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
 (upper from unitarity, lower from Theorem~\ref{thm:schr-lower}), and every step---the periodization, the
@@ -1372,6 +1416,7 @@ Relation lattices $\Lambda_N$ (Table~\ref{tab:lattices}) & \texttt{verify\_relat
 Schr\"odinger lower bound $\Omega(\sqrt N)$ & \texttt{verify\_schrodinger\_lower.py}\\
 Constant $B_N/\sqrt N$ scan (Table~\ref{tab:bn}) & \texttt{verify\_bn\_constant.py}\\
 $B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{verify\_bn\_parity.py}\\
+Two-copy profile $\max F=\beta_{\mathrm{odd}}$ (Prop.~\ref{prop:bn-profile}) & \texttt{verify\_bn\_profile\_max.py}\\
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\
