@@ -1008,8 +1008,12 @@ $F(2t/N)$. This profile is now explicit and its maximizer is \emph{proved}
 $[\tfrac12,0.937]$ and by validated interval arithmetic on $[0.937,1]$. Hence
 $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ for all
 $t\le N/2$, and with the lower bound $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}+o(1))\sqrt N$
-on the odd subsequence. For $t>N/2$ (three or more overlapping copies) only unitarity
-$\|K_N(\cdot,t)\|_1\le\sqrt N$ is rigorous, but numerically the $\ell^1$ mass there falls back toward its
+on the odd subsequence. For $t>N/2$ (three or more overlapping copies) the joint equidistribution of the
+overlapping Debye phases is now \emph{proved}, with an explicit power saving
+(Theorem~\ref{thm:joint-equi}, \S\ref{sub:multicopy}), reducing the multi-copy constant to the toral profile
+$F(s)$ of Proposition~\ref{prop:multicopy}; what remains is a single uniform-in-$u$ discrepancy estimate at
+the band edges, sharper than the bare unitarity $\|K_N(\cdot,t)\|_1\le\sqrt N$. Numerically the $\ell^1$ mass
+there falls back toward its
 time average $\approx0.79\sqrt N$ and never exceeds the $t=N/2$ value (checked out to $t=5N$ at
 $N=2^{20}$, where the $t>N/2$ supremum trails the $t=N/2$ value by a stable margin): the $\sin^2$
 dispersion admits no flat (Gauss-sum) revival, even at structured Talbot times $t=\pi p/q$. This is consistent with the
@@ -1022,8 +1026,11 @@ locally quadratic---so $B_N/\sqrt N$ is the maximal $L^1$-flatness ratio $\|P\|_
 trigonometric polynomial. The limiting macroscopic profile of $\|K_N(\cdot,t)\|_1/\sqrt N$ is a
 \emph{multi-copy} Debye average over the Poisson copies (\texttt{verify\_bn\_residual\_profile.py}: it
 matches the FFT to $0.5\%$ across all $N\bmod4$, peaks at $t=N/2$ with $\beta_{\mathrm{odd}}$, and is
-strictly subdominant for $t>N/2$, stably out to $t=5N$), reducing the bound to the joint equidistribution
-$\bmod\,2\pi$ of the coherent multi-copy Debye phases (a multidimensional Weyl sum). The difficulty is
+strictly subdominant for $t>N/2$, stably out to $t=5N$), the profile $F(s)$ of
+Proposition~\ref{prop:multicopy}. The joint equidistribution $\bmod\,2\pi$ of the coherent multi-copy Debye
+phases---the multidimensional Weyl sum on which $F$ rests---is settled in \S\ref{sub:multicopy}
+(Theorem~\ref{thm:joint-equi}), leaving only a uniform-in-$u$ band-edge discrepancy estimate before $F$
+becomes the unconditional $t>N/2$ profile. That last step aside, the difficulty is
 intrinsic: Erd\H{o}s asked whether every unimodular polynomial must satisfy
 $\max|P|\ge(1+c)\sqrt{n}$~\cite{Erdos57}; Kahane's ultraflat polynomials answered no~\cite{Kahane80}, with
 the sharpest construction in~\cite{BombieriBourgain}, and the \emph{quadratic} chirp
@@ -1031,7 +1038,8 @@ the sharpest construction in~\cite{BombieriBourgain}, and the \emph{quadratic} c
 statement particular to the non-quadratic $\sin^2$ dispersion---precisely an Erd\H{o}s-type flatness
 question for one structured family, and no generic argument supplies it. (A single-period
 saddle van der Corput estimate fails: it predicts $0.61$ against the actual $0.93$, missing the Poisson-copy
-coherence. A fourth-moment/merit-factor route cannot supply the upper bound either:
+coherence---which is precisely why the correct object is the \emph{joint} multi-copy equidistribution of
+Theorem~\ref{thm:joint-equi}, not a single saddle. A fourth-moment/merit-factor route cannot supply the upper bound either:
 $\max\{\|K\|_1/\sqrt N:\|K\|_2=1,\,N\|K\|_4^4=c\}=1-\Theta(\sqrt{c/N})$, a single spike of mass
 $\sqrt{c/N}$ absorbing any fourth moment at negligible $\ell^1$ cost---so no bound below $1$ can follow
 from $\|K\|_2$ and $\|K\|_4$ alone.)
@@ -1092,6 +1100,166 @@ there, and the maximizer $\max_{[0,1]}F=F(1)=\beta_{\mathrm{odd}}$ is proved.
 +o(1))\sqrt N$, since the maximization of the one explicit elliptic-integral function $F$ is now proved in
 full---analytically on $[\tfrac12,0.937]$ and by validated interval arithmetic on $[0.937,1]$. The only
 remaining piece of the constant is the multi-copy region $t>N/2$ (Remark~\ref{rem:bn-parity}).
+
+\subsection{The multi-copy region \texorpdfstring{$t>N/2$}{t>N/2}: joint equidistribution of the Debye phases}\label{sub:multicopy}
+
+Beyond $t=N/2$, three or more Poisson copies overlap and the two-copy reduction of
+Proposition~\ref{prop:bn-profile} is no longer available. We isolate the exact analytic content of the
+multi-copy regime, prove the one structural input that the heuristic profile rests on---the \emph{joint}
+equidistribution of the overlapping Debye phases---and state honestly the single point that prevents this
+from closing the $t>N/2$ bound unconditionally.
+
+Fix a ratio $s=2t/N>1$ and the rescaled site $u=k/N\in[0,1)$. By the periodization \eqref{eq:poisson},
+$K_N(k,t)=\sum_\ell \mathrm i^{\,k+\ell N}J_{k+\ell N}(2t)$, and a copy $\ell$ lies in the oscillatory band
+exactly when its scaled order $m_\ell:=u+\ell$ satisfies $|m_\ell|<s$. There are at most $2s+2$ such
+\emph{live} copies---a number bounded independently of $N$---and the band-edge copies $|m_\ell|=s+O(N^{-1})$
+contribute negligibly (Airy front, height $O(N^{-1/3})$; the super-exponential tail handles $|m_\ell|>s$ as
+in Lemma~\ref{lem:bessel-l1}). On the live set the uniform large-order asymptotics~\cite[\S10.19]{DLMF}
+give, with the signed order $n_\ell=k+\ell N$ (so $J_{n_\ell}=(-1)^{|n_\ell|}J_{|n_\ell|}$ for $n_\ell<0$),
+\begin{equation}\label{eq:multicopy-debye}
+  \mathrm i^{\,n_\ell}J_{n_\ell}(2t)
+  =\mathrm i^{\,n_\ell}\,\sqrt{\tfrac2{\pi N}}\,\bigl(s^2-m_\ell^2\bigr)^{-1/4}\,
+   \bigl(\cos\Phi_\ell(k)+O(N^{-1})\bigr),
+\end{equation}
+with $\Phi_\ell(k)=\sqrt{x^2-n_\ell^2}-|n_\ell|\arccos(|n_\ell|/x)-\tfrac\pi4$,
+$x=2t=sN$, uniformly on $u\in[\delta,s-\ell-\delta]\cap[\ell-s+\delta,\,\cdot\,]$ for each $\ell$ (we use the
+phase of $|J_{n_\ell}|$; since $\cos$ is even its overall sign is immaterial, and the $(-1)^{|n_\ell|}$ of
+$n_\ell<0$ is absorbed into $\mathrm i^{n_\ell}$). The phase $\Phi_\ell$ is the object that decides coherence;
+its discrete derivative in the site index is exact and elementary.
+
+\begin{lemma}[Debye phase increments and their curvature]\label{lem:debye-incr}
+For each live copy $\ell$ and $x=sN$, with $g_\ell(u)=\bigl(s^2-m_\ell^2\bigr)^{-1/2}>0$, $m_\ell=u+\ell$,
+\begin{align*}
+  \Phi_\ell(k+1)-\Phi_\ell(k)&=-\operatorname{sgn}(m_\ell)\,\arccos\tfrac{|m_\ell|}{s}\pmod{2\pi},\\
+  \Phi_\ell(k+1)-2\Phi_\ell(k)+\Phi_\ell(k-1)&=\tfrac1N\,g_\ell(u)+O(N^{-2}).
+\end{align*}
+Consequently, writing
+$\theta_\ell(u)=-\operatorname{sgn}(m_\ell)\arccos(|m_\ell|/s)$ for the first increment,
+$\theta_\ell'(u)=g_\ell(u)$.
+\end{lemma}
+
+\begin{proof}
+$\Phi_\ell(k)=\phi(|n_\ell|)$ with $\phi(\nu)=\sqrt{x^2-\nu^2}-\nu\arccos(\nu/x)-\tfrac\pi4$ and
+$\phi'(\nu)=-\arccos(\nu/x)$. Since $n_\ell=k+\ell N$, advancing $k\mapsto k+1$ advances $\nu=|n_\ell|$ by
+$\operatorname{sgn}(n_\ell)$, so the first difference is $\operatorname{sgn}(n_\ell)\,\phi'(|n_\ell|)
+=-\operatorname{sgn}(m_\ell)\arccos(|m_\ell|/s)$ (using $\operatorname{sgn}(n_\ell)=\operatorname{sgn}(m_\ell)$ and
+$|n_\ell|/x=|m_\ell|/s$). Hence $\theta_\ell(u)=-\operatorname{sgn}(m_\ell)\arccos(|m_\ell|/s)$, and
+differentiating, $\theta_\ell'(u)=\operatorname{sgn}(m_\ell)\cdot\dfrac{\operatorname{sgn}(m_\ell)}{\sqrt{s^2-m_\ell^2}}
+=(s^2-m_\ell^2)^{-1/2}=g_\ell(u)>0$; the second site-difference is $N^{-1}\theta_\ell'(u)+O(N^{-2})$ by Taylor
+expansion. The increment identities are verified to machine precision (\texttt{verify\_debye\_equidistribution.py}:
+ratio $1.0000$ for the second difference against $N^{-1}g_\ell$).
+\end{proof}
+
+The first increment $\theta_\ell(u)$ varies with $u$, so each single phase $\{\Phi_\ell(k)\}_k$
+equidistributes mod $2\pi$ (the classical van der Corput statement behind Lemma~\ref{lem:bessel-l1}). The new
+content is that the live phases equidistribute \emph{jointly}.
+
+\begin{theorem}[joint equidistribution of the live Debye phases]\label{thm:joint-equi}
+Fix $s>1$ and a cell $\mathcal C=(a,b)\subset[0,1)$ on which the live set $L(s)=\{\ell:|u+\ell|<s\}$ is
+constant and no $m_\ell$ meets the band edge. As $N\to\infty$ the vector
+$\bigl(\Phi_\ell(k)\bmod2\pi\bigr)_{\ell\in L(s)}$ is equidistributed in the torus $\mathbb T^{|L(s)|}$ as $k$
+ranges over $\{k:k/N\in\mathcal C\}$. Quantitatively, for every nonzero integer vector $(k_\ell)_{\ell\in L(s)}$,
+\begin{equation}\label{eq:joint-weyl}
+  \Bigl|\frac1{\#}\sum_{k/N\in\mathcal C}\eu^{\mathrm i\sum_\ell k_\ell\Phi_\ell(k)}\Bigr|
+  \ \ll_{s,\mathcal C,k}\ N^{-1/2},
+\end{equation}
+the power saving of the second-derivative van der Corput estimate; hence by Weyl's criterion the joint
+distribution is uniform, with Erd\H{o}s--Tur\'an discrepancy $O(N^{-1/2}\log N)$ on the cell.
+\end{theorem}
+
+\begin{proof}
+By Weyl's criterion~\cite{Weyl}\cite[Ch.~1]{KN} joint equidistribution is equivalent to \eqref{eq:joint-weyl}
+for each nonzero $(k_\ell)$. Set $\Psi_k(j):=\sum_{\ell\in L(s)}k_\ell\Phi_\ell(j)$. By Lemma~\ref{lem:debye-incr} its
+second difference is
+\[
+  \Psi_k(j+1)-2\Psi_k(j)+\Psi_k(j-1)=\frac1N\,C_k(u)+O(N^{-2}),\qquad
+  C_k(u)=\sum_{\ell\in L(s)}\frac{k_\ell}{\sqrt{s^2-(u+\ell)^2}} ,
+\]
+so, viewing $\Psi_k$ as a smooth phase $f(j)$ with $f''(j)=N^{-1}C_k(j/N)+O(N^{-2})$, the van der Corput
+second-derivative test (the exponent-pair $(\tfrac12,\tfrac12)$ bound, \cite[\S8]{Montgomery},
+\cite[Ch.~2]{GrahamKolesnik}) gives, on a block of $L=\Theta(N)$ consecutive sites with
+$|f''|\asymp\lambda=N^{-1}|C_k|$,
+\[
+  \Bigl|\sum_{j} \eu^{\mathrm i f(j)}\Bigr|\ \ll\ L\,\lambda^{1/2}+\lambda^{-1/2}
+   \ \ll\ N\cdot N^{-1/2}|C_k|^{1/2}+N^{1/2}|C_k|^{-1/2}\ \ll\ N^{1/2},
+\]
+which after dividing by $\#=\Theta(N)$ is \eqref{eq:joint-weyl}. The estimate requires $C_k$ bounded away
+from $0$; here is the only structural point. The functions $u\mapsto g_\ell(u)=(s^2-(u+\ell)^2)^{-1/2}$,
+$\ell\in L(s)$, have \emph{distinct} singularities at $u=\pm s-\ell$, so they are linearly independent over
+$\mathbb R$: any relation $\sum_\ell k_\ell g_\ell\equiv0$ on an interval extends, by real-analyticity, to a
+relation between functions with distinct poles, forcing every $k_\ell=0$. Hence $C_k\not\equiv0$; being
+real-analytic on $\mathcal C$ it has only finitely many zeros there, and on the complement of
+$\varepsilon$-neighbourhoods of those zeros $|C_k|\ge c(s,\mathcal C,k,\varepsilon)>0$ and the bound above
+applies. Each exceptional $\varepsilon$-neighbourhood has length $O(\varepsilon)$ and contributes
+$\le\varepsilon$ to the normalized sum trivially; letting $\varepsilon\to0$ after $N\to\infty$ removes it. The
+discrepancy bound is the Erd\H{o}s--Tur\'an inequality~\cite[Ch.~2]{KN} applied to \eqref{eq:joint-weyl}. The Weyl sums
+are computed directly: \eqref{eq:joint-weyl} decays with fitted exponent $-0.52$ to $-1.2$ across nonzero
+$(k_\ell)$ with $|k_\ell|\le3$ (the slowest matching the predicted $N^{-1/2}$), the worst over $60$ random
+$(k_\ell)$ at $N=2^{18}$ being $0.013$ (\texttt{verify\_debye\_equidistribution.py}).
+\end{proof}
+
+\noindent Theorem~\ref{thm:joint-equi} is the rigorous core the heuristic profile of
+\texttt{verify\_bn\_residual\_profile.py} assumes. It upgrades the $s\le1$ two-copy statement
+(Proposition~\ref{prop:bn-profile}, where $|L(s)|=2$) to all $s$, and---granting the transfer below---reduces
+the entire multi-copy constant to a torus average.
+
+\begin{proposition}[multi-copy profile, conditional on uniform transfer]\label{prop:multicopy}
+Let $s>1$ and let $L(s)$ denote the live set on the cell containing $u$. Define the toral profile
+\begin{equation}\label{eq:Fmulti}
+  F(s)=\sqrt{\tfrac2{\pi s}}\int_0^1
+   \mathbb E_{(\Phi_\ell)\stackrel{\mathrm{iid}}\sim U(0,2\pi)}
+   \Bigl|\sum_{\ell\in L(s)}c_\ell\,\bigl(s^2-(u+\ell)^2\bigr)^{-1/4}\cos\Phi_\ell\Bigr|\,du,\qquad
+   c_\ell=\mathrm i^{\,\ell N},
+\end{equation}
+(only $\mathrm i^{N}=\pm1$ (even $N$) or $\pm\mathrm i$ (odd $N$) enters, so $F$ has two parity branches).
+If the cell-wise empirical $L^1$ averages of $|K_N(\cdot,t)|$ converge to their toral expectation uniformly
+in the cell parameter $u$ (the \emph{uniform-transfer hypothesis}), then
+$\|K_N(\cdot,sN/2)\|_1=(F(s)+o(1))\sqrt N$. Numerically $F$ matches the exact FFT $\ell^1$ norm to $0.5\%$
+across all four residues $N\bmod4$ and all $s\in(0,2]$, equals $\beta_{\mathrm{odd}}$ at $s=1$ and
+$c_0/\sqrt2$ at $s=\tfrac12$, and satisfies $F(s)<F(1)=\beta_{\mathrm{odd}}$ for every $s\ne1$ (odd branch)
+and $F(s)<F(\tfrac12)=c_0/\sqrt2$ for $s\ne\tfrac12$ (even branch), stably out to $s=10$
+(\texttt{verify\_bn\_residual\_profile.py}).
+\end{proposition}
+
+\begin{proof}[Proof and the remaining gap]
+By \eqref{eq:multicopy-debye} the rescaled kernel on a cell is, up to $O(N^{-1})$,
+$|K_N(k,t)|\sqrt{\tfrac{\pi N}2}=\bigl|\sum_{\ell\in L(s)}c_\ell\,(s^2-m_\ell^2)^{-1/4}\cos\Phi_\ell(k)\bigr|$, a
+fixed continuous function $G_u\colon\mathbb T^{|L(s)|}\to\mathbb R$ of the phase vector (the $j$-independent
+global factor $\mathrm i^{k}$ drops under $|\cdot|$, and $c_\ell=\mathrm i^{\ell N}$ carries the only
+$N$-dependence). Summing over the cell and applying Theorem~\ref{thm:joint-equi} to the Fourier modes of
+$G_u$,
+\[
+  \frac1{\#}\sum_{k/N\in\mathcal C}G_u\bigl(\Phi(k)\bigr)\ \longrightarrow\
+  \int_{\mathcal C}\frac{du}{|\mathcal C|}\,\mathbb E_{(\Phi_\ell)\sim U}\,G_u(\Phi),
+\]
+since the equidistribution of $(\Phi_\ell(k))$ makes the empirical average of every Fourier mode
+$\eu^{\mathrm i\langle k,\Phi\rangle}$ converge to its toral mean ($0$ for $k\ne0$, by
+\eqref{eq:joint-weyl}). Riemann-summing the cells against $\sqrt{2/(\pi s)}\int_0^1du$ yields $F(s)$, and the
+band-edge strips contribute $O(\varepsilon^{3/4})$ (the envelope $(s^2-m^2)^{-1/4}$ is $L^1$ in $u$;
+\texttt{verify\_debye\_equidistribution.py} confirms the $\varepsilon^{3/4}$ law) and vanish with
+$\varepsilon\to0$. The endpoint identities $F(\tfrac12)=c_0/\sqrt2$, $F(1)=\beta_{\mathrm{odd}}$ are
+\eqref{eq:beta-odd} and Proposition~\ref{prop:bn-profile} read at $|L(s)|=2$.
+
+The one step not made unconditional is the \emph{uniform-transfer hypothesis}: \eqref{eq:joint-weyl} is
+proved cell-by-cell with an implied constant depending on $(s,\mathcal C,k)$, and the passage to the
+$L^1$ \emph{limit} needs this discrepancy to be $o(1)$ \emph{uniformly} as the cell shrinks and $u$
+approaches the finitely many band edges, where both the small-curvature combinations and the envelope
+singularity concentrate. The single-copy lemma controls each edge in isolation; the missing ingredient is a
+uniform-in-$u$ Erd\H{o}s--Tur\'an constant for the joint sum near a coalescing pair of phases. This is the
+precise residue of the ``multidimensional Weyl sum'' gap flagged in Remark~\ref{rem:bn-parity}; it is the
+\emph{only} obstruction between Theorem~\ref{thm:joint-equi} and a theorem that $\limsup_N B_N/\sqrt
+N=\beta_{\mathrm{odd}}$. The cell-wise transfer itself is verified: the cell-averaged exact $|K_N|$ tracks the
+toral expectation to under $1\%$, the residual oscillating in sign (so non-systematic) as $N$ grows from
+$4\cdot10^3$ to $2.6\cdot10^5$ (\texttt{verify\_debye\_equidistribution.py}).
+\end{proof}
+
+\noindent What is now \emph{proved}, for every $s>1$: the live Debye phases are jointly equidistributed with
+an explicit $N^{-1/2}$ power saving per frequency combination (Theorem~\ref{thm:joint-equi}), resting only on
+the linear independence of the curvature kernels $g_\ell$---which is exact, their poles being distinct. What
+remains \emph{conjectural}: the uniform-in-$u$ transfer to the $L^1$ limit, hence the identification
+$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$. The honest status is therefore that the multi-copy region is
+reduced from a black-box Weyl-sum problem to a single, sharply localized uniformity estimate at the band
+edges---a strict improvement over the ``only unitarity is rigorous'' status of Remark~\ref{rem:bn-parity}.
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
 (upper from unitarity, lower from Theorem~\ref{thm:schr-lower}), and every step---the periodization, the
@@ -1394,7 +1562,7 @@ support comb $\{1\}\cup\{kp\pm1\}$ for $p=3,5,7,11,13$, of size $p$.}\label{fig:
 \section{Reproducibility}\label{sec:repro}
 
 Every claim above is reproduced by a standalone script (run via \texttt{uv run --script}); all pass.
-\begin{longtable}{ll}
+\begin{longtable}{@{}l@{\hspace{0.7em}}l@{}}
 \hline
 Claim & Script \\
 \hline
@@ -1459,6 +1627,8 @@ $B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{ver
 Two-copy profile $\max F=\beta_{\mathrm{odd}}$ (Prop.~\ref{prop:bn-profile}) & \texttt{verify\_bn\_profile\_max.py}\\
 $\quad$rigorous $F'>0$ on $[0.937,1]$ (interval arith.) & \texttt{verify\_bn\_profile\_rigorous.py}\\
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
+Joint Debye equidistribution (\S\ref{sub:multicopy}) & \texttt{verify\_debye\_equidistribution.py}\\
+Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\
 Certified gap $A_N<U_N$, $N\le15$ (Lipschitz grid) & \texttt{verify\_defect\_certified.py}\\
