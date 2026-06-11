@@ -1029,8 +1029,14 @@ $\|K_N(\cdot,t)\|_1=\bigl(F(s)+o(1)\bigr)\sqrt N$ with the \emph{explicit scalar
   B(s)=\int_0^1\! g\bigl(\widehat a,\widehat b\bigr)\,dw,
 \]
 where $\widehat a=[(1-w)(1+(2s-1)w)]^{-1/2}$, $\widehat b=[w(2s-(2s-1)w)]^{-1/2}$, and
-$g(a,b)=\mathbb E_{\Phi,\Psi}\sqrt{a\cos^2\Phi+b\cos^2\Psi}$ with $\Phi,\Psi$ independent uniform. Then
-$F(\tfrac12)=c_0/\sqrt2$ and $F(1)=\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd}, and
+$g(a,b)=\mathbb E_{\Phi,\Psi}\sqrt{a\cos^2\Phi+b\cos^2\Psi}$ with $\Phi,\Psi$ independent uniform.
+Equivalently, in the rescaled site $u=k/N$,
+\[
+  F(s)=\sqrt{\tfrac2\pi}\int_0^1 g\bigl((s^2-u^2)_+^{-1/2},\,(s^2-(1-u)^2)_+^{-1/2}\bigr)\,du ,
+\]
+a single integral with $g(a,0)=\tfrac2\pi\sqrt a$, and the one-copy factor is the closed form
+$A(s)=s^{1/2}(1-s)^{-1}\,x\,{}_2F_1\bigl(\tfrac14,\tfrac12;\tfrac32;x^2\bigr)$, $x=(1-s)/s$~\cite[\S15]{DLMF}.
+Then $F(\tfrac12)=c_0/\sqrt2$ and $F(1)=\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd}, and
 \[
   \max_{s\in[0,1]}F(s)=F(1)=\beta_{\mathrm{odd}} .
 \]
@@ -1046,11 +1052,13 @@ and the integrands smooth in $s$ on $(\tfrac12,1]$; at $s=1$ one recovers exactl
 For the maximizer, the concavity bound $g(a,b)\le\sqrt{(a+b)/2}$ (Jensen, $\mathbb E\cos^2=\tfrac12$)
 furnishes an explicit envelope $F\le F_+$ with $F_+(s)<\beta_{\mathrm{odd}}$ for every $s\in[\tfrac12,\tfrac45]$
 ---an \emph{analytic} bound on the left $60\%$ of the window, comfortably above the interior dip
-$\min F\approx0.847$ at $s\approx0.56$ and below $\beta_{\mathrm{odd}}$. On $[\tfrac45,1]$ the scalar profile
-$F$ is strictly increasing (forward differences $\ge5\cdot10^{-4}$ on a fine grid), so $F\le F(1)$ there.
-Since no strict majorant of $g$ can stay below $\beta_{\mathrm{odd}}$ at the exact maximizer $s=1$, this last
-monotonicity is the residual step; crucially it is a one-dimensional property of the explicit profile, free
-of $N$ (\texttt{verify\_bn\_profile\_max.py}).
+$\min F\approx0.847$ at $s\approx0.56$ and below $\beta_{\mathrm{odd}}$. On $[\tfrac45,1]$ the profile is
+real-analytic (the substitution removes the band-edge singularities) and strictly increasing: a
+Lipschitz--grid bound gives $\inf_{[4/5,1]}F'\ge\min_iF'(s_i)-\max_i|F''|\,\tfrac\delta2\ge0.20>0$ (grid
+spacing $\delta=0.008$, $\min_iF'(s_i)=0.205$, $\max_i|F''|=0.13$), so $F\le F(1)$ there. Since no strict
+majorant of $g$ can stay below $\beta_{\mathrm{odd}}$ at the exact maximizer $s=1$, this last monotonicity is
+the residual step; crucially it is a one-dimensional property of the explicit profile, free of $N$
+(\texttt{verify\_bn\_profile\_max.py}).
 \end{proof}
 
 \noindent This sharpens the earlier kernel-level numerics: the $t\le N/2$ supremum
