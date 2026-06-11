@@ -433,7 +433,22 @@ analogue of the McGehee--Pigno--Smith/Konyagin $L^1$ lower bound~\cite{MPS81,Kon
 circle as the Chowla cosine problem on extrema of cosine sums~\cite{Bedert25}---but it runs in the opposite
 direction (an \emph{upper} bound on a \emph{sup}, driven by the relation lattice rather than by the number
 of frequencies), and a literature search finds no off-the-shelf theorem that supplies it: it is
-overwhelmingly supported numerically but open. For small $N$ the strict gap
+overwhelmingly supported numerically but open.
+
+The lemma's content is sharply localized. Since $A_N\le U_N$ and $A_N\ge2L_{\mathrm{pre}}-U_N$ (Kronecker),
+one has $|A_N-L_{\mathrm{pre}}|\le U_N-L_{\mathrm{pre}}=\tfrac1\pi\ln\tfrac m{\varphi(m)}+O(1)$
+unconditionally; so the excess lemma is \emph{trivial whenever the deficit is bounded}---i.e.\ whenever
+$\omega(m)$ is bounded---and acquires content only as $\omega(m)\to\infty$. In particular it holds outright
+when the odd part is a prime power ($\omega(m)\le1$): for $N=2p$ the single dependent mode $\omega_p=2$ has
+weight $\tfrac1{2N}$, giving the sharp two-sided $|A_N-L_{\mathrm{pre}}|\le\tfrac1{2N}$
+(Proposition~\ref{prop:2p}); for $N=4p$ the two dependent modes $\{2p-1,2p\}$ give
+$|A_N-L_{\mathrm{pre}}|\le U_N-L_{\mathrm{pre}}=\tfrac1N\bigl(\sec\tfrac\pi{4p}+\tfrac12\bigr)=O(1/N)$, and
+the same bookkeeping settles any family with $O(1)$ dependent modes (\texttt{verify\_excess\_smallcases.py}).
+The genuinely open case is $\omega(m)\ge2$, where the dependent band carries $\Theta(N)$ modes of total
+weight $\to\infty$ yet the excess stays $\approx0.1$; the accessible range ($\omega(m)\le3$) shows the small
+excess is a \emph{balance} of a positive dependent net ($\approx0.17$) against a negative prefix deficit
+($\approx-0.08$) rather than near-total sign cancellation, so the asymptotic mechanism remains conjectural.
+For small $N$ the strict gap
 $A_N<U_N$ is \emph{certified rigorously}: the Lipschitz-grid certificate gives
 $U_N-A_N\ge0.049,0.057,0.030,0.082$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}), and a
 trigonometric Lasserre moment--SOS sharpens it (tight at $N=15$: $U_N-A_N=0.1475$, matching the optimizer
