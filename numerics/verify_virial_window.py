@@ -62,6 +62,51 @@ def evolve(n: int, gamma: float, t_final: float, steps: int) -> dict[str, float 
     return {"d2": d2, "cosk": cosk_at_min, "v2": v2_at_min, "peak_min": peak_min}
 
 
+def identity_residual(n: int, gamma: float, t_final: float, steps: int) -> float:
+    """Max |d^2V/dt^2 - [2<L2 a,a> + TermC]| along the trajectory, with d^2V/dt^2 from the ODE itself.
+
+    Exact discrete virial identity:
+        d^2V/dt^2 = 2<L2 a,a> - 2 gamma sum_n (2n+1)(|a_n|^2-|a_{n+1}|^2) Re(conj(a_n) a_{n+1}),
+        <L2 a,a> = 2P - 2 Re sum_n conj(a_n) a_{n+2}  (next-nearest-neighbour Dirichlet form, >= 0).
+    d^2V/dt^2 is evaluated directly from i a' = -L a + gamma|a|^2 a (via a'' = d/dt a'), so the residual is
+    machine precision -- independent of any time-stepping error -- iff the identity holds.
+    """
+    jc = ((np.arange(n) + n // 2) % n) - n // 2
+
+    def lap(a: np.ndarray) -> np.ndarray:
+        return 2 * a - np.roll(a, -1) - np.roll(a, 1)
+
+    def adot(a: np.ndarray) -> np.ndarray:
+        return 1j * lap(a) - 1j * gamma * np.abs(a) ** 2 * a
+
+    def d2v_ode(a: np.ndarray) -> float:
+        ad = adot(a)
+        addot = 1j * lap(ad) - 1j * gamma * (2 * np.real(np.conj(a) * ad) * a + np.abs(a) ** 2 * ad)
+        d2dens = 2 * np.abs(ad) ** 2 + 2 * np.real(np.conj(a) * addot)
+        return float(np.sum(jc**2 * d2dens))
+
+    def rhs(a: np.ndarray) -> float:
+        dens = np.abs(a) ** 2
+        two_l2 = 2 * (2 * float(dens.sum()) - 2 * float(np.real(np.sum(np.conj(a) * np.roll(a, -2)))))
+        bond = np.real(np.conj(a) * np.roll(a, -1))
+        term_c = -2 * gamma * float(np.sum((2 * jc + 1) * (dens - np.roll(dens, -1)) * bond))
+        return two_l2 + term_c
+
+    lam = 2 - 2 * np.cos(2 * np.pi * np.arange(n) / n)
+    z = np.zeros(n, complex)
+    z[0] = 1.0
+    dt = t_final / steps
+    half = np.exp(1j * lam * dt / 2)
+    worst = 0.0
+    for m in range(steps + 1):
+        if m % 200 == 0:
+            worst = max(worst, abs(d2v_ode(z) - rhs(z)))
+        z = np.fft.ifft(half * np.fft.fft(z))
+        z = np.exp(-1j * gamma * np.abs(z) ** 2 * dt) * z
+        z = np.fft.ifft(half * np.fft.fft(z))
+    return worst
+
+
 def main() -> int:
     n = 2048
     ok = True
@@ -86,9 +131,18 @@ def main() -> int:
         print(f"    {g:>4.1f} {plateau:>8.3f} {cosk:>7.4f} {g / 4:>6.3f} {float(r['v2']):>7.4f} "
               f"{float(r['peak_min']):>9.4f}{flag}")
 
+    print("[4] EXACT virial identity  d^2V/dt^2 = 2<L2 a,a> - 2g sum(2n+1)(|a_n|^2-|a_{n+1}|^2)Re(a_n* a_{n+1}):")
+    for g in (2.0, 3.5):
+        resid = identity_residual(512, g, 60.0, 12000)
+        good = resid < 1e-9  # ODE-level: machine precision iff the identity is exact
+        ok &= good
+        print(f"    gamma*P={g}: max|d2V_ode - (2<L2>+TermC)| = {resid:.2e}  (machine precision)  "
+              f"{'ok' if good else 'FAIL'}")
+
     print("=" * 72)
-    print("RESULT:", "PASS -- virial convex on the window (supports dispersal); conservation fixes "
-          "<cos k>=gP/4 but not <v^2>, the precise wall" if ok else "FAIL")
+    print("RESULT:", "PASS -- exact virial identity d2V = 2<L2 a,a> + TermC verified; 2<L2 a,a> >= 0 is the "
+          "dispersive term, the position-weighted TermC is the precise (uncontrolled) obstruction"
+          if ok else "FAIL")
     return 0 if ok else 1
 
 

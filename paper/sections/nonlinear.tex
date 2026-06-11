@@ -258,20 +258,30 @@ $P-4/\gamma$) for $\gamma P\gtrsim4.5$, the crossover straddling $4$. So the win
 to $0.43$---rather than a behavioural unknown. Closing it, beyond perturbation theory, is the genuinely
 dispersive open direction.
 
-\emph{The virial obstruction, located precisely.} A second-moment (Morawetz-type) attempt pinpoints the
-wall. On the line---the ring for $t\lesssim N/5$, where aliasing is negligible---the spread
-$V(t)=\sum_jj^2|a_j|^2$ satisfies $\ddot V(0)=4P$ \emph{independently of $\gamma$} (the cubic term vanishes
-at the single-site seed), and numerically $\ddot V>0$ throughout the window, decaying to $0$ as $\gamma
-P\to4$: the virial is convex, $V\to\infty$, which \emph{supports} dispersal. But the convexity constant is
-the asymptotic $\ddot V\to2\langle v^2\rangle$ with group velocity $v_k=2\sin k$, and $\langle
-v^2\rangle=2-2\langle\cos2k\rangle$ is a \emph{second} spectral moment. Energy conservation fixes only the
-first, $\langle\cos k\rangle_\infty=\gamma P/4$ (equivalent to $\langle\LN u,u\rangle\to2P-\tfrac\gamma2P^2$
-above), which is $<1$ for $\gamma P<4$ but does \emph{not} force $\langle v^2\rangle>0$: a momentum
-distribution split bimodally between $k=0$ and $k=\pi$ has $\langle\cos k\rangle=\gamma P/4$ yet $\langle
-v^2\rangle=0$. So the conserved quantities alone cannot lower-bound the virial convexity---the dynamics
-does avoid the staggered ($k=\pi$) trap (numerically $\langle v^2\rangle>0$), but conservation does not see
-it. This is exactly where Morawetz/Strichartz arguments stall, and it identifies the missing ingredient: a
-rigorous bound on the staggered momentum content $\langle\cos2k\rangle$ (\texttt{verify\_virial\_window.py}).
+\emph{The virial obstruction, located precisely.} A second-moment (Morawetz-type) attempt isolates the
+wall to a single estimate. On the line---the ring for $t\lesssim N/5$, where aliasing is negligible---the
+spread $V(t)=\sum_jj^2|a_j|^2$ obeys the \emph{exact} identity (verified to machine precision along the
+flow, \texttt{verify\_virial\_window.py})
+\begin{equation}\label{eq:virial}
+  \ddot V\;=\;2\langle L_2a,a\rangle\;-\;2\gamma\sum_n(2n+1)\bigl(|a_n|^2-|a_{n+1}|^2\bigr)\,
+  \mathrm{Re}(\bar a_na_{n+1}),
+\end{equation}
+where $L_2$ is the next-nearest-neighbour Laplacian (symbol $2-2\cos2k=4\sin^2k$), so
+$2\langle L_2a,a\rangle=2\langle v^2\rangle P\ge0$ ($v_k=2\sin k$ the group velocity) is a manifestly
+non-negative \emph{dispersive} term and the position-weighted sum is the nonlinear correction. At the
+single-site seed the correction vanishes, giving $\ddot V(0)=4P$ independently of $\gamma$; numerically
+$\ddot V>0$ throughout the window, decaying to $0$ as $\gamma P\to4$, so the virial is convex, $V\to\infty$,
+which \emph{supports} dispersal. Closing the argument needs the correction bounded by
+$(1-\epsilon)\,2\langle L_2a,a\rangle$; numerically it is small (a few percent of the dispersive term) and
+degenerates to exactly $-2\langle L_2a,a\rangle$ as $\gamma P\to4$, but its position weight $(2n+1)$ is not
+controlled by the conserved mass, energy, and momentum. Indeed energy fixes only the \emph{first} spectral
+moment, $\langle\cos k\rangle_\infty=\gamma P/4$ (equivalent to $\langle\LN u,u\rangle\to2P-\tfrac\gamma2P^2$
+above), $<1$ for $\gamma P<4$ but not forcing $\langle v^2\rangle=2-2\langle\cos2k\rangle>0$: a bimodal
+$k=0/\pi$ momentum split has $\langle\cos k\rangle=\gamma P/4$ yet $\langle v^2\rangle=0$. So the dynamics
+avoids the staggered ($k=\pi$) trap (numerically $\langle v^2\rangle>0$) but the conserved quantities do not
+see it. This is exactly where Morawetz/Strichartz arguments stall; \eqref{eq:virial} reduces the open
+problem to a single estimate---a bound on the position-weighted nonlinear term in \eqref{eq:virial}, i.e.\
+on the staggered momentum content $\langle\cos2k\rangle$.
 
 On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation from the
 anti-continuum limit~\cite{MacKayAubry}---it is a compactness statement.
