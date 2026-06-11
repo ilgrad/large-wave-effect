@@ -425,9 +425,15 @@ these are lower estimates of the excess), so numerically
 along primorials ($\Theta(\ln\ln\ln N)$, \texttt{verify\_defect\_growth.py}), making the proven
 $O(\ln\ln\ln N)$ upper bound sharp in order. A rigorous \emph{growing} lower bound is thus equivalent to the
 \emph{excess lemma} $A_N\le L_{\mathrm{pre}}+O(1)$---the long alignable prefix captures $A_N$ up to a
-constant---a sup-side cancellation statement on the relation lattice (a primal analogue of
-McGehee--Pigno--Smith, and in the same circle as the Chowla cosine problem on extrema of cosine
-sums~\cite{Bedert25}), overwhelmingly supported numerically but open. For small $N$ the strict gap
+constant. By the Kronecker--Weyl identification \eqref{eq:subtorus}, $A_N=\max_{\theta\in\mathbb T_N}\sum_r
+b_r\sin\theta_r$ over the subtorus cut out by the relation lattice, so the lemma is precisely a
+\emph{quantitative comparison on the relation-constrained subtorus}: the constrained maximum exceeds the
+free-prefix maximum $L_{\mathrm{pre}}$ by only $O(1)$. This is a sup-side cancellation statement---a primal
+analogue of the McGehee--Pigno--Smith/Konyagin $L^1$ lower bound~\cite{MPS81,Konyagin81}, and in the same
+circle as the Chowla cosine problem on extrema of cosine sums~\cite{Bedert25}---but it runs in the opposite
+direction (an \emph{upper} bound on a \emph{sup}, driven by the relation lattice rather than by the number
+of frequencies), and a literature search finds no off-the-shelf theorem that supplies it: it is
+overwhelmingly supported numerically but open. For small $N$ the strict gap
 $A_N<U_N$ is \emph{certified rigorously}: the Lipschitz-grid certificate gives
 $U_N-A_N\ge0.049,0.057,0.030,0.082$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}), and a
 trigonometric Lasserre moment--SOS sharpens it (tight at $N=15$: $U_N-A_N=0.1475$, matching the optimizer
