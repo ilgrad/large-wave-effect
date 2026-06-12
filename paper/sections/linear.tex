@@ -1010,9 +1010,10 @@ $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ for all
 $t\le N/2$, and with the lower bound $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}+o(1))\sqrt N$
 on the odd subsequence. For $t>N/2$ (three or more overlapping copies) the joint equidistribution of the
 overlapping Debye phases is now \emph{proved}, with an explicit power saving
-(Theorem~\ref{thm:joint-equi}, \S\ref{sub:multicopy}), reducing the multi-copy constant to the toral profile
-$F(s)$ of Proposition~\ref{prop:multicopy}; what remains is a single uniform-in-$u$ discrepancy estimate at
-the band edges, sharper than the bare unitarity $\|K_N(\cdot,t)\|_1\le\sqrt N$. Numerically the $\ell^1$ mass
+(Theorem~\ref{thm:joint-equi}, \S\ref{sub:multicopy}), and it transfers uniformly in $u$ to the $L^1$ limit
+(Theorem~\ref{thm:uniform-transfer}), so the entire multi-copy constant reduces \emph{unconditionally} to the
+toral profile $F(s)$ of Proposition~\ref{prop:multicopy}: $\|K_N(\cdot,sN/2)\|_1=(F(s)+o(1))\sqrt N$ for every
+fixed $s>1$, sharper than the bare unitarity $\|K_N(\cdot,t)\|_1\le\sqrt N$. Numerically the $\ell^1$ mass
 there falls back toward its
 time average $\approx0.79\sqrt N$ and never exceeds the $t=N/2$ value (checked out to $t=5N$ at
 $N=2^{20}$, where the $t>N/2$ supremum trails the $t=N/2$ value by a stable margin): the $\sin^2$
@@ -1029,8 +1030,10 @@ matches the FFT to $0.5\%$ across all $N\bmod4$, peaks at $t=N/2$ with $\beta_{\
 strictly subdominant for $t>N/2$, stably out to $t=5N$), the profile $F(s)$ of
 Proposition~\ref{prop:multicopy}. The joint equidistribution $\bmod\,2\pi$ of the coherent multi-copy Debye
 phases---the multidimensional Weyl sum on which $F$ rests---is settled in \S\ref{sub:multicopy}
-(Theorem~\ref{thm:joint-equi}), leaving only a uniform-in-$u$ band-edge discrepancy estimate before $F$
-becomes the unconditional $t>N/2$ profile. That last step aside, the difficulty is
+(Theorem~\ref{thm:joint-equi}) and its uniform-in-$u$ transfer makes $F$ the unconditional $t>N/2$ profile
+(Theorem~\ref{thm:uniform-transfer}); what remains for $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$ is only the
+profile-maximizer inequality $\max_{s\ge1}F(s)=F(1)$ (Lemma~\ref{lem:varfloor} and its residual Pearson-walk
+bound). That maximizer step aside, the difficulty is
 intrinsic: Erd\H{o}s asked whether every unimodular polynomial must satisfy
 $\max|P|\ge(1+c)\sqrt{n}$~\cite{Erdos57}; Kahane's ultraflat polynomials answered no~\cite{Kahane80}, with
 the sharpest construction in~\cite{BombieriBourgain}, and the \emph{quadratic} chirp
@@ -1200,57 +1203,255 @@ $(k_\ell)$ at $N=2^{18}$ being $0.013$ (\texttt{verify\_debye\_equidistribution.
 
 \noindent Theorem~\ref{thm:joint-equi} is the rigorous core the heuristic profile of
 \texttt{verify\_bn\_residual\_profile.py} assumes. It upgrades the $s\le1$ two-copy statement
-(Proposition~\ref{prop:bn-profile}, where $|L(s)|=2$) to all $s$, and---granting the transfer below---reduces
-the entire multi-copy constant to a torus average.
+(Proposition~\ref{prop:bn-profile}, where $|L(s)|=2$) to all $s$. The cell-wise statement is not yet the
+$L^1$ \emph{limit}: \eqref{eq:joint-weyl} carries an implied constant depending on the cell, and the limit
+needs the discrepancy $o(1)$ \emph{uniformly} in $u$, including the finitely many band edges and coalescing
+points where the constant degenerates. We supply that uniform control now; it is what turns
+Theorem~\ref{thm:joint-equi} into the unconditional profile of Proposition~\ref{prop:multicopy}.
 
-\begin{proposition}[multi-copy profile, conditional on uniform transfer]\label{prop:multicopy}
+\begin{theorem}[uniform-in-$u$ transfer]\label{thm:uniform-transfer}
+Fix $s>1$. With the rescaled kernel of \eqref{eq:multicopy-debye} and the toral integrand
+$\mathcal E(u):=\mathbb E_{(\Phi_\ell)\sim U}\bigl|\sum_{\ell\in L(s)}c_\ell(s^2-(u+\ell)^2)^{-1/4}\cos\Phi_\ell\bigr|$,
+\[
+  \frac1{\sqrt N}\,\bigl\|K_N(\cdot,sN/2)\bigr\|_1\ \xrightarrow[N\to\infty]{}\ \sqrt{\tfrac2\pi}\int_0^1\mathcal E(u)\,du\ =\ F(s).
+\]
+The convergence is at an explicit polynomial rate $O(N^{-\eta})$, $\eta=\tfrac1{9|L(s)|}>0$ (the cubic
+exponent pair $\tfrac19$ at the coalescing points, divided by $|L|$ for the Lipschitz-cone mollification of
+the modulus in Koksma--Hlawka; numerically the cores decay like $N^{-1}$, far faster, so the true rate is
+band-edge-strip-limited at $N^{-1/4+\delta'}$).
+\end{theorem}
+
+\begin{proof}
+Write $W_N(k):=\sqrt{\pi N/2}\,|K_N(k,sN/2)|$, so that $\|K_N\|_1/\sqrt N=\sqrt{2/(\pi N)}\,\sum_k|K_N(k)|
+=\sqrt{2/\pi}\cdot N^{-1}\sum_{k=0}^{N-1}W_N(k)$, the normalized prefactor being $\sqrt{2/\pi}$ (the order
+density has exactly $N$ sites per unit of $u=k/N$, and the $s$-dependence sits inside $W_N$ through the
+envelope; numerically $\|K_N\|_1/\sqrt N$ tracks $\sqrt{2/\pi}\int_0^1\mathcal E\,du$ across $s\in\{1.5,2.7,4\}$,
+while $\sqrt{2/(\pi s)}$ is off by $\sqrt s$, \texttt{verify\_bandedge\_transfer.py}). It suffices to show
+\begin{equation}\label{eq:transfer-target}
+  \frac1N\sum_{k=0}^{N-1}W_N(k)\ \longrightarrow\ \int_0^1\mathcal E(u)\,du .
+\end{equation}
+Let $E=\{u\in[0,1):|u+\ell|=s\text{ for some }\ell\}$ be the (finite) set of band edges and
+$Z=\{u^*=-(\ell+\ell')/2:\ell\ne\ell'\in L,\ u^*\in[0,1)\}$ the (finite) set of coalescing points, where a
+\emph{pair} $g_\ell,g_{\ell'}$ collides; these are geometric, fixed points of $[0,1)$, independent of the
+test modes $k$. Fix a small constant $\rho>0$ (independent of $N$, chosen below) and a small exponent
+$0<\delta<\tfrac16$, and put $\varepsilon=N^{-2/3+\delta}$. Partition $[0,1)$ into
+\[
+  \mathcal S=\!\!\bigcup_{u_0\in E}\!(u_0-\varepsilon,u_0+\varepsilon),\qquad
+  \mathcal K=\!\!\bigcup_{u^*\in Z}\!(u^*-\rho,u^*+\rho)\setminus\mathcal S,\qquad
+  \mathcal B=[0,1)\setminus(\mathcal S\cup\mathcal K),
+\]
+the band-edge strips (width $\varepsilon\to0$), the coalescing cores (fixed width $\rho$), and the bulk. We
+bound the contribution of each to \eqref{eq:transfer-target}.
+
+\emph{(a) Bulk $\mathcal B$.} By construction every $u\in\mathcal B$ is at distance $\ge\rho$ from $Z$ and
+$\ge\varepsilon$ from $E$. On each maximal subinterval $\mathcal C\subset\mathcal B$ the live set $L$ is
+constant, the envelopes $a_\ell(u)=(s^2-(u+\ell)^2)^{-1/4}$ are bounded and $C^1$, so the rescaled kernel is a
+fixed function $W_N(k)=G_u(\Phi(k))$ of the phase vector, $G_u\colon\mathbb T^{|L|}\to\mathbb R$ the modulus of
+a trigonometric polynomial with $u$-uniformly bounded, $C^1$ coefficients, $\widehat G_u(0)=\mathbb
+E_{(\Phi_\ell)\sim U}G_u=\mathcal E(u)$. We do \emph{not} Fourier-expand $G_u$ (a modulus is only Lipschitz, its
+coefficients too slow to sum against the van der Corput bound); instead we bound the \emph{star-discrepancy}
+$D^*_N(\mathcal C)$ of the finite phase-point set $\{(\Phi_\ell(k))_{\ell\in L}:k/N\in\mathcal C\}$ in
+$\mathbb T^{|L|}$ and invoke Koksma--Hlawka. A modulus is only Lipschitz, and for $|L|\ge3$ its Hardy--Krause
+variation is in fact \emph{infinite}: the cone point at $Z=0$ (codimension $2$) makes the top mixed partial
+grow like $|Z|^{-(|L|-1)}$, and $\int|Z|^{-(|L|-1)}\,dX\,dY\asymp\int r^{-(|L|-2)}\,dr$ diverges
+(logarithmically already at $|L|=3$; \texttt{verify\_bandedge\_transfer.py} confirms the $\log N$ growth of the
+Vitali variation on a refining grid). So Koksma--Hlawka cannot be applied to $G_u$ itself. Instead we use only
+that $G_u$ is \emph{Lipschitz}, $\operatorname{Lip}(G_u)\le\sum_\ell a_\ell\le\Lambda(s)$, and mollify at scale
+$\eta$: $G_u^\eta=G_u*\varphi_\eta$ obeys $\|G_u-G_u^\eta\|_\infty\le\Lambda\eta$ and the smooth bound
+$V(G_u^\eta)\le C(s)\,\eta^{-(|L|-1)}$. Applying Koksma--Hlawka \cite[Ch.~2, Thm.~5.5]{KN} to $G_u^\eta$ and
+absorbing the two mollification errors,
+\begin{equation}\label{eq:koksma}
+  \Bigl|\frac1{\#}\sum_{k/N\in\mathcal C}G_u(\Phi(k))-\mathcal E(u)\Bigr|\ \le\
+  2\Lambda(s)\,\eta+C(s)\,\eta^{-(|L|-1)}D^*_N(\mathcal C);
+\end{equation}
+optimizing $\eta=D^*_N(\mathcal C)^{1/|L|}$ yields the Lipschitz form
+$\bigl|\overline{G_u}-\mathcal E(u)\bigr|\le C'(s)\,D^*_N(\mathcal C)^{1/|L|}$, valid despite the unbounded
+variation (the $1/|L|$ power is the price of mollifying a cone).
+The discrepancy is controlled by the Erd\H{o}s--Tur\'an--Koksma inequality \cite[Ch.~2, Thm.~5.6]{KN}:
+\[
+  D^*_N(\mathcal C)\ \ll_{|L|}\ \frac1M+\sum_{0<\|k\|_\infty\le M}\frac1{r(k)}\,
+   \Bigl|\frac1{\#}\sum_{k'/N\in\mathcal C}\eu^{\mathrm i\langle k,\Phi(k')\rangle}\Bigr|,
+   \qquad r(k)=\prod_\ell\max(1,|k_\ell|),
+\]
+the weight $1/r(k)$ (not the Fourier coefficients of $G_u$) summing to $\sum_{0<\|k\|_\infty\le M}1/r(k)
+=O(\log^{|L|}M)$. Each Weyl sum is the \emph{integrated} second-derivative van der Corput estimate, uniform in
+$k$ by two structural facts. First, the number of zeros of $C_k=\sum_\ell k_\ell g_\ell$ on $\mathcal C$ is
+bounded \emph{independently of $k$}: clearing the $|L|$ square roots in
+$C_k=\sum_\ell k_\ell(s^2-(u+\ell)^2)^{-1/2}$ over a common factor leaves an algebraic function whose zero
+count is $\le2(|L|-1)$, a degree fixed by the live set, not by $k$ (verified: $\le1$ zero over all
+$\|k\|_\infty\le6$ on a three-copy cell). Second, every such zero \emph{in the bulk} is \emph{simple}: a double
+zero $C_k(u_0)=C_k'(u_0)=0$ would need the integer vector $k$ orthogonal to both $g(u_0)=(g_\ell(u_0))_\ell$ and
+$g'(u_0)$, vectors linearly independent off the discrete coalescing set $Z$; so $|C_k'(u_0)|\gtrsim\|k\|>0$ at
+every bulk zero (checked: $\min|C_k'|/\|k\|=0.15$ over $\|k\|_\infty\le6$). Hence on $\mathcal C$ each $C_k$ has
+$\le2(|L|-1)$ simple zeros and $\int_{\mathcal C}|C_k(u)|^{-1/2}\,du\le A(s)<\infty$ \emph{uniformly in $k$} (the
+$|u-u_0|^{-1/2}$ singularity is integrable). Excising the $N^{-1/3}$-neighbourhoods of those zeros and applying
+Lemma~\ref{lem:vdc-explicit} on each remaining run, with $|f''|=N^{-1}|C_k|+O(N^{-2})$, then Riemann-summing
+the bound $\#\lambda^{1/2}+\lambda^{-1/2}$ in $u$ (the $\lambda^{-1/2}=N^{1/2}|C_k|^{-1/2}$ term against
+$\int|C_k|^{-1/2}du\le A(s)$),
+\[
+  \Bigl|\frac1{\#}\sum_{k'/N\in\mathcal C}\eu^{\mathrm i\langle k,\Phi(k')\rangle}\Bigr|
+  \ \ll_s\ N^{-1/2}A(s)\,\|k\|^{1/2}\ +\ N^{-1/3} .
+\]
+Feeding this into Erd\H{o}s--Tur\'an--Koksma, and using $\sum_{0<\|k\|_\infty\le M}\|k\|^{1/2}/r(k)
+\le M^{1/2}\sum 1/r(k)=O(M^{1/2}\log^{|L|}M)$,
+\[
+  D^*_N(\mathcal C)\ \ll_s\ \frac1M+N^{-1/2}M^{1/2}\log^{|L|}\!M+N^{-1/3}\log^{|L|}\!M ,
+\]
+which at $M=N^{1/3}$ is $D^*_N(\mathcal C)=O_s(N^{-1/3}\log^{|L|}N)$. By the Lipschitz form of
+\eqref{eq:koksma} the cell average then converges to $\mathcal E(u)$ at the mollified rate
+$D^*_N{}^{1/|L|}=O_s(N^{-1/(3|L|)}\log N)$, and a $u$-Riemann sum over the $\Theta(N^{1/3})$ panels of
+$\mathcal C$ (the integrand $\mathcal E$ being $C^1$ on $\mathcal B$) gives
+\[
+  \frac1{N}\sum_{k/N\in\mathcal B}W_N(k)\ =\ \int_{\mathcal B}\mathcal E(u)\,du\ +\ O_s(N^{-1/(3|L|)}\log N),
+\]
+uniformly. This is the uniform replacement for the cell-wise limit \eqref{eq:joint-weyl}: the only inputs are
+the $k$-uniform integral $A(s)$, the Lipschitz constant $\Lambda(s)$, the $k$-uniform zero count and the
+simplicity of bulk zeros (so $|C_k|^{-1/2}$ is integrable).
+
+\emph{(b) Band-edge strips $\mathcal S$.} On a strip $(u_0-\varepsilon,u_0+\varepsilon)$ around an edge
+$u_0=s-\ell$ (a copy entering/leaving), the entering envelope is $a_\ell(u)=(s^2-(u+\ell)^2)^{-1/4}=(2s)^{-1/4}
+(u_0-u)^{-1/4}(1+O(\varepsilon))$ for $u<u_0$; the other live envelopes stay bounded. By the triangle
+inequality $W_N(k)\le\sum_{\ell\in L}a_\ell(k/N)$, so
+\[
+  \frac1N\sum_{k/N\in\mathcal S}W_N(k)\ \le\ \sum_{\ell\in L}\int_{\mathcal S}a_\ell(u)\,du+O(N^{-1})
+  \ =\ O\!\Bigl(\!\int_0^{\varepsilon}\!(2s)^{-1/4}r^{-1/4}\,dr\Bigr)
+  \ =\ O\bigl(\varepsilon^{3/4}\bigr),
+\]
+the integrable envelope singularity giving the exponent $\tfrac34$ (the leading constant is
+$\tfrac43(2s)^{-1/4}$ per edge; \texttt{verify\_bandedge\_transfer.py} confirms the law and the constant to
+$0.4\%$). With $\varepsilon=N^{-2/3+\delta}$ this is $O(N^{-1/2+3\delta/4})\to0$. The same bound caps the
+\emph{toral} side: $\int_{\mathcal S}\mathcal E(u)\,du\le\sum_\ell\int_{\mathcal S}a_\ell=O(\varepsilon^{3/4})$,
+since $\mathcal E(u)\le\mathbb E|\sum_\ell\!\pm a_\ell\cos\Phi_\ell|\le\sum_\ell a_\ell$. So both the empirical
+and the toral mass of the strips are $O(\varepsilon^{3/4})$ and cancel in \eqref{eq:transfer-target} up to that
+order. The width is chosen so that the \emph{retained} cells adjacent to the edge still wind: at distance
+$\varepsilon$ from $u_0$ the single-copy increment is
+$\theta_\ell=\arccos(|m_\ell|/s)=\arccos(1-\varepsilon/s+\cdots)\asymp(2\varepsilon/s)^{1/2}$, so the live phase
+$\Phi_\ell$ advances by $\asymp\varepsilon^{1/2}$ per site over $\asymp\varepsilon N$ sites, a total winding
+$\asymp\varepsilon^{3/2}N=N^{3\delta/2}\to\infty$; thus part (a) applies on $\mathcal B\cap\{$near edge$\}$
+without modification (the curvature floor there is in fact \emph{larger}, $g_\ell\asymp\varepsilon^{-1/2}$). The
+choice $\varepsilon=N^{-2/3+\delta}$ with $0<\delta<\tfrac16$ keeps both: strip mass $o(1)$ and retained
+winding $\to\infty$.
+
+\emph{(c) Coalescing cores $\mathcal K$.} At $u^*=-(\ell+\ell')/2$ one has $(u^*+\ell)^2=(u^*+\ell')^2$, so
+$g_\ell(u^*)=g_{\ell'}(u^*)$ and the difference combination $C_{(1,-1)}=g_\ell-g_{\ell'}$ vanishes: the
+second-derivative test \eqref{eq:joint-weyl} degenerates. The third derivative does not. Differentiating
+$g_\ell(u)=(s^2-(u+\ell)^2)^{-1/2}$ gives $g_\ell'(u)=(u+\ell)(s^2-(u+\ell)^2)^{-3/2}$, and at $u^*$, where
+$u^*+\ell=\tfrac{\ell-\ell'}2$ and $u^*+\ell'=-\tfrac{\ell-\ell'}2$ have \emph{equal squares} but opposite
+signs,
+\[
+  \bigl(g_\ell-g_{\ell'}\bigr)'(u^*)
+  =\frac{(\ell-\ell')/2-(-(\ell-\ell')/2)}{\bigl(s^2-(\tfrac{\ell-\ell'}2)^2\bigr)^{3/2}}
+  =\frac{\ell-\ell'}{\bigl(s^2-(\tfrac{\ell-\ell'}2)^2\bigr)^{3/2}}\ \ne0 ,
+\]
+a clean nonzero value (verified to machine precision, \texttt{verify\_bandedge\_transfer.py}). For a general
+$k$ with $C_k(u^*)=0$, $C_k$ is real-analytic and $\not\equiv0$ (distinct poles, Theorem~\ref{thm:joint-equi}),
+so its zero at $u^*$ is isolated and of finite order. We show it is simple. Two of the $g_\ell$ can coincide
+at a point only pairwise: $g_\ell=g_{\ell'}\Leftrightarrow u=-(\ell+\ell')/2$, and three pairwise-equal
+averages $-(\ell+\ell')/2=-(\ell+\ell'')/2$ force $\ell'=\ell''$, so \emph{no triple coincidence} occurs
+(checked over a $10^5$-grid: $0$ hits). Shrink $\rho$ once and for all so that each $(u^*-\rho,u^*+\rho)$
+contains exactly the one pair colliding at $u^*$ and no other point of $Z$; then on the punctured core
+$C_k(u)=C_k'(u^*)(u-u^*)+O((u-u^*)^2)$ with the transverse slope
+$C_k'(u^*)=k_\ell\,g_\ell'(u^*)+k_{\ell'}g_{\ell'}'(u^*)$. If $C_k'(u^*)\ne0$ the zero is simple; the residual
+case $C_k'(u^*)=0$ forces $k_\ell=k_{\ell'}$ (the two slopes are equal and opposite by the displayed identity),
+i.e.\ the colliding modes enter with the \emph{same} weight, which is exactly the $C_{(1,-1)}$-type difference
+whose nonzero third derivative is displayed above---so $C_k$ then has a simple \emph{cubic} inflection rather
+than a simple zero. In both sub-cases $C_k$ grows at least linearly off a vanishing inner core; we use only
+that. Split $\mathcal K$ into the inner cores $\mathcal K_0=\bigcup_{u^*}(u^*-h,u^*+h)$, $h=N^{-1/3}$, and the
+shoulder $\mathcal K_1=\mathcal K\setminus\mathcal K_0$.
+
+We transfer $\mathcal K_1$ by the same Koksma--Hlawka/Erd\H{o}s--Tur\'an--Koksma route as (a). For the
+simple-zero modes ($C_k'(u^*)\ne0$, the generic $k$) $|C_k(u)|\asymp|C_k'(u^*)|\,|u-u^*|$ has the integrable
+$|u-u^*|^{-1/2}$ singularity and the second-derivative bound $N^{-1/2}A(s)\|k\|^{1/2}+N^{-1/3}$ of (a) holds
+unchanged. The \emph{difference} modes ($k_\ell=k_{\ell'}$ on the colliding pair) instead have the cubic
+inflection $|C_k(u)|\asymp\kappa|u-u^*|^2$, $\kappa=|(g_\ell-g_{\ell'})'(u^*)|>0$. Here the curvature is
+governed by the nonvanishing \emph{third} derivative, and the natural tool is the cubic ($r=3$) van der
+Corput / exponent-pair $(\tfrac16,\tfrac46)$ bound \cite[\S2.3]{GrahamKolesnik}: with $|f'''|\asymp N^{-2}\kappa$
+on a run of length $L$, $|\sum_j\eu^{\mathrm if(j)}|\ll L(N^{-2}\kappa)^{1/6}+(N^{-2}\kappa)^{-1/3}$, whose
+normalized value $O(N^{-1/9})$ feeds Erd\H{o}s--Tur\'an--Koksma with the $1/r(k)$ weight (the difference
+directions being finite in number, their integer multiples summable against $1/r$). (Equivalently, because
+$\mathcal K_1$ already excludes the inner core, even the cubic-inflection density is \emph{barely} integrable
+there, $\int_{\mathcal K_1}|C_k|^{-1/2}du\asymp\kappa^{-1/2}\log(\rho/h)=O(\log N)$, so the second-derivative
+bound of (a) also closes the shoulder with one extra $\log$---the cubic test is the sharper of the two and is
+the structurally correct object at the degenerate point.) The resulting shoulder discrepancy is
+$O_s(N^{-1/9}\log^{|L|}N)$. Finally the inner cores $\mathcal K_0=\bigcup_{u^*}(u^*-h,u^*+h)$, $h=N^{-1/3}$,
+are discarded trivially: $W_N\le\sum_\ell a_\ell=O(1)$ there, so the empirical mass is
+$\le\sum_\ell\int_{\mathcal K_0}a_\ell=O(h)=O(N^{-1/3})$ and the same bound caps the toral mass
+$\int_{\mathcal K_0}\mathcal E\le O(h)$; the two cancel up to $O(N^{-1/3})$. (The width $h\asymp N^{-1/3}$ is the
+optimum of the trivial inner bound $2h$ against the shoulder cost $N^{-1/2}\kappa^{-1/2}h^{-1/2}$, combined
+cost $O(N^{-1/3})$, exponent confirmed in \texttt{verify\_bandedge\_transfer.py}.) Hence
+\[
+  \frac1N\sum_{k/N\in\mathcal K}W_N(k)\ =\ \int_{\mathcal K}\mathcal E(u)\,du\ +\ O_s(N^{-1/(9|L|)}\log N),
+\]
+(Numerically a full cell \emph{containing} an interior coalescing point already has its normalized Weyl sum
+decay like $N^{-1}$, faster than $N^{-1/2}$, because the degenerate set has $u$-measure $O(N^{-1/3})$ and the
+shoulder floor dominates: \texttt{verify\_bandedge\_transfer.py}, slope $-1.03$.)
+
+\emph{Assembly.} Summing (a)--(c) over the $O(s)$ live-set cells,
+\[
+  \frac1N\sum_{k=0}^{N-1}W_N(k)=\int_0^1\mathcal E(u)\,du
+   +\underbrace{O(N^{-1/(3|L|)}\log N)}_{\text{bulk}}+\underbrace{O(N^{-1/2+3\delta/4})}_{\text{strips}}
+   +\underbrace{O(N^{-1/(9|L|)}\log N)}_{\text{cubic cores}},
+\]
+the band-edge mass $O(\varepsilon^{3/4})$ on the strips being removed from \emph{both} the empirical and the
+toral sides (part (b)), so only its $O(\varepsilon^{3/4})=O(N^{-1/2+3\delta/4})$ residue survives. With
+$0<\delta<\tfrac16$ every error is a positive power of $1/N$, hence $o(1)$; the binding rate is the mollified
+cubic core $N^{-1/(9|L|)}\log N$---the $1/|L|$ being the Lipschitz-cone mollification price of
+\eqref{eq:koksma}, the cubic $\tfrac19$ the off-the-shelf $(\tfrac16,\tfrac46)$ exponent pair. Multiplying by
+$\sqrt{2/\pi}$ gives \eqref{eq:transfer-target} and the theorem, with any $\eta<\tfrac1{9|L(s)|}$. The
+band-edge strip is the only \emph{structurally} unavoidable loss; the polynomial rate, though far from sharp
+(numerically the cores decay like $N^{-1}$, slope $-1.03$), is a genuine positive power---all the $o(1)$
+transfer needs. The assembled discrepancy is checked to vanish: the rescaled cell-averaged $|K_N|$ tracks
+$\mathcal E$ to under $1\%$ with
+the residual oscillating in sign as $N$ grows from $4\cdot10^3$ to $10^6$, strips excised
+(\texttt{verify\_bandedge\_transfer.py}).
+\end{proof}
+
+\begin{lemma}[explicit second-derivative van der Corput / Erd\H{o}s--Tur\'an]\label{lem:vdc-explicit}
+Let $f\in C^2[A,B]$ with $\lambda\le|f''|\le h\lambda$ ($h\ge1$, $f''$ of one sign) on $[A,B]$. Then
+$\bigl|\sum_{A\le j\le B}\eu^{2\pi\mathrm i f(j)}\bigr|\le c_1\bigl((B-A)\lambda^{1/2}+\lambda^{-1/2}\bigr)$ with
+an absolute $c_1$ \cite[Thm.~8.20]{Montgomery},\cite[Ch.~2]{GrahamKolesnik}. Consequently, for a sequence
+$x_j\in\mathbb T^d$ whose every nonzero Fourier coefficient $\langle k,x_j\rangle$ is such a phase, the
+Erd\H{o}s--Tur\'an inequality \cite[Ch.~2, Thm.~2.5]{KN} bounds the discrepancy by
+$D_{[A,B]}\ll \tfrac1M+\sum_{1\le|k|\le M}\tfrac1{|k|}\bigl|\tfrac1{B-A}\sum_j\eu^{2\pi\mathrm i\langle k,x_j\rangle}\bigr|$,
+and optimizing $M$ over the van der Corput bound gives $D=O(N^{-1/2}\log N)$ on a $\Theta(N)$-block with
+$\lambda\asymp N^{-1}$, the rate quoted in Theorem~\ref{thm:joint-equi}.
+\end{lemma}
+
+\noindent (Lemma~\ref{lem:vdc-explicit} is the explicit constant behind the cell-wise
+\eqref{eq:joint-weyl}; in the proof of Theorem~\ref{thm:uniform-transfer} it is applied per Fourier mode
+$k$ with the $u$-dependent floor $\lambda(u)=N^{-1}|C_k(u)|$, the bound integrated in $u$ against the
+$k$-uniform $\int|C_k|^{-1/2}du\le A(s)$ rather than against a pointwise floor---the device that makes the
+transfer uniform across the high modes whose curvature vanishes inside the cell.)
+
+\begin{proposition}[multi-copy profile]\label{prop:multicopy}
 Let $s>1$ and let $L(s)$ denote the live set on the cell containing $u$. Define the toral profile
 \begin{equation}\label{eq:Fmulti}
-  F(s)=\sqrt{\tfrac2{\pi s}}\int_0^1
+  F(s)=\sqrt{\tfrac2{\pi}}\int_0^1
    \mathbb E_{(\Phi_\ell)\stackrel{\mathrm{iid}}\sim U(0,2\pi)}
    \Bigl|\sum_{\ell\in L(s)}c_\ell\,\bigl(s^2-(u+\ell)^2\bigr)^{-1/4}\cos\Phi_\ell\Bigr|\,du,\qquad
    c_\ell=\mathrm i^{\,\ell N},
 \end{equation}
 (only $\mathrm i^{N}=\pm1$ (even $N$) or $\pm\mathrm i$ (odd $N$) enters, so $F$ has two parity branches).
-If the cell-wise empirical $L^1$ averages of $|K_N(\cdot,t)|$ converge to their toral expectation uniformly
-in the cell parameter $u$ (the \emph{uniform-transfer hypothesis}), then
-$\|K_N(\cdot,sN/2)\|_1=(F(s)+o(1))\sqrt N$. Numerically $F$ matches the exact FFT $\ell^1$ norm to $0.5\%$
+Then $\|K_N(\cdot,sN/2)\|_1=(F(s)+o(1))\sqrt N$. Numerically $F$ matches the exact FFT $\ell^1$ norm to $0.5\%$
 across all four residues $N\bmod4$ and all $s\in(0,2]$, equals $\beta_{\mathrm{odd}}$ at $s=1$ and
 $c_0/\sqrt2$ at $s=\tfrac12$, and satisfies $F(s)<F(1)=\beta_{\mathrm{odd}}$ for every $s\ne1$ (odd branch)
 and $F(s)<F(\tfrac12)=c_0/\sqrt2$ for $s\ne\tfrac12$ (even branch), stably out to $s=10$
 (\texttt{verify\_bn\_residual\_profile.py}).
 \end{proposition}
 
-\begin{proof}[Proof and the remaining gap]
+\begin{proof}
 By \eqref{eq:multicopy-debye} the rescaled kernel on a cell is, up to $O(N^{-1})$,
-$|K_N(k,t)|\sqrt{\tfrac{\pi N}2}=\bigl|\sum_{\ell\in L(s)}c_\ell\,(s^2-m_\ell^2)^{-1/4}\cos\Phi_\ell(k)\bigr|$, a
-fixed continuous function $G_u\colon\mathbb T^{|L(s)|}\to\mathbb R$ of the phase vector (the $j$-independent
-global factor $\mathrm i^{k}$ drops under $|\cdot|$, and $c_\ell=\mathrm i^{\ell N}$ carries the only
-$N$-dependence). Summing over the cell and applying Theorem~\ref{thm:joint-equi} to the Fourier modes of
-$G_u$,
-\[
-  \frac1{\#}\sum_{k/N\in\mathcal C}G_u\bigl(\Phi(k)\bigr)\ \longrightarrow\
-  \int_{\mathcal C}\frac{du}{|\mathcal C|}\,\mathbb E_{(\Phi_\ell)\sim U}\,G_u(\Phi),
-\]
-since the equidistribution of $(\Phi_\ell(k))$ makes the empirical average of every Fourier mode
-$\eu^{\mathrm i\langle k,\Phi\rangle}$ converge to its toral mean ($0$ for $k\ne0$, by
-\eqref{eq:joint-weyl}). Riemann-summing the cells against $\sqrt{2/(\pi s)}\int_0^1du$ yields $F(s)$, and the
-band-edge strips contribute $O(\varepsilon^{3/4})$ (the envelope $(s^2-m^2)^{-1/4}$ is $L^1$ in $u$;
-\texttt{verify\_debye\_equidistribution.py} confirms the $\varepsilon^{3/4}$ law) and vanish with
-$\varepsilon\to0$. The endpoint identities $F(\tfrac12)=c_0/\sqrt2$, $F(1)=\beta_{\mathrm{odd}}$ are
-\eqref{eq:beta-odd} and Proposition~\ref{prop:bn-profile} read at $|L(s)|=2$.
-
-The one step not made unconditional is the \emph{uniform-transfer hypothesis}: \eqref{eq:joint-weyl} is
-proved cell-by-cell with an implied constant depending on $(s,\mathcal C,k)$, and the passage to the
-$L^1$ \emph{limit} needs this discrepancy to be $o(1)$ \emph{uniformly} as the cell shrinks and $u$
-approaches the finitely many band edges, where both the small-curvature combinations and the envelope
-singularity concentrate. The single-copy lemma controls each edge in isolation; the missing ingredient is a
-uniform-in-$u$ Erd\H{o}s--Tur\'an constant for the joint sum near a coalescing pair of phases. This is the
-precise residue of the ``multidimensional Weyl sum'' gap flagged in Remark~\ref{rem:bn-parity}; it is the
-\emph{only} obstruction between Theorem~\ref{thm:joint-equi} and a theorem that $\limsup_N B_N/\sqrt
-N=\beta_{\mathrm{odd}}$. The cell-wise transfer itself is verified: the cell-averaged exact $|K_N|$ tracks the
-toral expectation to under $1\%$, the residual oscillating in sign (so non-systematic) as $N$ grows from
-$4\cdot10^3$ to $2.6\cdot10^5$ (\texttt{verify\_debye\_equidistribution.py}).
+$|K_N(k,t)|\sqrt{\tfrac{\pi N}2}=\bigl|\sum_{\ell\in L(s)}c_\ell\,(s^2-m_\ell^2)^{-1/4}\cos\Phi_\ell(k)\bigr|
+=G_u(\Phi(k))$, a fixed continuous function $G_u\colon\mathbb T^{|L(s)|}\to\mathbb R$ of the phase vector (the
+$j$-independent global factor $\mathrm i^{k}$ drops under $|\cdot|$, and $c_\ell=\mathrm i^{\ell N}$ carries the
+only $N$-dependence), whose toral mean is $\widehat G_u(0)=\mathbb E_{(\Phi_\ell)\sim U}G_u(\Phi)=\mathcal E(u)$.
+Theorem~\ref{thm:uniform-transfer} is exactly the statement $\|K_N(\cdot,sN/2)\|_1/\sqrt N\to\sqrt{2/\pi}
+\int_0^1\mathcal E(u)\,du=F(s)$, the uniform-in-$u$ transfer of the cell-wise joint equidistribution
+(Theorem~\ref{thm:joint-equi}) to the $L^1$ limit. The endpoint identities $F(\tfrac12)=c_0/\sqrt2$,
+$F(1)=\beta_{\mathrm{odd}}$ are \eqref{eq:beta-odd} and Proposition~\ref{prop:bn-profile} read at $|L(s)|=2$;
+the prefactor is $\sqrt{2/\pi}$ (one site per $du/N$), consistent with Lemma~\ref{lem:varfloor} and with the
+exact FFT to $0.5\%$ at $s\in\{1.5,2.7,4\}$ (\texttt{verify\_bandedge\_transfer.py}; the $\sqrt{2/(\pi s)}$ of
+earlier drafts overcounts by $\sqrt s$ and is corrected here).
 \end{proof}
 
 Granting the transfer, the profile \emph{maximizer} is itself controlled rigorously by an elementary
@@ -1273,36 +1474,52 @@ and $F(s)\to\sqrt\pi/2=0.8862<\beta_{\mathrm{odd}}$, with margin $0.042$.
 $s\in(1,6]$ (the binding sliver just above $s=1$, two-copy, has head-room $0.007$; the bulk $0.03$),
 validated by seeded Monte-Carlo with a $3\sigma$ upper-confidence bound and a deterministic FFT cross-check,
 and the tail extends it to all $s$ (\texttt{verify\_bn\_largewave\_tail.py}). A cleaner route isolates the
-gap as a single inequality. The $L^2$ mass of the profile is \emph{exactly conserved}: as $u+\ell$ sweeps
-$(-s,s)$ once,
+gap as a single \emph{Gaussian-comparison} inequality. Let $\sigma_X^2=\tfrac12\sum_{\ell\ \mathrm{even}}a_\ell^2$,
+$\sigma_Y^2=\tfrac12\sum_{\ell\ \mathrm{odd}}a_\ell^2$, $\Sigma_2=\sigma_X^2+\sigma_Y^2$, and let
+$G=(G_X,G_Y)\sim\mathcal N(0,\sigma_X^2)\times\mathcal N(0,\sigma_Y^2)$ be the matched Gaussian. The expected
+modulus of $G$ is the elementary closed form $\mathbb E|G|=\sigma_{\max}\sqrt{2/\pi}\,E\bigl(1-\sigma_{\min}^2/\sigma_{\max}^2\bigr)$
+($E$ the complete elliptic integral of the second kind; at $s=1$, $\sigma_X=\sigma_Y$, this is $\sqrt\pi/2$),
+so the pure-Gaussian profile $F_{\mathrm{gauss}}(s)=\sqrt{2/\pi}\int_0^1\mathbb E|G|\,du$ lies in $0.835$--$0.883$,
+\emph{strictly below} $\beta_{\mathrm{odd}}$ for every $s>1$ (margin $0.045$--$0.093$). Since $|\cdot|$ is
+$1$-Lipschitz, $F(s)\le F_{\mathrm{gauss}}(s)+\sqrt{2/\pi}\int_0^1\bigl(\mathbb E|Z|-\mathbb E|G|\bigr)\,du$, and
+the Gaussian excess has the exact Kluyver/Hankel form $\mathbb E|Z|-\mathbb E|G|=\int_0^\infty(M_{\mathrm g}(t)-M(t))\,t^{-2}\,dt$,
+$M(t)=\tfrac1{2\pi}\int_0^{2\pi}\prod_{\mathrm{even}}J_0(a_\ell t\cos\theta)\prod_{\mathrm{odd}}J_0(a_\ell t\sin\theta)\,d\theta$
+(and $M_{\mathrm g}$ with $J_0$ replaced by the Gaussian factor). The excess is positive, sourced entirely by
+the Bessel rings $t>j_{0,1}=2.405$ (on $[0,j_{0,1}]$, $J_0(z)\le e^{-z^2/4}$). The certified bound is the
+fourth-cumulant estimate
 \[
-  \int_0^1\mathbb E|Z(u,s)|^2\,du=\tfrac12\int_{-s}^s(s^2-x^2)^{-1/2}\,dx=\tfrac\pi2\qquad(s\ge1),
+  \mathbb E|Z|-\mathbb E|G|\ \le\ K_\star\,\frac{\sum_\ell a_\ell^4}{\Sigma_2^{3/2}},\qquad
+  K_\star=\frac{h(1)-\sqrt\pi/2}{2}=0.035932,
 \]
-so every bit of the $s$-dependence of $F$ sits in the ratio $\rho(u,s)=\mathbb E|Z|/\sqrt{\mathbb E|Z|^2}\le1$,
-the $L^1/L^2$ ratio of a two-dimensional Pearson walk. This $\rho$ obeys $\rho\le h(1)=0.9581$ (the equal-pair
-ceiling) and \emph{decreases as the energy spreads}, measured by the closed-form kurtosis
-$R_4=\mathbb E|Z|^4/(\mathbb E|Z|^2)^2\in[\tfrac54,2]$ ($\tfrac54$ at a pure pair, $2$ Gaussian); the certified
-bound $\rho^2\le0.918-0.14\,(R_4-\tfrac54)$ feeds through the conserved-energy identity to a closed-form
-majorant $F_4(s)<\beta_{\mathrm{odd}}$ on $(1,12]$ (supremum $0.917$, while $F_4(1)\ge\beta_{\mathrm{odd}}$
-keeps the ceiling honest at the peak; \texttt{verify\_bn\_profile\_concentration.py}). So
-$\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$ modulo this one Pearson-walk concentration inequality---specific
-to the walk (it fails for a generic variable with the same moments), hence calling for an expected-modulus
-bound rather than a moment inequality.
+\emph{sharp}, with extremizer the equal two-copy point ($a=b$, i.e.\ the configuration giving $\beta_{\mathrm{odd}}$
+itself). It feeds through the $u$-integral to a closed-form majorant $B(s)=F_{\mathrm{gauss}}(s)+\sqrt{2/\pi}\,K_\star\int_0^1\Sigma_2^{-3/2}\sum_\ell a_\ell^4\,du<\beta_{\mathrm{odd}}$
+on $(1,20]$ (worst margin $0.009$ at $s\approx1.02$; above the odd-$N$ FFT norm at $N=2^{16}-1$;
+\texttt{verify\_bn\_profile\_gaussian.py}). So $\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$ modulo this one
+\emph{expected-modulus} inequality. The off-the-shelf route fails quantitatively: the $1$-D Wasserstein/Esseen
+CLT bound $W_1(X,G_X)\le\tfrac12\sum_\ell\mathbb E|a_\ell\cos\Phi_\ell|^3/\sigma_X^2$ (Esseen's constant $\tfrac12$
+is sharp) leaves a remainder $\sim0.2$--$0.8$, overshooting the $0.045$ margin tenfold, because $\sum a_\ell^3/\sigma^2$
+stays $\Theta(1)$; only the fourth cumulant $\sum a_\ell^4/\Sigma_2^2$, which \emph{decays} as the energy
+spreads, fits the thin admissible window ($\min_sK_{\max}=0.0404$ against $K_\star=0.0359$).
 
 \noindent What is now \emph{proved}, for every $s>1$: the live Debye phases are jointly equidistributed with
 an explicit $N^{-1/2}$ power saving (Theorem~\ref{thm:joint-equi}), resting only on the linear independence of
-the curvature kernels $g_\ell$ (distinct poles); the variance-floor inequality $F\le F_K$ and the tail limit
-$\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). \emph{Two residual estimates}, both validated
-numerically, separate this from an unconditional $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: (i) the
-uniform-in-$u$ band-edge transfer to the $L^1$ limit (a uniform van der Corput discrepancy, with the
-band-edge strips contributing $O(\varepsilon^{3/4})$ and the coalescing points $u=-(\ell+\ell')/2$ handled by
-the cubic test, $g_\ell'-g_{\ell'}'\ne0$), and (ii) the Pearson-walk concentration inequality
-$\rho^2\le0.918-0.14\,(R_4-\tfrac54)$ that, via the conserved $L^2$ mass, bounds the profile below
-$\beta_{\mathrm{odd}}$. The honest status is that the multi-copy region is reduced from a black-box
-Weyl-sum/anti-flatness problem to two sharply localized estimates---a uniform discrepancy bound and an
-expected-modulus bound---a strict improvement over the ``only unitarity is rigorous'' status of
-Remark~\ref{rem:bn-parity}. The closest published result, an $L^4$ bound for the same discrete chirp, stops short of
-the $L^1$ constant~\cite{FuRenWang}.
+the curvature kernels $g_\ell$ (distinct poles); and this transfers \emph{uniformly in $u$} to the $L^1$
+limit (Theorem~\ref{thm:uniform-transfer}), so $\|K_N(\cdot,sN/2)\|_1=(F(s)+o(1))\sqrt N$ holds for every fixed
+$s>1$ unconditionally---the former residue (i) (the band-edge strips contributing $O(\varepsilon^{3/4})$ and
+the coalescing points $u=-(\ell+\ell')/2$ handled by the cubic test, $g_\ell'-g_{\ell'}'\ne0$, with no triple
+coincidence) is closed. There also hold the variance-floor inequality $F\le F_K$ and the tail limit
+$\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). \emph{A single residual estimate}, validated
+numerically, now separates this from an unconditional $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: the sharp
+Gaussian-excess inequality $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$ above, whose
+integrated majorant $B(s)$ clears $\beta_{\mathrm{odd}}$ (the former residue (ii)); proving it needs only a
+quantitative bound on the Bessel-ring tail ($t>j_{0,1}$) of the Kluyver excess, the half of $K_\star$ that the
+small-$t$ cumulant expansion does not capture. The honest status is that
+the multi-copy region is reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized
+estimate---an expected-modulus bound on the profile maximizer---the entire $N\to\infty$ reduction (joint
+equidistribution and its uniform transfer to the $L^1$ constant $F(s)$) being now rigorous, a strict
+improvement over the ``only unitarity is rigorous'' status of Remark~\ref{rem:bn-parity}. The closest
+published result, an $L^4$ bound for the same discrete chirp, stops short of the $L^1$
+constant~\cite{FuRenWang}.
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
 (upper from unitarity, lower from Theorem~\ref{thm:schr-lower}), and every step---the periodization, the
@@ -1671,8 +1888,10 @@ Two-copy profile $\max F=\beta_{\mathrm{odd}}$ (Prop.~\ref{prop:bn-profile}) & \
 $\quad$rigorous $F'>0$ on $[0.937,1]$ (interval arith.) & \texttt{verify\_bn\_profile\_rigorous.py}\\
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
 Joint Debye equidistribution (\S\ref{sub:multicopy}) & \texttt{verify\_debye\_equidistribution.py}\\
+Uniform-in-$u$ band-edge transfer (Thm.~\ref{thm:uniform-transfer}) & \texttt{verify\_bandedge\_transfer.py}\\
 Multi-copy profile $\max_{s\ge1}F=\beta_{\mathrm{odd}}$ (Lem.~\ref{lem:varfloor}) & \texttt{verify\_bn\_largewave\_tail.py}\\
 Conserved-energy identity; concentration route & \texttt{verify\_bn\_profile\_concentration.py}\\
+Gaussian-comparison majorant $B(s)<\beta_{\mathrm{odd}}$ (residue (ii)) & \texttt{verify\_bn\_profile\_gaussian.py}\\
 Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\

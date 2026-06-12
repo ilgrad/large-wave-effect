@@ -297,7 +297,9 @@ saturates (Theorem~\ref{thm:classification})---and $A_N$ for individual composit
 $B_N=\Theta(\sqrt N)$ the constant splits by parity (Remark~\ref{rem:bn-parity}):
 $\liminf_N B_N/\sqrt N\ge c_0/\sqrt2\approx0.861$ is proved and is attained numerically on the even
 subsequence, while the odd subsequence approaches $\beta_{\mathrm{odd}}\approx0.928$, so on the numerical
-evidence the constant has no limit; what is open is a matching upper bound on $t>N/2$, which would give
+evidence the constant has no limit; the whole $t>N/2$ reduction is now rigorous (joint equidistribution and
+its uniform transfer to $F(s)$, Theorems~\ref{thm:joint-equi},~\ref{thm:uniform-transfer}), leaving one
+validated sharp inequality (a Gaussian-excess/expected-modulus bound) before
 $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$. The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
 published Myshkis--Filimonov value~\cite[Thm.~2]{MF03}, which the Schr\"odinger ceiling inherits because the
 two ceilings coincide. (iv)~On the Dirichlet segment the rank, saturation, \emph{and} order are now fully
@@ -337,13 +339,18 @@ $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ holds on $t\le N/2$, n
 two-copy reduction is rigorous, the limiting profile is the \emph{explicit} elliptic-integral function
 $F(s)$ (Proposition~\ref{prop:bn-profile}), and its maximization $\max F=F(1)=\beta_{\mathrm{odd}}$ is
 \emph{proved}---analytically on $[\tfrac12,0.937]$ (Jensen, sharpened by the tangent to the concave $h$) and
-by validated interval arithmetic on $[0.937,1]$. For the multi-copy region $t>N/2$ the joint
-equidistribution of the Debye phases is now \emph{proved} (Theorem~\ref{thm:joint-equi}, a van der Corput
-second-derivative bound), as are the variance-floor inequality and the tail limit $\sqrt\pi/2<\beta_{\mathrm
-{odd}}$ (Lemma~\ref{lem:varfloor}); two validated, interval-arithmetic-shaped residuals remain---the
-uniform-in-$u$ band-edge transfer and the interval enclosure of the profile bound on $(1,6]$---between this
-and an unconditional $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$ (\texttt{verify\_bn\_profile\_rigorous.py},
-\texttt{verify\_debye\_equidistribution.py}, \texttt{verify\_bn\_largewave\_tail.py}).
+by validated interval arithmetic on $[0.937,1]$. For the multi-copy region $t>N/2$ the entire $N\to\infty$
+reduction is now \emph{rigorous}: the Debye phases are jointly equidistributed (Theorem~\ref{thm:joint-equi},
+a van der Corput second-derivative bound) and this transfers \emph{uniformly in $u$} to the $\ell^1$ constant
+$F(s)$ (Theorem~\ref{thm:uniform-transfer}, a mollified Koksma--Hlawka estimate---the modulus has divergent
+Hardy--Krause variation---with the cubic van der Corput test at the coalescing points), alongside the
+variance-floor inequality and the tail $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). A
+\emph{single} validated residual now separates this from an unconditional
+$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: the sharp Gaussian-excess inequality
+$\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$, $K_\star=(h(1)-\sqrt\pi/2)/2$
+(extremizer the equal two-copy pair), whose integrated majorant clears $\beta_{\mathrm{odd}}$ on $(1,20]$;
+proving it needs only a bound on the Bessel-ring tail of the Kluyver excess
+(\texttt{verify\_bn\_profile\_gaussian.py}, \texttt{verify\_bandedge\_transfer.py}).
 \item A rigorous nonlinear theory of the discrete NLS \eqref{eq:dnls} on the ring
 (Section~\ref{sec:rogue}). Two pieces are now settled: the linear large wave persists in the weakly
 nonlinear regime (Proposition~\ref{prop:dnls-persist}), and the modulational-instability band and growth
