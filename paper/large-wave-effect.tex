@@ -346,10 +346,12 @@ $F(s)$ (Theorem~\ref{thm:uniform-transfer}, a mollified Koksma--Hlawka estimate-
 Hardy--Krause variation---with the cubic van der Corput test at the coalescing points), alongside the
 variance-floor inequality and the tail $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). A
 \emph{single} validated residual now separates this from an unconditional
-$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: the sharp Gaussian-excess inequality
-$\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$, $K_\star=(h(1)-\sqrt\pi/2)/2$
-(extremizer the equal two-copy pair), whose integrated majorant clears $\beta_{\mathrm{odd}}$ on $(1,20]$;
-proving it needs only a bound on the Bessel-ring tail of the Kluyver excess
+$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: the Gaussian-excess inequality
+$\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$, $K_\star=(h(1)-\sqrt\pi/2)/2$, for
+the \emph{balanced} Debye configurations of the profile (the live set is an interval of consecutive integers,
+so $|\#\,\mathrm{even}-\#\,\mathrm{odd}|\le1$; sharp at the two-copy pair, while imbalanced configurations
+violate the unrestricted bound), whose integrated majorant clears $\beta_{\mathrm{odd}}$ on $(1,20]$; proving
+it needs a bound on the Bessel-ring tail of the Kluyver excess
 (\texttt{verify\_bn\_profile\_gaussian.py}, \texttt{verify\_bandedge\_transfer.py}).
 \item A rigorous nonlinear theory of the discrete NLS \eqref{eq:dnls} on the ring
 (Section~\ref{sec:rogue}). Two pieces are now settled: the linear large wave persists in the weakly

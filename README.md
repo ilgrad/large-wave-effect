@@ -49,8 +49,10 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   $t>N/2$ the whole $N\to\infty$ reduction is now **rigorous** — joint equidistribution of the multi-copy
   Debye phases *and* its uniform-in-$u$ transfer to the $\ell^1$ constant $F(s)$ (a mollified Koksma–Hlawka /
   cubic van der Corput estimate; the modulus has divergent Hardy–Krause variation) — leaving a **single**
-  validated residual, the sharp Gaussian-excess inequality $\mathbb{E}|Z|-\mathbb{E}|G|\le K_\star\,\Sigma_2^{-3/2}\sum a_\ell^4$
-  ($K_\star=(h(1)-\sqrt\pi/2)/2$, extremal at the equal two-copy pair) whose integrated majorant clears
+  validated residual, the Gaussian-excess inequality $\mathbb{E}|Z|-\mathbb{E}|G|\le K_\star\,\Sigma_2^{-3/2}\sum a_\ell^4$
+  ($K_\star=(h(1)-\sqrt\pi/2)/2$) for the profile's **balanced** Debye configurations (the live set is an
+  interval of consecutive integers, so the even/odd channel counts differ by $\le1$; sharp at the two-copy
+  pair — imbalanced configs violate the unrestricted bound) whose integrated majorant clears
   $\beta_{\mathrm{odd}}$. On the **Dirichlet segment**
   $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ for $N+1$ prime/$2^m$ (the constant $C=4/\pi^2$ is the published
   Myshkis–Filimonov 2003 value). Three large-wave laws on one Laplacian.
@@ -79,10 +81,12 @@ computational/exploratory.
 upper bound. The $t\le N/2$ case is **fully proved** ($\max F=\beta_{\mathrm{odd}}$, analytic + validated
 interval arithmetic), and for $t>N/2$ the entire $N\to\infty$ reduction is now **rigorous** (joint
 equidistribution of the Debye phases *and* its uniform-in-$u$ transfer to $F(s)$ — a mollified Koksma–Hlawka /
-cubic van der Corput estimate). What remains is a **single** validated inequality: the sharp Gaussian-excess
-(expected-modulus) bound $\mathbb{E}|Z|-\mathbb{E}|G|\le K_\star\,\Sigma_2^{-3/2}\sum a_\ell^4$, extremal at the
-equal two-copy pair, whose integrated majorant clears $\beta_{\mathrm{odd}}$ — proving it (a Bessel-ring tail
-estimate of the Kluyver excess) gives $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$. (2) The **excess lemma**
+cubic van der Corput estimate). What remains is a **single** validated inequality: the Gaussian-excess
+(expected-modulus) bound $\mathbb{E}|Z|-\mathbb{E}|G|\le K_\star\,\Sigma_2^{-3/2}\sum a_\ell^4$ for the
+profile's **balanced** Debye configs (live set = consecutive integers ⇒ even/odd counts differ by $\le1$;
+sharp at the two-copy pair — imbalanced configs violate it), whose integrated majorant clears
+$\beta_{\mathrm{odd}}$ — proving it (a Bessel-ring tail estimate of the Kluyver excess, plus the balancing)
+gives $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$. (2) The **excess lemma**
 $A_N\le L_{\mathrm{pre}}+O(1)$ (equivalent to a rigorous *growing* deficit bound) — now proved when the odd
 part of $N$ is a prime power ($N=2p$ sharp at $1/2N$, $N=4p$), **open only for $\omega(m)\ge2$**; it is a
 quantitative Kronecker–Weyl comparison on the relation-constrained subtorus, the sup-side counterpart of

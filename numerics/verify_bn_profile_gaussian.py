@@ -44,9 +44,12 @@ Write the dimensionless fourth-cumulant control
 The certified inequality is
     E|Z| - E|G|  <=  K_star * (sum_l a_l^4) / Sigma2^{3/2}  =  K_star * sqrt(Sigma2) * kappa ,           (D)
         K_star = ( h(1) - sqrt(pi)/2 ) / 2 = 0.0359322 ,   h(1) = E sqrt(cos^2 + cos^2) = 0.9580914 .
-The constant is SHARP and its extremizer is explicit: the supremum of the ratio (E|Z|-E|G|)/(sum a^4 /
-Sigma2^{3/2}) over ALL amplitude vectors is attained at the EQUAL TWO-COPY point a=b (kappa=2), i.e. at the
-very configuration Z = a(cos Phi_1 + i cos Phi_2) that produces beta_odd at s=1.  Note this is a genuine
+The constant is sharp FOR THE PROFILE'S CONFIGURATIONS: their live set is an interval of consecutive integers,
+hence the channels are BALANCED (|#even - #odd| <= 1), and over balanced vectors the supremum of the ratio
+(E|Z|-E|G|)/(sum a^4 / Sigma2^{3/2}) is attained at the EQUAL TWO-COPY point a=b (kappa=2), i.e. at the very
+configuration Z = a(cos Phi_1 + i cos Phi_2) that produces beta_odd at s=1.  The UNRESTRICTED supremum over
+arbitrary parity-labelled vectors EXCEEDS K_star (an imbalanced 1-even+5-odd config reaches ~1.09 K_star), so
+(D) is a profile statement, not a universal one (see verify_dagger_extremal.py).  Note this is a genuine
 *scale-correct* fourth-moment bound (Sigma2^{3/2}, not the dimensionally-wrong Sigma2 of a naive guess): the
 excess scales like a length, ~ sqrt(Sigma2).
 
@@ -71,17 +74,19 @@ HONEST LEDGER.
     * the closed form of the extremal constant K_star = (h(1)-sqrt(pi)/2)/2 at the equal pair;
     * the s=1 boundary value F(1) = beta_odd (two-copy, verify_beta_odd.py / verify_bn_profile_rigorous.py).
   VALIDATED (numerics, NOT yet a theorem):
-    * the POINTWISE inequality (D) -- ratio <= 1 over extremes (anisotropy, single channel, geometric
-      decay) and an 800-config random search, with the max attained at the equal pair (ratio = 1.0000);
-    * the integrated majorant B(s) < beta_odd on (1,20] (sharp K_star, worst margin 0.009 at s~1.02),
-      cross-checked against the deterministic ODD-N FFT norm ||K_N(.,t)||_1/sqrt(N) at N = 2^16 - 1 = 65535
-      (the beta_odd parity branch needs ODD N), which the bound sits above (genuine majorant) and below beta.
+    * the POINTWISE inequality (D) for the profile's BALANCED configs -- ratio <= 1 over balanced extremes
+      and a balanced random search, max at the equal pair (ratio = 1.0000).  The UNRESTRICTED (D) is FALSE
+      (an imbalanced 1-even+5-odd config reaches ~1.09); the live set being consecutive integers, so
+      |#even-#odd|<=1, is what excludes it -- (D) is a profile statement (see verify_dagger_extremal.py);
+    * the integrated majorant B(s) < beta_odd on (1,20] (worst margin 0.009 at s~1.02), cross-checked
+      against the deterministic ODD-N FFT norm ||K_N(.,t)||_1/sqrt(N) at N = 2^16 - 1 = 65535 (the beta_odd
+      parity branch needs ODD N), which the bound sits above (genuine majorant) and below beta.
   RESIDUAL (the single gap between VALIDATED and PROVED):
-    * (D) is an infinite-dimensional extremal inequality whose sup is the equal pair; a proof needs the
-      small-t cumulant bound (provable: leading density (3/512) sum a^4 * t^2-weight) TOGETHER WITH a
-      quantitative bound on the t > 2.405 Bessel-ring tail of (K) -- the ring tail carries ~55% of K_star
-      at the extremal pair, so it cannot be dropped.  This is one expected-modulus tail estimate, strictly
-      sharper and more localized than the failed third-moment Wasserstein route; "validated != proved".
+    * (D) restricted to balanced configs is an infinite-dimensional extremal inequality whose sup is the
+      equal pair; a proof needs the small-t cumulant bound (provable: leading density (3/512) sum a^4 *
+      t^2-weight) TOGETHER WITH a quantitative bound on the t > 2.405 Bessel-ring tail of (K) -- the ring
+      tail carries ~55% of K_star at the extremal pair, so it cannot be dropped -- AND the balancing
+      |#even-#odd|<=1 that rules out the imbalanced violators.  "validated != proved".
 
 Compare verify_bn_largewave_tail.py (the variance-floor route, same window) and
 verify_bn_profile_concentration.py (the kurtosis-surrogate route this one supersedes).
@@ -266,16 +271,16 @@ def main() -> int:
     ok &= worst_fg < BETA_ODD
     print(f"    sup F_gauss = {worst_fg:.5f} < beta_odd   {'ok' if worst_fg < BETA_ODD else 'FAIL'}")
 
-    # [ii] the pointwise excess inequality (D): ratio <= 1, max at the equal pair (the sharp extremizer).
-    print("\n[ii] pointwise inequality (D)  E|Z|-E|G| <= K_star (sum a^4)/Sigma2^{3/2}  (ratio<=1 required):")
-    print("     equal two-copy a=b is the EXTREMIZER (ratio -> 1); checked over extremes + random search.")
+    # [ii] the pointwise excess inequality (D) for the PROFILE'S BALANCED configs (|#even-#odd|<=1, since the
+    # live set is consecutive integers): ratio <= 1, max at the equal pair.  The UNRESTRICTED bound is FALSE.
+    print("\n[ii] pointwise inequality (D)  E|Z|-E|G| <= K_star (sum a^4)/Sigma2^{3/2}  for BALANCED configs:")
+    print("     equal two-copy a=b is the extremizer (ratio -> 1); checked over balanced extremes + search.")
     cases = {
         "equal pair a=b=1": (np.array([1.0]), np.array([1.0])),
         "single channel": (np.array([1.0]), np.array([])),
-        "anisotropic 1,1e-3": (np.array([1.0]), np.array([1e-3])),
-        "even{1,.1,.1} odd{1}": (np.array([1.0, 0.1, 0.1]), np.array([1.0])),
-        "even{1} odd{.5x4}": (np.array([1.0]), np.array([0.5, 0.5, 0.5, 0.5])),
-        "geometric .9^k x6": (0.9 ** np.arange(6), np.array([1.0])),
+        "anisotropic 1 | 0.3": (np.array([1.0]), np.array([0.3])),
+        "2+2 {1,.4}|{1,.4}": (np.array([1.0, 0.4]), np.array([1.0, 0.4])),
+        "3+3 geometric .7^k": (0.7 ** np.arange(3), 0.7 ** np.arange(3)),
         "10+10 equal": (np.ones(10), np.ones(10)),
     }
     worst_ratio = 0.0
@@ -287,10 +292,11 @@ def main() -> int:
         worst_ratio = max(worst_ratio, ratio)
         print(f"    {name:22}: excess={ek:+.5f}  ratio_to_bound={ratio:.4f}  "
               f"{'ok' if ratio <= 1.0005 else 'VIOLATION'}")
-    rng = np.random.default_rng(123)
+    rng = np.random.default_rng(123)  # BALANCED random search (|ne - no| <= 1, the profile structure)
     rand_worst = 0.0
     for _ in range(400):
-        ne, no = int(rng.integers(1, 6)), int(rng.integers(0, 6))
+        ne = int(rng.integers(1, 6))
+        no = max(0, ne + int(rng.integers(-1, 2)))
         ev = rng.uniform(0.05, 3.0, ne)
         od = rng.uniform(0.05, 3.0, no) if no > 0 else np.array([])
         sig2 = 0.5 * float(np.sum(ev**2) + (np.sum(od**2) if len(od) else 0.0))
@@ -299,9 +305,14 @@ def main() -> int:
             continue
         rand_worst = max(rand_worst, excess_kluyver(ev, od) / (K_STAR * c4 / sig2**1.5))
     worst_ratio = max(worst_ratio, rand_worst)
-    ok &= worst_ratio <= 1.0005
-    print(f"    400-config random search worst ratio = {rand_worst:.4f};  overall worst = {worst_ratio:.4f}   "
-          f"{'ok (sharp at the equal pair)' if worst_ratio <= 1.0005 else 'FAIL'}")
+    ev_i, od_i = np.array([1.0]), np.full(5, 0.6)  # imbalanced counterexample (NOT a profile config)
+    imbal = excess_kluyver(ev_i, od_i) / (K_STAR * float(np.sum(ev_i**4) + np.sum(od_i**4))
+                                          / (0.5 * float(np.sum(ev_i**2) + np.sum(od_i**2))) ** 1.5)
+    ok &= worst_ratio <= 1.0005 and imbal > 1.0
+    print(f"    400 BALANCED-config search worst = {rand_worst:.4f};  overall balanced worst = {worst_ratio:.4f}")
+    print(f"    imbalanced 1-even+5-odd(.6) [not a profile config]: ratio = {imbal:.4f}  -- unrestricted (D) FALSE")
+    print(f"    => (D) holds for balanced/profile configs, sharp at the pair; unrestricted (D) fails: "
+          f"{'ok' if worst_ratio <= 1.0005 and imbal > 1.0 else 'FAIL'}")
 
     # [iii] the integrated majorant B(s) >= F(s) is < beta_odd on (1, 20], cross-checked vs the odd-N FFT.
     print("\n[iii] majorant  B(s) = F_gauss + sqrt(2/pi) K_star int (sum a^4)/Sigma2^{3/2} du  < beta_odd:")
@@ -332,8 +343,8 @@ def main() -> int:
         kmin = min(kmin, kmax)
         print(f"      s={s:5.2f}:  K_max = {kmax:.5f}")
     print(f"      => min_s K_max = {kmin:.5f}  vs sharp K_star = {K_STAR:.5f}  "
-          f"(headroom {kmin - K_STAR:.5f})   {'ok (K_star fits)' if K_STAR < kmin else 'FAIL'}")
-    ok &= K_STAR < kmin
+          f"(headroom {kmin - K_STAR:.5f})   {'ok (K_star fits)' if kmin > K_STAR else 'FAIL'}")
+    ok &= kmin > K_STAR
 
     print("\n" + "=" * 96)
     print("RESULT:", (

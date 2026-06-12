@@ -1491,8 +1491,14 @@ fourth-cumulant estimate
   \mathbb E|Z|-\mathbb E|G|\ \le\ K_\star\,\frac{\sum_\ell a_\ell^4}{\Sigma_2^{3/2}},\qquad
   K_\star=\frac{h(1)-\sqrt\pi/2}{2}=0.035932,
 \]
-\emph{sharp}, with extremizer the equal two-copy point ($a=b$, i.e.\ the configuration giving $\beta_{\mathrm{odd}}$
-itself). It feeds through the $u$-integral to a closed-form majorant $B(s)=F_{\mathrm{gauss}}(s)+\sqrt{2/\pi}\,K_\star\int_0^1\Sigma_2^{-3/2}\sum_\ell a_\ell^4\,du<\beta_{\mathrm{odd}}$
+\emph{for the profile's configurations}, sharp at the equal two-copy point ($a=b$, the $\beta_{\mathrm{odd}}$
+configuration). This restriction is essential and structural: the live set $L(s)=\{\ell:|u+\ell|<s\}$ is an
+interval of \emph{consecutive} integers, so its even and odd parts differ in size by at most one
+(\emph{balanced} channels), and across the balanced Debye configurations the ratio
+$(\mathbb E|Z|-\mathbb E|G|)\,\Sigma_2^{3/2}/\sum a_\ell^4$ is maximal at the two-copy pair. A general,
+\emph{imbalanced} amplitude vector need not obey the bound---a single even copy against five odd copies
+exceeds $K_\star$ by $\approx9\%$ (\texttt{verify\_dagger\_extremal.py})---but no such configuration occurs in
+the profile. It feeds through the $u$-integral to a closed-form majorant $B(s)=F_{\mathrm{gauss}}(s)+\sqrt{2/\pi}\,K_\star\int_0^1\Sigma_2^{-3/2}\sum_\ell a_\ell^4\,du<\beta_{\mathrm{odd}}$
 on $(1,20]$ (worst margin $0.009$ at $s\approx1.02$; above the odd-$N$ FFT norm at $N=2^{16}-1$;
 \texttt{verify\_bn\_profile\_gaussian.py}). So $\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$ modulo this one
 \emph{expected-modulus} inequality. The off-the-shelf route fails quantitatively: the $1$-D Wasserstein/Esseen
@@ -1509,11 +1515,13 @@ $s>1$ unconditionally---the former residue (i) (the band-edge strips contributin
 the coalescing points $u=-(\ell+\ell')/2$ handled by the cubic test, $g_\ell'-g_{\ell'}'\ne0$, with no triple
 coincidence) is closed. There also hold the variance-floor inequality $F\le F_K$ and the tail limit
 $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). \emph{A single residual estimate}, validated
-numerically, now separates this from an unconditional $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: the sharp
-Gaussian-excess inequality $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$ above, whose
-integrated majorant $B(s)$ clears $\beta_{\mathrm{odd}}$ (the former residue (ii)); proving it needs only a
-quantitative bound on the Bessel-ring tail ($t>j_{0,1}$) of the Kluyver excess, the half of $K_\star$ that the
-small-$t$ cumulant expansion does not capture. The honest status is that
+numerically, now separates this from an unconditional $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: the
+Gaussian-excess inequality $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$ above
+\emph{for the balanced Debye configurations of the profile} (sharp at the two-copy pair), whose integrated
+majorant $B(s)$ clears $\beta_{\mathrm{odd}}$ (the former residue (ii)); proving it needs a quantitative bound
+on the Bessel-ring tail ($t>j_{0,1}$) of the Kluyver excess (the half of $K_\star$ the small-$t$ cumulant
+misses), together with the balancing $|\#\{\ell\ \mathrm{even}\}-\#\{\ell\ \mathrm{odd}\}|\le1$ from the
+consecutive live set that excludes the imbalanced configurations violating the unrestricted bound. The honest status is that
 the multi-copy region is reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized
 estimate---an expected-modulus bound on the profile maximizer---the entire $N\to\infty$ reduction (joint
 equidistribution and its uniform transfer to the $L^1$ constant $F(s)$) being now rigorous, a strict
