@@ -1272,20 +1272,36 @@ and $F(s)\to\sqrt\pi/2=0.8862<\beta_{\mathrm{odd}}$, with margin $0.042$.
 \noindent The variance-floor bound clears the peak on the compact window: $F_K(s)<\beta_{\mathrm{odd}}$ for
 $s\in(1,6]$ (the binding sliver just above $s=1$, two-copy, has head-room $0.007$; the bulk $0.03$),
 validated by seeded Monte-Carlo with a $3\sigma$ upper-confidence bound and a deterministic FFT cross-check,
-and the tail extends it to all $s$ (\texttt{verify\_bn\_largewave\_tail.py}). So
-$\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$, with the only non-rigorous step a Taylor-model interval
-enclosure of $F_K$ on $(1,6]$.
+and the tail extends it to all $s$ (\texttt{verify\_bn\_largewave\_tail.py}). A cleaner route isolates the
+gap as a single inequality. The $L^2$ mass of the profile is \emph{exactly conserved}: as $u+\ell$ sweeps
+$(-s,s)$ once,
+\[
+  \int_0^1\mathbb E|Z(u,s)|^2\,du=\tfrac12\int_{-s}^s(s^2-x^2)^{-1/2}\,dx=\tfrac\pi2\qquad(s\ge1),
+\]
+so every bit of the $s$-dependence of $F$ sits in the ratio $\rho(u,s)=\mathbb E|Z|/\sqrt{\mathbb E|Z|^2}\le1$,
+the $L^1/L^2$ ratio of a two-dimensional Pearson walk. This $\rho$ obeys $\rho\le h(1)=0.9581$ (the equal-pair
+ceiling) and \emph{decreases as the energy spreads}, measured by the closed-form kurtosis
+$R_4=\mathbb E|Z|^4/(\mathbb E|Z|^2)^2\in[\tfrac54,2]$ ($\tfrac54$ at a pure pair, $2$ Gaussian); the certified
+bound $\rho^2\le0.918-0.14\,(R_4-\tfrac54)$ feeds through the conserved-energy identity to a closed-form
+majorant $F_4(s)<\beta_{\mathrm{odd}}$ on $(1,12]$ (supremum $0.917$, while $F_4(1)\ge\beta_{\mathrm{odd}}$
+keeps the ceiling honest at the peak; \texttt{verify\_bn\_profile\_concentration.py}). So
+$\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$ modulo this one Pearson-walk concentration inequality---specific
+to the walk (it fails for a generic variable with the same moments), hence calling for an expected-modulus
+bound rather than a moment inequality.
 
 \noindent What is now \emph{proved}, for every $s>1$: the live Debye phases are jointly equidistributed with
 an explicit $N^{-1/2}$ power saving (Theorem~\ref{thm:joint-equi}), resting only on the linear independence of
 the curvature kernels $g_\ell$ (distinct poles); the variance-floor inequality $F\le F_K$ and the tail limit
 $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). \emph{Two residual estimates}, both validated
 numerically, separate this from an unconditional $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: (i) the
-uniform-in-$u$ band-edge transfer to the $L^1$ limit, and (ii) the interval enclosure of $F_K$ on the compact
-window. The honest status is that the multi-copy region is reduced from a black-box Weyl-sum/anti-flatness
-problem to two sharply localized, interval-arithmetic-shaped estimates---a strict improvement over the ``only
-unitarity is rigorous'' status of Remark~\ref{rem:bn-parity}, and the same flavour as the (now closed)
-$t\le N/2$ residual. The closest published result, an $L^4$ bound for the same discrete chirp, stops short of
+uniform-in-$u$ band-edge transfer to the $L^1$ limit (a uniform van der Corput discrepancy, with the
+band-edge strips contributing $O(\varepsilon^{3/4})$ and the coalescing points $u=-(\ell+\ell')/2$ handled by
+the cubic test, $g_\ell'-g_{\ell'}'\ne0$), and (ii) the Pearson-walk concentration inequality
+$\rho^2\le0.918-0.14\,(R_4-\tfrac54)$ that, via the conserved $L^2$ mass, bounds the profile below
+$\beta_{\mathrm{odd}}$. The honest status is that the multi-copy region is reduced from a black-box
+Weyl-sum/anti-flatness problem to two sharply localized estimates---a uniform discrepancy bound and an
+expected-modulus bound---a strict improvement over the ``only unitarity is rigorous'' status of
+Remark~\ref{rem:bn-parity}. The closest published result, an $L^4$ bound for the same discrete chirp, stops short of
 the $L^1$ constant~\cite{FuRenWang}.
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
@@ -1589,7 +1605,7 @@ support comb $\{1\}\cup\{kp\pm1\}$ for $p=3,5,7,11,13$, of size $p$.}\label{fig:
 \section{Reproducibility}\label{sec:repro}
 
 Every claim above is reproduced by a standalone script (run via \texttt{uv run --script}); all pass.
-\begin{longtable}{@{}l@{\hspace{0.7em}}l@{}}
+\begin{longtable}{@{}l@{\hspace{0.25em}}l@{}}
 \hline
 Claim & Script \\
 \hline
@@ -1656,6 +1672,7 @@ $\quad$rigorous $F'>0$ on $[0.937,1]$ (interval arith.) & \texttt{verify\_bn\_pr
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
 Joint Debye equidistribution (\S\ref{sub:multicopy}) & \texttt{verify\_debye\_equidistribution.py}\\
 Multi-copy profile $\max_{s\ge1}F=\beta_{\mathrm{odd}}$ (Lem.~\ref{lem:varfloor}) & \texttt{verify\_bn\_largewave\_tail.py}\\
+Conserved-energy identity; concentration route & \texttt{verify\_bn\_profile\_concentration.py}\\
 Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\
