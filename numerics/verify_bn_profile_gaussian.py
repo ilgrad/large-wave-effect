@@ -55,9 +55,12 @@ excess scales like a length, ~ sqrt(Sigma2).
 
 Feeding (D) through the u-integral gives the closed-form majorant
     B(s) = F_gauss(s) + sqrt(2/pi) * K_star * int_0^1 (sum_l a_l^4) / Sigma2^{3/2} du   >=   F(s) ,
-and this script certifies B(s) < beta_odd on s in (1, 20].  The binding sliver is s just above 1, where B is
-~0.919 (margin 0.009); the admissible window for the constant is tight -- min_s K_max(s) = 0.0402 (at
-s=1.02) against the sharp K_star=0.0359, a headroom of only 0.004, so NO lossy off-the-shelf constant fits.
+and this script certifies B(s) < beta_odd on s in [1.005, 20].  On the THIN SLIVER (1, 1.005] the K_star
+majorant does NOT clear beta_odd -- the admissible constant K_max(s) DIPS to 0.0338 < K_star there (B(1.002)
+=0.930 > beta_odd) -- so the sliver is covered instead by the PROVED variance floor F <= F_2 < beta_odd
+(Lemma lem:varfloor; the live set is essentially two copies, margin >= 0.003; verify_dagger_window.py).  On
+[1.005, inf) the window is K_max >= 0.0364 > K_star (headroom only 0.0005, so NO lossy off-the-shelf constant
+fits).
 This is why the standard route fails: the 1-D Wasserstein/Esseen CLT bound W_1(X,G_X) <= (1/2) sum E|a_l cos|^3
 / sigma_X^2 (the constant 1/2 is Esseen's, and SHARP) gives a remainder ~0.2-0.8 -- it overshoots the 0.045
 margin by an order of magnitude because sum a^3 / sigma^2 stays Theta(1) (the amplitudes within a band are
@@ -99,7 +102,7 @@ from numpy import cos, pi, sin, sqrt
 from scipy.integrate import quad
 from scipy.special import ellipe, j0
 
-BETA_ODD = 0.9280193036689088  # eq:beta-odd; the s=1 two-copy peak (verify_beta_odd.py)
+BETA_ODD = 0.92801930480793112  # eq:beta-odd, s=1 two-copy peak (high-precision; the repo's 0.9280193036689088 is off past digit 9)
 H1 = 0.9580913983830018  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi), the equal-pair modulus
 ROOT = sqrt(2 / pi)
 TAIL = sqrt(pi) / 2  # F_gauss(infinity) = E|G| at sigma_X=sigma_Y = 0.8862269...
@@ -321,29 +324,39 @@ def main() -> int:
     n_odd = (1 << 16) - 1
     worst_b = -1.0
     worst_gap = 1e9
-    for s in (1.02, 1.05, 1.1, 1.2, 1.5, 2.0, 2.5, 3.0, 5.0, 8.0, 12.0, 20.0):
+    for s in (1.005, 1.02, 1.05, 1.1, 1.2, 1.5, 2.0, 2.5, 3.0, 5.0, 8.0, 20.0):
         b = B_majorant(s)
         ff = F_fft_oddN(s, n_odd)
         worst_b = max(worst_b, b)
         worst_gap = min(worst_gap, b - ff)
         below = b < BETA_ODD
         ok &= below and (b - ff) > -5e-3  # B is a majorant of the true profile (FFT), up to FFT u-wobble
-        print(f"      {s:5.2f} {ff:12.5f} {b:9.5f} {b - ff:9.5f} {BETA_ODD - b:9.5f} "
+        print(f"      {s:5.3f} {ff:12.5f} {b:9.5f} {b - ff:9.5f} {BETA_ODD - b:9.5f} "
               f"{'yes' if below else 'NO':>8}")
-    print(f"      => sup_(1,20] B = {worst_b:.5f} < beta_odd = {BETA_ODD:.5f}  (worst margin "
-          f"{BETA_ODD - worst_b:.4f}, at s~1.02);  min (B - F_FFT) = {worst_gap:+.4f} (B majorizes)")
+    # The sliver (1, 1.005]: the K_star majorant does NOT clear beta_odd (K_max dips below K_star -- see [iv]);
+    # there F is covered instead by the PROVED variance floor F <= F_2 < beta_odd (Lemma lem:varfloor),
+    # the live set being essentially two copies (verify_dagger_window.py).
+    b_sliver = B_majorant(1.002)
+    print(f"      sliver s=1.002: B={b_sliver:.5f} {'> beta (K_star majorant fails here)' if b_sliver > BETA_ODD else ''}"
+          f"  -- covered by the variance floor F<=F_2<beta_odd, NOT by B (verify_dagger_window.py)")
+    print(f"      => sup_[1.005,20] B = {worst_b:.5f} < beta_odd = {BETA_ODD:.5f}  (worst margin "
+          f"{BETA_ODD - worst_b:.4f}, at s~1.005);  min (B - F_FFT) = {worst_gap:+.4f} (B majorizes)")
 
-    # [iv] tightness: the admissible constant window is thin -- min_s K_max(s) barely exceeds K_star.
-    print("\n[iv] tightness of the route -- K_max(s) = (beta_odd - F_gauss)/(sqrt(2/pi) int control):")
-    print("      a PROVABLE constant must land in [K_star, min_s K_max]; no lossy off-the-shelf bound fits.")
+    # [iv] tightness: K_max(s) is the largest admissible constant.  It DIPS BELOW K_star on the sliver
+    # (1, 1.005] (so B alone cannot clear beta there -> variance floor); on [1.005, inf) K_max > K_star.
+    print("\n[iv] tightness -- K_max(s) = (beta_odd - F_gauss)/(sqrt(2/pi) int control):")
+    print("      K_max dips < K_star on the sliver (1,1.005] (variance-floor zone); >= K_star on [1.005,inf):")
     kmin = 1e9
-    for s in (1.02, 1.05, 1.2, 1.5, 2.0, 3.0):
+    for s in (1.002, 1.005, 1.02, 1.05, 1.2, 1.5, 2.0, 3.0):
         ic = ROOT * excess_control_integral(s)
         kmax = (BETA_ODD - F_gauss(s)) / ic
-        kmin = min(kmin, kmax)
-        print(f"      s={s:5.2f}:  K_max = {kmax:.5f}")
-    print(f"      => min_s K_max = {kmin:.5f}  vs sharp K_star = {K_STAR:.5f}  "
-          f"(headroom {kmin - K_STAR:.5f})   {'ok (K_star fits)' if kmin > K_STAR else 'FAIL'}")
+        if s >= 1.005:
+            kmin = min(kmin, kmax)
+        flag = "  < K_star  (sliver -> variance floor)" if kmax < K_STAR else ""
+        print(f"      s={s:5.3f}:  K_max = {kmax:.5f}{flag}")
+    print(f"      => min_[1.005,inf) K_max = {kmin:.5f} vs sharp K_star = {K_STAR:.5f} "
+          f"(headroom {kmin - K_STAR:.5f}); sliver covered by the variance floor   "
+          f"{'ok' if kmin > K_STAR else 'FAIL'}")
     ok &= kmin > K_STAR
 
     print("\n" + "=" * 96)

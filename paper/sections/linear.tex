@@ -989,7 +989,7 @@ is imaginary). The Debye envelope $|J_{Nu}(N)|\sim\sqrt{2/\pi N}\,(1-u^2)^{-1/4}
 limiting value
 \begin{equation}\label{eq:beta-odd}
   \beta_{\mathrm{odd}}=\sqrt{\tfrac2\pi}\int_0^1\mathbb E_{\Phi,\Psi}
-     \sqrt{\frac{\cos^2\Phi}{\sqrt{1-u^2}}+\frac{\cos^2\Psi}{\sqrt{u(2-u)}}}\;\mathrm du=0.928019303668909\ldots,
+     \sqrt{\frac{\cos^2\Phi}{\sqrt{1-u^2}}+\frac{\cos^2\Psi}{\sqrt{u(2-u)}}}\;\mathrm du=0.928019304807931\ldots,
 \end{equation}
 an elliptic-integral average ($\Phi,\Psi$ independent uniform). Computed to $25$ digits, it matches no
 combination of $\pi,\eu^\gamma,\Gamma(\tfrac14),\sqrt2$, Catalan's constant, $\ldots$, and is not a low-degree
@@ -1491,21 +1491,34 @@ fourth-cumulant estimate
   \mathbb E|Z|-\mathbb E|G|\ \le\ K_\star\,\frac{\sum_\ell a_\ell^4}{\Sigma_2^{3/2}},\qquad
   K_\star=\frac{h(1)-\sqrt\pi/2}{2}=0.035932,
 \]
-\emph{for the profile's configurations}, sharp at the equal two-copy point ($a=b$, the $\beta_{\mathrm{odd}}$
-configuration). This restriction is essential and structural: the live set $L(s)=\{\ell:|u+\ell|<s\}$ is an
-interval of \emph{consecutive} integers, so its even and odd parts differ in size by at most one
-(\emph{balanced} channels), and across the balanced Debye configurations the ratio
-$(\mathbb E|Z|-\mathbb E|G|)\,\Sigma_2^{3/2}/\sum a_\ell^4$ is maximal at the two-copy pair. A general,
-\emph{imbalanced} amplitude vector need not obey the bound---a single even copy against five odd copies
-exceeds $K_\star$ by $\approx9\%$ (\texttt{verify\_dagger\_extremal.py})---but no such configuration occurs in
-the profile. It feeds through the $u$-integral to a closed-form majorant $B(s)=F_{\mathrm{gauss}}(s)+\sqrt{2/\pi}\,K_\star\int_0^1\Sigma_2^{-3/2}\sum_\ell a_\ell^4\,du<\beta_{\mathrm{odd}}$
-on $(1,20]$ (worst margin $0.009$ at $s\approx1.02$; above the odd-$N$ FFT norm at $N=2^{16}-1$;
-\texttt{verify\_bn\_profile\_gaussian.py}). So $\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$ modulo this one
-\emph{expected-modulus} inequality. The off-the-shelf route fails quantitatively: the $1$-D Wasserstein/Esseen
-CLT bound $W_1(X,G_X)\le\tfrac12\sum_\ell\mathbb E|a_\ell\cos\Phi_\ell|^3/\sigma_X^2$ (Esseen's constant $\tfrac12$
-is sharp) leaves a remainder $\sim0.2$--$0.8$, overshooting the $0.045$ margin tenfold, because $\sum a_\ell^3/\sigma^2$
-stays $\Theta(1)$; only the fourth cumulant $\sum a_\ell^4/\Sigma_2^2$, which \emph{decays} as the energy
-spreads, fits the thin admissible window ($\min_sK_{\max}=0.0404$ against $K_\star=0.0359$).
+\emph{for the profile's balanced configurations}, sharp at the equal two-copy point ($a=b$, the
+$\beta_{\mathrm{odd}}$ configuration). The restriction is essential and structural: the live set
+$L(s)=\{\ell:|u+\ell|<s\}$ is an interval of \emph{consecutive} integers, so its even and odd parts differ in
+size by at most one (\emph{balanced} channels); a general \emph{imbalanced} vector need not obey the
+bound---one even copy against five odd exceeds $K_\star$ by $\approx9\%$
+(\texttt{verify\_dagger\_extremal.py})---but no such configuration occurs in the profile. The
+\emph{two-copy core} $R(1,\rho)\le K_\star$ ($\rho=b/a$, equality iff $\rho=1$) is now \emph{proved}: the
+symmetry $R(1,\rho)=R(1,1/\rho)$ forces $R'(1)=0$, so with $\Phi=K_\star P-(\mathbb E|Z|-\mathbb E|G|)$ one has
+$\Phi(1)=\Phi'(1)=0$, $\Phi''\ge0$ on $[0.6,1]$ and $\Phi\ge0$ on $(0,0.6]$ (validated interval arithmetic),
+whence $\Phi(\rho)=\int_\rho^1(x-\rho)\Phi''\,dx\ge0$ (\texttt{verify\_dagger\_extremal2.py}). The
+$\ge3$-copy balanced case stays \emph{validated} (no balanced configuration beats the pair) and---since $R$
+is \emph{not} Schur-monotone---does \emph{not} reduce to the two-copy core.
+
+Feeding the bound through the $u$-integral gives the majorant
+\[
+  B(s)=F_{\mathrm{gauss}}(s)+\sqrt{2/\pi}\,K_\star\int_0^1\Sigma_2^{-3/2}\textstyle\sum_\ell a_\ell^4\,du\ \ge\ F(s),
+\]
+which clears $\beta_{\mathrm{odd}}$ on $[1.005,\infty)$, where the admissible constant
+$K_{\max}(s)\ge0.0363>K_\star$ (the largest $K$ for which $B<\beta_{\mathrm{odd}}$).
+On the thin sliver $(1,1.005]$ the majorant is \emph{not} used---there $K_{\max}$ dips to $0.0338<K_\star$, so
+$B$ alone would not clear $\beta_{\mathrm{odd}}$---and instead the \emph{proved} variance floor $F\le F_K$
+(Lemma~\ref{lem:varfloor}) gives $F\le F_2<\beta_{\mathrm{odd}}$ directly (the live set is essentially two
+copies, margin $\ge0.003$; \texttt{verify\_dagger\_window.py}). So $\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$
+modulo the single $\ge3$-copy balanced expected-modulus inequality. The off-the-shelf routes fail
+quantitatively: the $1$-D Wasserstein/Esseen CLT bound (Esseen's sharp constant $\tfrac12$) overshoots the
+margin tenfold because $\sum a_\ell^3/\sigma^2$ stays $\Theta(1)$; the crude Bessel-ring tail bound also
+overshoots ($\approx1.7K_\star$, the excess being a \emph{signed} ring sum whose cancellation a modulus bound
+destroys), so the residual genuinely needs the signed tail or a multivariate concavity argument.
 
 \noindent What is now \emph{proved}, for every $s>1$: the live Debye phases are jointly equidistributed with
 an explicit $N^{-1/2}$ power saving (Theorem~\ref{thm:joint-equi}), resting only on the linear independence of
@@ -1516,16 +1529,17 @@ the coalescing points $u=-(\ell+\ell')/2$ handled by the cubic test, $g_\ell'-g_
 coincidence) is closed. There also hold the variance-floor inequality $F\le F_K$ and the tail limit
 $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). \emph{A single residual estimate}, validated
 numerically, now separates this from an unconditional $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: the
-Gaussian-excess inequality $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$ above
-\emph{for the balanced Debye configurations of the profile} (sharp at the two-copy pair), whose integrated
-majorant $B(s)$ clears $\beta_{\mathrm{odd}}$ (the former residue (ii)); proving it needs a quantitative bound
-on the Bessel-ring tail ($t>j_{0,1}$) of the Kluyver excess (the half of $K_\star$ the small-$t$ cumulant
-misses), together with the balancing $|\#\{\ell\ \mathrm{even}\}-\#\{\ell\ \mathrm{odd}\}|\le1$ from the
-consecutive live set that excludes the imbalanced configurations violating the unrestricted bound. The honest status is that
-the multi-copy region is reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized
-estimate---an expected-modulus bound on the profile maximizer---the entire $N\to\infty$ reduction (joint
-equidistribution and its uniform transfer to the $L^1$ constant $F(s)$) being now rigorous, a strict
-improvement over the ``only unitarity is rigorous'' status of Remark~\ref{rem:bn-parity}. The closest
+$\ge3$-copy case of the balanced Gaussian-excess inequality $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$
+above (the former residue (ii)). Its \emph{two-copy core} $R(1,\rho)\le K_\star$ is \emph{proved}
+(\texttt{verify\_dagger\_extremal2.py}), the sliver $s\in(1,1.005]$ is covered by the proved variance floor
+$F\le F_2<\beta_{\mathrm{odd}}$, and the $\ge3$-copy balanced configurations are validated never to beat the
+pair; but $R$ is not Schur-monotone, so this last step does not reduce to the two-copy core, and proving it
+needs the \emph{signed} Bessel-ring tail of the Kluyver excess (crude modulus bounds overshoot to
+$1.7K_\star$) or a multivariate concavity argument. The honest status is that the multi-copy region is
+reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
+estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
+constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
+Remark~\ref{rem:bn-parity}. The closest
 published result, an $L^4$ bound for the same discrete chirp, stops short of the $L^1$
 constant~\cite{FuRenWang}.
 
@@ -1900,6 +1914,9 @@ Uniform-in-$u$ band-edge transfer (Thm.~\ref{thm:uniform-transfer}) & \texttt{ve
 Multi-copy profile $\max_{s\ge1}F=\beta_{\mathrm{odd}}$ (Lem.~\ref{lem:varfloor}) & \texttt{verify\_bn\_largewave\_tail.py}\\
 Conserved-energy identity; concentration route & \texttt{verify\_bn\_profile\_concentration.py}\\
 Gaussian-comparison majorant $B(s)<\beta_{\mathrm{odd}}$ (residue (ii)) & \texttt{verify\_bn\_profile\_gaussian.py}\\
+Two-copy core $R(1,\rho)\le K_\star$ proved (residue (ii)) & \texttt{verify\_dagger\_extremal2.py}\\
+Kluyver excess: small-$t$ head $+$ signed ring tail & \texttt{verify\_dagger\_kluyver.py}\\
+Window split: variance floor on $(1,1.005]$ & \texttt{verify\_dagger\_window.py}\\
 Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\
