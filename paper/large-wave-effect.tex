@@ -329,7 +329,15 @@ precision on primes of the same size), so $\Theta(\ln\ln\ln N)$ along primorials
 \emph{rigorously certified} for small $N$ (Lipschitz-grid / elementary Lasserre: $U_N-A_N\ge0.049,0.057,0.030,0.082$
 for $N=6,9,12,15$); what remains is a rigorous \emph{asymptotic} lower bound along primorials (the grid is
 exponential in $\tfrac12\varphi(2N)$) and the exact algebraic value per $N$ (certified per-$N$ brackets follow from the
-Lasserre moment--SOS hierarchy, Section~\ref{sec:exact}).
+Lasserre moment--SOS hierarchy, Section~\ref{sec:exact}). For $\omega(m)=2$ (odd part a product of two primes)
+the structure is now explicit: the relation lattice has unimodular Smith normal form, and its shortest
+relations are \emph{chained} with support set by the smallest prime---$3\mid N$ gives a support-$3$ relation
+$\omega_a+\omega_b=\omega_c$ with $a+b=N/3$ (from $2\sin\tfrac\pi6=1$), $5\mid N$ a support-$5$
+golden-ratio relation---and the dependent band then carries $\Theta(N)$ relation-locked modes of $\Theta(1)$
+total weight whose \emph{signed} net stays $O(1)$. The free sandwich that closes $\omega(m)\le1$ becomes
+$\Theta(1)$, so the lemma reduces to a sup-side signed-cancellation estimate (the primal counterpart of
+McGehee--Pigno--Smith/Konyagin) on which crude modulus bounds overshoot---structurally the \emph{same}
+obstruction as the multi-copy residual~(2) (\texttt{verify\_excess\_omega2.py}).
 \item The Schr\"odinger constant $B_N/\sqrt N$. The order $B_N=\Theta(\sqrt N)$ is settled,
 $\liminf\ge c_0/\sqrt2\approx0.861$ is proved (Theorem~\ref{thm:schr-lower}; numerically attained on the
 even subsequence), and the constant splits by the parity of $N$ (Remark~\ref{rem:bn-parity}): the
