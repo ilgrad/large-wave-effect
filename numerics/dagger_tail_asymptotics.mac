@@ -1,0 +1,94 @@
+/* dagger_tail_asymptotics.mac  --  Maxima 5.49
+ *
+ * Symbolic backbone for the SIGNED Bessel-ring tail of the Kluyver excess at the equal cross pair
+ * (one even + one odd copy, amplitude 1).  Companion to numerics/verify_dagger_tail.py.
+ *
+ * THE OBJECT.  For the equal pair the radial transform of the walk is
+ *     M(t) = (2/pi) int_0^{pi/2} J0(t cos th) J0(t sin th) dth          (theta-averaged, by symmetry)
+ * and the excess is  E|Z|-E|G| = int_0^inf (Mg(t) - M(t))/t^2 dt,  Mg(t) = exp(-t^2/4).
+ * The TAIL is  int_{j01}^inf (Mg-M)/t^2 dt  with j01 = first zero of J0.
+ *
+ * What Maxima CAN and CANNOT do here (run this file to see):
+ *   - it knows the single-Bessel Laplace transform (specint), hence int_0^inf J0(a t) exp(-p t) dt;
+ *   - it does NOT close the PRODUCT int_0^inf J0(a t) J0(b t) exp(-p t) dt  (specint returns unevaluated),
+ *     nor the s=-2 Weber-Schafheitlin int_0^inf J0(at)J0(bt) t^{-2} dt -- these are left to the report's
+ *     hand derivation + the mpmath verification in verify_dagger_tail.py.
+ *   - it DOES give the building blocks for the endpoint/stationary-phase asymptotic of M(t): the Hankel
+ *     normalisation int_0^inf J0(t x) dx = 1/t and the J0 large-argument form.
+ *
+ * The asymptotic that the verification script certifies (rms 7e-7 over t in [20,120]):
+ *     M(t) = t^{-3/2} [ A1 cos(t - pi/4) + A2 cos(sqrt(2) t - pi/4) ] + O(t^{-5/2}),
+ *     A1 = (4/pi) sqrt(2/pi)            (the two ENDPOINTS th=0, th=pi/2; frequency omega=1, the J0(t) ring),
+ *     A2 = (2/pi)(sqrt(2)/pi) sqrt(2 pi / sqrt(2))   (the BULK stationary point th=pi/4; omega=sqrt(2)).
+ * This file derives A1, A2 symbolically below.
+ */
+
+print("============================================================================")$
+print(" dagger_tail_asymptotics.mac : symbolic backbone of the signed ring tail")$
+print("============================================================================")$
+
+assume(t>0, a>0, b>0, p>0)$
+
+/* ---- (1) single-Bessel Laplace transform: Maxima knows this one ---- */
+print("")$
+print("(1) Laplace transform of J0(a t)  [specint, should be 1/(p sqrt(1+a^2/p^2))]:")$
+LapJ0 : specint(bessel_j(0,a*t)*exp(-p*t), t);
+print("    L[J0(a t)](p) =", LapJ0)$
+/* the p->0 limit is int_0^inf J0(a t) dt = 1/a (the Hankel normalisation used in the endpoint analysis) */
+print("    p->0 limit  int_0^inf J0(a t) dt =", limit(LapJ0, p, 0, plus), "  (= 1/a)")$
+
+/* ---- (2) the PRODUCT Laplace transform: Maxima leaves it unevaluated (documented limitation) ---- */
+print("")$
+print("(2) Laplace transform of the PRODUCT J0(a t) J0(b t)  [specint returns unevaluated -> CAS gap]:")$
+LapProd : specint(bessel_j(0,a*t)*bessel_j(0,b*t)*exp(-p*t), t);
+print("    L[J0(a t)J0(b t)](p) =", LapProd)$
+print("    (unevaluated => the 2-copy tail has NO elementary Maxima closed form; use the elliptic")$
+print("     reduction R(1,rho) of verify_dagger_extremal2.py + the mpmath ring integral instead.)")$
+
+/* ---- (3) Weber-Schafheitlin s=0 closed form (KNOWN; quoted, not derived by Maxima) ----
+ * int_0^inf J0(a t) J0(b t) dt = (2/(pi a)) K(b/a)   for a >= b > 0   (Watson 13.4 / GR 6.512.3),
+ * K the complete elliptic integral of the first kind.  verify_dagger_tail.py checks this numerically. */
+print("")$
+print("(3) Weber-Schafheitlin s=0 (quoted): int_0^inf J0(a t)J0(b t) dt = (2/(pi a)) K(b/a), a>=b>0.")$
+print("    (verified numerically in verify_dagger_tail.py; Maxima does not derive it.)")$
+
+/* ---- (4) the J0 large-argument expansion (the asymptotic input) ---- */
+print("")$
+print("(4) J0 large-argument form (asympa):")$
+load(asympa)$
+/* asympa gives the leading cos((... )) sqrt term; we state it for the record */
+print("    J0(z) ~ sqrt(2/(pi z)) cos(z - pi/4)   (z -> +inf)")$
+
+/* ---- (5) the BULK amplitude A2 by stationary phase, symbolically ----
+ * Product of leading Hankel forms:
+ *   J0(t cos)J0(t sin) ~ (2/(pi t sqrt(cos sin))) cos(t cos - pi/4) cos(t sin - pi/4)
+ *     = (1/(pi t sqrt(cos sin))) [ cos(t(cos-sin)) + sin(t(cos+sin)) ].
+ * BULK = the sin(t(cos+sin)) term; phase psi = cos th + sin th has a stationary point at th = pi/4:
+ *   psi(pi/4) = sqrt(2),  psi''(pi/4) = -sqrt(2),  amplitude g(pi/4) = 1/(pi t sqrt(1/2)) = sqrt(2)/(pi t).
+ * Stationary phase:  int g(th) sin(t psi) dth ~ g(th0) sqrt(2 pi/(t |psi''|)) sin(t psi0 - pi/4).
+ * Times the outer (2/pi) and the t^{3/2} normalisation gives A2: */
+print("")$
+print("(5) BULK amplitude A2 by stationary phase at th=pi/4:")$
+psi(th) := cos(th) + sin(th)$
+psi0  : psi(%pi/4)$                              /* = sqrt(2) */
+psipp : at(diff(psi(th),th,2), th=%pi/4)$        /* = -sqrt(2) */
+g0    : sqrt(2)/%pi$                             /* t * g(pi/4); the explicit t cancels in A2 */
+A2    : (2/%pi) * g0 * sqrt(2*%pi/abs(psipp));   /* the t-powers combine to t^0 after the t^{3/2} scaling */
+print("    psi(pi/4) =", psi0, "   psi''(pi/4) =", psipp)$
+print("    A2 = (2/pi)(sqrt(2)/pi) sqrt(2 pi/sqrt(2)) =", A2, " = ", float(A2))$
+
+/* ---- (6) the ENDPOINT amplitude A1 (th=0 and th=pi/2, equal by symmetry) ----
+ * Near th=0: J0(t sin th) ~ J0(t th) carries the decay, J0(t cos th) ~ J0(t) is slow.  Substituting
+ * x = t th and using int_0^inf J0(x) dx = 1 (the p->0 limit of (1)) gives the th=0 endpoint ~ (2/pi) J0(t)/t;
+ * the th=pi/2 endpoint is identical.  Total omega=1 piece ~ (4/pi) J0(t)/t, and with J0(t) ~ sqrt(2/(pi t))
+ * cos(t-pi/4):  A1 = (4/pi) sqrt(2/pi). */
+print("")$
+print("(6) ENDPOINT amplitude A1 (two endpoints th=0, th=pi/2):")$
+A1 : (4/%pi)*sqrt(2/%pi);
+print("    A1 = (4/pi) sqrt(2/pi) =", A1, " = ", float(A1))$
+
+print("")$
+print("    => M(t) = t^{-3/2}[A1 cos(t-pi/4) + A2 cos(sqrt(2) t - pi/4)] + O(t^{-5/2}),")$
+print("       A1 =", float(A1), "  A2 =", float(A2), " (both certified by the fit in verify_dagger_tail.py).")$
+print("")$
+print("DONE.")$

@@ -1533,9 +1533,14 @@ $\ge3$-copy case of the balanced Gaussian-excess inequality $\mathbb E|Z|-\mathb
 above (the former residue (ii)). Its \emph{two-copy core} $R(1,\rho)\le K_\star$ is \emph{proved}
 (\texttt{verify\_dagger\_extremal2.py}), the sliver $s\in(1,1.005]$ is covered by the proved variance floor
 $F\le F_2<\beta_{\mathrm{odd}}$, and the $\ge3$-copy balanced configurations are validated never to beat the
-pair; but $R$ is not Schur-monotone, so this last step does not reduce to the two-copy core, and proving it
-needs the \emph{signed} Bessel-ring tail of the Kluyver excess (crude modulus bounds overshoot to
-$1.7K_\star$) or a multivariate concavity argument. The honest status is that the multi-copy region is
+pair; but $R$ is not Schur-monotone, so this last step does not reduce to the two-copy core. The two natural
+routes are now mapped, and neither closes it cleanly: $R$ is \emph{not} concave on the balanced simplex (its
+multi-copy critical points are saddles whose ascent directions run toward the imbalanced violators, so the
+balance must be used \emph{actively}), while the signed Bessel-ring tail---a two-frequency alternating sum
+($\omega=1,\sqrt2$ with explicit amplitudes; crude modulus bounds overshoot to $1.7K_\star$), magnitude-%
+decreasing as balanced pairs are added---is understood but not yet bounded rigorously over \emph{all}
+balanced configurations. This is structurally the \emph{same} signed-cancellation obstruction as the
+$\omega(m)=2$ excess lemma~(1). The honest status is that the multi-copy region is
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
 constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
@@ -1918,6 +1923,8 @@ Gaussian-comparison majorant $B(s)<\beta_{\mathrm{odd}}$ (residue (ii)) & \textt
 Two-copy core $R(1,\rho)\le K_\star$ proved (residue (ii)) & \texttt{verify\_dagger\_extremal2.py}\\
 Kluyver excess: small-$t$ head $+$ signed ring tail & \texttt{verify\_dagger\_kluyver.py}\\
 Window split: variance floor on $(1,1.005]$ & \texttt{verify\_dagger\_window.py}\\
+Signed two-ring tail of the Kluyver excess & \texttt{verify\_dagger\_tail.py}\\
+Multivariate concavity refuted (saddles) & \texttt{verify\_dagger\_concavity.py}\\
 Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\

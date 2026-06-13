@@ -1,0 +1,41 @@
+-- dagger_tail_elliptic.input  --  FriCAS 2025.12
+--
+-- The exact 2-copy excess has NO elementary Bessel-integral closed form: both FriCAS and Maxima fail on
+--   int_0^inf J0(a t) J0(b t) t^{-2} dt     and on    Laplace[ J0(a t) J0(b t) ](p).
+-- What CAN be done symbolically is (a) the trig split of the Hankel product that exposes the two ring
+-- frequencies omega = 1 (endpoint) and omega = sqrt(2) (bulk), and (b) the exact integral
+--   int_0^{pi/2} sqrt(A + r^2 cos^2 q) dq = sqrt(A + r^2) * E( r^2/(A + r^2) )   (complete elliptic E),
+-- the inner reduction behind the EXACT 2-copy excess EZ(rho) used in verify_dagger_extremal2.py.
+--
+-- This file uses ONLY plain expressions (no SPAD '==' definitions).  NOTE: in a cold sandbox FriCAS may
+-- exceed a 120s startup budget while it builds its image; the WORKING symbolic deliverable is the Maxima
+-- companion dagger_tail_asymptotics.mac (which derives A1, A2 in closed form and runs in ~2s).  Run with
+--   fricas -nox -noht < dagger_tail_elliptic.input
+
+)set output algebra on
+)set output tex off
+
+-- (1) the trig split that separates the two ring frequencies.
+--     cos(t cos - pi/4) cos(t sin - pi/4) = (1/2)[ cos(t(cos-sin)) + cos(t(cos+sin) - pi/2) ]
+--                                         = (1/2)[ cos(t(cos-sin)) + sin(t(cos+sin)) ].
+--     ENDPOINT freq = |cos th - sin th| -> 1 at th=0,pi/2 ;  BULK freq = cos th + sin th -> sqrt(2) at th=pi/4.
+output("(1) split check: 2 cos(A)cos(B) - cos(A-B) - cos(A+B)  (must be 0):")
+normalize( 2*cos(av)*cos(bv) - cos(av-bv) - cos(av+bv) )
+
+-- (2) the bulk stationary phase:  psi(th)=cos th + sin th,  psi'(pi/4)=0,  psi(pi/4)=sqrt 2,  psi''(pi/4)=-sqrt 2.
+output("(2) bulk phase psi = cos+sin at th=pi/4:  value, first, second derivative:")
+eval(cos(th)+sin(th),        th = %pi/4)
+eval(D(cos(th)+sin(th), th), th = %pi/4)
+eval(D(cos(th)+sin(th), th, 2), th = %pi/4)
+
+-- (3) the inner elliptic identity (record the closed form; the numeric check lives in verify_dagger_tail.py).
+output("(3) inner reduction  int_0^{pi/2} sqrt(A + r^2 cos^2 q) dq = sqrt(A+r^2) E(r^2/(A+r^2))  [recorded].")
+
+-- (4) the two closed-form ring amplitudes (from the Maxima derivation), as exact radicals:
+output("(4) endpoint amplitude A1 = 2^(5/2)/pi^(3/2) =")
+2^(5/2)/%pi^(3/2) :: Expression Float
+output("    bulk amplitude     A2 = 2^(7/4)/pi^(3/2) =")
+2^(7/4)/%pi^(3/2) :: Expression Float
+
+output("DONE.")
+)quit
