@@ -1539,8 +1539,14 @@ multi-copy critical points are saddles whose ascent directions run toward the im
 balance must be used \emph{actively}), while the signed Bessel-ring tail---a two-frequency alternating sum
 ($\omega=1,\sqrt2$ with explicit amplitudes; crude modulus bounds overshoot to $1.7K_\star$), magnitude-%
 decreasing as balanced pairs are added---is understood but not yet bounded rigorously over \emph{all}
-balanced configurations. This is structurally the \emph{same} signed-cancellation obstruction as the
-$\omega(m)=2$ excess lemma~(1). The honest status is that the multi-copy region is
+balanced configurations. A finer split narrows the gap to one sub-family: in amplitude coordinates
+$\Phi=K_\star P-(\mathbb E|Z|-\mathbb E|G|)$ is \emph{convex} at the pair (tangent eigenvalues
+$+0.38,\dots,+6.0$), so the two-copy core extends to a certified near-pair basin (concentration
+$\lambda\ge0.82$), and configurations with $\ge2$ comparable copies in \emph{each} channel fall to the crude
+modulus bound; what remains is exactly the \emph{singleton-channel} family (one channel a single copy,
+$\lambda\in[0.65,0.82)$), where $R$ stays below $K_\star$ (worst $\approx0.91$) but only the signed tail---
+never a modulus bound---certifies it (\texttt{verify\_dagger\_decomp.py}). This is structurally the
+\emph{same} signed-cancellation obstruction as the $\omega(m)=2$ excess lemma~(1). The honest status is that the multi-copy region is
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
 constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
@@ -1926,6 +1932,7 @@ Kluyver excess: small-$t$ head $+$ signed ring tail & \texttt{verify\_dagger\_kl
 Window split: variance floor on $(1,1.005]$ & \texttt{verify\_dagger\_window.py}\\
 Signed two-ring tail of the Kluyver excess & \texttt{verify\_dagger\_tail.py}\\
 Multivariate concavity refuted (saddles) & \texttt{verify\_dagger\_concavity.py}\\
+Near-pair basin $\lambda\ge0.82$; singleton-channel gap & \texttt{verify\_dagger\_decomp.py}\\
 Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\
