@@ -1,0 +1,88 @@
+/* dagger_singleton_rings.mac  --  Maxima 5.49
+ *
+ * Symbolic backbone for the LARGE-t (signed) Bessel-ring tail of the Kluyver excess for the
+ * SINGLETON-CHANNEL family  even = {a1, a3},  odd = {b}  (one channel a single copy).  Companion to
+ * numerics/verify_dagger_singleton.py.  Sibling of dagger_tail_asymptotics.mac (the equal-pair, 2-copy case).
+ *
+ * THE OBJECT.  Z = (a1 cosPhi1 + a3 cosPhi3) + i b cosPsi,  Sigma2 = (a1^2+a3^2+b^2)/2.  The theta-averaged
+ * radial transform of the walk is
+ *     M(t) = (2/pi) int_0^{pi/2} J0(a1 t cos th) J0(a3 t cos th) J0(b t sin th) dth        (c=cos, s=sin)
+ * and the Gaussian-excess is  E|Z|-E|G| = int_0^inf (Mg(t) - M(t))/t^2 dt,
+ *     Mg(t) = (2/pi) int_0^{pi/2} exp(-(sx2 c^2 + sy2 s^2) t^2/2) dth,   sx2=(a1^2+a3^2)/2, sy2=b^2/2.
+ * The large-t TAIL  int_{t2}^inf (Mg-M)/t^2 dt  has Mg negligible (Gaussian, ~ e^{-sy2 t2^2/2}); it equals
+ * - int_{t2}^inf M/t^2 dt + (tiny Gaussian remnant), a SIGNED oscillatory integral.
+ *
+ * WHAT THIS FILE DERIVES (run it to see):
+ *   (1) the EXACT ring-tail integral  int_T^inf t^{-s} e^{i w t} dt = (-i w)^{s-1} Gamma(1-s, -i w T)
+ *       (Maxima's `integrate` returns exactly this; the cancellation is PRESERVED in the closed form);
+ *   (2) the singleton ring structure of M(t) at large t (three regimes, NOT a single Bessel oscillation):
+ *         * ENDPOINT th=pi/2 (c->0): J0(a1 t c)J0(a3 t c) -> 1-ish, J0(b t s) ~ J0(b t).  Substituting
+ *           x = t (pi/2-th) and using the Weber-Schafheitlin s=0 form int_0^inf J0(a1 x)J0(a3 x) dx =
+ *           (2/(pi a1)) K(a3/a1)  (a1>=a3) gives the LEADING t^{-3/2} ring:
+ *             M_end(t) ~ (4/pi^2) (K(a3/a1)/a1) sqrt(2/(pi b)) * t^{-3/2} cos(b t - pi/4),  omega = b.
+ *         * INTERIOR stationary points of the phases (a1 +- a3) cos th + b sin th, at tan th* = b/(a1 +- a3):
+ *           frequencies omega_+- = sqrt((a1 +- a3)^2 + b^2), also O(t^{-3/2}) (3 oscillating Hankel factors,
+ *           one t^{-1/2} from each, one t^{-1/2} from stationary phase, total t^{-3/2}).
+ *         * ENDPOINT th=0 (s->0): J0(b t s) -> 1 over a 1/t window, J0(a1 t)J0(a3 t) oscillates; this is the
+ *           SUBLEADING t^{-2} ring (frequencies a1 +- a3), bounded by its modulus in the tail.
+ *   (3) the leading signed-tail term in closed form via (1) with s=7/2, w=b:
+ *         int_{t2}^inf M_end/t^2 dt = A_end Re[ e^{-i pi/4} (-i b)^{5/2} Gamma(-5/2, -i b t2) ].
+ *
+ * HONEST SCOPE.  This is the SHARP route (it recovers the +0.002 K_star signed tail, vs the +0.039 K_star
+ * crude modulus tail).  The verify_dagger_singleton.py CERTIFICATE uses the crude modulus tail (a clean,
+ * monotone, fully-rigorous capped Bessel envelope, no near-degenerate ring bookkeeping), which already
+ * closes with margin; the ring amplitudes here document the sharper alternative and its closed form.  NOTE:
+ * the interior frequency omega_- = sqrt((a1-a3)^2+b^2) is NEAR-DEGENERATE with the endpoint omega = b when
+ * a1 ~ a3 (worst config: 0.996 vs 0.961), so a fully rigorous SIGNED tail would have to track the beat
+ * between these two rings -- which is exactly why the certificate prefers the modulus route.
+ */
+
+print("==================================================================================")$
+print(" dagger_singleton_rings.mac : ring amplitudes + incomplete-gamma tail (singleton)")$
+print("==================================================================================")$
+
+assume(T>0, w>0, s>1, a1>0, a3>0, b>0, a1>=a3)$
+
+/* ---- (1) the EXACT ring-tail integral (cancellation preserved in closed form) ---- */
+print("")$
+print("(1) int_T^inf t^(-s) e^(i w t) dt  [Maxima integrate -> gamma_incomplete; sign PRESERVED]:")$
+RingTail : integrate(t^(-s)*exp(%i*w*t), t, T, inf)$
+print("    = ", RingTail)$
+print("    closed form: (-i w)^(s-1) Gamma(1-s, -i w T)   (verify by inspection of the above)")$
+
+/* ---- (2) ring frequencies of the singleton M(t) ---- */
+print("")$
+print("(2) singleton ring frequencies (phases of the product-to-sum of three Hankel cosines):")$
+print("    cos(a1 t c -pi/4)cos(a3 t c -pi/4)cos(b t s -pi/4): combinations +-a1 +-a3 +-b give phases")$
+print("      (a1+a3) c +- b s,  (a1-a3) c +- b s  (times t).  Stationary in (0,pi/2): tan th* = (b)/(a1+-a3).")$
+print("    => interior frequencies omega_+- = sqrt((a1+-a3)^2 + b^2);")$
+print("       endpoint th=pi/2 frequency omega_end = b (LEADING, Weber-Schafheitlin);")$
+print("       endpoint th=0 frequencies a1+-a3 (subleading t^{-2}).")$
+
+/* ---- (3) the LEADING endpoint ring amplitude (Weber-Schafheitlin) ---- */
+print("")$
+print("(3) LEADING endpoint (th=pi/2) ring: Weber-Schafheitlin int_0^inf J0(a1 x)J0(a3 x) dx = (2/(pi a1))K(a3/a1):")$
+print("    M_end(t) ~ A_end t^(-3/2) cos(b t - pi/4),  A_end = (4/pi^2)(K(a3/a1)/a1) sqrt(2/(pi b)).")$
+/* numeric instance: the worst singleton config a1=0.852, a3=0.591, b=0.961 (Sigma2=1) */
+a1n:0.852$ a3n:0.591$ bn:0.961$
+Kell : elliptic_kc((a3n/a1n)^2)$            /* elliptic_kc(m), m=k^2 */
+A_end : (4/%pi^2)*(Kell/a1n)*sqrt(2/(%pi*bn))$
+print("    worst config a1=0.852,a3=0.591,b=0.961:  A_end =", float(A_end),
+      " (fit of M(t) t^(3/2) at omega=b gives ~0.726; match modulo the near-degenerate omega_- ring)")$
+print("    omega_end = b =", bn, ";  omega_- = sqrt((a1-a3)^2+b^2) =", float(sqrt((a1n-a3n)^2+bn^2)),
+      "  (near-degenerate => beat)")$
+
+/* ---- the leading signed-tail term via (1) ---- */
+print("")$
+print("(4) leading signed-tail term  int_{t2}^inf M_end/t^2 dt  (s=7/2, w=b) via (1):")$
+T2:12$
+LeadTail : A_end * realpart( exp(-%i*%pi/4) * (-%i*bn)^(5/2) * gamma_incomplete(-5/2, -%i*bn*T2) )$
+print("    int_12^inf M_end/t^2 dt = A_end Re[e^(-i pi/4)(-i b)^(5/2) Gamma(-5/2,-i b*12)] =", float(LeadTail))$
+print("    (matches the leading slice of the numeric signed tail; the full signed tail adds the")$
+print("     interior omega_+- and the th=0 t^{-2} rings, all O(10^-4) or smaller at t2=12).")$
+
+print("")$
+print("DONE.  The CERTIFICATE (verify_dagger_singleton.py) uses the rigorous CAPPED-MODULUS tail instead")$
+print("(monotone Bessel envelope |J0(z)|<=min(1,sqrt(2/(pi z))), no ring bookkeeping); this file documents")$
+print("the sharper SIGNED route and its closed form, which the near-degenerate omega_-/omega_end beat makes")$
+print("delicate to bound rigorously across the whole 2-parameter family.")$

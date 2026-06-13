@@ -1543,10 +1543,17 @@ balanced configurations. A finer split narrows the gap to one sub-family: in amp
 $\Phi=K_\star P-(\mathbb E|Z|-\mathbb E|G|)$ is \emph{convex} at the pair (tangent eigenvalues
 $+0.38,\dots,+6.0$), so the two-copy core extends to a certified near-pair basin (concentration
 $\lambda\ge0.82$), and configurations with $\ge2$ comparable copies in \emph{each} channel fall to the crude
-modulus bound; what remains is exactly the \emph{singleton-channel} family (one channel a single copy,
-$\lambda\in[0.65,0.82)$), where $R$ stays below $K_\star$ (worst $\approx0.91$) but only the signed tail---
-never a modulus bound---certifies it (\texttt{verify\_dagger\_decomp.py}). This is structurally the
-\emph{same} signed-cancellation obstruction as the $\omega(m)=2$ excess lemma~(1). The honest status is that the multi-copy region is
+modulus bound; and the \emph{singleton-channel} family (one channel a single copy, $\lambda\in[0.65,0.82)$,
+$R\le0.91$) is now bounded below $K_\star$ \emph{pointwise} by a rigorous three-region split: a cumulant
+majorant on $[0,1.5]$, an Arb \emph{Taylor model} of the excess on $[1.5,12]$ (the cancellation kept inside
+each polynomial box, which naive ball arithmetic destroys), and a capped-modulus tail on $[12,\infty)$
+(worst-config Arb upper bound $0.991\,K_\star$; \texttt{verify\_dagger\_singleton.py},
+\texttt{verify\_dagger\_decomp.py}). Every region of the balanced simplex is thereby bounded below $K_\star$ at
+each evaluated configuration; what is \emph{not} yet a continuum theorem is the uniform cover between grid
+nodes---a $0.01$-wide interval-amplitude box inflates the cumulant majorant fourfold, so the cover rests on a
+grid-Lipschitz standing assumption, not a closed interval enclosure. This, and the signed cancellation that
+defeats every modulus, concavity, variance-floor and Berry--Esseen route, is structurally the \emph{same}
+obstruction as the $\omega(m)=2$ excess lemma~(1). The honest status is that the multi-copy region is
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
 constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
@@ -1933,6 +1940,7 @@ Window split: variance floor on $(1,1.005]$ & \texttt{verify\_dagger\_window.py}
 Signed two-ring tail of the Kluyver excess & \texttt{verify\_dagger\_tail.py}\\
 Multivariate concavity refuted (saddles) & \texttt{verify\_dagger\_concavity.py}\\
 Near-pair basin $\lambda\ge0.82$; singleton-channel gap & \texttt{verify\_dagger\_decomp.py}\\
+Singleton band $<K_\star$: three-region Arb bound & \texttt{verify\_dagger\_singleton.py}\\
 Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\
