@@ -78,11 +78,12 @@ def main() -> int:
     print("     v_r(j)^2 has full row rank N-1 at generic masses, so each relation F_k = sum k_r omega_r is")
     print("     NOT identically zero (the 'nontrivial analytic condition' step of generic independence)")
     print(f"    {'N':>4} {'nonzero modes':>14} {'Jacobian rank':>14}")
+    aux = np.random.default_rng(2024)  # dedicated stream: keep the validated (B)/(C) draws untouched
     jac_ok = True
     for n in (5, 6, 8, 9, 12):
         rk, modes = 0, 0
         for _ in range(5):
-            inv = 1.0 / np.sqrt(1.0 + 0.3 * rng.standard_normal(n))
+            inv = 1.0 / np.sqrt(1.0 + 0.3 * aux.standard_normal(n))
             w2, wvec = np.linalg.eigh(inv[:, None] * ring_laplacian(n) * inv[None, :])
             keep = w2 > 1e-9
             modes = int(keep.sum())
@@ -96,6 +97,27 @@ def main() -> int:
     ok &= jac_ok
     print(f"    -> submersion at generic masses => F_k != 0, so {{F_k=0}} is measure zero (countable union "
           f"too): {'OK' if jac_ok else 'FAIL'}")
+
+    print("\n(A'') finite-horizon continuity (Lemma disorder-finiteT): sup_{t<=T}|x0^eps - x0^0| <= C_N(1+T)eps")
+    print("      so a gain needs T >~ 1/eps, NOT exp(cT). Fixed direction xi, N=15; the ratio D/(eps(1+T))")
+    print("      must stay bounded and NOT grow with T (exponential sensitivity would blow it up)")
+    xi = aux.uniform(-1, 1, 15)
+    om0, c0 = modal_response(15, np.ones(15))
+    print(f"    {'eps':>6} {'T':>7} {'D=sup|dx0|':>12} {'D/(eps(1+T))':>14}")
+    lip_ok = True
+    for eps in (0.20, 0.10, 0.05, 0.02):
+        om, c = modal_response(15, 1.0 + eps * xi)
+        ratios = []
+        for tmax in (50.0, 300.0, 1000.0):
+            t = np.arange(0.0, tmax, 0.05)
+            d = float(np.max(np.abs((np.sin(np.outer(t, om)) * c).sum(axis=1)
+                                    - (np.sin(np.outer(t, om0)) * c0).sum(axis=1))))
+            ratios.append(d / (eps * (1.0 + tmax)))
+            print(f"    {eps:>6.2f} {tmax:>7.0f} {d:>12.4f} {ratios[-1]:>14.4f}")
+        lip_ok &= ratios[-1] <= ratios[0] + 1e-9  # bounded/decreasing in T == no exp(cT) blow-up
+    ok &= lip_ok
+    print(f"    -> D/(eps(1+T)) does not grow with T (the (1+T)eps law, not exponential): "
+          f"{'OK' if lip_ok else 'FAIL'}")
 
     print("\n(B) Long horizon (T=3e4): disorder lifts efficiency A/C above the blocked ordered value")
     print(f"    {'N':>4} {'ordered A/C':>12} {'disordered A/C (eps=0.4, mean 8)':>34}")

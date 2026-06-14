@@ -929,7 +929,31 @@ $0.83\!\to\!0.91$). But the gain is purely infinite-time: at a short horizon the
 improvement, because the now-independent but near-resonant frequencies need Diophantine time to align.
 The dichotomy is sharp: an infinitesimal perturbation makes the absolute ceiling attainable in principle
 while pushing the time to attain it beyond any physical horizon. Infinite-time amplification improves;
-finite-time amplification does not.
+finite-time amplification does not. The next lemma makes this dichotomy quantitative: at a fixed horizon the
+disordered response is Lipschitz in $\varepsilon$, so a gain forces the horizon to grow like $1/\varepsilon$.
+
+\begin{lemma}[finite horizon is Lipschitz in disorder; a gain needs $T\gtrsim1/\varepsilon$]\label{lem:disorder-finiteT}
+Fix $N$ and a direction $\xi$ with $\|\xi\|_\infty\le1$, and let $x_0^{(\varepsilon)}(t)=\sum_r c_r(\varepsilon)\sin(\omega_r(\varepsilon)t)$
+be the node-$0$ response at masses $m_j=1+\varepsilon\xi_j$. There is $C_N>0$ (depending only on $N$) with
+\[
+  \Bigl|\sup_{0\le t\le T}x_0^{(\varepsilon)}(t)-\sup_{0\le t\le T}x_0^{(0)}(t)\Bigr|\le C_N\,(1+T)\,\varepsilon,
+  \qquad 0\le\varepsilon\le\tfrac12 .
+\]
+Hence a fixed gain $\delta>0$ over the ordered ring needs $\varepsilon\ge\delta/\bigl(C_N(1+T)\bigr)$: at fixed $T$ an
+infinitesimal disorder gives no improvement, and to exploit disorder the horizon must grow as $T\gtrsim\delta/(C_N\varepsilon)$.
+\end{lemma}
+\begin{proof}
+Write $B(\varepsilon)=M^{-1/2}\LN M^{-1/2}$ ($M=\operatorname{diag}(1+\varepsilon\xi_j)$) and $g_t(\lambda)=\sin(\sqrt\lambda\,t)/\sqrt\lambda$
+on the oscillatory subspace $\lambda>0$; the zero mode is structural ($\LN\mathbf1=0$ for every mass profile, eigenvector
+$\mathbf1$) and contributes no oscillation. With $M$-normalized modes one has the closed form
+$x_0^{(\varepsilon)}(t)=m_0^{-1}\,[g_t(B(\varepsilon))]_{00}$. For $\|\xi\|_\infty\le1,\ \varepsilon\le\tfrac12$ the family
+$B(\varepsilon)$ is real-analytic with $\|\partial_\varepsilon B\|\le K_1$, and its nonzero spectrum stays in a fixed
+$[\delta_N,4]$, $\delta_N>0$ (continuity on the compact $\varepsilon$-interval). On $[\delta_N,4]$ the symbol $g_t$ is smooth
+with Lipschitz constant $\le a_N+b_N t$ (from $g_t'(\lambda)=\tfrac{t\cos\sqrt\lambda t}{2\lambda}-\tfrac{\sin\sqrt\lambda t}{2\lambda^{3/2}}$),
+so $\|g_t(B(\varepsilon))-g_t(B(0))\|\le(a_N+b_N t)K_1\varepsilon$. Combined with $|m_0^{-1}-1|\le2\varepsilon$ and the
+$t$-uniform bound $|[g_t(B)]_{00}|\le\delta_N^{-1/2}$, this gives $|x_0^{(\varepsilon)}(t)-x_0^{(0)}(t)|\le C_N(1+t)\varepsilon$.
+The supremum over $t\le T$ is $1$-Lipschitz in the sup-norm, and the contrapositive is the stated horizon requirement.
+\end{proof}
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.92\textwidth]{fig_reachability.pdf}
