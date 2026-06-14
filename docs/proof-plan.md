@@ -33,7 +33,8 @@ chained relation graph**, uniform over odd `m` (A1 Mechanism).
 - Self-trapping window `gP∈[0.43,4)` — same focusing-sign motif (§C).
 
 **Open — execution / resource (idea exists, not a one-shot).**
-- β_odd offline tiling (~20–35 min/box); finite-time **lower** bound (+ damping, conditional on it);
+- β_odd adaptive continuum tiling (runner exists; full boxes are ~29–32 min/box, parallelized by `--jobs`);
+  finite-time **lower** bound (+ damping, conditional on it);
   FPUT small-energy (Nekhoroshev, 4-wave resonances) and chaos (CAPD); arbitrary graphs (non-cyclotomic).
 
 **Blocks publication, not the mathematics.**
@@ -100,9 +101,13 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
   singleton-channel band `lambda in [0.65,0.82)` (three-region Arb bound, worst `0.99 K_star`); bulk
   (`>=2`/channel) crude. All `< K_star`. `verify_dagger_{extremal2,decomp,singleton,concavity,tail}.py`.
 - OPEN: the **continuum** cover between grid nodes. Method built (multivariate amplitude Taylor model
-  kills the 4x ball inflation; `verify_dagger_continuum.py`); remaining = sharp signed tail
-  (near-degenerate ring beat) + a theta-Taylor model + an **offline tiling** (~20-35 min/box).
-  This is execution, not a missing idea.
+  kills the 4x ball inflation; `verify_dagger_continuum.py`) and now operational as checkpointed,
+  parallel tiling (`run_dagger_continuum_tiling.py`). Full-resolution audit (2026-06-14): equal-amplitude
+  boxes `(0.82,0.82,h=0.015)`, `(0.85,0.85,h=0.015)`, `(0.79,0.79,h=0.015)` close with upper
+  `0.9089`, `0.8451`, `0.9775`; `(0.76,0.76,h=0.015)` and `(0.73,0.73,h=0.015)` fail at `1.0310`,
+  `1.0683`, while halving only the central `(0.76,0.76)` box closes at `0.9951` and `(0.73,0.73)`
+  remains at `1.0267`. The remaining work is adaptive splitting plus a sharper theta/signed-tail
+  enclosure near `lambda≈0.73` (dominant term is `mid_sup`, tail is only `~0.05`).
 - FIXED: the `beta_odd` literal (was wrong past digit 9).
 
 **Both A1 and A2 are the same signed-cancellation wall.**

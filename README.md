@@ -89,8 +89,11 @@ cubic van der Corput estimate). What remains is a **single** validated inequalit
 (expected-modulus) bound $\mathbb{E}|Z|-\mathbb{E}|G|\le K_\star\,\Sigma_2^{-3/2}\sum a_\ell^4$ for the
 profile's **balanced** Debye configs (live set = consecutive integers ⇒ even/odd counts differ by $\le1$;
 sharp at the two-copy pair — imbalanced configs violate it), whose integrated majorant clears
-$\beta_{\mathrm{odd}}$ — proving it (a Bessel-ring tail estimate of the Kluyver excess, plus the balancing)
-gives $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$. (2) The **excess lemma**
+$\beta_{\mathrm{odd}}$. The continuum certificate is now operational
+(`verify_dagger_continuum.py`, `run_dagger_continuum_tiling.py`): full-resolution boxes close with
+checkpointed parallel tiling where the Taylor enclosure has enough margin, but the equal-amplitude
+singleton zone near `a_1=a_3≈0.73` still needs either finer adaptive splitting or a signed-tail/theta
+refinement. Proving that final cover gives $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$. (2) The **excess lemma**
 $A_N\le L_{\mathrm{pre}}+O(1)$ (equivalent to a rigorous *growing* deficit bound) — now proved when the odd
 part of $N$ is a prime power ($N=2p$ sharp at $1/2N$, $N=4p$), **open only for $\omega(m)\ge2$**; it is a
 quantitative Kronecker–Weyl comparison on the relation-constrained subtorus, the sup-side counterpart of
@@ -122,6 +125,9 @@ explicit $t\le N/2$ profile maximizer), `verify_defect_certified.py` (certified 
 `verify_kjump_order.py` ($C_N\,\square\,H$, Möbius ladder, $k$-jump saturation), the DNLS chain
 `verify_dnls_persistence.py` / `verify_dnls_mi.py` / `verify_dnls_breather_stability.py`, and
 `verify_selftrapping_transition.py` (the energy-sharp $\gamma P=4$ threshold).
+
+For the remaining Schrödinger continuum cover, use the checkpointed tiling runner:
+`uv run --script numerics/run_dagger_continuum_tiling.py --preset full --limit 16 --jobs 4`.
 
 **Exact-arithmetic + formal layer** (Fedora: `dnf install gap pari-gp fricas rocq-prover`). The
 linear-theory arithmetic is reproduced floating-point-free in **GAP** and **PARI/GP**, symbolically in
