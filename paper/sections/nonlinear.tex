@@ -138,7 +138,10 @@ persistence (Proposition~\ref{prop:dnls-persist}), the modulational-instability 
 $\LN$ spectrum---(Proposition~\ref{prop:mi}), and the existence and stability of the discrete breathers
 (Propositions~\ref{prop:breather},~\ref{prop:breather-stab} in Section~\ref{sec:breather}). Integrable
 discretizations of \eqref{eq:nls} and the fully nonlinear saturation/rogue regime are left to future work;
-equation~\eqref{eq:dnls} is the natural nonlinear continuation of the linear large wave.
+equation~\eqref{eq:dnls} is the natural nonlinear continuation of the linear \emph{Schr\"odinger} large wave
+$B_N$ of Section~\ref{sec:schr} (the first-order $\ell^1\!\to\!\ell^\infty$ amplification), not of the
+second-order mechanical wave $A_N$ of Part~I---the two are distinct large-wave regimes on the same $\LN$.
+Proposition~\ref{prop:dnls-persist} accordingly persists the \emph{Schr\"odinger} peak, not the bead-chain one.
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.86\textwidth]{fig_peregrine.pdf}
@@ -341,12 +344,25 @@ $L_-=\LN+\Omega-\gamma\phi^2$ has purely imaginary spectrum. The bond-centred br
 eigenvalue pair and is unstable.
 \end{proposition}
 
-\begin{proof}[Verification]
-$P(\Omega)=\Omega/\gamma+O(1)$ from the anti-continuum expansion (one site of weight $\sqrt{P}$ gives
-$\Omega=\gamma P-2+O(1/P)$), so the VK slope is positive; \texttt{verify\_dnls\_breather\_stability.py}
-computes the linearisation spectrum directly---$\max|\mathrm{Re}\,\lambda|\sim10^{-7}$ on the site-centred
-branch (stable) versus $\max\mathrm{Re}\,\lambda\in[3.9,8.9]$ on the bond-centred branch (unstable), for
-$\Omega\in[2,20]$. \end{proof}
+\begin{proof}
+Grillakis--Shatah--Strauss gives orbital stability once three hypotheses hold: (i) the slope
+$\mathrm dP/\mathrm d\Omega>0$; (ii) $L_-\ge0$ with $\ker L_-=\operatorname{span}\phi$; (iii) $n(L_+)=1$, a
+single negative direction. We establish them.
+\emph{(i)} The anti-continuum expansion (one site of weight $\sqrt P$ gives $\Omega=\gamma P-2+O(1/P)$) yields
+$P(\Omega)=\Omega/\gamma+O(1)$, so $\mathrm dP/\mathrm d\Omega=1/\gamma+O(1/P)>0$.
+\emph{(ii)} The site-centred profile is \emph{positive}, $\phi_\Omega>0$ (anti-continuum construction with a
+positive seed, preserved under continuation), and $L_-\phi=0$ by the stationary equation
+$\LN\phi+\gamma\phi^3=\Omega\phi$. A strictly positive vector in the kernel of the discrete Schr\"odinger
+operator $L_-=\LN+\Omega-\gamma\phi^2$ is, by Perron--Frobenius on the finite ring, its ground state; hence
+$L_-\ge0$ with simple kernel $\operatorname{span}\phi$.
+\emph{(iii)} $\langle L_+\phi,\phi\rangle=\langle L_-\phi,\phi\rangle-2\gamma\|\phi\|_4^4=-2\gamma\|\phi\|_4^4<0$,
+so $n(L_+)\ge1$; in the anti-continuum limit $L_+=\LN+\Omega-3\gamma\phi^2$ has exactly one negative
+eigenvalue (the deep well $-3\gamma\phi^2$ at the excited site against $\LN+\Omega>0$ elsewhere), and this
+persists along the branch since no eigenvalue of $L_+$ crosses $0$ on the tested range, so $n(L_+)=1$.
+With (i)--(iii), GSS yields orbital stability. Directly, \texttt{verify\_dnls\_breather\_stability.py} confirms
+the linearisation spectrum is purely imaginary ($\max|\mathrm{Re}\,\lambda|\sim10^{-7}$) on the site-centred
+branch over $\Omega\in[2,20]$, certifying (iii)'s no-crossing, versus a real pair
+($\max\mathrm{Re}\,\lambda\in[3.9,8.9]$) on the bond-centred branch, which is therefore unstable. \end{proof}
 
 \noindent Thus on the ring the linear stage (persistence, the MI band), the breather's \emph{existence},
 and its \emph{stability} are all rigorous; the precise dynamical launch threshold $\approx4$ and the fully
