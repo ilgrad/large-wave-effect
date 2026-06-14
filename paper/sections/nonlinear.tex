@@ -359,9 +359,16 @@ $L_-\ge0$ with simple kernel $\operatorname{span}\phi$.
 so $n(L_+)\ge1$; in the anti-continuum limit $L_+=\LN+\Omega-3\gamma\phi^2$ has exactly one negative
 eigenvalue (the deep well $-3\gamma\phi^2$ at the excited site against $\LN+\Omega>0$ elsewhere), and this
 persists along the branch since no eigenvalue of $L_+$ crosses $0$ on the tested range, so $n(L_+)=1$.
-With (i)--(iii), GSS yields orbital stability. Directly, \texttt{verify\_dnls\_breather\_stability.py} confirms
-the linearisation spectrum is purely imaginary ($\max|\mathrm{Re}\,\lambda|\sim10^{-7}$) on the site-centred
-branch over $\Omega\in[2,20]$, certifying (iii)'s no-crossing, versus a real pair
+With (i)--(iii), GSS yields orbital stability. For the representative ring $N=5,\ \Omega=2$ the two spectral
+hypotheses are moreover \emph{certified in exact rational arithmetic} (\texttt{verify\_dnls\_breather\_cap.py}):
+a Newton--Kantorovich test promotes a rational profile $\tilde\phi$ to a true breather within
+$\|\phi-\tilde\phi\|_2\le4\times10^{-9}$; exact $\mathrm{LDL}^\top$ inertia (Sylvester's law) gives
+$n(L_+(\tilde\phi))=1$ with the spectrum a distance $\ge1$ from $0$; and a congruence
+$Q^\top(L_--I)Q\succ0$ on $\tilde\phi^\perp$ gives $\lambda_2(L_-(\tilde\phi))\ge1$. Weyl perturbation
+($\delta\le5\times10^{-8}\ll1$) transports both signatures to the true $\phi$, so (iii)'s no-crossing is
+\emph{computer-assisted}, not merely numerical, at that point. Across the branch
+\texttt{verify\_dnls\_breather\_stability.py} confirms the linearisation spectrum is purely imaginary
+($\max|\mathrm{Re}\,\lambda|\sim10^{-7}$) over $\Omega\in[2,20]$, versus a real pair
 ($\max\mathrm{Re}\,\lambda\in[3.9,8.9]$) on the bond-centred branch, which is therefore unstable. \end{proof}
 
 \noindent Thus on the ring the linear stage (persistence, the MI band), the breather's \emph{existence},
