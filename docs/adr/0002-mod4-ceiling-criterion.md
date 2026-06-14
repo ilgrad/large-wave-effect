@@ -26,13 +26,12 @@ floating point, no external CAS.
 ## Consequences
 
 - The criterion is strictly weaker than full independence (independence ⇒ `Lambda_N = {0}` ⇒ vacuous),
-  so it *could* admit composite saturators. Empirically (criterion-only scan) **none exist for
-  `N <= 160/500`** — so on the tested range it coincides with prime/`2^m`, and the criterion *explains*
-  why those are special rather than exhibiting a new class.
-- Whether any composite `N` saturates at all is now decided, for each `N`, by a finite integer
-  computation. This is reported honestly as verified-to-range, not proved-for-all-`N`.
-- A density-zero corollary follows: the saturating set is contained in `{prime} ∪ {2^m}` on the tested
-  range, both of density zero.
+  so it *could* admit composite saturators. That possibility is now ruled out by the rotated-root
+  obstruction: every composite non-`2^m` has an exact relation with odd coefficient sum, violating both
+  mod-4 branches. The finite scans are retained as exact-arithmetic cross-checks, not as the proof.
+- The per-`N` integer computation remains useful for auditing certificates, but the global
+  prime/`2^m` classification no longer rests on a finite range scan.
+- A density-zero corollary follows: the saturating set is exactly `{prime} ∪ {2^m}`, both of density zero.
 
 ## Alternatives considered
 

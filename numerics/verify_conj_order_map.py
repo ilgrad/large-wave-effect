@@ -2,7 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["numpy>=2", "scipy>=1.11"]
 # ///
-"""Numerical map for Conjecture (order): A_N = Theta(ln N) for every N, with constant approaching 1/pi.
+"""Numerical map for the former order conjecture: A_N = Theta(ln N) for every N.
 
 Three quantities over a wide range of N:
   (A) the exact node-0 supremum A_N (orbit-closure subtorus optimization) and the ratios A_N/U_N, A_N/ln N;
@@ -12,9 +12,9 @@ Three quantities over a wide range of N:
       to sin=1 leaves the out-of-prefix modes (total weight U_N - L_pre, a constant fraction of U_N)
       uncontrolled, and they may interfere destructively. Controlling that interference IS the open step;
   (C) the ceiling ratio U_N/ln N -> 1/pi.
-Together they give strong evidence for A_N = Theta(ln N): A_N/ln N stays in a tight band bounded away
-from 0, and the alignable prefix carries an amplitude ~ a constant times ln N. The conjecture is NOT
-proved here.
+Together they give corroboration for the now-proved order theorem (`verify_order_theorem.py`):
+A_N/ln N stays in a tight band bounded away from 0, and the alignable prefix carries an amplitude
+~ a constant times ln N. This file is retained as a numerical map; the proof is not here.
 """
 
 from __future__ import annotations
@@ -186,8 +186,8 @@ def main() -> int:
 
     print("\n" + "=" * 78)
     print("RESULT:", "ORDER MAP VERIFIED" if ok else "CHECK FAILED")
-    print("A_N/ln N is tightly banded and the prefix bound alone grows like c ln N: strong evidence")
-    print("for A_N = Theta(ln N) on every N (the uniform lower bound remains the open step).")
+    print("A_N/ln N is tightly banded and the prefix bound alone grows like c ln N: corroboration")
+    print("for the order theorem. The uniform lower bound gap is closed in verify_order_theorem.py.")
     print("=" * 78)
     return 0 if ok else 1
 

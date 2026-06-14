@@ -29,8 +29,8 @@ uv run --script numerics/verify_exact_layer.py
 ## Scope (honest)
 
 GAP and PARI verify the *arithmetic* (ranks, relation lattices, the mod-4 evaluation) in exact
-cyclotomic arithmetic. They extend the saturation classification from the paper's `N <= 160` to
-`N <= 800`, but a scan is not a proof: the general statement `A_N = U_N <=> N` prime or `2^m`
-remains a conjecture (Conjecture in the paper). The `prime_square.g` finding is a structural lead
-toward a constructive proof, not a proof. See `../formal/rocq/README.md` for what Rocq does and does
-not certify.
+cyclotomic arithmetic. The finite scans are not the proof of the general saturation classification; the
+uniform proof is the rotated-root obstruction checked in `../numerics/verify_classification_proof.py`
+and formalized in part in `../formal/rocq/Classification.v`. The `prime_square.g` finding is now best
+read as a structural cross-check, not as the status of the theorem. See `../formal/rocq/README.md` for
+what Rocq does and does not certify.

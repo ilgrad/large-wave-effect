@@ -4,12 +4,13 @@
 # ///
 """Numerical investigation of the open problems (EVIDENCE, not proof -- stated honestly).
 
-OP1. Is the sharp constant of A_N ~ c ln N equal to 1/pi for COMPOSITE N too?
+OP1. Historical check: is the sharp constant of A_N ~ c ln N equal to 1/pi for COMPOSITE N too?
      We compute the exact subtorus value A_N and the ceiling U_N and track the defect A_N/U_N. The
      order Theta(ln N) is already proven (prefix). Question: does A_N/U_N -> 1 (universal 1/pi)?
      Focus on the "deficit-1" family N = 2p (p odd prime): rank = p-1, a single rational relation
      (omega_p = 2 = 2 omega_1 only for p=3; for larger p one relation among p frequencies). If the
-     defect -> 1 there and for highly composite N, that is strong evidence for a universal 1/pi.
+     defect -> 1 there and for highly composite N, that is corroboration for the now-proved universal
+     1/pi order theorem.
 
 OP2. The constant of B_N = sup_t ||e^{-it L_N}||_{inf->inf} = c_S sqrt(N).
      B_N = sup_t sum_m |K(m,t)|, K(m,t) = (1/N) sum_r e^{-i lambda_r t} e^{2 pi i r m/N}. A t-scan gives
@@ -122,7 +123,7 @@ def main() -> int:
     print("Open problems: numerical EVIDENCE (not proof)")
     print("=" * 72)
 
-    print("\nOP1. Composite defect A_N/U_N -- does the constant approach 1/pi for all N?")
+    print("\nOP1. Composite defect A_N/U_N -- corroboration of the proved 1/pi order constant")
     print(f"    {'N':>4} {'class':>10} {'A_N':>8} {'U_N':>8} {'A_N/U_N':>8} {'A_N/lnN':>8}")
     # deficit-1 family N=2p and some highly composite N
     fam2p = [6, 10, 14, 22, 26, 34, 38, 46]
@@ -139,8 +140,8 @@ def main() -> int:
     trend_up = defects_2p[-1][1] > defects_2p[0][1]
     print(f"\n    deficit-1 family N=2p: A_N/U_N from {defects_2p[0][1]:.4f} (N={defects_2p[0][0]}) "
           f"to {defects_2p[-1][1]:.4f} (N={defects_2p[-1][0]})")
-    print(f"    -> defect {'increasing toward 1 (evidence for universal 1/pi)' if trend_up else 'NOT increasing'}; "
-          "this is EVIDENCE, not a proof. Sharp constant for composite N remains open.")
+    print(f"    -> defect {'increasing toward 1 (corroborates universal 1/pi)' if trend_up else 'NOT increasing'}; "
+          "this scan is evidence only; the proof is verify_order_theorem.py.")
 
     print("\nOP2. Schrodinger constant c_S = lim B_N/sqrt(N)  (t-scan = LOWER bound on c_S)")
     print(f"    {'N':>5} {'B_N':>9} {'B_N/sqrt(N)':>12}")

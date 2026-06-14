@@ -2,7 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["numpy>=2", "scipy>=1.11"]
 # ///
-"""Extended, honest numerical run for the order conjecture A_N = Theta(ln N). NO new theorem.
+"""Extended, honest numerical run for the order theorem (former conjecture). NO new theorem.
 
 SUB-CHAIN TARGET (heuristic, NOT a proof). If p = P(N) is the largest prime factor of N, the cycle C_p
 embeds in C_N (its modes are rho = s N/p, frequencies 2 sin(pi s/p), Q-independent since p is prime), and

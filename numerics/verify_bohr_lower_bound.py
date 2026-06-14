@@ -15,9 +15,9 @@ the ring (free oscillations, impulse IC), where the degenerate pairs (r, N-r) re
 and Bohr's sum gives the ring large wave A_N = U_N ~ (1/pi) ln N, attained at the
 impulse node. This is the value the uniform t-scan only crept up to from far below.
 
-Caveat (the genuinely open part): the equalities require linear independence over Q of
-the frequency set; for N = p (prime) and N = 2^m a cyclotomic-field argument supplies it
-(Filimonov, part 2 lecture 4), while composite N can introduce extra rational relations.
+Caveat: the exact equality A_N = U_N requires the mod-4 ceiling criterion (vacuous under full linear
+independence for N = p and N = 2^m). Composite N introduce extra rational relations and generally do
+not saturate, but the order theorem still gives A_N ~ (1/pi) ln N for all N.
 """
 
 from __future__ import annotations
@@ -107,9 +107,8 @@ def main() -> int:
     print("\n" + "=" * 76)
     print("RESULT:", "ALL CHECKS PASSED" if ok else "SOME CHECKS FAILED")
     print("Takeaway: with Bohr's sup = sum|coeff| (NOT a t-scan), the ring large wave is")
-    print("A_N = U_N ~ (1/pi) ln N -- a genuine logarithmic effect on the ring, conditional")
-    print("on linear independence of {2 sin(pi r/N)} over Q (proven for N=p, 2^m; open for")
-    print("composite N). This reduces paper #1's lower bound to a clean number-theory lemma.")
+    print("A_N = U_N ~ (1/pi) ln N on the saturating classes N=p, 2^m; for all N the order")
+    print("theorem gives A_N ~ (1/pi) ln N by the palindromic prefix lower bound.")
     print("=" * 76)
     return 0 if ok else 1
 
