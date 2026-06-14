@@ -551,9 +551,32 @@ $2j=p$, impossible for $p$ odd), so $\mu_{N+1}=2$ occurs with coefficient $\pm1$
 $\operatorname{span}\{\mu_1,\dots,\mu_N\}$; the rank is $\tfrac12\varphi(M)$. An elementary count gives
 $\tfrac12\varphi(4(N+1))=2^a\varphi(m)$ for $N+1=2^am$ ($m$ odd), which exceeds $N$ exactly for $m=1$
 ($N+1=2^m$) and is $\le N$ otherwise (with equality iff $N+1$ is prime); so the rank is
-$\min(N,\tfrac12\varphi(4(N+1)))$, and it is full ($=N$, whence $A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$ by
-Bohr) iff $N+1$ is prime or a power of two---otherwise $A_N^{\mathrm{Dir}}<U_N^{\mathrm{Dir}}$
-(\texttt{verify\_segment\_classification.py}; the prime case also recovers Proposition~\ref{prop:2p}). \end{proof}
+$\min(N,\tfrac12\varphi(4(N+1)))$, full ($=N$) iff $N+1$ is prime or a power of two. Full rank gives
+$A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$ by Bohr; for composite $N+1$ the lattice $\Lambda^{\mathrm{Dir}}$ is
+nontrivial and carries a relation with $\sum_r k_r\not\equiv0\ (\mathrm{mod}\ 4)$, so
+$A_N^{\mathrm{Dir}}<U_N^{\mathrm{Dir}}$ by the segment ceiling criterion
+(Corollary~\ref{cor:segceiling}; verified $N\le40$, \texttt{exact/gap/segment\_mod4.g},
+\texttt{verify\_segment\_classification.py}; the prime case also recovers Proposition~\ref{prop:2p}). \end{proof}
+
+\begin{corollary}[segment ceiling criterion]\label{cor:segceiling}
+With $\Lambda^{\mathrm{Dir}}=\{k\in\Z^N:\sum_r k_r\mu_r=0\}$ the relation lattice of the segment frequencies,
+\[
+  A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}\quad\Longleftrightarrow\quad
+  \sum_r k_r\equiv0\ (\mathrm{mod}\ 4)\ \text{ for every }k\in\Lambda^{\mathrm{Dir}}.
+\]
+\end{corollary}
+\begin{proof}
+$U_N^{\mathrm{Dir}}=\sum_r b_r$ is the $\ell^1$ mass, realised iff the $\sin(\mu_r t)$ are brought
+simultaneously close to $1$, i.e.\ the target $\varphi_\ast=(\tfrac\pi2,\dots,\tfrac\pi2)$---the maximiser of
+$\sum_r b_r\sin\varphi_r$---lies in the orbit closure $\mathbb T_N^{\mathrm{Dir}}$. By Kronecker,
+$\varphi_\ast\in\mathbb T_N^{\mathrm{Dir}}$ iff $\langle k,\varphi_\ast\rangle=\tfrac\pi2\sum_r k_r\equiv0\
+(2\pi)$, i.e.\ $\sum_r k_r\equiv0\ (4)$, for every $k\in\Lambda^{\mathrm{Dir}}$. The simple Dirichlet
+spectrum has no $\mu_r=\mu_{N-r}$ degeneracy, so---unlike the ring's even-$N$ branch
+(Theorem~\ref{thm:ceiling})---no antipodal node contributes; the single node-$0$ condition decides. As on
+the ring (Theorem~\ref{thm:ceiling}, Remark~\ref{rem:f92}), full independence makes the criterion vacuous,
+and for composite $N+1$ the lattice carries a violating relation ($\sum_r k_r\not\equiv0$ mod $4$), verified
+to $N\le40$ in \texttt{exact/gap/segment\_mod4.g}.
+\end{proof}
 
 \noindent This is the exact analogue of the ring classification (Theorem~\ref{thm:classification}), shifted
 by the boundary (the ring uses modulus $2N$, the segment $4(N+1)$). The order Theorem~\ref{thm:order}
@@ -1959,6 +1982,7 @@ Filimonov segment law $d_j^N\!\sim\!\tfrac4{\pi^2}\ln j$ & \texttt{verify\_filim
 Order $A_N\!\sim\!\tfrac1\pi\ln N$, all $N$ (Thm.~\ref{thm:order}, Lem.~\ref{lem:prefix}) & \texttt{verify\_order\_theorem.py}\\
 Classification $A_N{=}U_N\!\Leftrightarrow\!$ prime$/2^m$ (Thm.~\ref{thm:classification}) & \texttt{verify\_classification\_proof.py}\\
 Segment rank \& classification (Thm.~\ref{thm:segrank}) & \texttt{verify\_segment\_classification.py}\\
+Segment mod-4 ceiling criterion (Cor.~\ref{cor:segceiling}) & \texttt{exact/gap/segment\_mod4.g}\\
 Exact GAP/PARI/Rocq layer, cross-check & \texttt{verify\_exact\_layer.py}\\
 Exact classification $A_N{=}U_N$, $N\le800$ (GAP) & \texttt{exact/gap/scan\_classification.g}\\
 Cyclotomic identities cross-check (PARI) & \texttt{exact/pari/crosscheck.gp}\\
