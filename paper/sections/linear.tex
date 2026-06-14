@@ -1551,8 +1551,12 @@ each polynomial box, which naive ball arithmetic destroys), and a capped-modulus
 \texttt{verify\_dagger\_decomp.py}). Every region of the balanced simplex is thereby bounded below $K_\star$ at
 each evaluated configuration; what is \emph{not} yet a continuum theorem is the uniform cover between grid
 nodes---a $0.01$-wide interval-amplitude box inflates the cumulant majorant fourfold, so the cover rests on a
-grid-Lipschitz standing assumption, not a closed interval enclosure. This, and the signed cancellation that
-defeats every modulus, concavity, variance-floor and Berry--Esseen route, is structurally the \emph{same}
+grid-Lipschitz standing assumption, not a closed interval enclosure. A multivariate Taylor model in the
+amplitudes (degree~$2$ with a Lagrange remainder) does remove that fourfold ball inflation---the per-box lift
+is implemented and the true ratio stays $\le0.91$ throughout (\texttt{verify\_dagger\_continuum.py})---so the
+residual is now an \emph{offline} tiling at the resolution that absorbs the $\theta$-discretisation radius,
+plus the sharp signed tail to widen the margin, rather than a missing idea. This, and the signed cancellation
+that defeats every modulus, concavity, variance-floor and Berry--Esseen route, is structurally the \emph{same}
 obstruction as the $\omega(m)=2$ excess lemma~(1). The honest status is that the multi-copy region is
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
@@ -1941,6 +1945,7 @@ Signed two-ring tail of the Kluyver excess & \texttt{verify\_dagger\_tail.py}\\
 Multivariate concavity refuted (saddles) & \texttt{verify\_dagger\_concavity.py}\\
 Near-pair basin $\lambda\ge0.82$; singleton-channel gap & \texttt{verify\_dagger\_decomp.py}\\
 Singleton band $<K_\star$: three-region Arb bound & \texttt{verify\_dagger\_singleton.py}\\
+Continuum lift: multivariate amplitude Taylor model & \texttt{verify\_dagger\_continuum.py}\\
 Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\
