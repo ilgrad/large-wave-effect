@@ -10,7 +10,9 @@ Schrödinger constant `limsup B_N/sqrt(N) = beta_odd` (5) — reduce to the **sa
 Seven routes have been ruled out for it: modulus/triangle bound, multivariate concavity, the
 variance-floor, monotone-tail, Berry–Esseen (sharp Esseen constant 1/2 overshoots), Bedert's Chowla
 machinery (min-side, does not transfer — verified from arXiv:2509.05260), and naive Arb ball
-arithmetic (destroys the cancellation). A breakthrough on the signed estimate closes both.
+arithmetic (destroys the cancellation). A breakthrough on the signed estimate closes both. This session
+sharpened the (1) side: its signed core is now reduced to a concrete **weighted-packing bound on the
+chained relation graph**, uniform over odd `m` (A1 Mechanism).
 
 ---
 
@@ -24,8 +26,9 @@ arithmetic (destroys the cancellation). A breakthrough on the signed estimate cl
 **Method (review + session).** Rewrite as a max of a trig polynomial on the relation subtorus:
 `A_N = max_x [ sum_{r<=M} b_r sin x_r + sum_{r>M} b_r sin(l_r . x) ]`, `M = phi(2N)/2`,
 `b_r = 1/(N sin(pi r/N))`. Seek a **dual / majorant certificate**
-`sum_{r>M} b_r sin(l_r . x) <= C + sum_{r<=M} b_r (1 - sin x_r)`. Per-N via trig-SOS / Lasserre;
-families via cyclotomic block decomposition (p-block + q-block) and the limit `a -> infinity`.
+`sum_{r>M} b_r sin(l_r . x) <= C + sum_{r<=M} b_r (1 - sin x_r)`. Per-N via trig-SOS / Lasserre; the
+FAMILY bound must be uniform over odd `m` (Scope correction below) — a **weighted-packing estimate on
+the chained relation graph**, NOT the `a -> infinity` limit (that direction is trivial).
 
 **Status.**
 - PROVED: `omega(m) <= 1` (`N=2p` sharp `1/(2N)`, `N=4p`); rank `phi(2N)/2`; mod-4 criterion;
@@ -113,10 +116,14 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
   Bond `N=6,Omega=2`: `n(L_+)=2` => GSS odd index 1, UNSTABLE. Both verdicts upgraded from numerical to
   computer-assisted. REMAINING: the full `Omega`-branch (continuation) stays numerical
   (`verify_dnls_breather_stability.py`); a family CAP would re-run the certificate on an `Omega`-grid.
-- **FPUT/chaos** (review #9): small energy via Birkhoff/Nekhoroshev (closable); chaos via CAPD
-  computer-assisted (separate project).
+- **FPUT/chaos** (review #9): small energy via Birkhoff/Nekhoroshev — **reassessed this session as NOT a
+  quick win**: the ring has no THREE-wave resonances (`sin a + sin b = sin c` forces `b=0`) but DOES have
+  four-wave ones (the FPUT paradox itself), so a rigorous Nekhoroshev bound is real work, not "closable".
+  Chaos via CAPD computer-assisted (separate project).
 - **Multidimensional / graphs** (review #10): `d_s=1` critical (done for products, Möbius);
-  arbitrary graphs lose the cyclotomic structure.
+  arbitrary graphs lose the cyclotomic structure — confirmed this session that even circulant
+  `Cay(Z_N, S)` with `|S|>1` already fails (`omega_j = sqrt(sum_{s in S} 2-2cos(2*pi*j*s/N))` is not a
+  cyclotomic integer, so the relation-lattice machinery does not port; only `|S|=1`, the ring, keeps it).
 
 ---
 
@@ -133,6 +140,8 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
 1. ~~**B-block** (segment mod-4 + disorder continuity/independence + exact-`A_N` table)~~ — **DONE**.
    All rigorously closed this session except the damping criterion (conditional on the open
    finite-time lower bound). This is the self-contained "finite-time / disorder" content.
-2. **Excess lemma `2^a pq`** (signed block-cancellation, fixed `p,q`) — a real new theorem.
+2. **Excess lemma, uniform in `m`** — a **weighted-packing bound on the chained relation graph** (the
+   signed-cancellation core; mechanism pinned this session, see A1). A real new theorem. (NB the
+   `2^a pq` fixed-`p,q` family is the trivial direction — it converges for free.)
 3. **beta_odd offline tiling** — execution, off the interactive session.
 4. **Sup-side MPS** (closes A1 and A2 at once) — the research breakthrough.
