@@ -16,6 +16,33 @@ chained relation graph**, uniform over odd `m` (A1 Mechanism).
 
 ---
 
+## Snapshot (closed vs open)
+
+**Closed this session (rigorous).**
+- Dirichlet segment mod-4 ceiling criterion (`cor:segceiling`) — closed the "rank-deficient ⇒ A<U" gap.
+- Disorder: generic-independence via eigenvalue-map submersion (`F_k≠0`); finite-T continuity
+  (`lem:disorder-finiteT`, gain needs `T≳1/eps`).
+- Exact-`A_N` table: `A_N<U_N` certified with explicit gap (Lipschitz-grid + moment-SOS).
+- Breather **dichotomy** CAP (exact rational): site `n(L_+)=1` STABLE, bond `n(L_+)=2` UNSTABLE.
+- Finite-time **upper** bound `T_{0.2}(N)≤t~` certified (interval) for concrete primes `N=5,7,11,13`.
+- (Earlier in session: classification, `A_N~(1/π)ln N`, mod-4, β_odd profile/transfer/two-copy — see A2.)
+
+**Open — research wall (needs new mathematics).**
+- **A1** excess lemma, uniform in `m` = weighted-packing bound on the chained graph ‖ **A2** β_odd
+  continuum cover — the SAME sup-side signed-cancellation estimate (7 routes ruled out).
+- Self-trapping window `gP∈[0.43,4)` — same focusing-sign motif (§C).
+
+**Open — execution / resource (idea exists, not a one-shot).**
+- β_odd offline tiling (~20–35 min/box); finite-time **lower** bound (+ damping, conditional on it);
+  FPUT small-energy (Nekhoroshev, 4-wave resonances) and chaos (CAPD); arbitrary graphs (non-cyclotomic).
+
+**Blocks publication, not the mathematics.**
+- Filimonov 1992 (C.R. Acad. Sci.) — physical access for priority attribution.
+
+(Detail + methods per task in A–E below; this snapshot is the index.)
+
+---
+
 ## A. Central problems (deeply attacked this session)
 
 ### A1. Excess lemma / composite defect `U_N - A_N`  (review #1)
