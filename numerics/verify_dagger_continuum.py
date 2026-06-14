@@ -505,6 +505,7 @@ def prove_box(
     tail_segs: list[tuple[float, float, int, int]],
     tail_far: float,
     delta: float,
+    kspan: int = 2,
 ) -> BoxResult:
     """Certify sup_B R(a)/K_star over the box B = [a1c+-h] x [a3c+-h] (b refixed, Sigma_2=1)."""
     lam_vals = []
@@ -524,8 +525,8 @@ def prove_box(
     def mid_val(a1: float, a3: float) -> object:
         return middle_point(a1, a3, b_of(a1, a3), mid_slices)
 
-    head_sup = build_stencil(head_val, a1c, a3c, h, delta).sup()
-    mid_sup = build_stencil(mid_val, a1c, a3c, h, delta).sup()
+    head_sup = build_stencil(head_val, a1c, a3c, h, delta, kspan=kspan).sup()
+    mid_sup = build_stencil(mid_val, a1c, a3c, h, delta, kspan=kspan).sup()
 
     # tail: box-minima of each amplitude (rigorous; envelope monotone decreasing in each)
     a1min, a3min = a1c - h, a3c - h
