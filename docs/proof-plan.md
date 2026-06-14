@@ -75,11 +75,11 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
 | DNLS weak persistence `‖z-z_lin‖_inf <= |g|T P^{3/2}` | Duhamel | ALREADY proved (`prop:dnls-persist`) |
 | `N=2p, 4p` excess `O(1/N)` | sharp two-sided | ALREADY proved |
 | Self-trapping threshold `gP=4` energy-sharp; converse to `0.43` | energy / virial | ALREADY proved |
-| **Dirichlet segment mod-4 reachability** | port the ring criterion | TODO — closes a flagged logical gap |
-| **Exact `A_N` table, small N** | relation lattice -> polynomial system -> certified max | TODO — homotopy + interval |
-| **Generic disorder independence** | analytic hypersurfaces measure-zero; `F_k != 0` | TODO |
-| **Fixed-T continuity under disorder** | `‖e^{tA_s}-e^{tA_0}‖ <= t e^{Ct} ‖dA‖` | TODO — elementary |
-| **Damping criterion** (`T_eps >> 1/eta` => ceiling unreachable) | modal `e^{-eta t}` | TODO — conditional on T_eps |
+| Dirichlet segment mod-4 reachability | port the ring criterion | **DONE** (`cor:segceiling`, `exact/gap/segment_mod4.g`; criterion <=> `N+1` prime/`2^m`, `N<=40`) |
+| Exact `A_N` table, small N | orbit-closure subtorus max + certified upper | **DONE** — Lipschitz-grid certifies `A_N<U_N` w/ explicit gap `N=6,9,12,15` (`verify_defect_certified.py`); moment-SOS `N=21,33,35`; orbit-closure values `verify_exact_AN.py`. Tight two-sided pin still needs SOS/SDP. |
+| Generic disorder independence | eigenvalue map submersion; `F_k != 0` | **DONE** (Jacobian `d lambda_r/dm_j=-lambda_r v_r(j)^2` full row rank `N-1`, `verify_disorder.py` (A'); linear.tex Disorder) |
+| Fixed-T continuity under disorder | matrix-function Lipschitz `<= C_N(1+T)eps` | **DONE** (`lem:disorder-finiteT`; gain needs `T >~ 1/eps`; `verify_disorder.py` (A'')) |
+| **Damping criterion** (`T_eps >> 1/eta` => ceiling unreachable) | modal `e^{-eta t}` | OPEN — **conditional on `T_eps`** (the open finite-time lower bound); uniform envelope `e^{-gamma t}` kills the build-up only if `T_eps(N) >~ 1/gamma`. Not unconditionally closable. |
 
 ---
 
@@ -111,8 +111,9 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
 
 ## E. Recommended order
 
-1. **B-block** (segment mod-4 + disorder continuity/independence + exact-`A_N` table) — fastest
-   rigorous gain; a self-contained "finite-time / disorder" paper.
+1. ~~**B-block** (segment mod-4 + disorder continuity/independence + exact-`A_N` table)~~ — **DONE**.
+   All rigorously closed this session except the damping criterion (conditional on the open
+   finite-time lower bound). This is the self-contained "finite-time / disorder" content.
 2. **Excess lemma `2^a pq`** (signed block-cancellation, fixed `p,q`) — a real new theorem.
 3. **beta_odd offline tiling** — execution, off the interactive session.
 4. **Sup-side MPS** (closes A1 and A2 at once) — the research breakthrough.
