@@ -7,7 +7,7 @@ the Python core (`src/large_wave_effect`) and the paper's Section on exact arith
 | Tool | Script | Checks |
 |------|--------|--------|
 | **GAP** | `gap/relation_lattice.g` | library: exact `omega_r` coordinates in `Q(zeta_2N)`, `Q`-rank, relation lattice `Lambda_N`, the mod-4 criterion |
-| | `gap/scan_classification.g` | `rank = 1/2 phi(2N)` and `A_N = U_N <=> N` prime or `2^m`, for `N <= 800` |
+| | `gap/scan_classification.g` | finite exact cross-check of `rank = 1/2 phi(2N)` and `A_N = U_N <=> N` prime or `2^m`, for `N <= 800` |
 | | `gap/prime_square.g` | the minimal mod-4 obstruction for `N = p^2` has support `p` on `{1} U {kp +- 1}` |
 | | `gap/export_rocq.g` | emits the Rocq certificate `formal/rocq/Mod4Criterion.v` |
 | **PARI/GP** | `pari/crosscheck.gp` | a second exact `Q`-rank implementation + the cyclotomic-degree identities behind the prime / `2^m` / `2p` proofs |

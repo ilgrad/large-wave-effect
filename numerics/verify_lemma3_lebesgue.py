@@ -9,12 +9,13 @@
     i.e. U_N - (1/pi) ln N -> C := (gamma + ln(2/pi))/pi ~ 0.03997. This is the ring's
     Lebesgue-type constant; it is unconditional (pure asymptotics of a sum, no number theory).
 
-(B) Does the continuum/Lebesgue route close the LOWER bound for composite N? Test a fixed
+(B) Why the continuum/Lebesgue route does not prove the LOWER bound by itself. Test a fixed
     "continuum" instant t = N/4. There omega_r * t ~ pi r/2, so sin(omega_r t) ~ sin(pi r/2)
     alternates in sign and the coherent log collapses to the convergent series
         u_0(N/4) ~ (1/2pi) sum_r sin(pi r/2)/r = (1/2pi)(pi/4) = 1/8 = O(1).
     We confirm u_0 and max_j stay O(1) (do NOT grow with N) -> a fixed instant gives no log;
-    the logarithm genuinely needs phase coherence (Kronecker), which is the open arithmetic part.
+    the logarithm genuinely needs phase coherence (Kronecker), now supplied by the palindromic prefix
+    theorem in verify_order_theorem.py.
 
 (C) Bessel / infinite-chain limit. The single-site propagator on Z is the Bessel kernel
     J_n(2t); its peak over sites decays, max_n |J_n(2t)| ~ c (2t)^{-1/3} (Airy front). So the
@@ -105,9 +106,9 @@ def main() -> int:
     print("\n" + "=" * 74)
     print("RESULT:", "ALL CHECKS PASSED" if ok else "SOME CHECKS FAILED")
     print("Honest status: Lemma 3 (ceiling U_N = (1/pi)ln N + C, C=0.0400) is RIGOROUS and")
-    print("unconditional. But the continuum/Lebesgue route does NOT by itself close the lower")
-    print("bound for composite N: a fixed instant gives O(1), so the log needs phase coherence")
-    print("(Kronecker) -- which holds for prime/2^m (Thms 1',1'') and is the open part otherwise.")
+    print("unconditional. But the continuum/Lebesgue route does NOT by itself prove the lower")
+    print("bound: a fixed instant gives O(1), so the log needs phase coherence (Kronecker),")
+    print("which is supplied for all N by the palindromic prefix theorem.")
     print("The Bessel decay shows the effect is a finite-size resonance (vanishes on Z).")
     print("=" * 74)
     return 0 if ok else 1

@@ -4,7 +4,7 @@
 # ///
 """Segment (Dirichlet) vs ring (periodic) contrast for the impulse large wave.
 
-Paper #1's thesis: the ring is the HARD open case because its spectrum is twofold
+Paper #1's thesis: the ring is arithmetically harder because its spectrum is twofold
 degenerate, omega_r = omega_{N-r} (only ~N/2 distinct frequencies), whereas the
 Dirichlet segment tridiag(-1,2,-1) has N DISTINCT frequencies
 omega_k = 2 sin(pi k / (2(N+1))).
@@ -155,8 +155,9 @@ def main() -> int:
     print("\n" + "=" * 76)
     print("RESULT:", "ALL CHECKS PASSED" if ok else "SOME CHECKS FAILED")
     print("Takeaway: the ring's twofold spectral degeneracy omega_r=omega_{N-r} is real and")
-    print("quantified (RMS factor 2 vs the segment's 1). This is exactly why the log N lower")
-    print("bound is settled on the Dirichlet segment but remains open on the ring (paper #1).")
+    print("quantified (RMS factor 2 vs the segment's 1). The log N lower bound on the ring")
+    print("is now settled by the palindromic prefix theorem; this script records why scans alone")
+    print("never supplied that proof.")
     print("=" * 76)
     return 0 if ok else 1
 

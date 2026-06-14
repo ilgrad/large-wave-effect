@@ -19,8 +19,9 @@ This script reproduces all of it AND adds two findings:
     d_j^inf = (2/pi) int_0^{pi/2} cot(theta) |sin(2 j theta)| d theta ~ (2/pi)(2/pi) ln j);
   * the independence of {cos(pi k/N)} (rank = (N-1)//2) holds for PRIME N as well as N=2^m, which
     SUFFICES for sup_t|z_j| = d_j^N at every site -- so the law extends to primes (Filimonov states 2^m).
-    Full rank is NOT necessary, though: composite N can still saturate at individual sites (e.g. j=1),
-    so a complete classification of composite saturation is open.
+    Full rank is NOT necessary, though: composite N can still saturate at individual Dirichlet sites
+    (e.g. j=1), so a complete classification of this site-wise segment saturation is open. This is
+    separate from the settled ring saturation classification.
 """
 
 from __future__ import annotations

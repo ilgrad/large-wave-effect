@@ -31,11 +31,15 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   prime or a power of two; equivalently every integer frequency relation has coefficient-sum $\equiv 0
   \pmod 4$ (antipodal variant for even $N$). Via an explicit root-of-unity obstruction,
   $\{N : A_N = U_N\} = \{\text{primes}\}\cup\{2^m\}$ (density zero). The orbit-closure subtorus has
-  dimension exactly $\tfrac12\varphi(2N)$. Certified to $N\le600$ (Python) / $N\le800$ (exact GAP).
-- **Composite deficit.** $U_N - A_N = O(\ln\ln\ln N)$, depending asymptotically only on the odd part of $N$;
-  the strict gap $A_N < U_N$ is rigorously certified for small $N$ (Lipschitz-grid and Lasserre moment–SOS).
-  The per-family limits $\mathrm{defect}_\infty(m)=\lim_a (U-A)(m\,2^a)$ are computed to $10^{-8}$
-  ($0.10368\ldots$, $0.03824\ldots$) — new constants with no closed form.
+  dimension exactly $\tfrac12\varphi(2N)$. The theorem is cross-checked by exact Python/GAP scans
+  (`verify_classification_proof.py`, `exact/gap/scan_classification.g`).
+- **Composite deficit.** The order theorem gives the general upper envelope
+  $0\le U_N-A_N=O(\ln\ln\ln N)$. The strict gap $A_N<U_N$ for every composite non-power-of-two follows from
+  the saturation classification; quantitative small-$N$ gaps are certified by Lipschitz-grid and
+  Lasserre moment–SOS checks. The sharper excess law
+  $U_N-A_N=(1/\pi)\ln(m/\varphi(m))+O(1)$ for odd part $m$ remains open beyond prime-power odd part. The
+  per-family limits $\mathrm{defect}_\infty(m)=\lim_a (U-A)(m\,2^a)$ are computed to $10^{-8}$
+  ($0.10368\ldots$, $0.03824\ldots$) as numerical constants with no closed form.
 - **Discrete Schrödinger.** A localized state is never amplified (unitarity), yet
   $B_N = \sup_t\|e^{-itL_N}\|_{\ell^\infty\to\ell^\infty} = \Theta(\sqrt N)$. Here
   $\liminf B_N/\sqrt N \ge c_0/\sqrt2 = 0.861$ is proved ($c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)$; attained
@@ -127,7 +131,7 @@ tools are skipped, not failed):
 
 ```bash
 uv run --script numerics/verify_exact_layer.py   # GAP + PARI + Rocq + Python cross-check
-gap -q --nointeract exact/gap/scan_classification.g   # A_N=U_N <=> prime/2^m, verified to N<=800
+gap -q --nointeract exact/gap/scan_classification.g   # finite exact cross-check to N<=800
 rocq compile formal/rocq/Mod4Criterion.v              # machine-checked criterion certificate
 ```
 

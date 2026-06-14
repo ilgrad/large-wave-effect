@@ -1033,9 +1033,9 @@ $\liminf_N B_N/\sqrt N\ge c_0/\sqrt2$. The upper bound $B_N\le\sqrt N$ is Theore
 \noindent The improvement over the cruder $t=N/8$ value $\tfrac12 c_0=0.6086$ is the optimal aliasing-free
 time $t=N/4$, at which the Bessel front exactly fills one half-period.
 
-\begin{remark}[the constant has no limit---it splits by parity]\label{rem:bn-parity}
-$B_N/\sqrt N$ does \emph{not} converge: the aliasing phase $\mathrm i^{-N}$ is real for even $N$ and
-imaginary for odd $N$, so where the two overlapping fronts meet they add differently. Numerically
+\begin{remark}[the candidate constant splits by parity]\label{rem:bn-parity}
+The sharp constant is expected to be parity-dependent: the aliasing phase $\mathrm i^{-N}$ is real for even
+$N$ and imaginary for odd $N$, so where the two overlapping fronts meet they add differently. Numerically
 (\texttt{verify\_bn\_parity.py}) the sup is at $t=N/4$ for even $N$, giving $B_N/\sqrt N\to c_0/\sqrt2$ (the
 value above), and at $t=N/2$ for odd $N$, where the two surviving aliasing copies give
 $|K_N(k,N/2)|\approx\sqrt{J_k(N)^2+J_{N-k}(N)^2}$ across the front (no cancellation, since $\mathrm i^{-N}$
@@ -1075,8 +1075,8 @@ $N=2^{20}$, where the $t>N/2$ supremum trails the $t=N/2$ value by a stable marg
 dispersion admits no flat (Gauss-sum) revival, even at structured Talbot times $t=\pi p/q$. This is consistent with the
 dispersive-quantization picture---exact revivals of the periodic Schr\"odinger flow occur only for a
 \emph{quadratic} dispersion (rational times give Gauss sums)~\cite{Olver}, which the discrete
-$\lambda_r=4\sin^2(\pi r/N)$ is not. So numerically the global sup sits at $t=N/2$, and $\limsup_N
-B_N/\sqrt N=\beta_{\mathrm{odd}}$ is expected. The residual on $t>N/2$ has a clean form: $K_N(\cdot,t)$ is the inverse DFT
+$\lambda_r=4\sin^2(\pi r/N)$ is not. So numerically the global sup sits at $t=N/2$, and closing the residual
+upper bound would give $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$. The residual on $t>N/2$ has a clean form: $K_N(\cdot,t)$ is the inverse DFT
 of the \emph{unimodular} symbol $(\eu^{-\mathrm i t\lambda_r})_r$---a chirp, since $2t\cos(2\pi r/N)$ is
 locally quadratic---so $B_N/\sqrt N$ is the maximal $L^1$-flatness ratio $\|P\|_1/\|P\|_2$ of a unimodular
 trigonometric polynomial. The limiting macroscopic profile of $\|K_N(\cdot,t)\|_1/\sqrt N$ is a
@@ -1749,9 +1749,10 @@ analogue of Theorems~\ref{thm:prime}--\ref{thm:two}, via $2\cos(\pi k/N)=\zeta_{
 the \emph{plus}-eigenspace---has full rank $\lfloor(N-1)/2\rfloor$ exactly for $N$ prime or $N=2^m$
 (\texttt{verify\_filimonov\_schrodinger.py}), which \emph{suffices} for $\sup_t|z_j|=d_j^N$ at every site
 $j$; so Filimonov's $N=2^m$ extends to prime $N$. Full rank is not \emph{necessary}, however: composite
-$N$ can still saturate at individual sites---numerically $\sup_t|z_j|=d_j^N$ already at $j=1$ for
-$N=6,9,10,12$, the alignment there needing only the active frequencies and the sign-pairing---so a
-complete classification of composite saturation is open.
+$N$ can still saturate at individual Dirichlet sites---numerically $\sup_t|z_j|=d_j^N$ already at $j=1$
+for $N=6,9,10,12$, the alignment there needing only the active frequencies and the sign-pairing---so a
+complete classification of this site-wise segment saturation is open. This is separate from the ring
+classification Theorem~\ref{thm:classification}, which is settled.
 
 \emph{Three laws on one Laplacian.} The discrete Laplacian thus carries several distinct large-wave
 asymptotics, one per dynamics and functional (Table~\ref{tab:laws}): $A_N\sim\tfrac1\pi\ln N$ (ring,

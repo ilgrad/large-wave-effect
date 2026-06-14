@@ -1,10 +1,10 @@
 # Independent exact verification (GAP) of the linear-theory arithmetic:
 #   (1) rank_Q {2 sin(pi r/N) : 1<=r<=N-1} = 1/2 phi(2N)            (Theorem qrank)
-#   (2) A_N = U_N  <=>  N prime or N = 2^m                          (Theorem ceiling + scan)
+#   (2) A_N = U_N  <=>  N prime or N = 2^m                          (finite cross-check)
 #   (3) every composite N that is not a power of two carries a mod-4 obstruction.
 #
 # Reproduces, in exact cyclotomic arithmetic and independently of the Python core,
-# the saturation scan -- extended here well past the N<=160 of the paper.
+# the saturation theorem's finite exact scan.
 #
 #   gap -q --nointeract exact/gap/scan_classification.g
 # Set LW_MAXN below (default 800 = the verified range reported in the paper, ~35 s).

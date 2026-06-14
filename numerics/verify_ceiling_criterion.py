@@ -16,10 +16,9 @@ Since A_N <= U_N always and node 0 dominates (|a_{r,j}| <= a_{r,0}), this proves
 
     THEOREM.  A_N = U_N  <=>  sum_r k_r = 0 (mod 4) for every relation k in Lambda_N.
 
-This refines the independence test (independence means Lambda_N = {0}, trivially satisfied): there may
-be COMPOSITE N with rationally DEPENDENT frequencies that still reach U_N. We compute Lambda_N exactly
-(integer left-kernel of the cyclotomic-coordinate matrix, via Hermite normal form, all in exact integer
-arithmetic), check the mod-4 criterion, and confirm it agrees with the directly optimized A_N/U_N.
+This refines the independence test (independence means Lambda_N = {0}, trivially satisfied). The later
+rotated-root obstruction proves no composite non-power-of-two actually reaches U_N, but this file remains
+the exact per-N audit of the mod-4 criterion and its agreement with directly optimized A_N/U_N.
 """
 
 from __future__ import annotations
@@ -208,8 +207,8 @@ def main() -> int:
     print(f"    -> a relation with sum != 0 mod 4 exists, so A_6 < U_6: {'OK' if b_ok else 'FAIL'}")
 
     print(f"\n(C) Composite N reaching the ceiling despite dependent frequencies: {extra if extra else 'none in 3..40'}")
-    print("    (the criterion is strictly weaker than full independence: dependent relations are")
-    print("    harmless when all their coefficient sums vanish mod 4.)")
+    print("    (the criterion is strictly weaker than full independence in principle; the separate")
+    print("    rotated-root obstruction proves no composite non-2^m N satisfies it.)")
 
     print("\n(D) Wide criterion-only scan N=3..160: which N reach the ceiling?")
     reach, comp_reach = [], []
@@ -220,9 +219,8 @@ def main() -> int:
                 comp_reach.append(n)
     pure = all(is_prime(n) or (n & (n - 1)) == 0 for n in reach)
     print(f"    ceiling reached for {len(reach)} values; composites among them: {comp_reach if comp_reach else 'NONE'}")
-    print(f"    -> on N<=160, A_N=U_N holds exactly for prime and 2^m, never for composite N: {'OK' if pure else 'COMPOSITE FOUND'}")
-    print("    The mod-4 criterion thus *explains* why only prime / 2^m saturate: their distinct")
-    print("    frequencies are rationally independent (Lambda_N = {0}), so the criterion is vacuous.")
+    print(f"    -> finite scan cross-checks the theorem: prime/2^m only on N<=160: {'OK' if pure else 'COMPOSITE FOUND'}")
+    print("    The mod-4 criterion plus the rotated-root obstruction explain why only prime / 2^m saturate.")
 
     print("\n(E) Even N: the antipodal node j=N/2 (target phi_r=pi/2+pi r) never enlarges the locus")
     enlarge = [n for n in range(4, 161, 2) if antipodal_reached(n) and not ceiling_reached(n)]

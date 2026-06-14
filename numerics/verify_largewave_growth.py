@@ -100,7 +100,7 @@ def main() -> int:
     # The factor 2 over the naive 1/sqrt(24) is the ring's twofold degeneracy omega_r=omega_{N-r}
     # (modes r and N-r share a frequency, so their contributions stay fully correlated).
     print("\n(B) Typical amplitude RMS_t|G(0,t)| = 1/sqrt(12)=0.2887, exact (ring degeneracy);")
-    print("    O(1) in N while the sup is conjectured to grow -> growth is in rare excursions.")
+    print("    O(1) in N while the proved sup grows like ln N -> growth is in rare excursions.")
     print(f"  {'N':>6} {'RMS_t(obs)':>12} {'RMS(theory)':>12} {'rel':>8}")
     rms_ok = True
     for n in (32, 128, 512):
