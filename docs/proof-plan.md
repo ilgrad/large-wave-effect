@@ -35,11 +35,22 @@ families via cyclotomic block decomposition (p-block + q-block) and the limit `a
   `5|N`: golden); per-N certificates `N=15` (elementary Lipschitz grid, `>=0.082`), `N=21,33,35`
   (moment-SOS). `exact/gap/excess_omega2.g`, `numerics/verify_excess_omega2.py`.
 - TRIED → blocked: the **uniform** dual certificate is exactly the signed bound that overshoots.
-  The obstruction is a **modest O(1) balance** (dependent_net ~ +0.15 vs prefix_deficit ~ -0.07,
-  neither growing), not a near-cancellation. Bedert does NOT transfer (4 mismatches; spectral
-  quantities do not track dependent_net; `verify_excess_omega2_spectral.py`).
-- NEXT (realistic): `N = 2^a pq` for fixed `p,q` via a **signed** block-cancellation lemma per
-  cyclotomic block + SOS + the `a -> infinity` limit. A genuine new result if it closes.
+  The obstruction is a **modest O(1) balance** — verified this session across `omega(m)=2..4`: as
+  `dep_wt` grows `0.21 -> 0.34`, BOTH `dependent_net ~ +0.16` and `prefix_deficit ~ -0.05..-0.09` stay
+  individually O(1) and flat (NOT a near-cancellation of growing terms; earlier docstring corrected).
+  Bedert does NOT transfer (4 mismatches; `verify_excess_omega2_spectral.py`).
+- **MECHANISM (this session, numerically pinned).** The dual majorant MUST overshoot: near `x=pi/2` a
+  dependent gain is LINEAR (`sin(phi_a+phi_b) ~ u+v`) but the prefix penalty is QUADRATIC (`1-sin ~ u^2/2`),
+  so no `C=0` certificate exists. A single support-3 triplet `w_a+w_b=w_c` balances at `x_a=x_b=pi/3` with
+  contribution EXACTLY `3*sqrt3/2 - 2 = 0.598*b_c` (verified). For DISJOINT triplets the excess is additive
+  (`N=15`: support-3 sum `0.0556` ~ full excess `0.0666`, comb mode `+0.011`). Boundedness of the signed
+  net comes from the CHAINED graph forcing dependent modes to SHARE prefix phases. ==> the excess lemma
+  REDUCES to a **weighted-packing bound on the chained relation graph**.
+- **SCOPE correction.** For FIXED `m` the sandwich `U-L_pre = (1/pi)ln(m/phi(m)) + O(1)` is a CONSTANT, so
+  excess (hence defect) converges trivially — the family `2^a pq` (fixed `p,q`) does NOT exhibit the
+  unbounded defect (the earlier "NEXT" was off). Unboundedness is along PRIMORIALS (`m` grows,
+  `omega(m)->inf`); the excess lemma needs `C` uniform **in `m`**, not in `a`. Realistic target: the
+  weighted-packing bound, uniform over odd `m`. (`a -> infinity` is the trivial direction.)
 
 ### A2. Schrödinger constant `limsup B_N/sqrt(N) = beta_odd`  (review #5)
 

@@ -38,13 +38,21 @@ What this script does (no fabrication; an honesty ledger prints exactly what is 
     excess = (A_N - L_pre) = (prefix_deficit) + (dependent_net),
   where prefix_deficit = sum_{r<=M} b_r (sin phi_r - 1) <= 0 is what the prefix sacrifices, and
   dependent_net = sum_{r>M} b_r sin phi_r is the signed net of the relation-locked dependent band.
-  FINDING: across every tested omega(m)=2 (and omega(m)=3) case the excess stays in [0.05, 0.10], yet it
-  is a near-CANCELLATION of two terms that individually grow with the dependent weight
-  (dependent_net ~ +0.12..+0.18, prefix_deficit ~ -0.03..-0.09, dependent weight 0.13 -> 0.31).  The
-  dependent band carries Theta(N) modes of UNBOUNDED total weight, but its SIGNED net stays O(1) because
-  the relations force cancellation -- there is no monotone/triangle bound.  THIS is the exact obstruction:
-  the excess lemma is a sup-side SIGNED-cancellation statement (the primal analogue of
-  McGehee-Pigno-Smith/Konyagin), and crude modulus bounds overshoot.  The general omega(m) = 2 stays OPEN.
+  FINDING (corrected): across every tested case the excess stays in [0.05, 0.12], and -- crucially -- this
+  is a MODEST O(1) BALANCE, not a near-cancellation.  As the dependent WEIGHT grows with omega(m)
+  (dep_wt ~ 0.21 at omega=2 -> 0.34 at omega=4), BOTH terms stay individually O(1) and nearly flat
+  (dependent_net ~ +0.16, prefix_deficit ~ -0.05..-0.09).  So the dependent band carries Theta(N) modes of
+  GROWING total weight dep_wt, yet its signed net dependent_net stays bounded -- no monotone/triangle
+  bound.  THIS is the obstruction: a sup-side SIGNED-cancellation statement (primal analogue of
+  McGehee-Pigno-Smith/Konyagin); crude modulus bounds overshoot.
+  MECHANISM (why a uniform dual majorant overshoots).  Near the aligned point x=pi/2 a dependent mode's
+  gain is LINEAR in the phase offset (sin(phi_a+phi_b) ~ u+v) while the prefix penalty is QUADRATIC
+  (1-sin ~ u^2/2), so NO certificate  sum_{r>M} b_r sin(l_r.x) <= C + sum_{r<=M} b_r (1-sin x_r)  holds
+  with C=0.  For a single support-3 triplet omega_a+omega_b=omega_c the true balance sits at the interior
+  angle x_a=x_b=pi/3 (contribution 0.598*b_c, not b_c).  If the triplets were disjoint the excess would be
+  additive (sum of ~0.6*b_c); boundedness of the signed net instead comes from the CHAINED relation graph
+  forcing dependent modes to SHARE prefix phases, so they cannot all sit at pi/3 at once.  Reducing the
+  excess lemma to a weighted-packing bound on this chained graph is the remaining step.  omega(m)=2 OPEN.
 """
 
 from __future__ import annotations
