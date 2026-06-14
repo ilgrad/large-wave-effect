@@ -85,9 +85,13 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
 
 ## C. Harder / open
 
-- **Finite-time `A_N(T)`, `T_eps(N)`** (review #3): upper bound by quantitative Kronecker
-  (`~ delta^{-m}`); lower bound by LLL / badly-approximable Diophantine certificates. Upper bound
-  closable; lower bound is the real content.
+- **Finite-time `A_N(T)`, `T_eps(N)`** (review #3): **PARTLY DONE this session** — for concrete primes
+  `N=5,7,11,13` the **upper** bound `T_{0.2}(N) <= t~` is **certified in interval arithmetic** (a witness
+  `t~` where `u(t~) >= 0.8 U_N`, mpmath.iv; `verify_finite_time_certified.py`), upgrading the numerical
+  recurrence times to a proof. OPEN: the **family rate** `~ delta^{-m}` does NOT follow from the
+  homogeneous Dirichlet pigeonhole — the target `pi/2` is inhomogeneous, needing a Baker-type Diophantine
+  lower bound on linear forms in the `omega_r`. The **lower** bound (wait is exponentially long) is the
+  real content, still open (LLL / badly-approximable certificates).
 - **Self-trapping window `gP in [0.43,4)`** (review #8): reduced this session to a focusing
   interaction-Morawetz `L^4` bound (staggered-momentum identity). Blocked by the focusing sign —
   another signed-cancellation motif. Try sharp discrete Gagliardo–Nirenberg (SOS per N).
