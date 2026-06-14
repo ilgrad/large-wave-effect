@@ -91,13 +91,13 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
 - **Self-trapping window `gP in [0.43,4)`** (review #8): reduced this session to a focusing
   interaction-Morawetz `L^4` bound (staggered-momentum identity). Blocked by the focusing sign —
   another signed-cancellation motif. Try sharp discrete Gagliardo–Nirenberg (SOS per N).
-- **Breather stability** (review #4): VK/GSS stated; (i) `dP/dOmega>0` analytic. **DONE this session**
-  for `N=5, Omega=2`: the spectral hypotheses (ii) `lambda_2(L_-)>0` and (iii) `n(L_+)=1` are
-  **CAP-certified in exact rational arithmetic** — Newton--Kantorovich existence of the true profile
-  (`rho<=4e-9`) + Sylvester-inertia `LDL^T` + Weyl transport (`verify_dnls_breather_cap.py`); upgrades
-  the no-crossing from numerical to computer-assisted at that point. REMAINING: the full branch
-  (continuation in `Omega`) and "no extra real eigenvalues" stay numerical (`verify_dnls_breather_stability.py`);
-  a family CAP would re-run the certificate on an `Omega`-grid.
+- **Breather stability** (review #4): VK/GSS stated; (i) `dP/dOmega>0` analytic. **DONE this session** —
+  the full site/bond **dichotomy** is **CAP-certified in exact rational arithmetic**: Newton--Kantorovich
+  existence of the true profile (`rho<=4e-9`) + Sylvester-inertia `LDL^T` + Weyl transport
+  (`verify_dnls_breather_cap.py`). Site `N=5,Omega=2`: `n(L_+)=1`, `lambda_2(L_-)>0` => GSS index 0, STABLE.
+  Bond `N=6,Omega=2`: `n(L_+)=2` => GSS odd index 1, UNSTABLE. Both verdicts upgraded from numerical to
+  computer-assisted. REMAINING: the full `Omega`-branch (continuation) stays numerical
+  (`verify_dnls_breather_stability.py`); a family CAP would re-run the certificate on an `Omega`-grid.
 - **FPUT/chaos** (review #9): small energy via Birkhoff/Nekhoroshev (closable); chaos via CAPD
   computer-assisted (separate project).
 - **Multidimensional / graphs** (review #10): `d_s=1` critical (done for products, Möbius);

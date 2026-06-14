@@ -2,26 +2,26 @@
 # requires-python = ">=3.11"
 # dependencies = ["numpy>=2"]
 # ///
-"""Computer-assisted PROOF of the spectral hypotheses of the site-centred DNLS breather.
+"""Computer-assisted PROOF of the breather stability dichotomy on the ring DNLS.
 
 For the standing wave z=e^{-i Omega t}phi, (L_N+Omega)phi=gamma phi^3, the linearization splits into
     L_+ = L_N + Omega - 3 gamma diag(phi^2),    L_- = L_N + Omega - gamma diag(phi^2).
-Orbital stability (Grillakis-Shatah-Strauss + Vakhitov-Kolokolov) needs, besides dP/dOmega>0 (proved
-analytically by the anti-continuum expansion) and the Perron-Frobenius fact phi>0 => lambda_1(L_-)=0 with
-ker L_- = span phi:
-    (ii) the spectral GAP  lambda_2(L_-) > 0   (L_- >= 0 with a one-dimensional kernel),
-    (iii) the Morse index   n(L_+) = 1.
-These were previously only checked in floating point. Here they are CERTIFIED for a concrete ring
-(N=5, gamma=1, Omega=2) with no SDP and no interval library -- exact rational arithmetic only:
+Grillakis-Shatah-Strauss + Vakhitov-Kolokolov: with dP/dOmega>0 (anti-continuum expansion) and phi>0
+(Perron-Frobenius => lambda_1(L_-)=0, ker L_- = span phi), the orbital stability is decided by the
+Morse index n(L_+) together with the gap lambda_2(L_-)>0:
+    SITE-centred  n(L_+) = 1  => GSS index n(L_+)-1 = 0  => orbitally STABLE;
+    BOND-centred  n(L_+) = 2  => GSS index n(L_+)-1 = 1 (odd) => orbitally UNSTABLE.
+Both Morse indices were previously only read off a floating-point spectrum. Here they are CERTIFIED for
+concrete rings with no SDP and no interval library -- exact rational arithmetic only:
 
   1. EXISTENCE (Newton-Kantorovich): a rational approximate profile phi~ with tiny residual R=F(phi~) is
      promoted to a TRUE solution phi in the ball ||phi-phi~||_2 <= rho := 2 ||J^{-1}|| ||R||, once the
      contraction test  ||J^{-1}|| * 3gamma(2 max|phi~| + 2rho) * rho <= 1/2  holds (J=F'(phi~)).
   2. INERTIA (Sylvester's law): exact LDL^T over Fraction gives the exact signature of L_+(phi~) -+ eps*I,
-     proving n(L_+(phi~))=1 with the spectrum kept a distance eps from 0; a congruence Q^T(L_-(phi~)-eps*I)Q
-     with Q a rational basis of phi~^perp proves lambda_2(L_-(phi~)) >= eps.
-  3. WEYL: ||L_+-(phi)-L_+(phi~)||_2 <= 3gamma(2max|phi~|+rho)rho =: delta_+ < eps transports both signatures
-     from phi~ to the true phi. Hence n(L_+(phi))=1 and lambda_2(L_-(phi)) >= eps-delta_- > 0.
+     proving n(L_+(phi~)) = expected with the spectrum kept a distance eps from 0; a congruence
+     Q^T(L_-(phi~)-eps*I)Q with Q a rational basis of phi~^perp proves lambda_2(L_-(phi~)) >= eps.
+  3. WEYL: ||L_+(phi)-L_+(phi~)||_2 <= 3gamma(2max|phi~|+rho)rho =: delta_+ < eps transports both
+     signatures from phi~ to the true phi. Hence n(L_+(phi)) is certified and lambda_2(L_-(phi))>0.
 
 No floating-point value enters the proof: floats only seed the rational profile; every inequality is
 checked with exact Fractions. (Perron-Frobenius for phi>0 supplies lambda_1(L_-)=0, the missing kernel.)
@@ -34,9 +34,9 @@ from fractions import Fraction
 
 import numpy as np
 
-N, GAMMA, OMEGA = 5, 1, 2
+GAMMA = 1
 DENOM = 1 << 44  # rationalization grid for the profile
-EPS = Fraction(1)  # spectral-gap margin to certify (true gaps ~2, perturbation ~1e-12)
+EPS = Fraction(1)  # spectral-gap margin to certify (true gaps ~2, perturbation ~1e-8)
 
 Mat = list[list[Fraction]]
 Vec = list[Fraction]
@@ -84,11 +84,11 @@ def ldlt_pivots(a: Mat) -> list[Fraction] | None:
     return d
 
 
-def inertia(a: Mat) -> tuple[int, int, int]:
+def neg_count(a: Mat) -> int:
     d = ldlt_pivots(a)
     if d is None:
         raise ValueError("zero pivot -- matrix singular, shift it")
-    return sum(p < 0 for p in d), sum(p == 0 for p in d), sum(p > 0 for p in d)
+    return sum(p < 0 for p in d)
 
 
 def inverse(a: Mat) -> Mat:
@@ -124,111 +124,103 @@ def upper_sqrt(x: Fraction) -> Fraction:
     return u
 
 
-# ---------- build the operators ----------
-def lplus(phi2: Vec) -> Mat:
-    a = lap_int(N)
-    for j in range(N):
-        a[j][j] += OMEGA - 3 * GAMMA * phi2[j]
-    return a
+def shift(a: Mat, eps: Fraction, sign: int) -> Mat:
+    return [[a[i][j] + (sign * eps if i == j else 0) for j in range(len(a))] for i in range(len(a))]
 
 
-def lminus(phi2: Vec) -> Mat:
-    a = lap_int(N)
-    for j in range(N):
-        a[j][j] += OMEGA - GAMMA * phi2[j]
-    return a
+# ---------- the breather problem ----------
+def newton_profile(n: int, omega: int, seed: np.ndarray) -> np.ndarray:
+    lapf = 2 * np.eye(n) - np.eye(n, k=1) - np.eye(n, k=-1)
+    lapf[0, -1] = lapf[-1, 0] = -1.0
+    phi = seed.copy()
+    for _ in range(200):
+        f = (lapf + omega * np.eye(n)) @ phi - GAMMA * phi**3
+        jf = lapf + omega * np.eye(n) - 3 * GAMMA * np.diag(phi**2)
+        phi = phi - np.linalg.solve(jf, f)
+    return phi
 
 
-def residual(phi: Vec) -> Vec:
-    lp = matvec(lap_int(N), phi)
-    return [lp[j] + OMEGA * phi[j] - GAMMA * phi[j] ** 3 for j in range(N)]
+def certify(label: str, n: int, omega: int, seed: np.ndarray, expected_n: int) -> bool:
+    print(f"\n{'-' * 84}\n{label}:  N={n}, gamma={GAMMA}, Omega={omega}, expected n(L_+)={expected_n}\n{'-' * 84}")
+    lap = lap_int(n)
+    phit: Vec = [Fraction(round(v * DENOM), DENOM) for v in newton_profile(n, omega, seed)]
+    phi2 = [p**2 for p in phit]
+    pos = all(p > 0 for p in phit)
 
+    def lplus() -> Mat:
+        return [[lap[i][j] + ((omega - 3 * GAMMA * phi2[i]) if i == j else 0) for j in range(n)] for i in range(n)]
 
-def jacobian(phi: Vec) -> Mat:  # F'(phi) = L + Omega - 3 gamma diag(phi^2)
-    return lplus([p ** 2 for p in phi])
+    def lminus() -> Mat:
+        return [[lap[i][j] + ((omega - GAMMA * phi2[i]) if i == j else 0) for j in range(n)] for i in range(n)]
+
+    # (1) Newton-Kantorovich existence
+    lp_v = matvec(lap, phit)
+    r = [lp_v[j] + omega * phit[j] - GAMMA * phit[j] ** 3 for j in range(n)]
+    norm_r = upper_sqrt(sum(v * v for v in r))
+    jinv = inverse(lplus())  # J = F'(phi~) = L_N + Omega - 3 gamma diag(phi~^2) = L_+
+    bnd = upper_sqrt(norm1(jinv) * norminf(jinv))
+    maxabs = max(abs(p) for p in phit)
+    rho = 2 * bnd * norm_r
+    contraction = bnd * (3 * GAMMA * (2 * maxabs + rho)) * rho
+    exist_ok = contraction <= Fraction(1, 2) and pos
+    delta_p = 3 * GAMMA * (2 * maxabs + rho) * rho
+    delta_m = GAMMA * (2 * maxabs + rho) * rho
+
+    # (3) Morse index via Sylvester inertia at +- EPS
+    lp = lplus()
+    nlo = neg_count(shift(lp, EPS, -1))  # #{lambda < EPS}
+    nhi = neg_count(shift(lp, EPS, +1))  # #{lambda < -EPS}
+    morse_ok = nlo == expected_n and nhi == expected_n and delta_p < EPS
+
+    # (2) gap lambda_2(L_-) >= EPS via congruence on phi~^perp
+    q: Mat = [[Fraction(0)] * (n - 1) for _ in range(n)]
+    for c in range(n - 1):
+        q[c + 1][c] = Fraction(1)
+        q[0][c] = -phit[c + 1] / phit[0]
+    proj = matmul(transpose(q), matmul(shift(lminus(), EPS, -1), q))
+    piv = ldlt_pivots(proj)
+    gap_ok = piv is not None and all(p > 0 for p in piv) and delta_m < EPS and pos
+
+    print(f"(1) existence: ||R||_2<={float(norm_r):.2e}, ||J^-1||<={float(bnd):.3f}, rho<={float(rho):.2e}, "
+          f"contraction={float(contraction):.2e}<=1/2 & phi~>0: {exist_ok}")
+    print(f"(3) Morse: #eig<+EPS={nlo}, #eig<-EPS={nhi} => n(L_+)={nlo}; delta_+={float(delta_p):.2e}<EPS; "
+          f"matches expected {expected_n}: {morse_ok}")
+    print(f"(2) gap: Q^T(L_- - EPS I)Q > 0 (pivots>0): {piv is not None and all(p > 0 for p in piv)}; "
+          f"delta_-={float(delta_m):.2e}<EPS => lambda_2(L_-(phi))>0: {gap_ok}")
+
+    lapf = 2 * np.eye(n) - np.eye(n, k=1) - np.eye(n, k=-1)
+    lapf[0, -1] = lapf[-1, 0] = -1.0
+    phif = np.array([float(p) for p in phit])
+    ep = np.sort(np.linalg.eigvalsh(lapf + omega * np.eye(n) - 3 * GAMMA * np.diag(phif**2)))
+    print(f"    [float check] eig(L_+) = {np.round(ep, 3)}  (n(L_+)={int((ep < 0).sum())})")
+
+    ok = exist_ok and morse_ok and gap_ok
+    verdict = "STABLE (index 0)" if expected_n == 1 else "UNSTABLE (GSS odd index 1)"
+    print(f"    => hypotheses certified: {ok}   [orbital {verdict}]")
+    return ok
 
 
 def main() -> int:
     print("=" * 84)
-    print(f"Computer-assisted proof: site-centred DNLS breather spectral hypotheses  (N={N}, "
-          f"gamma={GAMMA}, Omega={OMEGA})")
+    print("Computer-assisted proof of the DNLS breather stability dichotomy (exact rational arithmetic)")
     print("=" * 84)
 
-    # --- float Newton seed, then rationalize ---
-    lapf = 2 * np.eye(N) - np.eye(N, k=1) - np.eye(N, k=-1)
-    lapf[0, -1] = lapf[-1, 0] = -1.0
-    phi = np.zeros(N)
-    phi[0] = math.sqrt((OMEGA + 2) / GAMMA)
-    for _ in range(80):
-        f = (lapf + OMEGA * np.eye(N)) @ phi - GAMMA * phi**3
-        jf = lapf + OMEGA * np.eye(N) - 3 * GAMMA * np.diag(phi**2)
-        phi = phi - np.linalg.solve(jf, f)
-    phit: Vec = [Fraction(round(v * DENOM), DENOM) for v in phi]
-    print(f"\nrational profile phi~ (denominator 2^44), all components > 0: {all(p > 0 for p in phit)}")
-    print("   phi~ =", [f"{float(p):.6f}" for p in phit])
+    def site_seed(n: int, omega: int) -> np.ndarray:
+        s = np.zeros(n)
+        s[0] = math.sqrt((omega + 2) / GAMMA)
+        return s
 
-    # --- (1) Newton-Kantorovich existence of a true profile near phi~ ---
-    r = residual(phit)
-    nr2 = sum(v * v for v in r)
-    norm_r = upper_sqrt(nr2)  # >= ||R||_2
-    jinv = inverse(jacobian(phit))
-    bnd = upper_sqrt(norm1(jinv) * norminf(jinv))  # >= ||J^{-1}||_2
-    a_step = bnd * norm_r
-    maxabs = max(abs(p) for p in phit)
-    rho = 2 * a_step
-    contraction = bnd * (3 * GAMMA * (2 * maxabs + rho)) * rho  # <= 1/2 needed
-    ok_exist = contraction <= Fraction(1, 2)
-    print("\n(1) EXISTENCE (Newton-Kantorovich):")
-    print(f"    ||R||_2 <= {float(norm_r):.3e},  ||J^-1||_2 <= {float(bnd):.4f},  rho = 2||J^-1||||R|| "
-          f"<= {float(rho):.3e}")
-    print(f"    contraction test ||J^-1||*3g(2max|phi~|+2rho)*rho = {float(contraction):.3e} <= 1/2: "
-          f"{ok_exist}")
-    print(f"    => a TRUE breather phi exists with ||phi - phi~||_2 <= rho = {float(rho):.3e}")
+    def bond_seed(n: int, omega: int) -> np.ndarray:
+        s = np.zeros(n)
+        s[0] = s[1] = math.sqrt((omega + 2) / GAMMA)
+        return s
 
-    # --- Weyl perturbation radii of the two operators over the existence ball ---
-    delta_p = 3 * GAMMA * (2 * maxabs + rho) * rho  # >= ||L_+(phi)-L_+(phi~)||_2
-    delta_m = 1 * GAMMA * (2 * maxabs + rho) * rho  # >= ||L_-(phi)-L_-(phi~)||_2
-    phi2 = [p**2 for p in phit]
+    site = certify("SITE-centred (stable)", 5, 2, site_seed(5, 2), expected_n=1)
+    bond = certify("BOND-centred (unstable)", 6, 2, bond_seed(6, 2), expected_n=2)
 
-    # --- (2)+(3) exact inertia at phi~, with margin EPS, then Weyl transport ---
-    lp = lplus(phi2)
-    lp_minus = [[lp[i][j] - (EPS if i == j else 0) for j in range(N)] for i in range(N)]
-    lp_plus = [[lp[i][j] + (EPS if i == j else 0) for j in range(N)] for i in range(N)]
-    neg_lo = inertia(lp_minus)[0]  # #{lambda < EPS}
-    neg_hi = inertia(lp_plus)[0]  # #{lambda < -EPS}
-    morse_ok = neg_lo == 1 and neg_hi == 1 and delta_p < EPS
-    print("\n(3) MORSE INDEX  n(L_+) = 1  (Sylvester inertia at +-EPS, EPS=1):")
-    print(f"    #eig(L_+(phi~)) < +EPS : {neg_lo}     #eig(L_+(phi~)) < -EPS : {neg_hi}")
-    print("    => exactly one eigenvalue, and it is <= -EPS; spectrum-to-0 >= EPS=1")
-    print(f"    Weyl: delta_+ = {float(delta_p):.3e} < EPS  => n(L_+(phi)) = 1 : {morse_ok}")
-
-    # phi~^perp basis Q (columns): e_i - (phi~_i/phi~_0) e_0,  i=1..N-1  (exactly orthogonal to phi~)
-    q: Mat = [[Fraction(0)] * (N - 1) for _ in range(N)]
-    for c in range(N - 1):
-        i = c + 1
-        q[i][c] = Fraction(1)
-        q[0][c] = -phit[i] / phit[0]
-    lm = lminus(phi2)
-    lm_shift = [[lm[i][j] - (EPS if i == j else 0) for j in range(N)] for i in range(N)]
-    proj = matmul(transpose(q), matmul(lm_shift, q))  # Q^T (L_- - EPS I) Q
-    gap_pivots = ldlt_pivots(proj)
-    gap_ok = gap_pivots is not None and all(p > 0 for p in gap_pivots) and delta_m < EPS
-    print("\n(2) SPECTRAL GAP  lambda_2(L_-) > 0  (congruence Q^T(L_- - EPS I)Q > 0 on phi~^perp):")
-    print(f"    Q^T(L_-(phi~) - EPS I)Q positive-definite (all pivots > 0): "
-          f"{gap_pivots is not None and all(p > 0 for p in gap_pivots)}")
-    print(f"    => lambda_2(L_-(phi~)) >= EPS=1;  Weyl: delta_- = {float(delta_m):.3e} < EPS")
-    print(f"    with Perron-Frobenius (phi>0 => lambda_1=0, ker=phi): L_- >= 0, dim ker = 1 : {gap_ok}")
-
-    # --- float cross-check (sanity only, NOT part of the proof) ---
-    lpf = lapf + OMEGA * np.eye(N) - 3 * GAMMA * np.diag(phi**2)
-    lmf = lapf + OMEGA * np.eye(N) - GAMMA * np.diag(phi**2)
-    print("\n[float cross-check, not part of the proof]")
-    print(f"    eig(L_+) = {np.round(np.sort(np.linalg.eigvalsh(lpf)), 4)}")
-    print(f"    eig(L_-) = {np.round(np.sort(np.linalg.eigvalsh(lmf)), 4)}")
-
-    ok = ok_exist and morse_ok and gap_ok
+    ok = site and bond
     print("\n" + "=" * 84)
-    print("RESULT:", "BREATHER STABILITY HYPOTHESES (ii),(iii) CERTIFIED (exact)" if ok else "FAIL")
+    print("RESULT:", "BREATHER DICHOTOMY CERTIFIED -- site stable, bond unstable (exact)" if ok else "FAIL")
     print("=" * 84)
     return 0 if ok else 1
 
