@@ -16,7 +16,7 @@ the missing operational layer needed for the expensive part:
 Examples:
     uv run --script numerics/run_dagger_continuum_tiling.py --dry-run --limit 20
     uv run --script numerics/run_dagger_continuum_tiling.py --preset demo --box 0.88,0.88,0.015
-    uv run --script numerics/run_dagger_continuum_tiling.py --preset full --limit 1
+    uv run --script numerics/run_dagger_continuum_tiling.py --preset full --limit 16 --jobs 4
 """
 
 from __future__ import annotations
@@ -26,6 +26,7 @@ import importlib.util
 import json
 import sys
 import time
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -199,6 +200,12 @@ def run_box(cert, box: Box, preset_name: str, res: Resolution) -> dict[str, obje
     return row
 
 
+def run_box_worker(payload: tuple[Box, str, Resolution]) -> dict[str, object]:
+    box, preset_name, res = payload
+    cert = load_certificate_module()
+    return run_box(cert, box, preset_name, res)
+
+
 def json_ready(value: object) -> object:
     """Convert NumPy scalars from certificate arithmetic into plain JSON values."""
     if isinstance(value, np.bool_):
@@ -221,10 +228,14 @@ def main() -> int:
     parser.add_argument("--h", type=float, default=0.015, help="grid box half-width")
     parser.add_argument("--step", type=float, default=0.03, help="grid center spacing")
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--jobs", type=int, default=1, help="parallel worker processes")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--include-handoff", action="store_true", help="include boxes with lambda_hi >= 0.82")
     args = parser.parse_args()
+
+    if args.jobs < 1:
+        parser.error("--jobs must be >= 1")
 
     cert = load_certificate_module()
     res = PRESETS[args.preset]
@@ -234,7 +245,7 @@ def main() -> int:
     if args.limit is not None:
         boxes = boxes[: args.limit]
 
-    print(f"preset={args.preset} boxes={len(boxes)} out={args.out}")
+    print(f"preset={args.preset} boxes={len(boxes)} jobs={args.jobs} out={args.out}")
     for box in boxes[:10]:
         lam = lambda_range(cert, box)
         print(f"  {box.key} lambda=[{lam[0]:.3f},{lam[1]:.3f}]")
@@ -243,6 +254,36 @@ def main() -> int:
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with args.out.open("a", encoding="utf-8") as fh:
+        def write_row(row: dict[str, object]) -> None:
+            fh.write(json.dumps(json_ready(row), sort_keys=True) + "\n")
+            fh.flush()
+            if row["status"] == "ok":
+                print(
+                    f"    upper={row['upper']:.4f} proves={row['proves']} "
+                    f"lambda=[{row['lam_lo']:.3f},{row['lam_hi']:.3f}] seconds={row['seconds']:.1f}",
+                    flush=True,
+                )
+            else:
+                print(f"    ERROR {row['error']}", flush=True)
+
+        if args.jobs > 1:
+            with ProcessPoolExecutor(max_workers=args.jobs) as pool:
+                futures = {pool.submit(run_box_worker, (box, args.preset, res)): box for box in boxes}
+                for i, fut in enumerate(as_completed(futures), start=1):
+                    box = futures[fut]
+                    print(f"[{i}/{len(boxes)}] {box.key}", flush=True)
+                    try:
+                        row = fut.result()
+                    except Exception as exc:
+                        row = {
+                            "status": "error",
+                            "key": box.key,
+                            "preset": args.preset,
+                            "error": repr(exc),
+                        }
+                    write_row(row)
+            return 0
+
         for i, box in enumerate(boxes, start=1):
             print(f"[{i}/{len(boxes)}] {box.key}", flush=True)
             try:
@@ -254,16 +295,7 @@ def main() -> int:
                     "preset": args.preset,
                     "error": repr(exc),
                 }
-            fh.write(json.dumps(json_ready(row), sort_keys=True) + "\n")
-            fh.flush()
-            if row["status"] == "ok":
-                print(
-                    f"    upper={row['upper']:.4f} proves={row['proves']} "
-                    f"lambda=[{row['lam_lo']:.3f},{row['lam_hi']:.3f}] seconds={row['seconds']:.1f}",
-                    flush=True,
-                )
-            else:
-                print(f"    ERROR {row['error']}", flush=True)
+            write_row(row)
     return 0
 
 
