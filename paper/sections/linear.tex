@@ -914,10 +914,15 @@ fraction of $U_N$ reachable \emph{quickly}.
 Unequal masses $m_j=1+\varepsilon\xi_j$ turn the chain into the generalized problem $\LN v=\omega^2 Mv$,
 $M=\operatorname{diag}(m_j)$, with node-$0$ response $x_0(t)=\sum_r c_r\sin(\omega_r t)$,
 $c_r=v_r(0)^2/\omega_r>0$ ($M$-orthonormal modes $v_r^\top M v_s=\delta_{rs}$, unit velocity impulse) and
-incoherent ceiling $C=\sum_r c_r$. Generic masses destroy every rational relation almost surely (each
-relation is a nontrivial real-analytic condition on the masses, and a countable union of such conditions
-still has measure zero), so the obstruction of Theorem~\ref{thm:ceiling} disappears and \emph{every} $N$
-can in principle reach its ceiling. We verify (\texttt{verify\_disorder.py}) that the exact resonance
+incoherent ceiling $C=\sum_r c_r$. Generic masses destroy every rational relation almost surely. Each
+$F_k(\xi)=\sum_r k_r\omega_r(\xi)$ ($k\in\Z^{N-1}\!\setminus\!\{0\}$) is real-analytic on the simple-spectrum
+set; it is not \emph{identically} zero because the eigenvalue map $\xi\mapsto(\lambda_r)$ is a submersion---its
+Jacobian $\partial\lambda_r/\partial m_j=-\lambda_r v_r(j)^2$ has full row rank $N-1$ at generic masses
+(\texttt{verify\_disorder.py}; full rank is an open condition, certifiable at a witness), so the
+$\omega_r=\sqrt{\lambda_r}$ vary independently and no nontrivial linear combination can vanish on an open set.
+Hence each $\{F_k=0\}$ is a proper analytic subset, of measure zero, and their countable union still has
+measure zero; so the obstruction of Theorem~\ref{thm:ceiling} disappears and \emph{every} $N$ can in principle
+reach its ceiling. We verify (\texttt{verify\_disorder.py}) that the exact resonance
 residual of a composite $N$ jumps from $0$ to $O(\varepsilon)$ under disorder, and that over a long
 horizon the achievable efficiency $A/C$ rises above the blocked ordered value (e.g.\ $N=15$:
 $0.83\!\to\!0.91$). But the gain is purely infinite-time: at a short horizon the same disorder yields no

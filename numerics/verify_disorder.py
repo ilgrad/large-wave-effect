@@ -74,6 +74,29 @@ def main() -> int:
     ok &= mono and res0 < 1e-9
     print(f"    -> residual is 0 when ordered and grows ~linearly with eps: {'OK' if mono and res0 < 1e-9 else 'FAIL'}")
 
+    print("\n(A') the eigenvalue map xi -> (lambda_r) is a SUBMERSION: Jacobian d(lambda_r)/dm_j = -lambda_r")
+    print("     v_r(j)^2 has full row rank N-1 at generic masses, so each relation F_k = sum k_r omega_r is")
+    print("     NOT identically zero (the 'nontrivial analytic condition' step of generic independence)")
+    print(f"    {'N':>4} {'nonzero modes':>14} {'Jacobian rank':>14}")
+    jac_ok = True
+    for n in (5, 6, 8, 9, 12):
+        rk, modes = 0, 0
+        for _ in range(5):
+            inv = 1.0 / np.sqrt(1.0 + 0.3 * rng.standard_normal(n))
+            w2, wvec = np.linalg.eigh(inv[:, None] * ring_laplacian(n) * inv[None, :])
+            keep = w2 > 1e-9
+            modes = int(keep.sum())
+            # J_{rj} = -lambda_r v_r(j)^2, v_r(j) = inv[j] wvec[j,r]; rank invariant under row/col scaling,
+            # so rank(J) = rank of the squared-eigenvector matrix [v_r(j)^2]_{r,j}
+            rk = int(np.linalg.matrix_rank((wvec[:, keep] ** 2).T, tol=1e-9))
+            if rk == modes:
+                break
+        jac_ok &= rk == modes
+        print(f"    {n:>4} {modes:>14} {rk:>14}  ({'FULL' if rk == modes else 'deficient'})")
+    ok &= jac_ok
+    print(f"    -> submersion at generic masses => F_k != 0, so {{F_k=0}} is measure zero (countable union "
+          f"too): {'OK' if jac_ok else 'FAIL'}")
+
     print("\n(B) Long horizon (T=3e4): disorder lifts efficiency A/C above the blocked ordered value")
     print(f"    {'N':>4} {'ordered A/C':>12} {'disordered A/C (eps=0.4, mean 8)':>34}")
     for n in (9, 12, 15):
