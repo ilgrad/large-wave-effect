@@ -31,7 +31,9 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
 **Resolved this session (2026-06-15).**
 - **A2** β_odd continuum cover — the θ-ball middle blow-up past `t=12` is fixed by `middle_far_point`
   (θ-Taylor + t-collocation; `verify_middle_far.py`); the previously-failing boxes now certify
-  (`(0.70,0.70)→0.948`, `(0.73,0.73)→0.943`, `(0.76,0.76)→0.922`). Reduced to running the tiling.
+  (`(0.70,0.70)→0.948`, `(0.73,0.73)→0.943`, `(0.76,0.76)→0.922`). Full band tiling **COMPLETE**:
+  `run_dagger_campaign.py` certified 130 leaf boxes, 0 fail (~7.2 h) ⇒ A2 closed (`limsup B_N/√N = β_odd`
+  at the dagger certificate's validated-enclosure standard).
 
 **Open — research wall (needs new mathematics).**
 - **A1** excess lemma, uniform in `m` = weighted-packing bound on the chained graph — sup-side
@@ -39,8 +41,7 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
 - Self-trapping window `gP∈[0.43,4)` — same focusing-sign motif (§C).
 
 **Open — execution / resource (idea exists, not a one-shot).**
-- β_odd full band tiling: `run_dagger_campaign.py` (adaptive, node-parallel, checkpointed; ~100–400 boxes,
-  ~190 s/box) — let the sweep finish to complete A2;
+- β_odd full band tiling — **DONE** (`run_dagger_campaign.py`: 130 leaf boxes, 0 fail, ~7.2 h; A2 closed);
   finite-time **lower** bound (+ damping, conditional on it);
   FPUT small-energy (Nekhoroshev, 4-wave resonances) and chaos (CAPD); arbitrary graphs (non-cyclotomic).
 
@@ -121,10 +122,10 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
   via `prove_box(..., far_slices=...)` certifies the previously-failing boxes:
   `(0.70,0.70,h=0.005)→0.948`, `(0.73,0.73)→0.943`, `(0.76,0.76)→0.922` (the worst true value is at
   `a≈0.70`). Node-parallel (`prove_box_parallel.py`); the full band tiling is the adaptive, checkpointed
-  `run_dagger_campaign.py` (~100–400 boxes; the only remaining step is letting that sweep finish).
+  `run_dagger_campaign.py`, which certified all 130 leaf boxes (0 fail, ~7.2 h) — the cover is complete.
 - FIXED: the `beta_odd` literal (was wrong past digit 9).
 
-**A1 remains the signed-cancellation wall; A2's continuum cover is now an executable tiling (above).**
+**A1 remains the signed-cancellation wall; A2's continuum cover is complete (130 boxes, 0 fail; above).**
 
 ---
 

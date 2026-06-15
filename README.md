@@ -28,8 +28,8 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   always be Kronecker-aligned. Precisely $A_N = \tfrac1\pi\ln N + O(\ln\ln\ln N)$.
 - **Exact amplitude / saturation (theorem).**
   $A_N = U_N = \tfrac1\pi\ln N + \tfrac1\pi(\gamma+\ln\tfrac2\pi) - \tfrac{\pi}{72N^2}+\cdots$ **iff** $N$ is
-  prime or a power of two; equivalently every integer frequency relation has coefficient-sum $\equiv 0
-  \pmod 4$ (antipodal variant for even $N$). Via an explicit root-of-unity obstruction,
+  prime or a power of two; equivalently every integer frequency relation has coefficient-sum
+  $\equiv 0 \pmod 4$ (antipodal variant for even $N$). Via an explicit root-of-unity obstruction,
   $\{N : A_N = U_N\} = \{\text{primes}\}\cup\{2^m\}$ (density zero). The orbit-closure subtorus has
   dimension exactly $\tfrac12\varphi(2N)$. The theorem is cross-checked by exact Python/GAP scans
   (`verify_classification_proof.py`, `exact/gap/scan_classification.g`).
@@ -57,7 +57,7 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   ($K_\star=(h(1)-\sqrt\pi/2)/2$) for the profile's **balanced** Debye configurations (the live set is an
   interval of consecutive integers, so the even/odd channel counts differ by $\le1$; sharp at the two-copy
   pair — imbalanced configs violate the unrestricted bound) whose integrated majorant clears
-  $\beta_{\mathrm{odd}}$. On the **Dirichlet segment**
+  $\beta_{\mathrm{odd}}$ — and whose continuum cover is now **complete** (the θ-Taylor enclosure `middle_far_point` plus a 130-box tiling, 0 failures), so $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$ is established. On the **Dirichlet segment**
   $d_j^N \sim \tfrac{4}{\pi^2}\ln j$ for $N+1$ prime/$2^m$ (the constant $C=4/\pi^2$ is the published
   Myshkis–Filimonov 2003 value). Three large-wave laws on one Laplacian.
 - **Dimension, products & circulants (theorem).** The large wave lives exactly at spectral dimension
@@ -72,8 +72,9 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   exponential in $N$).
 
 **Nonlinear extension (Part II), focusing DNLS — now a rigorous chain.** The linear large wave **persists**
-under weak nonlinearity (Duhamel); the **modulational-instability band** $\sigma_Q=\sqrt{\lambda_Q(2\gamma
-A^2-\lambda_Q)}$ is read off the $L_N$ spectrum; the on-site **breather exists** (a finite-dimensional
+under weak nonlinearity (Duhamel); the **modulational-instability band**
+$\sigma_Q=\sqrt{\lambda_Q(2\gamma A^2-\lambda_Q)}$ is read off the $L_N$ spectrum; the on-site
+**breather exists** (a finite-dimensional
 variational argument, no MacKay–Aubry continuation) and is **stable** (Vakhitov–Kolokolov / Grillakis–
 Shatah–Strauss), while the bond-centred breather is unstable. The **self-trapping threshold is proved
 energy-sharp** at the exact constant $\gamma P=4=\|L_N\|$: above it, full dispersal of the single-site seed
@@ -95,8 +96,9 @@ middle could not reach (its rigorous radius blows up past `t=12`; the true ratio
 it was enclosure-limited, not tight) is now covered by a **θ-Taylor + t-collocation** enclosure
 (`middle_far_point`, validated against the reference in `verify_middle_far.py`): the previously-failing
 boxes certify (`(0.70,0.70)→0.948`, `(0.73,0.73)→0.943`, `(0.76,0.76)→0.922`). The full singleton-band
-cover is the adaptive, node-parallel, checkpointed tiling `run_dagger_campaign.py`; completing that sweep
-gives $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$. (2) The **excess lemma**
+cover is now **complete** — the adaptive, node-parallel, checkpointed tiling `run_dagger_campaign.py`
+certified all 130 leaf boxes with 0 failures — so $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$ holds at the
+dagger certificate's validated-enclosure standard; problem (1) is thereby closed. (2) The **excess lemma**
 $A_N\le L_{\mathrm{pre}}+O(1)$ (equivalent to a rigorous *growing* deficit bound) — now proved when the odd
 part of $N$ is a prime power ($N=2p$ sharp at $1/2N$, $N=4p$), **open only for $\omega(m)\ge2$**; it is a
 quantitative Kronecker–Weyl comparison on the relation-constrained subtorus, the sup-side counterpart of

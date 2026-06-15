@@ -1621,8 +1621,9 @@ cancellation inflate the radius); it is validated against the reference enclosur
 $\sim10^{-7}$; \texttt{verify\_middle\_far.py}). With the split $\mathrm{mid}[1.5,8]+\mathrm{far}[8,24]+\mathrm{tail}[24,\infty)$
 through \texttt{prove\_box($\dots$,\,far\_slices=$\dots$)} the previously-failing boxes certify
 ($(0.70,0.70)\to0.948$, $(0.73,0.73)\to0.943$, $(0.76,0.76)\to0.922$, the worst true value sitting at
-$a\simeq0.70$). The full singleton-band cover is then the adaptive, node-parallel, checkpointed tiling
-\texttt{run\_dagger\_campaign.py}; completing that sweep yields $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$. The honest status is that the multi-copy region is
+$a\simeq0.70$). The full singleton-band cover is the adaptive, node-parallel, checkpointed tiling
+\texttt{run\_dagger\_campaign.py}, which certified all $130$ leaf boxes with $0$ failures; hence
+$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$ at the certificate's validated-enclosure standard. The honest status is that the multi-copy region is
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
 constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
