@@ -4,15 +4,16 @@ Per-task plan: what to prove, the method, the tools, and the **current status in
 (proved / tried-and-failed-this-session / open + what is actually needed). Cross-references the
 external review against the session's own findings.
 
-**Unifying finding.** The two central open targets — the composite excess lemma (1) and the
-Schrödinger constant `limsup B_N/sqrt(N) = beta_odd` (5) — reduce to the **same** obstruction: a
-**sup-side signed-cancellation estimate** (the primal analogue of McGehee–Pigno–Smith / Konyagin).
-Seven routes have been ruled out for it: modulus/triangle bound, multivariate concavity, the
-variance-floor, monotone-tail, Berry–Esseen (sharp Esseen constant 1/2 overshoots), Bedert's Chowla
-machinery (min-side, does not transfer — verified from arXiv:2509.05260), and naive Arb ball
-arithmetic (destroys the cancellation). A breakthrough on the signed estimate closes both. This session
-sharpened the (1) side: its signed core is now reduced to a concrete **weighted-packing bound on the
-chained relation graph**, uniform over odd `m` (A1 Mechanism).
+**Unifying finding (updated 2026-06-15).** These two were thought to be the **same** obstruction — a
+**sup-side signed-cancellation estimate** (primal McGehee–Pigno–Smith / Konyagin). That holds for the
+composite excess lemma (1) = **A1**, whose signed core is reduced to a concrete **weighted-packing bound
+on the chained relation graph**, uniform over odd `m` (A1 Mechanism); seven routes are ruled out
+(modulus/triangle, multivariate concavity, variance-floor, monotone-tail, Berry–Esseen, Bedert's Chowla
+machinery — arXiv:2509.05260, naive Arb ball). But the β_odd continuum cover (5) = **A2** turned out
+NOT to be that wall: direct computation showed it is **enclosure-limited** (true pointwise margin `~0.12`,
+never near-tight), the binding loss being the capped-`|M|` tail under a θ-BALL middle that blows up past
+`t=12`. It is now **resolved** by a θ-Taylor + t-collocation enclosure (`middle_far_point`), reducing A2
+to an executable tiling (see A2). So only **A1** (and the self-trapping window, §C) remains the signed wall.
 
 ---
 
@@ -27,13 +28,19 @@ chained relation graph**, uniform over odd `m` (A1 Mechanism).
 - Finite-time **upper** bound `T_{0.2}(N)≤t~` certified (interval) for concrete primes `N=5,7,11,13`.
 - (Earlier in session: classification, `A_N~(1/π)ln N`, mod-4, β_odd profile/transfer/two-copy — see A2.)
 
+**Resolved this session (2026-06-15).**
+- **A2** β_odd continuum cover — the θ-ball middle blow-up past `t=12` is fixed by `middle_far_point`
+  (θ-Taylor + t-collocation; `verify_middle_far.py`); the previously-failing boxes now certify
+  (`(0.70,0.70)→0.948`, `(0.73,0.73)→0.943`, `(0.76,0.76)→0.922`). Reduced to running the tiling.
+
 **Open — research wall (needs new mathematics).**
-- **A1** excess lemma, uniform in `m` = weighted-packing bound on the chained graph ‖ **A2** β_odd
-  continuum cover — the SAME sup-side signed-cancellation estimate (7 routes ruled out).
+- **A1** excess lemma, uniform in `m` = weighted-packing bound on the chained graph — sup-side
+  signed-cancellation estimate (7 routes ruled out).
 - Self-trapping window `gP∈[0.43,4)` — same focusing-sign motif (§C).
 
 **Open — execution / resource (idea exists, not a one-shot).**
-- β_odd adaptive continuum tiling (runner exists; full boxes are ~29–32 min/box, parallelized by `--jobs`);
+- β_odd full band tiling: `run_dagger_campaign.py` (adaptive, node-parallel, checkpointed; ~100–400 boxes,
+  ~190 s/box) — let the sweep finish to complete A2;
   finite-time **lower** bound (+ damping, conditional on it);
   FPUT small-energy (Nekhoroshev, 4-wave resonances) and chaos (CAPD); arbitrary graphs (non-cyclotomic).
 
@@ -100,17 +107,24 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
 - COVERED POINTWISE (`>=3` copies): near-pair basin `lambda>=0.82` (Phi convex in amplitude coords);
   singleton-channel band `lambda in [0.65,0.82)` (three-region Arb bound, worst `0.99 K_star`); bulk
   (`>=2`/channel) crude. All `< K_star`. `verify_dagger_{extremal2,decomp,singleton,concavity,tail}.py`.
-- OPEN: the **continuum** cover between grid nodes. Method built (multivariate amplitude Taylor model
-  kills the 4x ball inflation; `verify_dagger_continuum.py`) and now operational as checkpointed,
-  parallel tiling (`run_dagger_continuum_tiling.py`). Full-resolution audit (2026-06-14): equal-amplitude
-  boxes `(0.82,0.82,h=0.015)`, `(0.85,0.85,h=0.015)`, `(0.79,0.79,h=0.015)` close with upper
-  `0.9089`, `0.8451`, `0.9775`; `(0.76,0.76,h=0.015)` and `(0.73,0.73,h=0.015)` fail at `1.0310`,
-  `1.0683`, while halving only the central `(0.76,0.76)` box closes at `0.9951` and `(0.73,0.73)`
-  remains at `1.0267`. The remaining work is adaptive splitting plus a sharper theta/signed-tail
-  enclosure near `lambda≈0.73` (dominant term is `mid_sup`, tail is only `~0.05`).
+- CONTINUUM COVER (2026-06-15, mechanism resolved). The equal-amplitude boxes near `lambda≈0.73` that
+  failed (`(0.73,0.73,h=0.015)→1.068`, `(0.76,0.76)→1.031`) failed for a now-pinned reason: the binding
+  loss is the capped-`|M|` tail (`~0.047 K*`, almost pure — the true SIGNED tail is `≈-0.003`), and the
+  signed acb-series `middle_point` could NOT be extended past `T2=12` to recover it because its rigorous
+  THETA-BALL radius blows up `~amp*t/nth` (precision-independent; `≈300` at `t=20`; the true pointwise
+  margin is a healthy `~0.12` — it was enclosure-limited, never near-tight).
+  FIXED by `middle_far_point` (`verify_dagger_continuum.py`): a THETA-TAYLOR + t-COLLOCATION enclosure of
+  the signed middle for `t>=8` — theta is a Taylor series variable (no ball inflation), t is sampled at
+  POINTS (the 0F1 J0-series only blows the radius under an INTERVAL t), the t-integral is a degree-2
+  collocation quadrature with a finite-difference Lagrange remainder. Validated vs the scipy reference
+  (containment, radius `~7e-7`; `verify_middle_far.py`). Recipe `mid[1.5,8] + far[8,24] + tail[24,inf)`
+  via `prove_box(..., far_slices=...)` certifies the previously-failing boxes:
+  `(0.70,0.70,h=0.005)→0.948`, `(0.73,0.73)→0.943`, `(0.76,0.76)→0.922` (the worst true value is at
+  `a≈0.70`). Node-parallel (`prove_box_parallel.py`); the full band tiling is the adaptive, checkpointed
+  `run_dagger_campaign.py` (~100–400 boxes; the only remaining step is letting that sweep finish).
 - FIXED: the `beta_odd` literal (was wrong past digit 9).
 
-**Both A1 and A2 are the same signed-cancellation wall.**
+**A1 remains the signed-cancellation wall; A2's continuum cover is now an executable tiling (above).**
 
 ---
 

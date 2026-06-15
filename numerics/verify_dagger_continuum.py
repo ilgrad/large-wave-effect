@@ -299,6 +299,67 @@ def middle_point(
     return total
 
 
+def middle_far_point(
+    a1: float, a3: float, b: float, slices: list[tuple[float, float, int, int]],
+    th_order: int = 8, rho: float = 0.05, kt: int = 2,
+) -> object:
+    """Rigorous signed enclosure of int_far (Mg-M)/t^2 dt for LARGE t (t >= ~8), where middle_point's
+    theta-BALL blows up: there the integrand oscillates fast in theta (frequency ~ amp*t), so a theta
+    ball of width dth/2 inflates the rigorous radius like amp*t/nth (hopeless beyond t~12, the reason
+    middle_point stops at T2=12).  Here theta is instead a Taylor SERIES variable (captured analytically,
+    tiny radius) and t is sampled at POINTS (the 0F1 J0-series only cancels catastrophically when its
+    argument is an INTERVAL, so point-t keeps the radius ~1e-13); the t-integral over each box is a
+    degree-2 collocation quadrature with a finite-difference Lagrange remainder (same methodology as
+    build_stencil, requires kt == 2).  Mg < 1e-7 for t >= 8 is dropped from the integrand and re-added as
+    [0, mg_bound].  Validated against the scipy reference (containment, radius ~1e-7) by
+    numerics/verify_middle_far.py.  Use for the t >= 8 continuation of the signed middle."""
+    af1, af3, bf = float(a1), float(a3), float(b)
+    A1, A3, B = arb(str(a1)), arb(str(a3)), arb(str(b))
+    sx2, sy2 = (A1 * A1 + A3 * A3) / 2, (B * B) / 2
+    qmin = float(min(sx2.lower(), sy2.lower()))
+    asum, shr = af1 + af3 + bf, math.sinh(rho)
+    PI = arb.pi()
+
+    def itheta_over_t2(tpt: float, nth: int) -> object:
+        """(2/pi) int_0^{pi/2} (-p(tpt, theta)) dtheta / tpt^2 at a POINT t=tpt (theta-Taylor)."""
+        dth = (PI / 2) / nth
+        thrad = float((dth / 2).mid())
+        mrho = math.exp(asum * tpt * shr)  # |p| <= exp(sum amp * t * sinh rho) over |theta-th0|<=rho
+        tb = acb(tpt)
+        acc = arb(0)
+        for ith in range(nth):
+            th0 = float(((dth * ith) + dth / 2).mid())
+            th = acb_series([acb(th0), acb(1)], th_order + 1)  # theta = th0 + x
+            c, s = th.cos(), th.sin()
+            z1, z2, z3 = (acb(A1) * tb) * c, (acb(A3) * tb) * c, (acb(B) * tb) * s
+            j1 = acb_series.hypgeom([], [acb(1)], -(z1 * z1) / 4, n=-1)
+            j2 = acb_series.hypgeom([], [acb(1)], -(z2 * z2) / 4, n=-1)
+            j3 = acb_series.hypgeom([], [acb(1)], -(z3 * z3) / 4, n=-1)
+            acc = acc + _box_integral(-(j1 * j2 * j3), thrad) + _cauchy_tail(mrho, rho, thrad, th_order)
+        return (arb(2) / PI) * acc / (arb(tpt) * arb(tpt))
+
+    total = arb(0)
+    for tlo, thi, nbox, nth in slices:
+        bw = (thi - tlo) / nbox
+        trad = bw / 2.0
+        delta = trad / kt
+        for ib in range(nbox):
+            t0c = tlo + bw * ib + bw / 2.0
+            vals = [itheta_over_t2(t0c + j * delta, nth) for j in range(-kt, kt + 1)]
+            g = [float(v.mid()) for v in vals]
+            node_rad = max(float(v.rad()) for v in vals)
+            xs = np.array([[1.0, j * delta, (j * delta) ** 2] for j in range(-kt, kt + 1)])
+            c0, _c1, c2 = np.linalg.lstsq(xs, np.array(g), rcond=None)[0]
+            ipoly = 2 * c0 * trad + (2.0 / 3.0) * c2 * trad**3  # int_{-trad}^{trad} of the degree-2 fit
+            d3 = (g[4] - 2 * g[3] + 2 * g[1] - g[0]) / (2 * delta**3)
+            d4 = (g[4] - 4 * g[3] + 6 * g[2] - 4 * g[1] + g[0]) / delta**4
+            rem = ((trad**3 / 6.0) * (abs(d3) + 3.0 * abs(d4) * delta) + node_rad) * 2.0 * trad
+            total = total + arb(ipoly, rem)
+            mg = math.exp(-qmin * (t0c - trad) ** 2 / 2) / (t0c - trad) ** 2 * bw  # dropped +Mg bound
+            total = total + arb(mg / 2, mg / 2)
+    return total
+
+
 # ----------------------------------------------------------------------------------------------------------
 # TAIL over the whole box: monotone capped Bessel envelope (box-sup at an explicit corner) + far bound.
 # ----------------------------------------------------------------------------------------------------------
@@ -470,6 +531,7 @@ class BoxResult:
     upper: float
     proves: bool
     in_handoff: bool
+    far_sup: float = 0.0
 
 
 def _box_minD_and_qmin(a1c: float, a3c: float, h: float) -> tuple[float, float]:
@@ -506,8 +568,15 @@ def prove_box(
     tail_far: float,
     delta: float,
     kspan: int = 2,
+    far_slices: list[tuple[float, float, int, int]] | None = None,
+    t_tail: float | None = None,
 ) -> BoxResult:
-    """Certify sup_B R(a)/K_star over the box B = [a1c+-h] x [a3c+-h] (b refixed, Sigma_2=1)."""
+    """Certify sup_B R(a)/K_star over the box B = [a1c+-h] x [a3c+-h] (b refixed, Sigma_2=1).
+
+    If far_slices is given, the signed middle is split: mid_slices cover [T1, t_split] via the theta-ball
+    middle_point and far_slices cover [t_split, t_tail] via the theta-Taylor middle_far_point (which stays
+    rigorous where the theta ball blows up); the capped-|M| tail then starts at t_tail.  Without far_slices
+    the behaviour is exactly the original (single theta-ball middle + tail from T2)."""
     lam_vals = []
     for d1 in (-h, 0, h):
         for d3 in (-h, 0, h):
@@ -528,18 +597,26 @@ def prove_box(
     head_sup = build_stencil(head_val, a1c, a3c, h, delta, kspan=kspan).sup()
     mid_sup = build_stencil(mid_val, a1c, a3c, h, delta, kspan=kspan).sup()
 
+    far_sup = 0.0
+    if far_slices is not None:
+        def far_val(a1: float, a3: float) -> object:
+            return middle_far_point(a1, a3, b_of(a1, a3), far_slices)
+
+        far_sup = build_stencil(far_val, a1c, a3c, h, delta, kspan=kspan).sup()
+
     # tail: box-minima of each amplitude (rigorous; envelope monotone decreasing in each)
+    t_tail = T2 if t_tail is None else t_tail
     a1min, a3min = a1c - h, a3c - h
     bmin = min(
         (bb for d1 in (-h, 0, h) for d3 in (-h, 0, h) if (bb := b_of(a1c + d1, a3c + d3)) is not None),
         default=b_of(a1c - h, a3c - h),
     )
     minD, qmin = _box_minD_and_qmin(a1c, a3c, h)
-    tail = tail_modulus_box(a1min, a3min, bmin, T2, tail_segs, tail_far)
-    mgt = mg_tail_box(qmin, T2)
+    tail = tail_modulus_box(a1min, a3min, bmin, t_tail, tail_segs, tail_far)
+    mgt = mg_tail_box(qmin, t_tail)
     tail_sup = float((tail + mgt).upper())
 
-    upper = (head_sup + mid_sup + tail_sup) / (K_STAR * minD)
+    upper = (head_sup + mid_sup + far_sup + tail_sup) / (K_STAR * minD)
     return BoxResult(
         a1c=a1c,
         a3c=a3c,
@@ -553,6 +630,7 @@ def prove_box(
         upper=upper,
         proves=upper < 1.0,
         in_handoff=in_handoff,
+        far_sup=far_sup / (K_STAR * minD),
     )
 
 

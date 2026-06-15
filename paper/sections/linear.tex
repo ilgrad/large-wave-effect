@@ -1610,12 +1610,19 @@ grid-Lipschitz standing assumption, not a closed interval enclosure. A multivari
 amplitudes (degree~$2$ with a Lagrange remainder) does remove that fourfold ball inflation---the per-box lift
 is implemented and the true ratio stays $\le0.91$ throughout (\texttt{verify\_dagger\_continuum.py})---and the
 checkpointed runner \texttt{run\_dagger\_continuum\_tiling.py} now closes full-resolution boxes wherever the
-Taylor margin is adequate (for example equal-amplitude boxes centred at $0.79,0.82,0.85$). The remaining
-localized obstruction is the equal-amplitude singleton zone near $a_1=a_3\simeq0.73$: halving the box width
-already closes the neighbouring $0.76$ box, but not this one. Thus the residual is now an adaptive tiling
-plus a sharper $\theta$-/signed-tail enclosure, rather than a missing reduction. This, and the signed cancellation
-that defeats every modulus, concavity, variance-floor and Berry--Esseen route, is structurally the \emph{same}
-obstruction as the $\omega(m)=2$ excess lemma~(1). The honest status is that the multi-copy region is
+Taylor margin is adequate. The equal-amplitude singleton zone near $a_1=a_3\simeq0.73$ resisted not because
+the inequality is tight there---the true ratio is $\le0.88$, a margin $\simeq0.12$---but because the
+\emph{signed} $\theta$-ball middle's rigorous enclosure radius blows up past $t=12$ (it scales like
+$\mathrm{amp}\cdot t/n_\theta$, which is exactly why the band middle stops at $T_2=12$). A $\theta$-Taylor
+$+$ $t$-collocation enclosure restores it for $t\ge8$ (\texttt{middle\_far\_point}: $\theta$ is a Taylor
+series variable so the fast oscillation is captured analytically, while $t$ is sampled at \emph{points}, so
+the $0F1$ Bessel series is never evaluated on an interval---the only thing that makes its catastrophic
+cancellation inflate the radius); it is validated against the reference enclosure (containment, radius
+$\sim10^{-7}$; \texttt{verify\_middle\_far.py}). With the split $\mathrm{mid}[1.5,8]+\mathrm{far}[8,24]+\mathrm{tail}[24,\infty)$
+through \texttt{prove\_box($\dots$,\,far\_slices=$\dots$)} the previously-failing boxes certify
+($(0.70,0.70)\to0.948$, $(0.73,0.73)\to0.943$, $(0.76,0.76)\to0.922$, the worst true value sitting at
+$a\simeq0.70$). The full singleton-band cover is then the adaptive, node-parallel, checkpointed tiling
+\texttt{run\_dagger\_campaign.py}; completing that sweep yields $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$. The honest status is that the multi-copy region is
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
 constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
