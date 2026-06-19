@@ -106,9 +106,11 @@ McGehee–Pigno–Smith. (3) A rigorous dispersal proof on the **proof gap** $\g
 threshold $4$ is now energy-sharp and dispersal is the numerically established behaviour up to $\approx4$,
 but the rigorous drop is proven only to $0.43$. (4) Condition (B) of the order criterion for quasi-1D
 lattices *without* an embedded ring (the Möbius ladder and multi-jump circulants are now settled; the
-next-nearest-neighbour degeneracy law holds for all couplings $g$ via Conway–Jones). **Priority note:**
-Filimonov's 1992 C. R. Acad. Sci. note must be obtained and compared on the ring before claiming priority
-(its splash table is reproduced in Andrianov–Awrejcewicz–Danishevskyy 2021).
+next-nearest-neighbour degeneracy law holds for all couplings $g$ via Conway–Jones). **Priority note
+(resolved):** Filimonov's 1992 C. R. Acad. Sci. note has been obtained and compared on the ring — the
+**rational-independence dichotomy** (peaks for $N$ prime/$2^m$, dependence for even composite, by his
+cyclotomic argument) and the unbounded ceiling are Filimonov's; the rate $\tfrac1\pi\ln N$, the explicit
+constant, the **mod-4 saturation classification**, and the all-$N$ rank $\tfrac12\varphi(2N)$ are new here.
 
 ## Reproduce
 

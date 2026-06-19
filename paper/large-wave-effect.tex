@@ -160,36 +160,38 @@ string a localized disturbance amplifies, growing without bound at bounded energ
 classical, due to the Kurchanov--Myshkis--Filimonov line of work~\cite{KMF,MF03,FM}, with the $\ln$-type
 asymptotics on the Dirichlet segment first in~\cite{FM98} and sharpened in~\cite{MF03}, and the
 Schr\"odinger analogue in~\cite{F23}. The
-linear independence over $\Q$ of the frequencies for $N$ prime or $N=2^m$ is itself due to~\cite{KMF};
-our Theorems~\ref{thm:prime},~\ref{thm:two} reprove it cyclotomically, and Theorem~\ref{thm:qrank}
+linear independence over $\Q$ of the frequencies for $N$ prime or $N=2^m$ is due to~\cite{KMF} and is
+Theorem~2 of~\cite{F92}, proved there by the same cyclotomic (minimal-polynomial) argument we use; our
+Theorems~\ref{thm:prime},~\ref{thm:two} are a streamlined reproof, and Theorem~\ref{thm:qrank}
 subsumes it in a closed-form $\Q$-rank valid for \emph{every} $N$. The
 lineage also includes two early C.~R.~Acad.~Sci.\ notes~\cite{FKM91,F92}, of which Filimonov's 1992
-note~\cite{F92} is the closest precedent: it is itself on the \emph{circular} string, and by its published
-summary (Zbl~0761.73053) it already establishes that for $N$ prime or $N=2^m$ the \emph{ring} vibrations
-exhibit peaks, addresses the degenerate ``multiple-frequency'' (composite) case that our $\bmod\,4$
-criterion governs, and proposes a continuum model finer than the wave equation. A recent
-monograph~\cite{AAD21} reproduces its splash table (its Table~10.1, with $P_N\to\infty$ as $N\to\infty$),
-which grows at the \emph{segment} constant $4/\pi^2$ and quantifies the splash \emph{magnitude}---distinct
-from our \emph{ring} law $\tfrac1\pi\ln N$ and from the arithmetic of \emph{which} $N$ saturate. \emph{It is
-therefore possible that the qualitative ring effect and part of the composite analysis below are already
-Filimonov's.} We have consulted only its abstract and this secondary reproduction (the full note is not
-digitized in the sources available to us);~\cite{F92} must be obtained and compared against
-Theorems~\ref{thm:prime}--\ref{thm:two} and~\ref{thm:ceiling} before submission. The structural and quantitative claims below are accordingly
-stated as novel \emph{to our knowledge}.
+note~\cite{F92} is the closest precedent. Having obtained the full note, we record the comparison
+precisely (Remark~\ref{rem:f92}). On the \emph{circular} string with the same frequencies
+$\omega_k=2\sin(\pi k/N)$, \cite{F92} proves: the ceiling is attained under $\Q$-independence (its Thm~1,
+by Kronecker---our Proposition~\ref{prop:bohr}); $N$ prime or $2^m$ gives $\Q$-independence (its Thm~2,
+the cyclotomic argument---our Theorems~\ref{thm:prime},~\ref{thm:two}); even composite $N=2^m q$
+($q$ odd~$\ge3$) gives $\Q$-\emph{dependence} via $\varphi(2N)=N-2^m$ (its Thm~3); the ceiling grows
+without bound (its Thm~4, with no rate); the discrete peaks exceed the continuum value $F/2$ for $N$ prime
+or $2^m$ (its Corollary); and a continuum model finer than the wave equation (its \S3). A recent
+monograph~\cite{AAD21} reproduces its splash table (Table~10.1, $P_N\to\infty$), at the \emph{segment}
+constant $4/\pi^2$. Thus the qualitative ring effect, the prime/$2^m$ independence and its cyclotomic
+proof, the even-composite dependence, and the unbounded growth are already Filimonov's; our contribution
+is the \emph{rate, the constant, and the arithmetic of which $N$ saturate}, as follows.
 Our contribution is \emph{quantitative and structural}: the order theorem $A_N\sim\tfrac1\pi\ln N$ for
 \emph{every} $N$, via the palindromic prefix-independence lemma (Theorem~\ref{thm:order},
 Lemma~\ref{lem:prefix}); the saturation classification $A_N=U_N\Leftrightarrow N$ prime or $2^m$
 (Theorem~\ref{thm:classification}); the explicit ring constant $\tfrac1\pi$ and the
 next term $-\tfrac{\pi}{72}N^{-2}$ (Lemma~\ref{lem:asym}); the closed-form subtorus dimension
-$\tfrac12\varphi(2N)$ for every $N$, with a cyclotomic reproof of the prime/$2^m$ independence
-of~\cite{KMF} as its full-rank case (Theorems~\ref{thm:qrank},~\ref{thm:prime},~\ref{thm:two}); the exact $\bmod\,4$ criterion for reaching
+$\tfrac12\varphi(2N)$ for every $N$, with a cyclotomic reproof (after~\cite{F92}, Thm~2) of the prime/$2^m$
+independence as its full-rank case (Theorems~\ref{thm:qrank},~\ref{thm:prime},~\ref{thm:two}); the exact $\bmod\,4$ criterion for reaching
 the ceiling (Theorem~\ref{thm:ceiling}); the new composite family $N=2p$ (Proposition~\ref{prop:2p}); the
 spectral-zeta systematization; the finite-time/disorder dichotomy (Section~\ref{sec:reach}); the
 sharp $B_N=\Theta(\sqrt N)$ growth of the discrete Schr\"odinger propagator
 (Theorem~\ref{thm:schr-lower}); the segment rank and classification (Theorem~\ref{thm:segrank}); and the
 order criterion with its ring-product corollary (Proposition~\ref{prop:order-criterion},
-Corollary~\ref{cor:product}). We claim neither the large-wave phenomenon nor its appearance on the ring
-for $N$ prime or $2^m$ as new (the latter is already in~\cite{F92}; see Remark~\ref{rem:f92}). The same
+Corollary~\ref{cor:product}). We claim as new neither the large-wave phenomenon, nor its appearance on the
+ring for $N$ prime or $2^m$, nor the prime/$2^m$ $\Q$-independence and its cyclotomic proof, nor the
+even-composite dependence, nor the unbounded growth---all of these are in~\cite{F92} (Remark~\ref{rem:f92}). The same
 transient overshoot---coupling forces exceeding the applied load by a spatial redistribution of energy
 absent in homogeneous media---is independently recognized in the elastic-metamaterials and
 homogenization literature, where it is traced to the Filimonov line and treated by two-point Pad\'e and
@@ -545,8 +547,8 @@ modulational-instability solvability condition of Proposition~\ref{prop:mi}.
 % Filimonov-group references below verified via Crossref (DOIs included); MF03 from info/ PDF.
 \bibitem{MF03} A.~D.~Myshkis, A.~M.~Filimonov, \emph{About the string with beads}, Mat.\ Fiz.\ Anal.\ Geom.\ \textbf{10} (2003), no.~3, 301--306. (Segment $\ln$-asymptotics.)
 \bibitem{KMF} P.~F.~Kurchanov, A.~D.~Myshkis, A.~M.~Filimonov, \emph{Vibrations of rolling stock and a theorem of Kronecker}, J.~Appl.\ Math.\ Mech.\ \textbf{55} (1991), no.~6, 870--876 (Russian original: Prikl.\ Mat.\ Mekh.\ \textbf{55}(6), 989--995). \texttt{doi:10.1016/0021-8928(91)90140-P}.
-\bibitem{FKM91} A.~M.~Filimonov, P.~F.~Kurchanov, A.~D.~Myshkis, \emph{Some unexpected results in the classical problem of vibration of the string with $n$ beads when $n$ is large}, C.~R.~Acad.\ Sci.\ Paris S\'er.~I \textbf{313} (1991), no.~13, 961--965. (Cited from the lineage list of~\cite{F23}; not consulted directly.)
-\bibitem{F92} A.~M.~Filimonov, \emph{Some unexpected results on the classical problem of vibrations of the string with $N$ beads. The case of multiple frequencies}, C.~R.~Acad.\ Sci.\ Paris S\'er.~I \textbf{315} (1992), no.~8, 957--961. Zbl~0761.73053. (Circular string: peaks for $N$ prime or $2^m$, the multiple-frequency case, and a continuum model finer than the wave equation; abstract consulted only.)
+\bibitem{FKM91} A.~M.~Filimonov, P.~F.~Kurchanov, A.~D.~Myshkis, \emph{Some unexpected results in the classical problem of vibration of the string with $n$ beads when $n$ is large}, C.~R.~Acad.\ Sci.\ Paris S\'er.~I \textbf{313} (1991), 961--965. (Reference [1] of~\cite{F92}, which develops it to the multiple-frequency case.)
+\bibitem{F92} A.~M.~Filimonov, \emph{Some unexpected results on the classical problem of vibrations of the string with $N$ beads. The case of multiple frequencies}, C.~R.~Acad.\ Sci.\ Paris S\'er.~I \textbf{315} (1992), no.~8, 957--961 (Note pr\'esent\'ee par \'E.~Sanchez-Palencia; re\c{c}ue 28~juillet, accept\'ee 12~ao\^ut 1992). Zbl~0761.73053. (Circular string, $\omega_k=2\sin(\pi k/N)$: ceiling under $\Q$-independence (Thm~1), $\Q$-independence for $N$ prime or $2^m$ (Thm~2), dependence for even composite $N=2^m q$ (Thm~3), unbounded ceiling $b_j\to\infty$ (Thm~4), peaks $>F/2$, and a continuum model finer than the wave equation (\S3); primary source consulted.)
 \bibitem{FM98} A.~M.~Filimonov, A.~D.~Myshkis, \emph{Asymptotic estimate of solution of one mixed difference--differential equation of oscillations theory}, J.~Difference Equ.\ Appl.\ \textbf{4} (1998), no.~1, 13--16. \texttt{doi:10.1080/10236199808808125}. (First $\ln$-growth result; cited from~\cite{MF03}.)
 \bibitem{FMM} A.~M.~Filimonov, X.~Mao, S.~Maslov, \emph{Splash effect and ergodic properties of solutions of the classical difference--differential equation}, J.~Difference Equ.\ Appl.\ \textbf{6} (2000), no.~3, 319--328. \texttt{doi:10.1080/10236190008808231}.
 \bibitem{FM} A.~M.~Filimonov, A.~D.~Myshkis, \emph{On properties of the large wave effect in the classical problem of bead string vibration}, J.~Difference Equ.\ Appl.\ \textbf{10} (2004), no.~13--15, 1171--1175. \texttt{doi:10.1080/10236190410001652757}.

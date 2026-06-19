@@ -46,7 +46,9 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
   FPUT small-energy (Nekhoroshev, 4-wave resonances) and chaos (CAPD); arbitrary graphs (non-cyclotomic).
 
 **Blocks publication, not the mathematics.**
-- Filimonov 1992 (C.R. Acad. Sci.) — physical access for priority attribution.
+- Filimonov 1992 (C.R. Acad. Sci.) — **RESOLVED**: note obtained & compared. His Thms 1–4 = ceiling under
+  Q-independence + the prime/2^m-vs-even-composite dichotomy (cyclotomic) + unbounded ceiling (no rate);
+  ours = rate (1/π)ln N, constant, mod-4 saturation classification, all-N rank ½φ(2N).
 
 (Detail + methods per task in A–E below; this snapshot is the index.)
 
@@ -176,8 +178,12 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
 
 ## D. Priority / publication
 
-- **Filimonov 1992** (C.R. Acad. Sci.): obtain and compare on the ring before any "first proof"
-  claim. Blocks publication, not the mathematics.
+- **Filimonov 1992** (C.R. Acad. Sci.): **RESOLVED** — note obtained (filimonov/Scan1–5.pdf) and compared.
+  Priority: the ring Q-independence dichotomy (Thm 2 prime/2^m independent via cyclotomic argument; Thm 3
+  even-composite dependent via φ(2N)=N−2^m), the Bohr ceiling under independence (Thm 1), and the unbounded
+  ceiling b_j→∞ (Thm 4, no rate) are Filimonov's. New here: the rate (1/π)ln N, the constant −π/72N², the
+  mod-4 saturation classification (composite *lowers* the ceiling), the all-N rank ½φ(2N), B_N=Θ(√N), etc.
+  Paper "Relation to prior work" + Remark rem:f92 + bib updated accordingly.
 - PDF/TeX: kept in sync (`l^1 -> l^inf`, rebuilt every commit).
 
 ---
