@@ -25,6 +25,6 @@ checkp(p) = {
 
 allok = 1;
 \\ collision-free primes (S and -S do not cover all nonzero residues mod p, i.e. p > 5)
-for(j = 1, 6, allok = allok && checkp([7, 11, 13, 17, 19, 23][j]));
-print("RESULT: " if(allok, "PASS", "FAIL") " -- saturation proven exactly for NNN circulant, primes 7..23");
+for(j = 1, 8, allok = allok && checkp([7, 11, 13, 17, 19, 23, 29, 31][j]));
+print("RESULT: " if(allok, "PASS", "FAIL") " -- saturation proven exactly for NNN circulant, primes 7..31");
 quit;
