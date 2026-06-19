@@ -907,14 +907,16 @@ alignment to tolerance $\delta$ \emph{exists} by time $\sim\delta^{-m}$---a crud
 for non-saturating $N$, where $A_N<U_N$, one replaces $U_N$ by $A_N$.) A matching \emph{lower} bound
 (that one must wait at least exponentially long) does \emph{not} follow
 from Dirichlet, which bounds the wait from above; it would require Diophantine lower bounds on the
-badly-approximable phase vector, and is left open. Numerically the wait does grow exponentially: for
-primes $\log T_{0.2}(N)$ grows by $\approx0.63$ per unit $N$
-(\texttt{verify\_finite\_time.py}, Figure~\ref{fig:reach}); for small primes the \emph{upper} bound is
-moreover certified rigorously---at an explicit witness $\tilde t$ the amplitude exceeds $0.8\,U_N$ in
-interval arithmetic, so $T_{0.2}(N)\le\tilde t$ ($\tilde t\approx0.69,\,0.83,\,147,\,333$ for
-$N=5,7,11,13$; \texttt{verify\_finite\_time\_certified.py}). At a \emph{fixed} horizon $T$ the efficiency $A_N(T)/U_N$
-\emph{decreases} with $N$ (from $\approx1.0$ at $N=5$ to $\approx0.70$ at $N=29$ for $T=300$): more
-frequencies are harder to align in bounded time. Thus the logarithmic law is an infinite-time ceiling; a physical large wave is the
+badly-approximable phase vector, and is left open. Numerically the wait does grow exponentially: over primes $11\le N\le47$, $\log T_{0.2}(N)$ has slope
+$\approx0.25$ per unit $N$, and across $\varepsilon$ the recurrence time fits the simultaneous-approximation
+law $T_\varepsilon(N)\sim\varepsilon^{-a m}$ with $a\approx0.32$, $m=\lfloor N/2\rfloor$ ($R^2=0.88$ up to
+$N\le71$; \texttt{verify\_finite\_time\_lower\_bound.py}, GPU, Figure~\ref{fig:reach})---the steeper
+$\approx0.63$ slope on $N\le19$ alone is pre-asymptotic, inflated by the $O(1)$ times at $N=5,7$. For small
+primes the \emph{upper} bound is moreover certified rigorously---at an explicit witness $\tilde t$ the
+amplitude exceeds $0.8\,U_N$ in interval arithmetic, so $T_{0.2}(N)\le\tilde t$
+($\tilde t\approx0.69,\,0.83,\,147,\,333$ for $N=5,7,11,13$; \texttt{verify\_finite\_time\_certified.py}). At
+a \emph{fixed} horizon $T$ the efficiency $A_N(T)/U_N$ \emph{decreases} with $N$ (at $T=10^3$, from
+$\approx1.0$ at $N=5$ to $\approx0.58$ at $N=71$): more frequencies are harder to align in bounded time. Thus the logarithmic law is an infinite-time ceiling; a physical large wave is the
 partial early alignment, already a several-fold over-amplification, while the full $U_N$ is approached
 only over astronomically long times. The clean arithmetic of prime and $2^m$ $N$ is what makes a sizable
 fraction of $U_N$ reachable \emph{quickly}.
