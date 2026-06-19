@@ -509,9 +509,21 @@ $1/b_a+1/b_b=N\bigl(\sin\tfrac{\pi a}N+\sin\tfrac{\pi b}N\bigr)=N\sin\tfrac{\pi 
 $\omega_c=\omega_a+\omega_b$), so $g(b_a,b_b,b_c)\le\tfrac{b_c^2}2\cdot\tfrac1{b_c}=\tfrac{b_c}2$
 (\texttt{verify\_excess\_decomposition.py}).
 \end{proof}
-\noindent This controls each clean relation \emph{in isolation}; it does not close the lemma, because on the
-ring the relations are coupled---comb generators of support $>3$ and shared prefix phases---so the excess is
-not the sum of these per-relation bounds. Bounding that coupling uniformly is exactly the sup-side
+\noindent This controls each clean relation \emph{in isolation}. For $3\mid N$ the \emph{coupled} triplets
+separate too: the clean (support-$3$) relations $\phi_c=\psi_a+\psi_b$ are \emph{vertex-disjoint} (no prefix
+phase lies in two of them; verified to $N=315$), so partitioning the prefix penalty by any $\lambda\in[0,1)$
+and applying Lemma~\ref{lem:triplet} at weights $(1-\lambda)b_a,(1-\lambda)b_b$ with
+$\sup(X{+}Y)\le\sup X+\sup Y$ yields the rigorous reduction
+\[
+  A_N-L_{\mathrm{pre}}\ \le\ \frac1{1-\lambda}\sum_{c\in T}\frac{b_c}2\ +\ F_{\mathrm{comb}}(\lambda),\qquad
+  F_{\mathrm{comb}}(\lambda)=\max_{\psi}\Bigl[\sum_{r\in K}b_r\sin\phi_r-\lambda\!\sum_{s\le M}b_s(1-\sin\psi_s)\Bigr],
+\]
+splitting the dependent band into the disjoint triplets $T$ and the higher-support \emph{comb} generators
+$K$. The triplet sum is bounded: for square-free $N=3p$, $c=\tfrac{2N}3-a$ makes $\sum_{c\in T}\tfrac{b_c}2$
+a Riemann sum of $\tfrac12\int_{1/2}^{2/3}\csc(\pi x)\,dx=\tfrac{\ln3}{4\pi}\approx0.087$, and it stays
+$<0.1$ across the tested $3\mid N$ (\texttt{verify\_excess\_chain\_split.py}). The excess lemma for $3\mid N$
+is thereby \emph{isolated} to the comb block: the open core is $F_{\mathrm{comb}}=O(1)$, a
+signed-cancellation statement on the $O(p_2)$ comb generators ($p_2$ the second prime factor)---the sup-side
 cancellation left open above.
 
 The family limits themselves can be pinned precisely: within each family the node-$0$ defect converges
