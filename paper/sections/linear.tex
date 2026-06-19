@@ -522,7 +522,9 @@ splitting the dependent band into the disjoint triplets $T$ and the higher-suppo
 $K$. The triplet sum is bounded: for square-free $N=3p$, $c=\tfrac{2N}3-a$ makes $\sum_{c\in T}\tfrac{b_c}2$
 a Riemann sum of $\tfrac12\int_{1/2}^{2/3}\csc(\pi x)\,dx=\tfrac{\ln3}{4\pi}\approx0.087$, and it stays
 $<0.1$ across the tested $3\mid N$ (\texttt{verify\_excess\_chain\_split.py}). For square-free $N=3p$ the comb
-block is a \emph{single} generator---the mode $r=N/3$, of weight $b_{N/3}=2/(N\sqrt3)\to0$---so there
+block is a \emph{single} generator---the period-$3$ telescoping
+$\sum_{r\le N/2,\,3\nmid r}(-1)^{\lfloor r/3\rfloor}\omega_r=0$ of $1+\zeta_3+\zeta_3^2=0$, defining the mode
+$r=N/3$ of weight $b_{N/3}=2/(N\sqrt3)\to0$---so there
 $A_N-L_{\mathrm{pre}}\le\tfrac{\ln3}{4\pi}+o(1)$ \emph{unconditionally}, with no signed cancellation needed.
 In general the $3\mid N$ excess lemma is \emph{isolated} to the comb block: the open core is
 $F_{\mathrm{comb}}=O(1)$, a signed-cancellation statement on the $O(p_2)$ comb generators ($p_2$ the second
