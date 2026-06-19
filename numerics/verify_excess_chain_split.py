@@ -66,21 +66,23 @@ def main() -> int:
     print("=" * 92)
     print("Chain-split reduction of the excess lemma for 3|N: excess <= (1/(1-lam)) sum_T b_c/2 + F_comb(lam)")
     print("=" * 92)
-    print(f"  {'N':>4} {'#T':>4} {'#K':>4} {'disjoint':>9} {'sum b_c/2':>10} {'splitBound':>11} {'excess':>8} {'bound>=exc':>11}")
+    print(f"  {'N':>4} {'#T':>4} {'#K':>4} {'disj':>5} {'cf':>4} {'sum b_c/2':>10} {'splitBound':>11} {'excess':>8} {'bnd>=exc':>9}")
     riem = log(3.0) / (4.0 * pi)  # (1/2) * int_{1/2}^{2/3} csc(pi x) dx = ln3/(4pi)
     for n in [15, 21, 33, 45, 63, 99, 105, 135, 165, 315]:
         if 3 not in prime_factors(n):
             continue
         _m, big_m, c, b, trip, combs, disjoint = split_data(n)
+        # proved closed form (identity omega_{N/3+a}=omega_a+omega_{N/3-a}): each clean triplet is (a, N/3-a, N/3+a)
+        cf = all((a + 1) + (bb + 1) == n // 3 and (cg + 1) == n // 3 + (a + 1) for cg, a, bb in trip)
         tsum = sum(b[cg] / 2 for cg, _, _ in trip)
         bound = min((1.0 / (1 - lam)) * tsum + f_comb(n, lam, combs, c, b, big_m, starts=20)
                     for lam in np.linspace(0.05, 0.9, 10))
         a_n, _sv, bb = optimize_AN(n, seed=0, starts=80)
         exc = a_n - float(bb[:big_m].sum())
         valid = bound >= exc - 1e-3
-        ok &= disjoint and valid and (tsum < 0.1)
-        print(f"  {n:>4} {len(trip):>4} {len(combs):>4} {disjoint!s:>9} {tsum:>10.4f} {bound:>11.4f} "
-              f"{exc:>8.4f} {valid!s:>11}")
+        ok &= disjoint and valid and (tsum < 0.1) and cf
+        print(f"  {n:>4} {len(trip):>4} {len(combs):>4} {disjoint!s:>5} {cf!s:>4} {tsum:>10.4f} {bound:>11.4f} "
+              f"{exc:>8.4f} {valid!s:>9}")
     print(f"\n  (square-free N=3p: sum_T b_c/2 -> ln3/(4pi) = {riem:.4f}; combs carry the open core F_comb)")
     print("=" * 92)
     print("RESULT:", "CHAIN-SPLIT VERIFIED (triplets disjoint; split valid; triplet part <0.1)" if ok

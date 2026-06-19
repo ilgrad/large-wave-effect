@@ -510,9 +510,12 @@ $\omega_c=\omega_a+\omega_b$), so $g(b_a,b_b,b_c)\le\tfrac{b_c^2}2\cdot\tfrac1{b
 (\texttt{verify\_excess\_decomposition.py}).
 \end{proof}
 \noindent This controls each clean relation \emph{in isolation}. For $3\mid N$ the \emph{coupled} triplets
-separate too: the clean (support-$3$) relations $\phi_c=\psi_a+\psi_b$ are \emph{vertex-disjoint} (no prefix
-phase lies in two of them; verified to $N=315$), so partitioning the prefix penalty by any $\lambda\in[0,1)$
-and applying Lemma~\ref{lem:triplet} at weights $(1-\lambda)b_a,(1-\lambda)b_b$ with
+separate too: the clean (support-$3$) relations $\phi_c=\psi_a+\psi_b$ are \emph{vertex-disjoint}. Each is the
+triple $(a,\,N/3-a,\,N/3+a)$, by the elementary identity $\omega_{N/3+a}=\omega_a+\omega_{N/3-a}$ (the
+cube-root collapse $2\sin\tfrac\pi6=1$: $\sin(\tfrac\pi3+x)=\sin x+\sin(\tfrac\pi3-x)$, $x=\pi a/N$);
+that these are \emph{all} the clean relations is checked exhaustively to $N=315$. The involution
+$a\mapsto N/3-a$ then places each prefix index in a single triple, so partitioning the prefix penalty by any
+$\lambda\in[0,1)$ and applying Lemma~\ref{lem:triplet} at weights $(1-\lambda)b_a,(1-\lambda)b_b$ with
 $\sup(X{+}Y)\le\sup X+\sup Y$ yields the rigorous reduction
 \[
   A_N-L_{\mathrm{pre}}\ \le\ \frac1{1-\lambda}\sum_{c\in T}\frac{b_c}2\ +\ F_{\mathrm{comb}}(\lambda),\qquad
