@@ -253,6 +253,31 @@ def analyze(n: int, *, starts: int = 200) -> dict:
     }
 
 
+def dep_sup(n: int, *, seed: int = 0, starts: int = 120) -> float:
+    """max over the prefix torus of the DEPENDENT-band-only gain sum_{r>M} b_r sin(C[r,.] psi).
+
+    Finding: this equals the full dependent weight sum_{r>M} b_r (the dependent band aligns by ITSELF), so
+    the excess bound is forced by the prefix TRADE-OFF, not by bounding any single sup -- which is why a pure
+    Chowla / cut-norm sup bound (Jin-Milojevic-Tomon-Zhang 2025, Bedert 2025) cannot, by itself, supply it.
+    """
+    c = integer_coord_matrix(n)
+    m, big_m = n // 2, totient(2 * n) // 2
+    _u, b, _omega = weights(n)
+    cf = c[big_m:m].astype(float)
+    bd = b[big_m:m]
+    rng = np.random.default_rng(seed)
+
+    def negf(psi: np.ndarray) -> tuple[float, np.ndarray]:
+        ph = cf @ psi
+        return -float(bd @ np.sin(ph)), -(cf.T @ (bd * np.cos(ph)))
+
+    best = -np.inf
+    for _ in range(starts):
+        res = minimize(negf, rng.uniform(0, 2 * pi, big_m), jac=True, method="L-BFGS-B")
+        best = max(best, -res.fun)
+    return best
+
+
 # omega(m)=2 test set: primorial-2 odd parts and their 2^a * m families.
 OMEGA2_NS = [15, 21, 33, 35, 55, 45, 30, 60, 42, 66, 70, 90]
 
@@ -337,6 +362,21 @@ def main() -> int:
     led.append(f"excess A_N - L_pre stays in a tight O(1) band [{emin:.3f},{emax:.3f}] (numerical): {band_ok}")
     led.append("the excess is a near-cancellation of prefix_deficit (<0) and dependent_net (>0), each")
     led.append("  growing with the dependent weight -> a SIGNED-cancellation statement, no modulus bound.")
+
+    # ---- (5) the dependent band aligns by itself: dep_sup = dep_weight (obstruction is the trade-off) --
+    print("\n[5] DEPENDENT-BAND SUP  max_psi sum_{r>M} b_r sin phi_r  vs  dependent weight sum_{r>M} b_r")
+    print(f"  {'N':>4} {'dep_weight':>11} {'dep_sup':>9} {'ratio':>7}")
+    dep_ok = True
+    for n in OMEGA2_NS[:6]:
+        d = analyze(n)
+        ds = dep_sup(n)
+        ratio = ds / d["dependent_weight"]
+        dep_ok &= ratio > 0.99
+        print(f"  {n:>4} {d['dependent_weight']:>11.5f} {ds:>9.5f} {ratio:>7.4f}")
+    ok &= dep_ok
+    print("  -> dep_sup = dep_weight: the dependent band fully aligns ALONE; the excess is bounded by the")
+    print("     prefix TRADE-OFF, not by any single sup, so a pure Chowla/cut-norm sup bound cannot suffice.")
+    led.append(f"dependent-band sup equals its full weight (dep_sup/dep_weight > 0.99): {dep_ok}")
 
     # ---- honesty ledger -------------------------------------------------------------------------------
     print("\n" + "=" * 100)
