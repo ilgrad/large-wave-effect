@@ -423,9 +423,11 @@ these are lower estimates of the excess), so numerically
   U_N-A_N=(U_N-L_{\mathrm{pre}})-(A_N-L_{\mathrm{pre}})=\tfrac1\pi\ln\tfrac{m}{\varphi(m)}-O(1)\longrightarrow\infty
 \]
 along primorials ($\Theta(\ln\ln\ln N)$, \texttt{verify\_defect\_growth.py}), making the proven
-$O(\ln\ln\ln N)$ upper bound sharp in order. A rigorous \emph{growing} lower bound is thus equivalent to the
-\emph{excess lemma} $A_N\le L_{\mathrm{pre}}+O(1)$---the long alignable prefix captures $A_N$ up to a
-constant. By the Kronecker--Weyl identification \eqref{eq:subtorus}, $A_N=\max_{\theta\in\mathbb T_N}\sum_r
+$O(\ln\ln\ln N)$ upper bound sharp in order whichever alternative of the excess dichotomy holds (the deficit
+grows for any excess that is $o(U_N-L_{\mathrm{pre}})$, indeed for any $A_N-L_{\mathrm{pre}}=c\,(U_N-L_{\mathrm{pre}})$
+with $c<1$). A lower bound of the \emph{sharp} form $U_N-A_N\ge\tfrac1\pi\ln(m/\varphi(m))-O(1)$ is equivalent
+to the \emph{excess lemma} $A_N\le L_{\mathrm{pre}}+O(1)$ (alternative \textup{(O1)} below)---the long alignable
+prefix captures $A_N$ up to a constant. By the Kronecker--Weyl identification \eqref{eq:subtorus}, $A_N=\max_{\theta\in\mathbb T_N}\sum_r
 b_r\sin\theta_r$ over the subtorus cut out by the relation lattice, so the lemma is precisely a
 \emph{quantitative comparison on the relation-constrained subtorus}: the constrained maximum exceeds the
 free-prefix maximum $L_{\mathrm{pre}}$ by only $O(1)$. This is a sup-side cancellation statement---a primal
@@ -441,7 +443,10 @@ extremum's magnitude (small eigenvalue $\Rightarrow$ clique), whereas we need an
 constrained joint maximum; the frequencies $2\sin(\pi r/N)$ are not characters of a cyclic group; and the
 dependent band's own supremum is its \emph{full} weight ($\max_\psi\sum_{r>M}b_r\sin\phi_r=\sum_{r>M}b_r$ for
 $\omega(m)=2$; \texttt{verify\_excess\_omega2.py}), so the bound is forced by the prefix \emph{trade-off}, not
-by any single sup. No off-the-shelf theorem supplies it; it is overwhelmingly supported numerically but open.
+by any single sup. No off-the-shelf theorem supplies it, and the evidence is genuinely two-edged: the raw excess looks bounded,
+yet the \emph{ratio} $(A_N-L_{\mathrm{pre}})/(U_N-L_{\mathrm{pre}})\approx0.31$ is stable across
+$\omega(m)=2,3,4$, leaving open whether the excess is $O(1)$ or grows like $c\,(U_N-L_{\mathrm{pre}})$---the
+dichotomy of Conjecture~\ref{conj:excess}.
 
 The lemma's content is sharply localized. Since $A_N\le U_N$ and $A_N\ge2L_{\mathrm{pre}}-U_N$ (Kronecker),
 one has $|A_N-L_{\mathrm{pre}}|\le U_N-L_{\mathrm{pre}}=\tfrac1\pi\ln\tfrac m{\varphi(m)}+O(1)$
@@ -455,7 +460,8 @@ the same bookkeeping settles any family with $O(1)$ dependent modes (\texttt{ver
 The genuinely open case is $\omega(m)\ge2$, where the dependent band carries $\Theta(N)$ modes of total
 weight $\to\infty$ yet the excess stays $\approx0.1$; the accessible range ($\omega(m)\le3$) shows the small
 excess is a \emph{balance} of a positive dependent net ($\approx0.17$) against a negative prefix deficit
-($\approx-0.08$) rather than near-total sign cancellation, so the asymptotic mechanism remains conjectural.
+($\approx-0.08$) rather than near-total sign cancellation, so the asymptotic mechanism remains conjectural
+(Conjecture~\ref{conj:excess}).
 For small $N$ the strict gap
 $A_N<U_N$ is \emph{certified rigorously}: the Lipschitz-grid certificate gives
 $U_N-A_N\ge0.049,0.057,0.030,0.082$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}), and a
@@ -552,24 +558,43 @@ In general the $3\mid N$ excess lemma is \emph{isolated} to the comb block: the 
 $F_{\mathrm{comb}}=O(1)$, a signed-cancellation statement on the $O(p_2)$ comb generators ($p_2$ the second
 prime factor), with content only once $\omega(m)\ge3$---the sup-side cancellation left open above.
 
-\begin{conjecture}[excess lemma; the sup-side cancellation core]\label{conj:excess}
-There is an absolute constant $C$ with $A_N-L_{\mathrm{pre}}\le C$ for every $N$ (equivalently, the sharp
-deficit law $U_N-A_N=\tfrac1\pi\ln(m/\varphi(m))+O(1)$ of Proposition~\ref{prop:defect-cond}). For $3\mid N$
-this is, by the vertex-disjoint split above, equivalent to a uniform bound on the comb block alone:
+\begin{conjecture}[the excess dichotomy; sup-side cancellation core]\label{conj:excess}
+As $\omega(m)\to\infty$ the excess obeys exactly one of two laws, and which one is open:
+\begin{itemize}
+\item[\textup{(O1)}] \emph{bounded}---there is an absolute constant $C$ with $A_N-L_{\mathrm{pre}}\le C$ for
+every $N$, equivalently the sharp deficit law $U_N-A_N=\tfrac1\pi\ln(m/\varphi(m))+O(1)$ of
+Proposition~\ref{prop:defect-cond};
+\item[\textup{(L)}] \emph{logarithmic}---$A_N-L_{\mathrm{pre}}=c\,(U_N-L_{\mathrm{pre}})+o(U_N-L_{\mathrm{pre}})$
+for a constant $c\in(0,1)$, whence the sharp deficit constant is $(1-c)/\pi$ rather than $1/\pi$.
+\end{itemize}
+For $3\mid N$ the vertex-disjoint split reduces both to the comb block alone: \textup{(O1)} holds iff
 $F_{\mathrm{comb}}(\lambda)\le C'$ for some $\lambda\in[0,1)$---a \emph{primal} (sup-side) analogue of the
-McGehee--Pigno--Smith/Konyagin $L^1$ lower bound~\cite{MPS81,Konyagin81}, on the $O(p_2)$ comb generators.
+McGehee--Pigno--Smith/Konyagin $L^1$ lower bound~\cite{MPS81,Konyagin81} on the $O(p_2)$ comb generators.
 \end{conjecture}
-\noindent The reduction to Conjecture~\ref{conj:excess} is complete: Lemma~\ref{lem:triplet} bounds each clean
-relation, the vertex-disjoint split isolates the triplet block (an $O(1)$ Riemann sum) from the comb block,
-and the prefix-budget trade-off $\sup_\psi[\,\cdot\,]$ is the only remaining ingredient. The conjecture holds
-outright for prime-power odd part (Remark~\ref{rem:defect}) and for square-free $N=3p$ (above, with
-$C=\tfrac{\ln3}{4\pi}+o(1)$); it is open---though numerically robust ($A_N-L_{\mathrm{pre}}\in[0.05,0.12]$
-through $\omega(m)=4$, and the optimized split bound stays $\approx0.19$ to $N=1155$ while
-$U_N-L_{\mathrm{pre}}$ grows)---only as $\omega(m)\to\infty$, where the comb generators carry the dependent
-weight. We have ruled out the obvious levers (a diagonal/packing relaxation, the local quadratic Gram form,
-a support-$k$ extension of Lemma~\ref{lem:triplet}, an Ablowitz--Ladik-type conserved functional, and the
-covering-radius transference bound), each lossy for the same reason: it discards the phase/sign coherence
-that the genuine sup-side cancellation supplies.
+\noindent The reduction is complete: Lemma~\ref{lem:triplet} bounds each clean relation, the vertex-disjoint
+split isolates the triplet block (an $O(1)$ Riemann sum) from the comb block, and the prefix-budget trade-off
+$\sup_\psi[\,\cdot\,]$ is the only remaining ingredient. Alternative \textup{(O1)} holds outright for
+prime-power odd part (Remark~\ref{rem:defect}) and for square-free $N=3p$ (above, $C=\tfrac{\ln3}{4\pi}+o(1)$);
+which alternative governs the general case is open, with content only once $\omega(m)\ge3$, and the numerical
+evidence is genuinely \emph{ambiguous}---the two signals point opposite ways and neither turns over by
+$\omega(m)=4$. For \textup{(O1)}: the raw excess is small ($A_N-L_{\mathrm{pre}}\in[0.05,0.12]$ through
+$\omega(m)=4$) and the rigorous split upper bound
+$\min_\lambda[\tfrac1{1-\lambda}\sum_{c\in T}\tfrac{b_c}2+F_{\mathrm{comb}}(\lambda)]$ stays $\approx0.19$ to
+$N=1155$ while $U_N-L_{\mathrm{pre}}$ grows. For \textup{(L)}: the \emph{ratio}
+$(A_N-L_{\mathrm{pre}})/(U_N-L_{\mathrm{pre}})\approx0.31\approx1/\pi$ is \emph{stable} across $\omega(m)=2,3,4$,
+whereas \textup{(O1)} would force it to $0$. None of these can be pushed to a decision: since
+$U_N-L_{\mathrm{pre}}=\tfrac1\pi\ln(m/\varphi(m))\sim\tfrac1\pi\ln\ln\ln N$ grows glacially ($0.28$ at
+$\omega(m)=4$, only $0.31$ at $\omega(m)=6$, $N=510510$), \emph{no} computationally accessible $N$ reaches the
+crossover---and the direct time-domain probe $\sup_t\sum_r b_r\sin(\omega_r t)$ is itself defeated by the
+finite-time barrier for $\omega(m)\ge3$ (the recurrence floor $U_N-\sup_{t\le T}$ exceeds the excess
+sixfold already at $N=105$). The dichotomy is thus intrinsically analytic. An exhaustive search of the
+McGehee--Pigno--Smith/Konyagin $L^1$ circle~\cite{MPS81,Konyagin81} and its modern descendants, the
+Conway--Jones/Lam--Leung vanishing-sum classification~\cite{CJ}, and cyclotomic-lattice \textsc{cvp} turns up
+\emph{no} sup-side upper-bound tool---each is $L^1$/lower-bound or carries no metric---so the constrained sup
+is, at present, untooled. We have ruled out the obvious levers for \textup{(O1)} (a diagonal/packing
+relaxation, the local quadratic Gram form, a support-$k$ extension of Lemma~\ref{lem:triplet}, an
+Ablowitz--Ladik-type conserved functional, and the covering-radius transference bound), each lossy for the
+same reason: it discards the phase/sign coherence that a genuine sup-side cancellation would supply.
 
 The family limits themselves can be pinned precisely: within each family the node-$0$ defect converges
 geometrically, $d_a=\mathrm{defect}_\infty(m)-c_12^{-a}-c_24^{-a}$ (two-term fits with residuals
