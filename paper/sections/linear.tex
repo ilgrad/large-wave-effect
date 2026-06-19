@@ -509,12 +509,31 @@ $1/b_a+1/b_b=N\bigl(\sin\tfrac{\pi a}N+\sin\tfrac{\pi b}N\bigr)=N\sin\tfrac{\pi 
 $\omega_c=\omega_a+\omega_b$), so $g(b_a,b_b,b_c)\le\tfrac{b_c^2}2\cdot\tfrac1{b_c}=\tfrac{b_c}2$
 (\texttt{verify\_excess\_decomposition.py}).
 \end{proof}
+
+\begin{lemma}[the clean support-$3$ relations for $3\mid N$]\label{lem:cleancomb}
+For $3\mid N$, the only solutions of $\omega_a+\omega_b=\omega_c$ with $1\le a<b<c\le N/2$ are
+$a+b=N/3$, $c=N/3+a$. Hence the clean triplets $(a,\,N/3-a,\,N/3+a)$ are vertex-disjoint.
+\end{lemma}
+\begin{proof}
+With $\zeta=\eu^{\mathrm i\pi/N}$ one has $\omega_r=-\mathrm i(\zeta^r-\zeta^{-r})$, so the relation is
+$\operatorname{Im}(\zeta^a+\zeta^b-\zeta^c)=0$, i.e.\ (using $-\zeta^{-r}=\zeta^{N-r}$) the vanishing sum of
+six $2N$-th roots of unity $\zeta^a+\zeta^{N-a}+\zeta^b+\zeta^{N-b}+\zeta^{N+c}+\zeta^{2N-c}=0$. By the
+Conway--Jones classification of vanishing sums of roots of unity~\cite{CJ}, such a six-term sum is a union of
+rotated minimal relations, and the only partitions of $6$ are $R_2^3$ (three antipodal pairs $\{x,x+N\}$) and
+$R_3^2$ (two equilateral triples $\{x,x+\tfrac{2N}3,x+\tfrac{4N}3\}$). An antipodal pair within
+$\{a,N-a,b,N-b,N+c,2N-c\}$ forces $c\in\{a,N-a\}$, impossible for distinct $a,b,c\in[1,N/2]$ (the case
+$c=N-a$ needs $c=N/2$, collapsing $N+c=2N-c$); so the sum is $R_3^2$. The partner $a+\tfrac{2N}3$ of $a$ must
+lie in $\{b,N-a,N-b,N+c,2N-c\}$; since $b-a<\tfrac N2<\tfrac{2N}3$, the cases $a+\tfrac{2N}3\in\{b,N+c,2N-c\}$
+put the third triple member outside $[1,N/2]$ (or force $c=N/2$), and $a+\tfrac{2N}3=N-a$ needs $a=N/6=b$;
+only $a+\tfrac{2N}3=N-b$ survives, giving $a+b=N/3$ and $c=N/3+a$. Conversely the identity
+$\omega_{N/3+a}=\omega_a+\omega_{N/3-a}$ (i.e.\ $\sin(\tfrac\pi3+x)=\sin x+\sin(\tfrac\pi3-x)$,
+$x=\pi a/N$; the collapse $2\sin\tfrac\pi6=1$) gives these relations. Vertex-disjointness is the involution
+$a\mapsto N/3-a$ (verified exhaustively to $N=315$, \texttt{verify\_excess\_chain\_split.py}).
+\end{proof}
+
 \noindent This controls each clean relation \emph{in isolation}. For $3\mid N$ the \emph{coupled} triplets
-separate too: the clean (support-$3$) relations $\phi_c=\psi_a+\psi_b$ are \emph{vertex-disjoint}. Each is the
-triple $(a,\,N/3-a,\,N/3+a)$, by the elementary identity $\omega_{N/3+a}=\omega_a+\omega_{N/3-a}$ (the
-cube-root collapse $2\sin\tfrac\pi6=1$: $\sin(\tfrac\pi3+x)=\sin x+\sin(\tfrac\pi3-x)$, $x=\pi a/N$);
-that these are \emph{all} the clean relations is checked exhaustively to $N=315$. The involution
-$a\mapsto N/3-a$ then places each prefix index in a single triple, so partitioning the prefix penalty by any
+separate too: by Lemma~\ref{lem:cleancomb} the clean (support-$3$) relations are exactly the vertex-disjoint
+triples $(a,\,N/3-a,\,N/3+a)$, so partitioning the prefix penalty by any
 $\lambda\in[0,1)$ and applying Lemma~\ref{lem:triplet} at weights $(1-\lambda)b_a,(1-\lambda)b_b$ with
 $\sup(X{+}Y)\le\sup X+\sup Y$ yields the rigorous reduction
 \[
