@@ -314,6 +314,32 @@ cousin, whose hierarchy \emph{conserves} a staggered-momentum functional, motiva
 that functional \emph{drifts} under the non-integrable flow~\eqref{eq:dnls}, the $O(1)$ Ablowitz--Ladik gap
 made quantitative.
 
+\begin{lemma}[the leading staggered-momentum drift vanishes]\label{lem:stagger-leading}
+Along the \emph{linear} flow $\mathrm i\dot a=-\LN a$ from the single-site seed $a_j(0)=\sqrt P\,\delta_{j0}$
+(on the line, i.e.\ the ring for $t\lesssim N/5$), the distance-$2$ current vanishes identically,
+$\operatorname{Im}\bigl(\bar a_n(t)\,a_{n+2}(t)\bigr)=0$ for all $n,t$; hence the right-hand side
+of~\eqref{eq:stagger} is zero on the linear flow.
+\end{lemma}
+\begin{proof}
+By Jacobi--Anger the linear evolution of the seed is $a_n(t)=\sqrt P\,\eu^{2\mathrm i t}(-\mathrm i)^n J_n(2t)$
+with $J_n$ real; it solves $\mathrm i\dot a=-\LN a$ by the Bessel recurrence $J_n'=\tfrac12(J_{n-1}-J_{n+1})$.
+Hence $\bar a_na_{n+2}=P\,(\mathrm i)^n(-\mathrm i)^{n+2}J_n(2t)J_{n+2}(2t)=-P\,J_n(2t)J_{n+2}(2t)\in\R$, since
+$(\mathrm i)^n(-\mathrm i)^{n+2}=[\mathrm i(-\mathrm i)]^n(-\mathrm i)^2=-1$: the lattice phase $(-\mathrm i)^n$
+holds next-nearest sites in phase, so $a_{n+2}$ is a \emph{real} multiple of $a_n$ and
+$\operatorname{Im}(\bar a_na_{n+2})=0$. The closed form and the phase identity are checked symbolically
+(\texttt{verify\_staggered\_current.mac}, Maxima), the ``real multiple $\Rightarrow$ zero current'' step is
+machine-checked in Rocq (\texttt{formal/rocq/StaggeredCurrent.v}), and the pointwise vanishing is confirmed
+on the discrete flow, where the distance-$1$ current is $O(1)$ by contrast
+(\texttt{verify\_staggered\_current.py}). \end{proof}
+
+\noindent Since the right-hand side of~\eqref{eq:stagger} is $O(\gamma)$ and vanishes on the linear flow
+(Lemma~\ref{lem:stagger-leading}), the staggered momentum drifts only at $O(\gamma^2)$: numerically
+$\sup_t|\Delta\!\operatorname{Re}\!\sum_n\bar a_na_{n+2}|\sim(\gamma P)^2$ (exponent $2.08$, uniform in $N$
+over $N=1024$--$4096$), with $\inf_t\langle v^2\rangle\simeq0.49>0$ across the window
+(\texttt{verify\_modified\_energy\_window.py}). The lemma removes the leading order of the obstruction;
+closing the window still needs an $N$-uniform bound on the $O(\gamma^2)$ remainder and the nonperturbative
+approach to $\gamma P=4$.
+
 On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation from the
 anti-continuum limit~\cite{MacKayAubry}---it is a compactness statement.
 

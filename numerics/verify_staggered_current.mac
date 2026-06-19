@@ -1,0 +1,23 @@
+/* Staggered-current lemma (paper: Lemma lem:stagger-leading), symbolic verification in Maxima.
+   b_n(s) = exp(2*%i*s) * (-%i)^n * J_n(2s) solves the linear DNLS  i b' = -(2 b_n - b_{n+1} - b_{n-1}),
+   and the phase ratio (-i)^(n+2)/(-i)^n = -1 is real, so b_{n+2} is a real multiple of b_n
+   => Im(conj(b_n) b_{n+2}) = 0 => the staggered current F[b_lin] vanishes pointwise.
+   Run:  maxima --very-quiet -b numerics/verify_staggered_current.mac */
+
+declare(n, integer);
+b(m) := exp(2*%i*s) * (-%i)^m * bessel_j(m, 2*s);
+
+/* (1) ODE residual: Maxima expands diff(bessel_j(n,2*s),s) = bessel_j(n-1,2*s) - bessel_j(n+1,2*s)
+   (Bessel recurrence J_n' = (J_{n-1}-J_{n+1})/2), so the linear-DNLS residual collapses to 0. */
+res : %i*diff(b(n),s) + (2*b(n) - b(n+1) - b(n-1));
+ode_residual : ratsimp(res);
+print("(1) ODE residual  i b' + (2 b_n - b_{n+1} - b_{n-1})  =", ode_residual, " (must be 0)")$
+
+/* (2) phase ratio b_{n+2}/b_n stripped of the real Bessel/exp factors: (-%i)^(n+2)/(-%i)^n = (-i)^2. */
+phase_ratio : radcan( (-%i)^(n+2) / (-%i)^n );
+print("(2) (-i)^(n+2)/(-i)^n  =", phase_ratio, " (real => b_{n+2} is a real multiple of b_n)")$
+
+/* (3) conclusion: b_{n+2} = (-1)*(J_{n+2}(2s)/J_n(2s)) * b_n is a real multiple of b_n; for any real
+   multiple, conj(b_n)*b_{n+2} is real, so Im = 0 and F[b_lin(s)] = 0 pointwise.  The "real multiple =>
+   zero current" step is machine-checked in Rocq (formal/rocq/StaggeredCurrent.v). */
+print("(3) => conj(b_n) b_{n+2} real => Im = 0 => F[b_lin(s)] = 0 for all s.  QED")$

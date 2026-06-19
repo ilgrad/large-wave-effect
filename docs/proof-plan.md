@@ -151,13 +151,24 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
 - **Finite-time `A_N(T)`, `T_eps(N)`** (review #3): **PARTLY DONE this session** — for concrete primes
   `N=5,7,11,13` the **upper** bound `T_{0.2}(N) <= t~` is **certified in interval arithmetic** (a witness
   `t~` where `u(t~) >= 0.8 U_N`, mpmath.iv; `verify_finite_time_certified.py`), upgrading the numerical
-  recurrence times to a proof. OPEN: the **family rate** `~ delta^{-m}` does NOT follow from the
-  homogeneous Dirichlet pigeonhole — the target `pi/2` is inhomogeneous, needing a Baker-type Diophantine
-  lower bound on linear forms in the `omega_r`. The **lower** bound (wait is exponentially long) is the
-  real content, still open (LLL / badly-approximable certificates).
-- **Self-trapping window `gP in [0.43,4)`** (review #8): reduced this session to a focusing
-  interaction-Morawetz `L^4` bound (staggered-momentum identity). Blocked by the focusing sign —
-  another signed-cancellation motif. Try sharp discrete Gagliardo–Nirenberg (SOS per N).
+  recurrence times to a proof. **Quantified this session** (`verify_finite_time_lower_bound.py`, GPU/CuPy,
+  primes `N<=71`): `T_eps(N)` fits the simultaneous-approximation law `T_eps ~ eps^(-a m)`, `a~0.32`,
+  `m=floor(N/2)` (R^2=0.88), i.e. `T_0.2 ~ exp(0.245 N)` over `N in [11,47]`; the fixed-horizon efficiency
+  `A_N(T)/U_N` decays monotonically in N (at `T=1e3`: 1.0 at N=5 -> 0.58 at N=71). [Corrected the paper's
+  `~0.63 per unit N`: that was the pre-asymptotic slope over `N<=19`, inflated by the O(1) times at N=5,7.]
+  **STILL OPEN (rigorous):** the matching family LOWER bound `T_eps >~ eps^(-c m)` does NOT follow from the
+  homogeneous Dirichlet pigeonhole (the target `pi/2` is inhomogeneous); it needs a Baker-type Diophantine
+  lower bound on linear forms in the cyclotomic frequencies `omega_r=2 sin(pi r/N)` — a genuine
+  number-theoretic wall, like A1. (Upper Dirichlet `~delta^{-m}` bound + per-N certified witnesses: done.)
+- **Self-trapping window `gP in [0.43,4)`** (review #8): reduced to a focusing interaction-Morawetz
+  `L^4` bound = a bound on the staggered-momentum drift (`eq:stagger`). **Leading order now PROVED**
+  (`lem:stagger-leading`): along the linear flow from the single-site seed `a_n=e^{2it}(-i)^n J_n(2t)`,
+  the distance-2 current `Im(conj(a_n) a_{n+2})=0` identically (phase `(-i)^2=-1` is real => `a_{n+2}` is a
+  real multiple of `a_n`), so the O(g) drift cancels: `sup_t|ΔS|~(gP)^2` (exp 2.08, N-uniform),
+  `inf<v^2>≈0.49>0`. Verified Maxima (ODE residual 0, phase -1) + Rocq (`formal/rocq/StaggeredCurrent.v`,
+  real-multiple=>zero-current) + numerics (`verify_staggered_current.py`, `verify_modified_energy_window.py`,
+  GPU). OPEN: N-uniform bound on the `O(g^2)` remainder + nonperturbative top `gP->4` (focusing sign
+  survives there — still a signed-cancellation motif).
 - **Breather stability** (review #4): VK/GSS stated; (i) `dP/dOmega>0` analytic. **DONE this session** —
   the full site/bond **dichotomy** is **CAP-certified in exact rational arithmetic**: Newton--Kantorovich
   existence of the true profile (`rho<=4e-9`) + Sylvester-inertia `LDL^T` + Weyl transport
