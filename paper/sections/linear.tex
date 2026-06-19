@@ -530,6 +530,25 @@ In general the $3\mid N$ excess lemma is \emph{isolated} to the comb block: the 
 $F_{\mathrm{comb}}=O(1)$, a signed-cancellation statement on the $O(p_2)$ comb generators ($p_2$ the second
 prime factor), with content only once $\omega(m)\ge3$---the sup-side cancellation left open above.
 
+\begin{conjecture}[excess lemma; the sup-side cancellation core]\label{conj:excess}
+There is an absolute constant $C$ with $A_N-L_{\mathrm{pre}}\le C$ for every $N$ (equivalently, the sharp
+deficit law $U_N-A_N=\tfrac1\pi\ln(m/\varphi(m))+O(1)$ of Proposition~\ref{prop:defect-cond}). For $3\mid N$
+this is, by the vertex-disjoint split above, equivalent to a uniform bound on the comb block alone:
+$F_{\mathrm{comb}}(\lambda)\le C'$ for some $\lambda\in[0,1)$---a \emph{primal} (sup-side) analogue of the
+McGehee--Pigno--Smith/Konyagin $L^1$ lower bound~\cite{MPS81,Konyagin81}, on the $O(p_2)$ comb generators.
+\end{conjecture}
+\noindent The reduction to Conjecture~\ref{conj:excess} is complete: Lemma~\ref{lem:triplet} bounds each clean
+relation, the vertex-disjoint split isolates the triplet block (an $O(1)$ Riemann sum) from the comb block,
+and the prefix-budget trade-off $\sup_\psi[\,\cdot\,]$ is the only remaining ingredient. The conjecture holds
+outright for prime-power odd part (Remark~\ref{rem:defect}) and for square-free $N=3p$ (above, with
+$C=\tfrac{\ln3}{4\pi}+o(1)$); it is open---though numerically robust ($A_N-L_{\mathrm{pre}}\in[0.05,0.12]$
+through $\omega(m)=4$, and the optimized split bound stays $\approx0.19$ to $N=1155$ while
+$U_N-L_{\mathrm{pre}}$ grows)---only as $\omega(m)\to\infty$, where the comb generators carry the dependent
+weight. We have ruled out the obvious levers (a diagonal/packing relaxation, the local quadratic Gram form,
+a support-$k$ extension of Lemma~\ref{lem:triplet}, an Ablowitz--Ladik-type conserved functional, and the
+covering-radius transference bound), each lossy for the same reason: it discards the phase/sign coherence
+that the genuine sup-side cancellation supplies.
+
 The family limits themselves can be pinned precisely: within each family the node-$0$ defect converges
 geometrically, $d_a=\mathrm{defect}_\infty(m)-c_12^{-a}-c_24^{-a}$ (two-term fits with residuals
 $\sim5\cdot10^{-9}$, the optima polished by Newton iteration on the stationarity system), giving the first
