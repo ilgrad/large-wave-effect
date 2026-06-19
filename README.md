@@ -99,12 +99,21 @@ boxes certify (`(0.70,0.70)→0.948`, `(0.73,0.73)→0.943`, `(0.76,0.76)→0.92
 cover is now **complete** — the adaptive, node-parallel, checkpointed tiling `run_dagger_campaign.py`
 certified all 130 leaf boxes with 0 failures — so $\limsup B_N/\sqrt N=\beta_{\mathrm{odd}}$ holds at the
 dagger certificate's validated-enclosure standard; problem (1) is thereby closed. (2) The **excess lemma**
-$A_N\le L_{\mathrm{pre}}+O(1)$ (equivalent to a rigorous *growing* deficit bound) — now proved when the odd
-part of $N$ is a prime power ($N=2p$ sharp at $1/2N$, $N=4p$), **open only for $\omega(m)\ge2$**; it is a
-quantitative Kronecker–Weyl comparison on the relation-constrained subtorus, the sup-side counterpart of
-McGehee–Pigno–Smith. (3) A rigorous dispersal proof on the **proof gap** $\gamma P\in[0.43,4)$: the
+$A_N\le L_{\mathrm{pre}}+O(1)$ (equivalent to a rigorous *growing* deficit bound) — proved when the odd
+part of $N$ is a prime power ($N=2p$ sharp at $1/2N$, $N=4p$), and **unconditional for any fixed $\omega(m)$**
+via the Kronecker sandwich $|A_N-L_{\mathrm{pre}}|\le U_N-L_{\mathrm{pre}}=(1/\pi)\ln(m/\varphi(m))$. The open
+content is an **absolute** constant **uniform as $\omega(m)\to\infty$**. A proved building block is the
+**per-relation bound** (Lemma; `verify_excess_decomposition.py`): a single support-$3$ relation
+$\omega_c=\omega_a+\omega_b$ contributes excess $g(b_a,b_b,b_c)\le b_c/2$, from
+$g(\alpha,\beta,\gamma)\le\tfrac{\gamma^2}2(1/\alpha+1/\beta)$ and $1/b_a+1/b_b=1/b_c$. The obstruction is the
+uniform coupling of $\Theta(N)$ relations (comb generators + shared phases), the sup-side counterpart of
+McGehee–Pigno–Smith/Konyagin in the Chowla cosine-extremum circle (recently resolved in the *opposite*
+direction by Jin–Milojević–Tomon–Zhang / Bedert). (3) A rigorous dispersal proof on the **proof gap** $\gamma P\in[0.43,4)$: the
 threshold $4$ is now energy-sharp and dispersal is the numerically established behaviour up to $\approx4$,
-but the rigorous drop is proven only to $0.43$. (4) Condition (B) of the order criterion for quasi-1D
+but the rigorous drop is proven only to $0.43$. The **leading-order drift now vanishes provably** (along the
+linear flow the distance-$2$ current $\mathrm{Im}(\bar a_n a_{n+2})\equiv0$, so the staggered momentum drifts
+only at $O(\gamma^2)$ — Maxima + Rocq `StaggeredCurrent.v`, `verify_modified_energy_window.py`); what remains
+is the $O(\gamma^2)$ remainder and the nonperturbative approach to $4$. (4) Condition (B) of the order criterion for quasi-1D
 lattices *without* an embedded ring (the Möbius ladder and multi-jump circulants are now settled; the
 next-nearest-neighbour degeneracy law holds for all couplings $g$ via Conway–Jones). **Priority note
 (resolved):** Filimonov's 1992 C. R. Acad. Sci. note has been obtained and compared on the ring — the
