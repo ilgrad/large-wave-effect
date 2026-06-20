@@ -17,9 +17,12 @@ Filimonov, Theorem 2:  lim_{N->inf} d_j^N = C ln j + O(1).
 This script reproduces all of it AND adds two findings:
   * the constant is identified explicitly:  C = 4/pi^2 ~ 0.4053  (R^2 = 1, plus the limiting integral
     d_j^inf = (2/pi) int_0^{pi/2} cot(theta) |sin(2 j theta)| d theta ~ (2/pi)(2/pi) ln j);
-  * full cos-rank (rank = (N-1)//2) holds EXACTLY for N prime, 2^m, or 2*odd-prime (verified to N=60) --
-    NOT just prime/2^m as in the ring (sine) case; this SUFFICES for sup_t|z_j| = d_j^N at every site, so
-    Filimonov's N=2^m law extends to all primes AND all N=2p.
+  * full cos-rank (rank = (N-1)//2) holds EXACTLY for N prime, 2^m, or 2*odd-prime (converse verified to
+    N=60); NOT just prime/2^m as in the ring (sine) case. The forward direction is PROVED (paper, Lemma "full
+    cosine rank"): prime via {2cos(pi j/p)} = +- standard basis {2cos(2 pi a/p)} of Q(zeta_p)^+ (a bijection),
+    2p via the Galois involution zeta_4p->zeta_4p^{2p+1} (splits rank into the prime-p block + an odd-k block
+    independent by the Chebyshev identity cos(kx)=cos x*V_k(cos^2 x)), 2^m Filimonov. Full rank SUFFICES for
+    sup_t|z_j| = d_j^N at every site, so Filimonov's N=2^m law extends to all primes AND all N=2p.
     Full rank is NOT necessary, though: composite N can still saturate at individual Dirichlet sites
     (e.g. j=1). The complete site-wise classification is now settled by an exact parity criterion on the
     active relation lattice -- see verify_segment_sitewise.py (Prop. site-wise segment saturation). This is
@@ -170,6 +173,25 @@ def main() -> int:
     print("    -> cos(pi k/N) full rank EXACTLY for prime / 2^m / 2*odd-prime -- NOT just prime/2^m: the")
     print("       segment admits the extra 2p family (ring-p values for even k + primitive cos for odd k,")
     print("       spanning Q(zeta_4p)^+); sufficient for sup_t|z_j|=d_j^N at every site (extends Filimonov).")
+
+    print("\n(C2) Lemma proof steps: prime +-basis bijection, and Chebyshev cos(kx)=cos x * V_k(cos^2 x)")
+    pb_ok = True
+    for p in (5, 7, 11, 13, 17, 19, 23):
+        h = (p - 1) // 2
+        kap = [j // 2 if j % 2 == 0 else (p - j) // 2 for j in range(1, h + 1)]
+        vals = all(abs(2 * np.cos(np.pi * j / p)
+                       - (1 if j % 2 == 0 else -1) * 2 * np.cos(2 * np.pi * kap[j - 1] / p)) < 1e-10
+                   for j in range(1, h + 1))
+        pb_ok &= sorted(kap) == list(range(1, h + 1)) and vals
+    print(f"    prime: 2cos(pi j/p) = +-2cos(2 pi kappa(j)/p), kappa bijective -> +-standard basis: "
+          f"{'OK' if pb_ok else 'FAIL'}")
+    xx = np.linspace(0.1, 0.5, 300)
+    cc = np.cos(xx) ** 2
+    ch_ok = all(np.max(np.abs(np.polyval(np.polyfit(cc, np.cos(k * xx) / np.cos(xx), (k - 1) // 2), cc)
+                              - np.cos(k * xx) / np.cos(xx))) < 1e-9 for k in (1, 3, 5, 7, 9))
+    print(f"    2p: cos(kx)/cos(x) is a degree-(k-1)/2 polynomial in cos^2 x (Chebyshev V_k): "
+          f"{'OK' if ch_ok else 'FAIL'}")
+    ok &= pb_ok and ch_ok
 
     print("\n(D) Ceiling holds: |z_j(t)| <= d_j^N for all sampled t (triangle inequality)")
     n = 256
