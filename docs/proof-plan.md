@@ -71,6 +71,15 @@ the chained relation graph**, NOT the `a -> infinity` limit (that direction is t
 **Status.**
 - PROVED: `omega(m) <= 1` (`N=2p` sharp `1/(2N)`, `N=4p`); rank `phi(2N)/2`; mod-4 criterion;
   classification `A_N=U_N <=> N` prime/`2^m`; order `A_N ~ (1/pi) ln N`.
+- PROVED 2026-06-20 (rank/saturation circle, closed forms): cosine rank `rank{2cos(pi k/N)} = phi(2N)/2 - [N=2^m]`
+  (both directions; full <=> prime/2^m/2p) and sine rank `rank{2sin(pi r/N)} = phi(2N)/2` (no exception; full <=>
+  prime/2^m = classification) -- the cos `-1`-on-`2^m` vs sin no-exception is why the segment has the extra `2p`
+  family; Dirichlet-segment SITE-WISE saturation criterion (`prop:segment-site`, Kronecker+Pontryagin parity);
+  finite-time amplified-set density `rho(eps) ~ V_m(2 eps U)^{m/2}/sqrt(prod b)/(2pi)^m` (Weyl; measure-side of
+  the open worst-case recurrence); `g=1` NNN collision law via Conway-Jones 5-term sums (was verified `N<=120`).
+  Commits 678b896,9e49f37,43ea733,1af324f,6982178,d38096d,9cb53df. Walls re-confirmed untooled (2026 lit):
+  A1 sup-side MPS (Bedert min-side), cubic DNLS scattering (only modified), Baker for `2sin` vector (only
+  qualitative; lead Calegari-Huang arXiv:2510.04156).
 - DONE this session (`omega(m)=2`): relation lattice characterized — unimodular SNF, **chained**
   relations, support set by the smallest prime (`3|N`: `w_a+w_b=w_c`, `a+b=N/3`, from `2 sin(pi/6)=1`;
   `5|N`: golden); per-N certificates `N=15` (elementary Lipschitz grid, `>=0.082`), `N=21,33,35`
