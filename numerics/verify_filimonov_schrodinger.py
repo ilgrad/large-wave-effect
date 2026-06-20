@@ -17,8 +17,9 @@ Filimonov, Theorem 2:  lim_{N->inf} d_j^N = C ln j + O(1).
 This script reproduces all of it AND adds two findings:
   * the constant is identified explicitly:  C = 4/pi^2 ~ 0.4053  (R^2 = 1, plus the limiting integral
     d_j^inf = (2/pi) int_0^{pi/2} cot(theta) |sin(2 j theta)| d theta ~ (2/pi)(2/pi) ln j);
-  * the independence of {cos(pi k/N)} (rank = (N-1)//2) holds for PRIME N as well as N=2^m, which
-    SUFFICES for sup_t|z_j| = d_j^N at every site -- so the law extends to primes (Filimonov states 2^m).
+  * full cos-rank (rank = (N-1)//2) holds EXACTLY for N prime, 2^m, or 2*odd-prime (verified to N=60) --
+    NOT just prime/2^m as in the ring (sine) case; this SUFFICES for sup_t|z_j| = d_j^N at every site, so
+    Filimonov's N=2^m law extends to all primes AND all N=2p.
     Full rank is NOT necessary, though: composite N can still saturate at individual Dirichlet sites
     (e.g. j=1). The complete site-wise classification is now settled by an exact parity criterion on the
     active relation lattice -- see verify_segment_sitewise.py (Prop. site-wise segment saturation). This is
@@ -151,18 +152,24 @@ def main() -> int:
     print(f"    limiting integral (2/pi)int cot|sin 2j th|: slope vs ln j = {cint:.4f} (~4/pi^2): "
           f"{'OK' if abs(cint - c_pred) < 0.02 else 'FAIL'}")
 
-    print("\n(C) Full cos-rank (N-1)//2 holds exactly for prime/2^m: SUFFICIENT for sup_t|z_j|=d_j^N (all j)")
+    print("\n(C) Full cos-rank (N-1)//2 holds exactly for prime / 2^m / 2*odd-prime: SUFFICIENT for all sites")
     print(f"    {'N':>4} {'class':>10} {'rank':>5} {'(N-1)//2':>9} {'indep?':>7}")
-    for nn in (8, 16, 32, 7, 11, 13, 9, 12, 15, 21):
+
+    def _is2p(n: int) -> bool:  # twice an odd prime
+        return n % 2 == 0 and is_prime(n // 2) and (n // 2) % 2 == 1
+
+    for nn in (8, 16, 32, 7, 11, 13, 6, 10, 14, 22, 26, 9, 12, 15, 21):
         rk = cos_rank(nn)
         thr = (nn - 1) // 2
-        cls = "2^m" if (nn & (nn - 1)) == 0 else ("prime" if is_prime(nn) else "composite")
+        is2m = (nn & (nn - 1)) == 0
+        cls = "2^m" if is2m else ("prime" if is_prime(nn) else ("2*prime" if _is2p(nn) else "composite"))
         indep = rk == thr
-        # expectation: independent iff prime or 2^m
-        ok &= indep == (is_prime(nn) or (nn & (nn - 1)) == 0)
+        # full cos-rank <=> prime / 2^m / 2*odd-prime (the segment has the extra 2p family vs the ring)
+        ok &= indep == (is_prime(nn) or is2m or _is2p(nn))
         print(f"    {nn:>4} {cls:>10} {rk:>5} {thr:>9} {indep!s:>7}")
-    print("    -> cos(pi k/N) independent (rank=(N-1)//2) exactly for prime / 2^m (cosine analogue of")
-    print("       the bead-chain theorems); Filimonov's N=2^m is sufficient and extends to primes.")
+    print("    -> cos(pi k/N) full rank EXACTLY for prime / 2^m / 2*odd-prime -- NOT just prime/2^m: the")
+    print("       segment admits the extra 2p family (ring-p values for even k + primitive cos for odd k,")
+    print("       spanning Q(zeta_4p)^+); sufficient for sup_t|z_j|=d_j^N at every site (extends Filimonov).")
 
     print("\n(D) Ceiling holds: |z_j(t)| <= d_j^N for all sampled t (triangle inequality)")
     n = 256

@@ -26,8 +26,8 @@ Pontryagin duality (sigma_k) in <1>+H_0 iff <c, sigma> = 0 (mod 2 pi) for every 
 sigma_k in {0, pi}, <c, sigma> = pi * sum_{sigma_k = pi} c_k, which is 0 mod 2 pi iff that sum is even.  QED.
 
 Corollaries (proved): (i) j = 1 and j = N-1 always saturate -- there sin(pi k j/N) > 0 for all active k, so the
-negative set is empty and the parity is trivially even; (ii) N prime or 2^m saturates at every site (no
-nontrivial relation exists).  For composite N the saturating set is sign-pattern dependent (NOT a function of
+negative set is empty and the parity is trivially even; (ii) N prime, 2^m, or 2p (the full cos-rank cases)
+saturates at every site.  For other composite N the saturating set is sign-pattern dependent (NOT a function of
 gcd(j,N): e.g. for N=24 the coprime saturating sites are exactly the subgroup {1,7,17,23} < (Z/24)*).
 
 This script: (A) verifies the criterion against the exact sup_t (high-resolution scan), (B) checks the two
@@ -173,8 +173,8 @@ def main() -> int:
              and criterion_saturates(n, n - 1, _cyclotomic(2 * n, cache)) for n in range(3, 30))
     print(f"    (i)  j=1 and j=N-1 always saturate (N<30): {'OK' if c1 else 'FAIL'}")
     c2 = all(all(criterion_saturates(n, j, _cyclotomic(2 * n, cache)) for j in range(1, n))
-             for n in (5, 7, 11, 13, 4, 8, 16))
-    print(f"    (ii) prime / 2^m saturate at every site: {'OK' if c2 else 'FAIL'}")
+             for n in (5, 7, 11, 13, 4, 8, 16, 6, 10, 14, 22, 26))
+    print(f"    (ii) prime / 2^m / 2p (full cos-rank) saturate at every site: {'OK' if c2 else 'FAIL'}")
     # sign-dependence: N=24 coprime saturating sites are the subgroup {1,7,17,23}
     phi24 = _cyclotomic(48, cache)
     cop = [j for j in range(1, 24) if gcd(j, 24) == 1]
