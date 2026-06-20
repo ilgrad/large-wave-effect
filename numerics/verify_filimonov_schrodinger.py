@@ -20,7 +20,8 @@ This script reproduces all of it AND adds two findings:
   * the independence of {cos(pi k/N)} (rank = (N-1)//2) holds for PRIME N as well as N=2^m, which
     SUFFICES for sup_t|z_j| = d_j^N at every site -- so the law extends to primes (Filimonov states 2^m).
     Full rank is NOT necessary, though: composite N can still saturate at individual Dirichlet sites
-    (e.g. j=1), so a complete classification of this site-wise segment saturation is open. This is
+    (e.g. j=1). The complete site-wise classification is now settled by an exact parity criterion on the
+    active relation lattice -- see verify_segment_sitewise.py (Prop. site-wise segment saturation). This is
     separate from the settled ring saturation classification.
 """
 
@@ -196,7 +197,7 @@ def main() -> int:
               f"{'saturates' if ratio > 0.999 else 'GAP'}")
     ok &= e_ok
     print("    -> composite N reaches the ceiling at individual sites; full cos-rank is a SUFFICIENT,")
-    print("       not necessary, condition, so composite saturation needs a separate classification.")
+    print("       not necessary, condition. The exact site-wise classification: verify_segment_sitewise.py.")
 
     print("\n" + "=" * 78)
     print("RESULT:", "FILIMONOV SCHRODINGER LARGE WAVE REPRODUCED" if ok else "CHECK FAILED")
