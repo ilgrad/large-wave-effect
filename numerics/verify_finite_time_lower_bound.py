@@ -158,14 +158,35 @@ def main() -> int:
     print(f"efficiency decay at T={tref:g}: f(11)={f_lo:.3f} -> f({PRIMES[-1]})={f_hi:.3f}")
     print(f"elapsed: {elapsed:.1f}s")
 
+    # prop:reach-density: density of {u_0>=(1-eps)U} -> V_m (2 eps U)^(m/2)/sqrt(prod b)/(2pi)^m (Weyl+ellipsoid)
+    from math import gamma as _gamma
+
+    def _density_ratio(n: int, eps: float, t_max: float = 1.0e6, dt: float = 0.01) -> float:
+        rr = np.arange(1, (n - 1) // 2 + 1)
+        om = 2.0 * np.sin(np.pi * rr / n)
+        bb = 1.0 / (n * np.sin(np.pi * rr / n))
+        u_cap, mm = float(bb.sum()), len(rr)
+        pred = ((np.pi ** (mm / 2) / _gamma(mm / 2 + 1)) / np.sqrt(np.prod(bb))
+                / (2 * np.pi) ** mm * (2 * eps * u_cap) ** (mm / 2))
+        nt, cnt = int(t_max / dt), 0
+        for s in range(0, nt, 2_000_000):
+            tt = np.arange(s, min(s + 2_000_000, nt)) * dt
+            cnt += int(np.sum((np.sin(tt[:, None] * om[None, :]) * bb[None, :]).sum(axis=1) >= (1 - eps) * u_cap))
+        return (cnt / nt) / pred
+
+    dens = [_density_ratio(7, e) for e in (0.1, 0.05, 0.02)]
+    ok_dens = abs(dens[-1] - 1.0) < 0.12  # rho_emp/pred -> 1 as eps->0
+    print(f"density rho(eps)/pred (N=7, eps=0.1,0.05,0.02): {[round(x, 3) for x in dens]} -> 1 (Prop. reach-density)")
+
     ok_decay = f_hi < f_lo - 0.1
     ok_growth = rate > 0.1
     ok_law = r2 > 0.7
-    ok = ok_decay and ok_growth and ok_law
+    ok = ok_decay and ok_growth and ok_law and ok_dens
     print("\nchecks:")
     print(f"  (i)  efficiency decays with N .......... {'OK' if ok_decay else 'FAIL'}")
     print(f"  (ii) T_0.2 grows exponentially ......... {'OK' if ok_growth else 'FAIL'}")
     print(f"  law  eps^(-a m) fit R^2>0.7 ............ {'OK' if ok_law else 'FAIL'}")
+    print(f"  density rho(eps) ~ eps^(m/2) (Weyl) .... {'OK' if ok_dens else 'FAIL'}")
     print("=" * 80)
     print("RESULT:", "FINITE-TIME LOWER-BOUND EVIDENCE VERIFIED" if ok else "CHECK FAILED")
     print("=" * 80)

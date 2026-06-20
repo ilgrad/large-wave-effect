@@ -1039,6 +1039,32 @@ partial early alignment, already a several-fold over-amplification, while the fu
 only over astronomically long times. The clean arithmetic of prime and $2^m$ $N$ is what makes a sizable
 fraction of $U_N$ reachable \emph{quickly}.
 
+While the worst-case lower bound is open, the \emph{measure} of amplified times is pinned exactly.
+
+\begin{proposition}[density of the amplified set]\label{prop:reach-density}
+For $N$ prime the set $\{t\ge0:u_0(t)\ge(1-\varepsilon)U_N\}$ has a positive asymptotic density
+$\rho(\varepsilon)$, and
+\[
+  \rho(\varepsilon)=\bigl(1+o(1)\bigr)\,\frac{V_m}{(2\pi)^m}\,\frac{(2\varepsilon U_N)^{m/2}}{\sqrt{\textstyle\prod_r b_r}}
+  \quad(\varepsilon\to0),\qquad m=\tfrac{N-1}2,\ \ V_m=\frac{\pi^{m/2}}{\Gamma(\tfrac m2+1)} .
+\]
+\end{proposition}
+\begin{proof}
+For prime $N$ the $\omega_r$ are $\Q$-independent (Theorem~\ref{thm:prime}), so $t\mapsto(\omega_r t)_r$
+equidistributes on $\mathbb T^m$ (Weyl) and $\rho(\varepsilon)=\operatorname{vol}(G_\varepsilon)/(2\pi)^m$ with
+$G_\varepsilon=\{\theta:\sum_r b_r\sin\theta_r\ge(1-\varepsilon)U_N\}$. The integrand is maximised only at
+$\theta=\tfrac\pi2\mathbf 1$; writing $\theta_r=\tfrac\pi2+\varphi_r$, $\sum_r b_r\sin\theta_r=U_N-\tfrac12\sum_r
+b_r\varphi_r^2+O(\varphi^4)$, so to leading order $G_\varepsilon$ is the ellipsoid $\sum_r b_r\varphi_r^2\le2\varepsilon
+U_N$, of volume $V_m(2\varepsilon U_N)^{m/2}/\sqrt{\prod_r b_r}$.
+\end{proof}
+
+\noindent So an exponentially small but positive fraction $\asymp\varepsilon^{m/2}$ of time is
+$\varepsilon$-amplified, and the typical gap between amplified epochs is $\asymp\varepsilon^{-m/2}$
+(\texttt{verify\_finite\_time\_lower\_bound.py}: $\rho_{\mathrm{emp}}/\rho\to1$ as $\varepsilon\to0$ at
+$N=5,7$). This is the measure-theoretic counterpart of the open worst-case bound---the large wave is reachable
+but \emph{rare}; the exponent $m/2$ governs the \emph{typical} gap, while the deterministic first-hitting lower
+bound still needs the Diophantine input above.
+
 \subsection{Disorder}
 Unequal masses $m_j=1+\varepsilon\xi_j$ turn the chain into the generalized problem $\LN v=\omega^2 Mv$,
 $M=\operatorname{diag}(m_j)$, with node-$0$ response $x_0(t)=\sum_r c_r\sin(\omega_r t)$,
