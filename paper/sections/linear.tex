@@ -1913,6 +1913,16 @@ $\varphi(N)=N-1$, i.e.\ $N$ prime; for $N=2^a m$ ($m$ odd $>1$) it is $2^{a-1}\v
 $a=1$ and $m$ prime.
 \end{proof}
 
+\begin{remark}[why the segment beats the ring by the family $2p$]\label{rem:sincos-rank}
+The sine analogue is cleaner: the antisymmetrised powers $\{\zeta_{2N}^r-\zeta_{2N}^{-r}:1\le r<N\}$ span the
+$(-1)$-eigenspace of conjugation outright---the boundary $r=0,N$ contribute $0$, not a rational---so
+$\operatorname{rank}\{2\sin(\pi r/N):1\le r<N\}=\tfrac12\varphi(2N)$ with \emph{no} correction. This attains
+its maximum $\lfloor N/2\rfloor$ iff $N$ is prime or $2^m$, recovering the ring saturation
+Theorem~\ref{thm:classification}. The lone $-1$ in the cosine rank on powers of $2$---the constant $1$, which
+is reachable only when $2N$ has an odd prime factor---is precisely what hands the segment its extra full-rank
+family $2p$, absent from the ring.
+\end{remark}
+
 \noindent Full rank \emph{suffices} for $\sup_t|z_j|=d_j^N$ at every site $j$, so Filimonov's $N=2^m$ extends---now
 with proof---to all prime $N$ and all $N=2p$. Full rank is \emph{sufficient but not necessary}, and we now settle
 the site-wise classification exactly.

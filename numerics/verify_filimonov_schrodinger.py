@@ -206,7 +206,36 @@ def main() -> int:
     ch_ok = all(np.max(np.abs(np.polyval(np.polyfit(cc, np.cos(k * xx) / np.cos(xx), (k - 1) // 2), cc)
                               - np.cos(k * xx) / np.cos(xx))) < 1e-9 for k in (1, 3, 5, 7, 9))
     print(f"    2^m: cos(kx)/cos(x) is degree (k-1)/2 in cos^2 x (Chebyshev V_k): {'OK' if ch_ok else 'FAIL'}")
-    ok &= cf_ok and mem_ok and ch_ok
+
+    def _sin_rank(n: int) -> int:  # 2 sin(pi r/N) = 2 cos(pi(N-2r)/(2N)) = zeta_{4N}^|N-2r| + conj
+        m = 4 * n
+        phip = cyclotomic(m, {})
+        rows = [[h + lo for h, lo in zip(power_mod(abs(n - 2 * r) % m, phip),
+                                         power_mod((m - abs(n - 2 * r)) % m, phip), strict=True)]
+                for r in range(1, n)]
+        a = np.array(rows, dtype=np.int64) % _P
+        nr, rk = a.shape[0], 0
+        for col in range(a.shape[1]):
+            nz = np.nonzero(a[rk:, col])[0]
+            if nz.size == 0:
+                continue
+            piv = rk + int(nz[0])
+            a[[rk, piv]] = a[[piv, rk]]
+            a[rk] = (a[rk] * pow(int(a[rk, col]), _P - 2, _P)) % _P
+            cv = a[:, col].copy()
+            cv[rk] = 0
+            nzr = np.nonzero(cv)[0]
+            if nzr.size:
+                a[nzr] = (a[nzr] - np.outer(cv[nzr], a[rk])) % _P
+            rk += 1
+            if rk == nr:
+                break
+        return rk
+
+    sr_ok = all(_sin_rank(N) == _phi(2 * N) // 2 for N in range(3, 33))
+    print(f"    sine companion (ring): rank{{2sin(pi r/N)}} = phi(2N)/2, NO exception, N=3..32: "
+          f"{'OK' if sr_ok else 'FAIL'}")
+    ok &= cf_ok and mem_ok and ch_ok and sr_ok
 
     print("\n(D) Ceiling holds: |z_j(t)| <= d_j^N for all sampled t (triangle inequality)")
     n = 256
