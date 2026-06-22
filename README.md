@@ -1,5 +1,7 @@
 # large-wave-effect
 
+[![DOI](https://zenodo.org/badge/1258683042.svg)](https://doi.org/10.5281/zenodo.20795861)
+
 Rigorous study of the **large-wave effect** on periodic discrete chains: a localized impulse on a
 homogeneous one-dimensional *lattice* amplifies into a peak that grows with the number of nodes — a
 genuinely discrete resonance with no continuum counterpart.
@@ -190,5 +192,5 @@ Apache License 2.0 — code, paper text, and figures. See `LICENSE` and `NOTICE`
 ## Citation
 
 Ilia Gradina, *Large-wave amplification on periodic discrete lattices: linear theory and a nonlinear
-extension* (2026). See `CITATION.cff`. A Zenodo DOI will be minted on the first release (connect the
-repository to Zenodo, then publish a GitHub release).
+extension* (2026). DOI: [10.5281/zenodo.20795861](https://doi.org/10.5281/zenodo.20795861) (concept DOI —
+always resolves to the latest version). See `CITATION.cff`.

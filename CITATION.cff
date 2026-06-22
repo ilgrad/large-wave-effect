@@ -18,4 +18,4 @@ keywords:
 version: "1.0.0"
 date-released: "2026-06-22"
 repository-code: "https://github.com/ilgrad/large-wave-effect"
-# doi: added after the first Zenodo release mints it (use the concept DOI)
+doi: "10.5281/zenodo.20795861"
