@@ -48,7 +48,7 @@ from scipy.integrate import quad
 from scipy.optimize import minimize_scalar
 from scipy.special import jv
 
-BETA_ODD = 0.9280193036689088
+BETA_ODD = 0.92801930480793112
 
 
 def env(u: float, ell: int, s: float) -> float:

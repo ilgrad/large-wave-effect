@@ -31,9 +31,10 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
 **Resolved this session (2026-06-15).**
 - **A2** β_odd continuum cover — the θ-ball middle blow-up past `t=12` is fixed by `middle_far_point`
   (θ-Taylor + t-collocation; `verify_middle_far.py`); the previously-failing boxes now certify
-  (`(0.70,0.70)→0.948`, `(0.73,0.73)→0.943`, `(0.76,0.76)→0.922`). Full band tiling **COMPLETE**:
-  `run_dagger_campaign.py` certified 130 leaf boxes, 0 fail (~7.2 h) ⇒ A2 closed (`limsup B_N/√N = β_odd`
-  at the dagger certificate's validated-enclosure standard).
+  (e.g. `(0.70,0.70)→0.9915`; hardest boxes at the high-λ edge `a_3≈0.61`, closed by one refinement, worst
+  leaf `0.9999`). Full band tiling **DONE**: `run_dagger_campaign.py` certified 130 leaf boxes, 0 fail (~7.2 h)
+  ⇒ A2 reduced to ONE numerically-validated ≥3-copy inequality (`limsup B_N/√N = β_odd` at the dagger
+  certificate's validated-enclosure standard; rigorous modulo that one estimate, NOT an unconditional proof).
 
 **Open — research wall (needs new mathematics).**
 - **A1** excess lemma, uniform in `m` = weighted-packing bound on the chained graph — sup-side
@@ -41,7 +42,7 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
 - Self-trapping window `gP∈[0.43,4)` — same focusing-sign motif (§C).
 
 **Open — execution / resource (idea exists, not a one-shot).**
-- β_odd full band tiling — **DONE** (`run_dagger_campaign.py`: 130 leaf boxes, 0 fail, ~7.2 h; A2 closed);
+- β_odd full band tiling — **DONE** (`run_dagger_campaign.py`: 130 leaf boxes, 0 fail, ~7.2 h; A2 reduced to one validated inequality, rigorous modulo it);
   finite-time **lower** bound (+ damping, conditional on it);
   FPUT small-energy (Nekhoroshev, 4-wave resonances) and chaos (CAPD); arbitrary graphs (non-cyclotomic).
 
@@ -130,13 +131,15 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
   POINTS (the 0F1 J0-series only blows the radius under an INTERVAL t), the t-integral is a degree-2
   collocation quadrature with a finite-difference Lagrange remainder. Validated vs the scipy reference
   (containment, radius `~7e-7`; `verify_middle_far.py`). Recipe `mid[1.5,8] + far[8,24] + tail[24,inf)`
-  via `prove_box(..., far_slices=...)` certifies the previously-failing boxes:
-  `(0.70,0.70,h=0.005)→0.948`, `(0.73,0.73)→0.943`, `(0.76,0.76)→0.922` (the worst true value is at
-  `a≈0.70`). Node-parallel (`prove_box_parallel.py`); the full band tiling is the adaptive, checkpointed
-  `run_dagger_campaign.py`, which certified all 130 leaf boxes (0 fail, ~7.2 h) — the cover is complete.
+  via `prove_box(..., far_slices=...)` certifies the previously-failing boxes (e.g.
+  `(0.70,0.70)→0.9915`; the hardest boxes are the high-λ edge `a_3≈0.61`, closed by one refinement, worst
+  leaf `0.9999`). Node-parallel (`prove_box_parallel.py`); the full band tiling is the adaptive, checkpointed
+  `run_dagger_campaign.py`, which certified all 130 leaf boxes (0 fail, ~7.2 h) — the cover **validates** the
+  residual ≥3-copy inequality across the band (rigorous modulo that one estimate, NOT an unconditional proof).
 - FIXED: the `beta_odd` literal (was wrong past digit 9).
 
-**A1 remains the signed-cancellation wall; A2's continuum cover is complete (130 boxes, 0 fail; above).**
+**A1 remains the signed-cancellation wall; A2's continuum cover is validated across the band (130 boxes, 0 fail;
+above), reducing A2 to one numerically-validated ≥3-copy inequality (rigorous modulo it, not an unconditional proof).**
 
 ---
 

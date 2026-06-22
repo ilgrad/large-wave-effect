@@ -32,7 +32,7 @@ import numpy as np
 from scipy.integrate import quad
 from scipy.special import jv
 
-BETA_ODD = 0.9280193036689088
+BETA_ODD = 0.92801930480793112
 
 
 def debye_phase_abs(n: float, x: float) -> float:

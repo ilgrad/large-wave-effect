@@ -23,7 +23,7 @@ MSC 2020
   39A12, 42A75, 11R18, 47B35, 35Q55, 11L07, 33C10
 
 COMMENTS
-  50 pages, figures. Reproducibility layer: standalone PEP 723 verification
+  71 pages, figures. Reproducibility layer: standalone PEP 723 verification
   scripts (one per quantitative claim) plus an exact-arithmetic / proof layer in
   GAP, PARI/GP, FriCAS and Rocq. Code and paper: https://github.com/ilgrad/large-wave-effect
 

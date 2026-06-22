@@ -12,7 +12,7 @@ pieces are PROVED versus VALIDATED.
 ----------------------------------------------------------------------------------------------------------
 SETUP.  At t = sN/2 the limiting profile is  F(s) = sqrt(2/pi) int_0^1 E|Z(u,s)| du,  Z = X + iY,
     X = sum_{l even, live} a_l cos Phi_l,   Y = sum_{l odd, live} a_l cos Phi_l,   a_l = (s^2-(u+l)^2)^{-1/4},
-the Phi_l iid uniform, X _||_ Y.  F(1) = beta_odd = 0.9280193036689088 is the EXACT two-copy peak.  Write
+the Phi_l iid uniform, X _||_ Y.  F(1) = beta_odd = 0.92801930480793112292 is the EXACT two-copy peak.  Write
     sigma_X^2 = (1/2) sum_{even} a_l^2,   sigma_Y^2 = (1/2) sum_{odd} a_l^2,   Sigma2 = sigma_X^2 + sigma_Y^2,
 and let G = (G_X, G_Y) ~ N(0,sigma_X^2) x N(0,sigma_Y^2) be the matched Gaussian.
 
@@ -102,7 +102,7 @@ from numpy import cos, pi, sin, sqrt
 from scipy.integrate import quad
 from scipy.special import ellipe, j0
 
-BETA_ODD = 0.92801930480793112  # eq:beta-odd, s=1 two-copy peak (high-precision; the repo's 0.9280193036689088 is off past digit 9)
+BETA_ODD = 0.92801930480793112  # eq:beta-odd, s=1 two-copy peak (high-precision)
 H1 = 0.9580913983830018  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi), the equal-pair modulus
 ROOT = sqrt(2 / pi)
 TAIL = sqrt(pi) / 2  # F_gauss(infinity) = E|G| at sigma_X=sigma_Y = 0.8862269...

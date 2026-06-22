@@ -43,7 +43,7 @@ from scipy.special import beta as beta_fn
 from scipy.special import ellipe, hyp2f1
 
 C0 = (2 / np.pi) ** 1.5 * beta_fn(0.5, 0.75)
-BETA_ODD = 0.9280193036689088  # eq:beta-odd, independent reference value
+BETA_ODD = 0.92801930480793112  # eq:beta-odd, independent reference value
 ROOT = np.sqrt(2 / np.pi)
 
 

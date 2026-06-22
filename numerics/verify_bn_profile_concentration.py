@@ -7,7 +7,7 @@ r"""The s>1 profile F(s) < beta_odd via the modulus-concentration mechanism (com
 The multi-copy profile is  F(s) = sqrt(2/pi) int_0^1 E|Z(u,s)| du,  Z = X+iY,
     X = sum_{l even, live} a_l cos Phi_l,   Y = sum_{l odd, live} a_l cos Phi_l,
     a_l = (s^2-(u+l)^2)^{-1/4}  for |u+l|<s,   Phi_l iid uniform,   X _||_ Y,
-with F(1) = beta_odd = 0.9280193036689088 the EXACT two-copy peak.  This script certifies the two facts that
+with F(1) = beta_odd = 0.92801930480793112292 the EXACT two-copy peak.  This script certifies the two facts that
 together explain max_{s>1} F(s) < beta_odd, and isolates the ONE inequality that a fully rigorous proof needs.
 
 (P) CONSTANT-ENERGY IDENTITY  (PROVED, exact).  Because as u ranges over [0,1) and l over the integers, the
@@ -43,7 +43,7 @@ from __future__ import annotations
 
 import numpy as np
 
-BETA = 0.9280193036689088
+BETA = 0.92801930480793112
 H1 = 0.9580913983830018  # h(1) = E sqrt(cos^2 + cos^2), the equal-pair ratio ceiling
 
 

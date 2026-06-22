@@ -11,8 +11,11 @@ far_slices, but the 25 stencil-node evaluations run in a process pool (node-leve
 cores).  Boxes that do not certify upper<1 are split into 4 (h/2) and retried to a depth cap; every
 result is checkpointed to JSONL so the multi-hour sweep is resumable.
 
-The worst box (0.70,0.70,h=0.005) certifies upper=0.948 (validated); most boxes are easier, so the
-adaptive grid closes the band.  Soundness is the unmodified prove_box arithmetic (middle_far validated
+The (0.70,0.70) box certifies upper=0.9915; the hardest boxes are the high-lambda edge (a3~0.61), each
+closed by one h-refinement (worst certified leaf 0.9999), so the adaptive grid closes the band.  This
+validates the residual >=3-copy inequality across the band at the validated-enclosure standard -- it is
+not an unconditional proof of limsup B_N/sqrt(N)=beta_odd, which awaits a closed-form bound on that one
+estimate.  Soundness is the unmodified prove_box arithmetic (middle_far validated
 by numerics/verify_middle_far.py); Arb is CPU-only, so process parallelism is the accelerator.
 
     uv run --script numerics/run_dagger_campaign.py --dry-run

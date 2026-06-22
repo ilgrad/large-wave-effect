@@ -40,7 +40,7 @@ from scipy.special import beta as Beta
 
 C0 = (2.0 / pi) ** 1.5 * Beta(0.5, 0.75)  # 1.2172, the Bessel-L1 constant
 C0_OVER_SQRT2 = C0 / sqrt(2.0)  # 0.8607, even-N peak (s=1/2)
-BETA_ODD = 0.9280193036689088  # odd-N peak (s=1), verify_beta_odd.py
+BETA_ODD = 0.92801930480793112  # odd-N peak (s=1), verify_beta_odd.py
 
 
 def _copies_in_band(u: float, s: float) -> list[tuple[float, int]]:

@@ -49,11 +49,10 @@ FINDING 2 -- THE SPLIT (repairs the route).  Two PROVED ingredients close the wh
 FINDING 3 -- THE beta_odd LITERAL.  Independent high-precision (mpmath, the one-elliptic-reduced triple
 integral, cross-checked by reduce-over-p and a brute 2-D inner) gives
     beta_odd = 0.92801930480793112292...      (25 digits)
-The literal in verify_beta_odd.py docstring and the float 0.9280193036689088 used throughout read
-    0.9280193036689087668528462  (documented "25 digits"),
-which agrees only to 9 significant figures (digit 10: ...0480... vs ...0366...).  The DOCUMENTED 25-digit
-string is wrong past digit ~9.  This is immaterial to every margin in the proof (they are 1e-3..1e-2, the
-discrepancy is 1e-9; K_max is unchanged to 5 digits whichever value is used) -- it is a citation/literal
+The repo scripts now use this value.  A historical literal 0.9280193036689087668528462 (the float
+0.9280193036689088) agreed only to 9 significant figures (digit 10: ...0480... vs ...0366...) and has been
+corrected repo-wide.  The discrepancy was immaterial to every margin in the proof (they are 1e-3..1e-2, the
+discrepancy was 1e-9; K_max is unchanged to 5 digits whichever value is used) -- it was a citation/literal
 error, not a proof error.  Likewise h(1)=0.95809139868285... (script's 0.9580913983830018 is right to 9
 digits, off at digit 10); K_star=0.03593223661505... (script's 0.0359322 is correct).
 
@@ -95,8 +94,7 @@ from scipy.special import ellipe, j0, jn_zeros
 np.seterr(all="ignore")  # masked d<=0 powers in vectorized amplitudes; values are np.where-guarded
 
 # ---- constants (high-precision values from the mpmath block below) ----
-BETA_HP = 0.9280193048079311      # CORRECTED beta_odd (independent mpmath); see FINDING 3
-BETA_DOC = 0.9280193036689088     # the (wrong-past-digit-9) literal used in the repo scripts
+BETA_HP = 0.9280193048079311      # beta_odd (independent mpmath); see FINDING 3
 H1 = 0.9580913986828501           # h(1), corrected
 ROOT = sqrt(2 / pi)
 TAIL = sqrt(pi) / 2               # F_gauss(infinity)
@@ -298,7 +296,7 @@ def main() -> int:
     print("=" * 100)
 
     # ---- FINDING 3 first: high-precision constants (cheap, sets the beta used everywhere) ----
-    print("\n[C] high-precision constants (mpmath, one-elliptic-reduced integrals) and the literal audit:")
+    print("\n[C] high-precision constants (mpmath, one-elliptic-reduced integrals) reproduce the script HP values:")
     try:
         import mpmath as mp
         mp.mp.dps = 30
@@ -324,19 +322,14 @@ def main() -> int:
         h1_v = h1_hp()
         beta_v = beta_hp()
         kstar_v = (h1_v - mp.sqrt(mp.pi) / 2) / 2
-        print(f"     beta_odd       = {mp.nstr(beta_v, 22)}   (literal: 0.9280193036689087668528462)")
-        print(f"     h(1)           = {mp.nstr(h1_v, 22)}   (script float: 0.9580913983830018)")
+        print(f"     beta_odd       = {mp.nstr(beta_v, 22)}   (script float: 0.92801930480793112)")
+        print(f"     h(1)           = {mp.nstr(h1_v, 22)}   (script float: 0.9580913986828501)")
         print(f"     K_star         = {mp.nstr(kstar_v, 22)}   (script float: 0.0359322)")
-        # the literal agrees only to 9 sig figs; flag it
-        beta_lit = mp.mpf("0.9280193036689087668528462")
-        lit_gap = float(abs(beta_v - beta_lit))
-        print(f"     |beta_hp - documented 25-digit literal| = {lit_gap:.2e}  "
-              f"(agree to ~9 sig figs; literal wrong past digit 9)")
+        # historical note: a former literal 0.9280193036689088 was wrong past digit 9; corrected repo-wide.
         c_ok = (abs(float(beta_v) - BETA_HP) < 1e-12 and abs(float(h1_v) - H1) < 1e-12
-                and abs(float(kstar_v) - K_STAR) < 1e-9 and 1e-10 < lit_gap < 1e-8)
+                and abs(float(kstar_v) - K_STAR) < 1e-9)
         ok &= c_ok
-        print(f"     => constants reproduce the script's HP values; literal discrepancy {lit_gap:.1e} flagged"
-              f"   {'ok' if c_ok else 'FAIL'}")
+        print(f"     => constants reproduce the script's HP values   {'ok' if c_ok else 'FAIL'}")
     except Exception as exc:  # mpmath edge; constants are not load-bearing for the window verdict
         print(f"     [mpmath unavailable: {exc}] -- skipping the high-precision block")
 
@@ -472,9 +465,9 @@ def main() -> int:
         "  (2) the SPLIT closes the range: variance-floor F_2<beta_odd on (1,1.005] (PROVED, near-tight since\n"
         "      the live set is ~2 copies there), and B<beta_odd with ANY K<=K_star on [1.005,inf) (inf K_max=\n"
         "      0.0363>K_star) -- the sharp constant/tail estimate is NOT needed off the sliver.\n"
-        "  (3) beta_odd = 0.92801930480793... ; the documented 25-digit literal is wrong past digit 9\n"
-        "      (immaterial to all margins).  profile max_u R/K_star<=1 (sharp on u=0.5); channels are NOT\n"
-        "      pointwise symmetric (asym~0.98), only after the u-integral."
+        "  (3) beta_odd = 0.92801930480793... ; a former literal wrong past digit 9 has been corrected\n"
+        "      repo-wide (immaterial to all margins).  profile max_u R/K_star<=1 (sharp on u=0.5); channels\n"
+        "      are NOT pointwise symmetric (asym~0.98), only after the u-integral."
     ) if ok else "FAIL -- a checked invariant did not hold; see the failing line above.")
     print("Rigor: PROVED = F_gauss, variance-floor majorant, F(inf)=sqrt(pi)/2.  CERTIFIED (numerics, panel\n"
           "       Gauss-Legendre + exact Kluyver) = the window, the sliver, the split, profile R/K_star<=1.\n"

@@ -13,7 +13,7 @@ CONTEXT.  At t = sN/2 the limiting profile of ||K_N(.,t)||_1 / sqrt(N) is the ex
 
 the Phi_l independent uniform on [0,2pi).  For s in [1/2,1] only l=0,-1 are live: the two-copy profile,
 proved elsewhere (verify_bn_profile_max.py / verify_bn_profile_rigorous.py) to satisfy
-max_{[0,1]} F = F(1) = beta_odd = 0.9280193036689088.  THIS script handles t > N/2, i.e. s > 1, where >=3
+max_{[0,1]} F = F(1) = beta_odd = 0.92801930480793112292.  THIS script handles t > N/2, i.e. s > 1, where >=3
 copies are live, and certifies that none of them beats the s=1 peak.
 
 ----------------------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ import numpy as np
 from numpy import cos, pi, sqrt
 from scipy.special import ellipe, j0
 
-BETA_ODD = 0.9280193036689088  # eq:beta-odd; the s=1 peak (verify_beta_odd.py)
+BETA_ODD = 0.92801930480793112  # eq:beta-odd; the s=1 peak (verify_beta_odd.py)
 ROOT = sqrt(2 / pi)
 TAIL = sqrt(pi) / 2  # F(infinity) = 0.8862269...
 

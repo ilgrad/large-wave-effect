@@ -1772,10 +1772,12 @@ the $0F1$ Bessel series is never evaluated on an interval---the only thing that 
 cancellation inflate the radius); it is validated against the reference enclosure (containment, radius
 $\sim10^{-7}$; \texttt{verify\_middle\_far.py}). With the split $\mathrm{mid}[1.5,8]+\mathrm{far}[8,24]+\mathrm{tail}[24,\infty)$
 through \texttt{prove\_box($\dots$,\,far\_slices=$\dots$)} the previously-failing boxes certify
-($(0.70,0.70)\to0.948$, $(0.73,0.73)\to0.943$, $(0.76,0.76)\to0.922$, the worst true value sitting at
-$a\simeq0.70$). The full singleton-band cover is the adaptive, node-parallel, checkpointed tiling
-\texttt{run\_dagger\_campaign.py}, which certified all $130$ leaf boxes with $0$ failures; hence
-$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$ at the certificate's validated-enclosure standard. The honest status is that the multi-copy region is
+(e.g.\ $(0.70,0.70)\to0.9915$; the campaign's hardest boxes sit at the high-$\lambda$ edge
+$a_3\simeq0.61$, each closed by one refinement, the worst certified leaf reaching $0.9999$). The full singleton-band cover is the adaptive, node-parallel, checkpointed tiling
+\texttt{run\_dagger\_campaign.py}, which certified all $130$ leaf boxes with $0$ failures, so the residual
+inequality is validated across the whole band at the certificate's validated-enclosure standard (not yet a
+closed-form proof); the unconditional $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$ awaits upgrading that one
+expected-modulus estimate from validated to proved. The honest status is that the multi-copy region is
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
 constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
@@ -2000,7 +2002,7 @@ quantity & dynamics / functional & leading asymptotic & sharp class\\
 \midrule
 $U_N$ & ring, velocity ceiling & $\tfrac1\pi\ln N+\tfrac1\pi(\gamma+\ln\tfrac2\pi)$ & all $N$\\
 $A_N$ & ring, $\sup_t\max_j|G_N(j,\cdot)|$ & $\tfrac1\pi\ln N$ & prime, $2^m$, $2p$\\
-$B_N$ & ring, $\ell^\infty\!\to\!\ell^\infty$ Schr\"odinger & $\Theta(\sqrt N)$, const $\in[0.6086,1]$ & all $N$\\
+$B_N$ & ring, $\ell^\infty\!\to\!\ell^\infty$ Schr\"odinger & $\Theta(\sqrt N)$, const $\in[c_0/\sqrt2,1]$ & all $N$\\
 $d_j^N$ & segment, $\sup_t|z_j(\cdot)|$ Schr\"odinger & $\tfrac4{\pi^2}\ln j$ & prime, $2^m$ (suff.)\\
 $U_N^{(d)}$ & $d$-torus, velocity ceiling & $\tfrac1\pi\ln N$ ($d{=}1$), $\ O(1)$ ($d{\ge}2$) & $d_s=1$\\
 \bottomrule
