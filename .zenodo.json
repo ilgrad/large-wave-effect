@@ -28,7 +28,7 @@
     "reproducible research"
   ],
   "language": "eng",
-  "notes": "Companion arXiv preprint to be cross-referenced once the identifier is assigned. Fill in the author ORCID before publishing the release.",
+  "notes": "Companion arXiv preprint to be cross-referenced once the identifier is assigned.",
   "related_identifiers": [
     {
       "identifier": "https://github.com/ilgrad/large-wave-effect",

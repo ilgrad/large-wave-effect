@@ -15,4 +15,7 @@ keywords:
   - "cyclotomic fields"
   - "rogue waves"
   - "discrete nonlinear Schrödinger"
-# On first GitHub release, add:  version, date-released, repository-code, and the Zenodo doi.
+version: "1.0.0"
+date-released: "2026-06-22"
+repository-code: "https://github.com/ilgrad/large-wave-effect"
+# doi: added after the first Zenodo release mints it (use the concept DOI)
