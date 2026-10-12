@@ -198,7 +198,15 @@ Kevrekidis--Espinola-Rocha--Drossinos--Stefanov~\cite{KERDS08} as a \emph{suffic
 (below). One side of the dynamical threshold is thus settled, with the constant exactly the bandwidth $4$.
 (The \emph{static} excitation threshold of~\cite{Weinstein99} is a different object: a positive minimal
 power for a ground state exists only when $\sigma\ge2/d$, so in $1$D cubic there is none---localized modes
-exist at arbitrarily small power, while the dynamical launch barrier $4$ persists.)
+exist at arbitrarily small power, while the dynamical launch barrier $4$ persists.) The same number governs
+the nonlinear dimer, whose free-to-self-trapped transition goes back to Kenkre and Campbell~\cite{KC86}: for
+two sites with unit hopping, $\mathrm i\dot u=-L_2u+\gamma|u|^2u$ with
+$L_2=\bigl(\begin{smallmatrix}1&-1\\-1&1\end{smallmatrix}\bigr)$, conservation of the energy and of $P$ gives
+$2\operatorname{Re}(u_1\bar u_2)=\tfrac\gamma4(P^2-p^2)$ along the single-site orbit, $p=|u_1|^2-|u_2|^2$, and on
+the Bloch sphere $|2\operatorname{Re}(u_1\bar u_2)|\le\sqrt{P^2-p^2}$; so the populations equalize ($p$ reaches $0$) iff
+$|\gamma|P<4$, at $|\gamma|P=4$ only as $t\to\infty$, and above $4$ the launch stays trapped, $p\ge\sqrt{P^2-16/\gamma^2}>0$. There $4$ is twice
+the dimer bandwidth $\|L_2\|=2$: the agreement with $\|\LN\|=4$ is one of normalisation (unit hopping), not
+of mechanism.
 
 \begin{proposition}[no dispersal above the bandwidth]\label{prop:threshold}
 Let $u$ solve \eqref{eq:dnls} with single-site data $u_j(0)=\sqrt P\,\delta_{jj_0}$ ($N\ge3$) and

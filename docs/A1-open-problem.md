@@ -88,9 +88,11 @@ the second prime $p_2$ supplies the longer combs; $\#K=O(p_2)$.
   against the *asymptotic* $\frac1\pi\ln\frac m{\varphi(m)}$ the ratio is **not** stable (it ranges
   $0.33$–$0.88$ and sits above $1/\pi$); at reachable $N$ the excess is $O(1)$-dominated, so the asymptotic
   $\kappa$ is not cleanly extractable.
-- The rigorous split upper bound $\min_\lambda[\frac1{1-\lambda}\sum_T\frac{b_c}2+F_{\mathrm{comb}}(\lambda)]$
-  stays $\approx0.19$ flat to $N=1155$ → favours (O1). The two signals point opposite ways and neither turns
-  over by $\omega(m)=4$.
+- The split upper bound $\min_\lambda[\frac1{1-\lambda}\sum_T\frac{b_c}2+F_{\mathrm{comb}}(\lambda)]$, evaluated
+  numerically, stays $\approx0.19$ flat to $N=1155$ → favours (O1). The reduction is rigorous, but the value
+  $0.19$ is not certified: $F_{\mathrm{comb}}$ comes from multi-start local optimization
+  (`verify_excess_chain_split.py`), a lower estimate of the maximum. The two signals point opposite ways and
+  neither turns over by $\omega(m)=4$.
 - **Undecidable at any feasible $N$**: $U_N-L_{\mathrm{pre}}=\frac1\pi\ln\frac m{\varphi(m)}=\Theta(\ln\ln\ln N)$
   grows so slowly ($0.28$ at $\omega=4$, only $0.31$ at $\omega=6$) that $O(1)$ vs $\Theta(\ln\ln\ln)$ cannot be
   separated; $\omega=5$ ($N=15015$) already puts the exact cyclotomic relation matrix out of reach.

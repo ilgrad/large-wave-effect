@@ -77,7 +77,7 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   `C_N(S)` (`|S| ≥ 2`) instead **saturate** (`A_N = U_N`) off explicit Conway–Jones collision congruences —
   the nested-radical frequencies destroy the ring's mod-4 obstruction; for the nearest case `S = {1, 2}` this
   is **proved exactly** (Besicovitch–Kummer: no subset product of the `α_r` is a square in
-  `ℚ(ζ_p)`) for collision-free primes `p ≤ 23` (`exact/pari/kjump_kummer.gp`). It is an
+  `ℚ(ζ_p)`) for collision-free primes `p ≤ 31` (`exact/pari/kjump_kummer.gp`). It is an
   *infinite-time* ceiling: the finite-time amplitude is Diophantine-limited (recurrence time
   exponential in `N`).
 
@@ -127,8 +127,9 @@ content is an **absolute** constant **uniform as `ω(m) → ∞`**. A proved bui
 `ω_c = ω_a + ω_b` contributes excess `g(b_a, b_b, b_c) ≤ b_c/2`, from
 `g(α, β, γ) ≤ (γ²/2)(1/α + 1/β)` and `1/b_a + 1/b_b = 1/b_c`. The obstruction is the
 uniform coupling of `Θ(N)` relations (comb generators + shared phases), the sup-side counterpart of
-McGehee–Pigno–Smith/Konyagin in the Chowla cosine-extremum circle (recently resolved in the *opposite*
-direction by Jin–Milojević–Tomon–Zhang / Bedert). (3) A rigorous dispersal proof on the **proof gap** `γP ∈ [0.43, 4)`: the
+McGehee–Pigno–Smith/Konyagin in the Chowla cosine-extremum circle (where Jin–Milojević–Tomon–Zhang and
+Bedert recently proved the first polynomial bounds, `n^{1/10−o(1)}` and `n^{1/5−o(1)}`, in the *opposite*
+direction; Chowla's conjectured `√n` is still open). (3) A rigorous dispersal proof on the **proof gap** `γP ∈ [0.43, 4)`: the
 threshold `4` is now energy-sharp and dispersal is the numerically established behaviour up to `≈ 4`,
 but the rigorous drop is proven only to `0.43`. The **leading-order drift now vanishes provably** (along the
 linear flow the distance-2 current `Im(ā_n a_{n+2}) ≡ 0`, so the staggered momentum drifts

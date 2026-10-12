@@ -436,10 +436,11 @@ circle as the Chowla cosine problem on extrema of cosine sums~\cite{Bedert25} (i
 $A_N=\tfrac2N\sup_t\int_0^t C(s)\,\mathrm ds$ is the maximal antiderivative of the cosine sum
 $C(s)=\sum_r\cos(\omega_r s)$, the even-$N$ Nyquist mode at half weight)---but it runs in the opposite
 direction (an \emph{upper} bound on a \emph{sup}, driven by the relation lattice rather than by the number
-of frequencies). The recent spectral-to-cut resolution of that problem---Jin--Milojevi\'c--Tomon--Zhang~\cite{JMTZ25}
-(and Bedert~\cite{Bedert25}), via Cayley-graph eigenvalues, with cut-norm/Grothendieck duality~\cite{AlonNaor06}
-the matching tool---is the natural line of attack but does not transcribe: it \emph{lower}-bounds an
-extremum's magnitude (small eigenvalue $\Rightarrow$ clique), whereas we need an \emph{upper} bound on a
+of frequencies). The recent first polynomial bounds for that problem---$n^{1/10-o(1)}$ by
+Jin--Milojevi\'c--Tomon--Zhang~\cite{JMTZ25}, via small adjacency eigenvalues and large cliques, and
+$n^{1/5-o(1)}$ by Bedert~\cite{Bedert25}, with Chowla's conjectured order $\sqrt n$ still open---and
+cut-norm/Grothendieck duality~\cite{AlonNaor06} are the natural line of attack, but they do not transcribe:
+they \emph{lower}-bound an extremum's magnitude (small eigenvalue $\Rightarrow$ clique), whereas we need an \emph{upper} bound on a
 constrained joint maximum; the frequencies $2\sin(\pi r/N)$ are not characters of a cyclic group; and the
 dependent band's own supremum is its \emph{full} weight ($\max_\psi\sum_{r>M}b_r\sin\phi_r=\sum_{r>M}b_r$ for
 $\omega(m)=2$; \texttt{verify\_excess\_omega2.py}), so the bound is forced by the prefix \emph{trade-off}, not
@@ -578,9 +579,11 @@ prime-power odd part (Remark~\ref{rem:defect}) and for square-free $N=3p$ (above
 which alternative governs the general case is open, with content only once $\omega(m)\ge3$, and the numerical
 evidence is genuinely \emph{ambiguous}---the two signals point opposite ways and neither turns over by
 $\omega(m)=4$. For \textup{(O1)}: the raw excess is small ($A_N-L_{\mathrm{pre}}\in[0.05,0.12]$ through
-$\omega(m)=4$) and the rigorous split upper bound
-$\min_\lambda[\tfrac1{1-\lambda}\sum_{c\in T}\tfrac{b_c}2+F_{\mathrm{comb}}(\lambda)]$ stays $\approx0.19$ to
-$N=1155$ while $U_N-L_{\mathrm{pre}}$ grows. For \textup{(L)}: the \emph{ratio}
+$\omega(m)=4$) and the split upper bound
+$\min_\lambda[\tfrac1{1-\lambda}\sum_{c\in T}\tfrac{b_c}2+F_{\mathrm{comb}}(\lambda)]$, evaluated numerically,
+stays $\approx0.19$ to $N=1155$ while $U_N-L_{\mathrm{pre}}$ grows. The reduction is rigorous, but this value is
+not a certified bound: $F_{\mathrm{comb}}$ is computed by multi-start local optimization, which can only
+underestimate the maximum (\texttt{verify\_excess\_chain\_split.py}). For \textup{(L)}: the \emph{ratio}
 $(A_N-L_{\mathrm{pre}})/(U_N-L_{\mathrm{pre}})\approx0.31\approx1/\pi$ is \emph{stable} across $\omega(m)=2,3,4$,
 whereas \textup{(O1)} would force it to $0$. None of these can be pushed to a decision: since
 $U_N-L_{\mathrm{pre}}=\tfrac1\pi\ln(m/\varphi(m))\sim\tfrac1\pi\ln\ln\ln N$ grows glacially ($0.28$ at
@@ -874,6 +877,13 @@ $\not\equiv0\ (4)$. The single relation $k$ violates \emph{both} branches of The
 neither the node $j=0$ nor (for even $N$) the node $j=N/2$ can saturate, and $A_N<U_N$
 (\texttt{verify\_classification\_proof.py}). \end{proof}
 
+\noindent The same arithmetic separates the classical results on \emph{pretty good state transfer}, which also
+rest on Kronecker's theorem for cyclotomic eigenvalues, though for a transfer amplitude rather than the
+supremum of an impulse response: along an unmodulated $XY$ chain of $n$ qubits (Bose's end-to-end problem)
+it occurs iff $n+1$ is a prime, twice a prime, or a power of two~\cite{GKSS12}; on the cycle $C_n$ (walk
+$\eu^{-\mathrm itA}$) iff $n$ is a power of two, between antipodal vertices~\cite{PB17}; and between the end
+qubits of a Heisenberg chain of length $n$ iff $n$ is a power of two~\cite{BCGS17}.
+
 \medskip\noindent\textbf{The composite gap.} For every composite $N$, then, $A_N<U_N$
 (Theorem~\ref{thm:classification}). The gap is
 \emph{certified} for $N=6$: the lone relation $2\omega_1=\omega_3$ has coefficient-sum
@@ -1068,7 +1078,9 @@ bound still needs the Diophantine input above.
 \subsection{Disorder}
 Unequal masses $m_j=1+\varepsilon\xi_j$ turn the chain into the generalized problem $\LN v=\omega^2 Mv$,
 $M=\operatorname{diag}(m_j)$, with node-$0$ response $x_0(t)=\sum_r c_r\sin(\omega_r t)$,
-$c_r=v_r(0)^2/\omega_r>0$ ($M$-orthonormal modes $v_r^\top M v_s=\delta_{rs}$, unit velocity impulse) and
+$c_r=v_r(0)^2/\omega_r>0$ ($M$-orthonormal modes $v_r^\top M v_s=\delta_{rs}$, unit \emph{momentum} impulse
+$m_0\dot x_0(0)=1$; a unit velocity impulse gives $c_r=m_0v_r(0)^2/\omega_r$, the same up to the factor
+$m_0=1+O(\varepsilon)$) and
 incoherent ceiling $C=\sum_r c_r$. Generic masses destroy every rational relation almost surely. Each
 $F_k(\xi)=\sum_r k_r\omega_r(\xi)$ ($k\in\Z^{N-1}\!\setminus\!\{0\}$) is real-analytic on the simple-spectrum
 set; it is not \emph{identically} zero because the eigenvalue map $\xi\mapsto(\lambda_r)$ is a submersion---its
@@ -1146,6 +1158,11 @@ As $x\to\infty$, $\displaystyle\sum_{n\in\Z}|J_n(x)|=c_0\sqrt x\,(1+o(1))$ with
 $c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)\approx1.217$.
 \end{lemma}
 
+\noindent This is Corollary~1 of Baishanski and Hlavacek~\cite{BH08}, credited there to G.~Stey, in the
+form $x^{-1/2}\sum_n|J_n(x)|\to16/\Gamma(\tfrac14)^2$; the constants agree, since
+$\Gamma(\tfrac14)\Gamma(\tfrac34)=\pi\sqrt2$ gives $(2/\pi)^{3/2}B(\tfrac12,\tfrac34)=16/\Gamma(\tfrac14)^2$.
+We include a short proof.
+
 \begin{proof}
 Split at the light cone $|n|=x$. Beyond it ($|n|\ge x(1+\delta)$) the bound $|J_n(x)|\le(x/2)^{|n|}/|n|!$
 gives super-exponential decay; the turning-point band $|n|=x+O(x^{1/3})$ carries $O(x^{1/3})$ terms of
@@ -1200,37 +1217,37 @@ Substituting $1=-\sum_{j=1}^{p-1}\zeta^j$ in the constant term $2C$ gives
 $\sum_{j=1}^{p-1}(-2C)\,\zeta^j-\sum_{r=1}^m c_r(\zeta^r+\zeta^{p-r})=0$. The powers $\zeta,\dots,\zeta^{p-1}$ are
 $\zeta$ times the power basis of the degree-$(p-1)$ field $\Q(\zeta)$, hence a basis, so every coefficient
 vanishes: $c_r=-2C$ for each $r$. Summing, $C=-2mC=-(p-1)C$, so $pC=0$; hence $C=0$ and every $c_r=0$.
+
 \emph{(ii) Kronecker.} By (i) and Kronecker's theorem~\cite[Ch.~1]{KN} the flow
 $t\mapsto(t\lambda_r)_{r\le m}$, $t\ge0$, is dense in $\mathbb T^m$. Choose $t_n$ with
 $t_n\lambda_r\to-2\pi r^2/p\pmod{2\pi}$ for $1\le r\le m$. This target respects the spectrum:
 $\lambda_{p-r}=\lambda_r$ and $(p-r)^2\equiv r^2\pmod p$, while $\lambda_0=0$ matches $0^2$. So
 $\eu^{-\mathrm it_n\lambda_r}\to\zeta^{r^2}$ for every $r\in\Z/p$.
+
 \emph{(iii) Gauss sum.} Hence $K_p(k,t_n)\to\frac1p\sum_{r\bmod p}\zeta^{r^2+rk}$. Completing the square
 ($p$ odd), $r^2+rk\equiv(r+\bar2k)^2-\bar4k^2\pmod p$ with $\bar2,\bar4$ the inverses of $2,4$ mod $p$, so the
 sum is a unimodular multiple of the quadratic Gauss sum $\sum_r\zeta^{r^2}$, whose modulus is $\sqrt p$. So
 $|K_p(k,t_n)|\to p^{-1/2}$ for every $k$ and $\sum_k|K_p(k,t_n)|\to\sqrt p$. With $B_p\le\sqrt p$
 (Theorem~\ref{thm:schr}(2)) this gives $B_p=\sqrt p$, and since $B_N\le\sqrt N$ for every $N$,
 $\limsup_NB_N/\sqrt N=1$.
+
 \emph{(iv) Attainment.} $\sum_k|K_p(k,t)|=\sqrt p$ is the equality case of Cauchy--Schwarz,
 $|K_p(k,t)|=p^{-1/2}$ for all $k$. As $\eu^{-\mathrm it\LN}=\eu^{-2\mathrm it}\eu^{\mathrm itA}$ with $A$ the
 adjacency matrix of the cycle, this is instantaneous uniform mixing of the continuous-time quantum walk on
 $C_p$. It occurs for $p=3$: at $t=2\pi/9$, $|1+2\eu^{-3\mathrm it}|=|1-\eu^{-3\mathrm it}|=\sqrt3$. For $p\ge5$
 it does not occur~\cite{GMR17}. The exact inputs (i) and (iii) are checked for $p\le53$, and times with
 $\|K_p(\cdot,t)\|_1/\sqrt p>1-10^{-5}$ are exhibited for $p=5$ and $p=7$ ($t\approx5.8\cdot10^4$ and
-
 $t\approx2.0\cdot10^6$) (\texttt{verify\_bn\_prime\_flat.py}, \texttt{exact/pari/bn\_prime\_flat.gp}).
 \end{proof}
 
 \noindent This is the $\varepsilon$-uniform mixing on $C_p$ observed by Godsil, Mullin and
 Roy~\cite{GMR17}; we include the short proof because it decides the all-time constant. The aligning times
-
 $t_n$ are Diophantine-long (they align $\tfrac{p-1}2$ independent phases), far outside the ballistic
 windows $t=O(N)$ on which the Debye analysis below operates. The sharp constant that this analysis
 addresses is therefore the one of the \emph{windowed} amplification
 \[
   B_N(S):=\sup_{0\le t\le SN/2}\|K_N(\cdot,t)\|_1\qquad(S>0\ \text{fixed}).
 \]
-
 
 \begin{conjecture}[windowed Schr\"odinger constant]\label{conj:bn-window}
 For every fixed $S\ge1$, $\limsup_N B_N(S)/\sqrt N=\beta_{\mathrm{odd}}$, the constant~\eqref{eq:beta-odd}.
@@ -1853,9 +1870,11 @@ expected-modulus estimate from validated to proved, together with the $s$-unifor
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
 constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
-Remark~\ref{rem:bn-parity}. The closest
-published result, an $L^4$ bound for the same discrete chirp, stops short of the $L^1$
-constant~\cite{FuRenWang}.
+Remark~\ref{rem:bn-parity}. The nearest result we know is of a different kind: Fu, Ren and
+Wang~\cite{FuRenWang} bound the $L^4_x$ norm of the time-maximal function of the exponential sums
+$\sum_nb_n\,e(xn/N+ta_n)$ for phase sequences $(a_n)$ with convexity properties (by
+$N^{7/12+\varepsilon}\|b\|_{\ell^2}$, sharp up to $N^\varepsilon$), a maximal-function estimate in $L^4$ rather
+than the $L^1$ constant of one kernel.
 
 \noindent Part (1) is unitarity of $\eu^{-\mathrm{i}t\LN}$; the bounds in (2) are now both rigorous
 (upper from unitarity, lower from Theorem~\ref{thm:schr-lower}), and every step---the periodization, the
