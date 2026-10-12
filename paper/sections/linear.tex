@@ -2308,6 +2308,7 @@ Quasi-1D order criterion, NNN ring (Prop.~\ref{prop:order-criterion}) & \texttt{
 Order on ring products $C_N\square H$ (Cor.~\ref{cor:product}) & \texttt{verify\_product\_order.py}\\
 M\"obius ladder + $k$-jump saturation (Cor.~\ref{cor:mobius}, Rem.~\ref{rem:kjump}) & \texttt{verify\_kjump\_order.py}\\
 \quad$\hookrightarrow$ exact $k$-jump relation lattices and mod-$4$ test, $N\le126$ (PARI) & \texttt{exact/pari/kjump\_relations.gp}\\
+\quad$\hookrightarrow$ $C_p(\{1,2\})$ saturation inputs, $7\le p\le211$ (PARI; Prop.~\ref{prop:kjump-prime}) & \texttt{exact/pari/kjump\_nnn\_primes.gp}\\
 Excess lemma, prime-power odd part (Rem.~\ref{rem:defect}) & \texttt{verify\_excess\_smallcases.py}\\
 $\omega(m){=}2$ relation lattice $+$ deficit table & \texttt{verify\_excess\_omega2.py}\\
 Bedert/Chowla machinery does not transfer (spectral) & \texttt{verify\_excess\_omega2\_spectral.py}\\
@@ -2574,14 +2575,51 @@ so the argument of Theorem~\ref{thm:ceiling} (node $0$, all coefficients positiv
 $\varphi_r=\tfrac\pi2$) gives $A_N=U_N$ for these three $S$ at every $5\le N\le126$, composite $N$ included. So
 the mechanism is the mod-$4$ test, not $\Q$-independence: unlike the single sines of the ring, which carry
 the composite mod-$4$ obstruction of Theorem~\ref{thm:classification}, the radical relations found here
-all pass it. For the nearest case $S=\{1,2\}$ at primes $N=p$ the
-$\Q$-independence of $\{\sqrt{\alpha_r}\}$, $\alpha_r=4-2\cos\tfrac{2\pi r}p-2\cos\tfrac{4\pi r}p\in
-\Q(\zeta_p)$, is \emph{proved exactly} by the Besicovitch--Kummer criterion---no nonempty subset product
-$\prod_{r\in T}\alpha_r$ is a square in $\Q(\zeta_p)$ (checked over the cyclotomic field, not in
-floating point)---for every collision-free prime $p\le31$, so $A_p=U_p$ there is a theorem
-(\texttt{exact/pari/kjump\_kummer.gp}). Whether $A_N=U_N$ for every $N$ and every $S$ remains open; by
-$C_{28}(\{1,3\})$ it cannot be reduced to $\Q$-independence of the radicals.
+all pass it. For the nearest case $S=\{1,2\}$ at primes $N=p$ the radicals are $\Q$-independent for
+every $p\ge7$ (Proposition~\ref{prop:kjump-prime}). Whether $A_N=U_N$ for every $N$ and every $S$ remains
+open; by $C_{28}(\{1,3\})$ it cannot be reduced to $\Q$-independence of the radicals.
 \end{remark}
+
+\begin{proposition}[the circulant $C_p(\{1,2\})$ saturates at every prime]\label{prop:kjump-prime}
+For every prime $p\ge7$ the frequencies $\omega_r=\sqrt{\alpha_r}$,
+$\alpha_r=4-2\cos\tfrac{2\pi r}p-2\cos\tfrac{4\pi r}p$, $1\le r\le k=\tfrac{p-1}2$, of $C_p(\{1,2\})$ are
+$\Q$-linearly independent. Hence $A_p=U_p$.
+\end{proposition}
+
+\begin{proof}
+Let $\zeta=\zeta_p$, $K=\Q(\zeta)$, $K^+=\Q(\zeta+\zeta^{-1})$ and $c_r=\zeta^r+\zeta^{-r}$.
+(i) Since $c_{2r}=c_r^2-2$, $\alpha_r=4-c_r-c_{2r}=(2-c_r)(3+c_r)$, and $2-c_r=-\zeta^{-r}(1-\zeta^r)^2$.
+As $p$ is odd, $\zeta^{-r}=(\zeta^{-r(p+1)/2})^2$, so $\alpha_r\equiv-(3+c_r)$ modulo $K^{\times2}$.
+(ii) With $\phi$ the golden ratio, $3+c_r=\zeta^{-r}(\zeta^r+\phi^2)(\zeta^r+\phi^{-2})$, and
+$\prod_{r=1}^{p-1}(\zeta^r+a)=(a^p+1)/(a+1)$ for odd $p$. Hence
+$\prod_{r=1}^{p-1}(3+c_r)=(\phi^p+\phi^{-p})^2/(\phi+\phi^{-1})^2=F_p^2$ by Binet's formula ($\phi^{-p}=-\psi^p$,
+$\psi=-1/\phi$, $p$ odd). As $c_{p-r}=c_r$ and every $3+c_r>0$, the norm is
+$N_{K^+/\Q}(3+c_1)=\prod_{r=1}^k(3+c_r)=F_p$.
+(iii) $F_p$ is not a square: the only square Fibonacci numbers are $0$, $1$ and $144=F_{12}$~\cite{Cohn64},
+and $F_p\ge F_7=13$. Also $p\nmid F_p$: by Binet, $2^{p-1}F_p=\sum_{j\ \mathrm{odd}}\binom pj5^{(j-1)/2}\equiv
+5^{(p-1)/2}\not\equiv0\pmod p$. So some prime $\ell\ne p$ divides $F_p$ to an odd power, and $\ell$ is
+unramified in $K$.
+(iv) For $1\le r<s\le k$, $c_r-c_s=(\zeta^r-\zeta^s)(1-\zeta^{-r-s})$ with $r\not\equiv s$ and $r+s\not\equiv0
+\pmod p$, so $c_r-c_s$ is a unit times $(1-\zeta)^2$. A prime of $K$ above $\ell$ therefore divides at most one
+of the $3+c_r$.
+(v) $K^+/\Q$ is cyclic, so $v_\ell(F_p)=f\sum_{\mathfrak l\mid\ell}v_{\mathfrak l}(3+c_1)$ with one residue
+degree $f$. This is odd, so some $\mathfrak l$ has $v_{\mathfrak l}(3+c_1)$ odd. The automorphism
+$\sigma_r\colon c_1\mapsto c_r$ maps $\mathfrak l$ to a prime $\mathfrak l_r$ with $v_{\mathfrak l_r}(3+c_r)$ odd,
+and as $\ell$ is unramified in $K$ the same holds for a prime $\mathfrak L_r$ of $K$ above $\mathfrak l_r$.
+(vi) Let $T\subseteq\{1,\dots,k\}$ be nonempty and $r\in T$. By (i), (iv) and (v),
+$v_{\mathfrak L_r}\bigl(\prod_{s\in T}\alpha_s\bigr)=v_{\mathfrak L_r}(3+c_r)$ is odd ($\zeta$ and $1-\zeta^s$ are
+units at $\mathfrak L_r$). So no nonempty subset product of the $\alpha_r$ is a square in $K$. Now let
+$L=K(\sqrt{\alpha_1},\dots,\sqrt{\alpha_k})\subset\C$ with $\zeta=e^{2\pi i/p}$ and $\sqrt{\alpha_r}=\omega_r$.
+Each $\sigma\in\mathrm{Gal}(L/K)$ acts by $\sigma(\omega_r)=\epsilon_r(\sigma)\omega_r$, $\epsilon_r(\sigma)=\pm1$.
+If $\epsilon_r=\epsilon_s$ for $r\ne s$, then $\omega_r\omega_s$ is Galois-invariant, so $\alpha_r\alpha_s$ is a
+square in $K$, which was just excluded. Eigenvectors with distinct characters are linearly independent, so the
+$\omega_r$ are $K$-linearly independent, hence $\Q$-linearly independent. The relation lattice is then
+$\{0\}$, and Theorem~\ref{thm:ceiling}'s argument at node $0$ (Kronecker brings every $\sin(\omega_rt)$
+near $1$) gives $A_p=U_p$. The identities in (i) and (ii) hold exactly in $\Z[x]/\Phi_p$ for every
+prime $7\le p\le211$, and the Legendre symbols of the $\alpha_r$ at primes $q\equiv1\ (\mathrm{mod}\ p)$ certify the
+conclusion of (vi) independently there (\texttt{exact/pari/kjump\_nnn\_primes.gp}); the $2^k$ subset search
+of \texttt{exact/pari/kjump\_kummer.gp} agrees for $p\le31$.
+\end{proof}
 
 \noindent The remaining genuinely open case is a quasi-1D lattice \emph{without} any embedded ring---e.g.\
 the open (Dirichlet) triangular ladder, whose spectrum is not cyclotomic; there condition~(A) holds

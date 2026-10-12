@@ -17,6 +17,8 @@ machine-checked criterion certificate, then verifies they agree with src/large_w
           N = 9, 15, 21, with mutated certificates that must be rejected.
   * PARI  (exact/pari/kjump_relations.gp)    -- exact Q-relation lattices of the k-jump circulant
           frequencies for N <= 126 (relations of C_N({1,3}) at N = 28, 56, 84, 112) and their mod-4 test.
+  * PARI  (exact/pari/kjump_nnn_primes.gp)   -- the exact identities behind A_p = U_p for C_p({1,2}),
+          every prime 7 <= p <= 211, and a Legendre-character certificate of the conclusion.
   * Rocq  (formal/rocq/Mod4Criterion.v)      -- machine-checks (vm_compute) that the mod-4
           criterion on the GAP lattices reproduces the prime/2^m verdict.
 
@@ -97,6 +99,10 @@ def main() -> int:
         kr_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
         print(f"[pari]   k-jump relation lattices N<=126    : {'PASS' if kr_ok else 'FAIL'}")
         ok &= kr_ok
+        rc, out = run(["gp", "-q", "-f", "exact/pari/kjump_nnn_primes.gp"], stdin_file=Path("/dev/null"))
+        kp_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
+        print(f"[pari]   C_p({{1,2}}) saturation p<=211       : {'PASS' if kp_ok else 'FAIL'}")
+        ok &= kp_ok
     else:
         print("[pari]   SKIP (gp not on PATH)")
 

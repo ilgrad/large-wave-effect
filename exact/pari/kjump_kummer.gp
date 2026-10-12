@@ -4,10 +4,10 @@
 \\ The wave frequencies are omega_r = sqrt(alpha_r), r = 1..(p-1)/2, with
 \\     alpha_r = 4 - 2 cos(2 pi r/p) - 2 cos(4 pi r/p)
 \\             = 4 - (z^r + z^-r) - (z^2r + z^-2r),   z = zeta_p,
-\\ a totally positive element of Q(zeta_p).  Saturation A_N = U_N holds iff all (distinct) frequencies are
+\\ a totally positive element of Q(zeta_p).  Saturation A_N = U_N holds if all (distinct) frequencies are
 \\ Q-linearly independent (then Kronecker aligns every sin(omega_r t) -> 1 simultaneously).  By the
 \\ Besicovitch criterion, sqrt(alpha_1),...,sqrt(alpha_k) are linearly independent over K = Q(zeta_p) -- hence
-\\ over Q -- iff NO nonempty subset product prod_{r in T} alpha_r is a square in K.  This is an EXACT test
+\\ over Q -- if NO nonempty subset product prod_{r in T} alpha_r is a square in K.  This is an EXACT test
 \\ (nfeltispower over the cyclotomic field), strictly stronger than the floating-point PSLQ evidence.
 
 checkp(p) = {

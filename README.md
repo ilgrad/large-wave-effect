@@ -75,10 +75,13 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   `d_s = 1` (`O(1)` for `d_s ≥ 2`). A graph-agnostic order criterion plus the embedded ring spectrum give
   `A = Θ(ln N)` on *every* Cartesian product `C_N □ H` (ladders, prisms, tubes) and, beyond
   products, on the **Möbius ladder** `C_{2N}({1, N})` via its embedded-ring branch. Multi-jump circulants
-  `C_N(S)` (`|S| ≥ 2`) instead **saturate** (`A_N = U_N`) off explicit Conway–Jones collision congruences —
-  the nested-radical frequencies destroy the ring's mod-4 obstruction; for the nearest case `S = {1, 2}` this
-  is **proved exactly** (Besicovitch–Kummer: no subset product of the `α_r` is a square in
-  `ℚ(ζ_p)`) for collision-free primes `p ≤ 31` (`exact/pari/kjump_kummer.gp`). It is an
+  `C_N(S)` (`|S| ≥ 2`) instead **saturate** (`A_N = U_N`): for `S = {1, 2}`, `{1, 3}`, `{1, 2, 3}` this is
+  decided exactly for every `5 ≤ N ≤ 126` (`exact/pari/kjump_relations.gp`). The radical frequencies are
+  not always `ℚ`-independent — `C_N({1, 3})` has two relations at each of `N = 28, 56, 84, 112` — but
+  every relation has coefficient sum `0`, so the mod-4 test passes. For the nearest case `S = {1, 2}`
+  saturation is **proved for every prime `p ≥ 7`**: up to squares `α_r = −(3 + c_r)`, and
+  `∏ (3 + c_r) = F_p` is not a square (Cohn), so by Kummer theory no subset product of the `α_r` is a
+  square in `ℚ(ζ_p)` (`exact/pari/kjump_nnn_primes.gp` checks the identities for `p ≤ 211`). It is an
   *infinite-time* ceiling: the finite-time amplitude is Diophantine-limited (recurrence time
   exponential in `N`).
 
