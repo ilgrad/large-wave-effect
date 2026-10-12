@@ -54,7 +54,7 @@ def rank(rows: list[list[Fraction]]) -> int:
         for i in range(len(m)):
             if i != rk and m[i][col] != 0:
                 f = m[i][col] / m[rk][col]
-                m[i] = [a - f * b for a, b in zip(m[i], m[rk])]
+                m[i] = [a - f * b for a, b in zip(m[i], m[rk], strict=True)]
         rk += 1
         col += 1
     return rk
@@ -165,12 +165,16 @@ def main() -> int:
     for n in (6, 8, 10, 12, 14, 9, 15):
         win = max(l1_ratio(n, t) for t in np.linspace(0.2 * n, 0.6 * n, 2000))
         lt = long_time_sup(n, 1500.0, 0.01)
-        print(f"    N = {n:>2}: windowed {win:.4f}   sup_(t<=1500) >= {lt:.4f}   gain {lt - win:+.4f}")
+        print(
+            f"    N = {n:>2}: windowed {win:.4f}   sup_(t<=1500) >= {lt:.4f}   gain {lt - win:+.4f}"
+        )
         e_ok &= lt >= win - 1e-4
         if n >= 9:
             e_ok &= lt > win + 0.01
-    print(f"    long-time sup exceeds the windowed sup by > 0.01 for N = 9..15      : "
-          f"{'PASS' if e_ok else 'FAIL'}")
+    print(
+        f"    long-time sup exceeds the windowed sup by > 0.01 for N = 9..15      : "
+        f"{'PASS' if e_ok else 'FAIL'}"
+    )
     ok &= e_ok
 
     print("=" * 72)
