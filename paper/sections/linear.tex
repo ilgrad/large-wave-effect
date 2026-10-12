@@ -894,7 +894,8 @@ rest on Kronecker's theorem for cyclotomic eigenvalues, though for a transfer am
 supremum of an impulse response: along an unmodulated $XY$ chain of $n$ qubits (Bose's end-to-end problem)
 it occurs iff $n+1$ is a prime, twice a prime, or a power of two~\cite{GKSS12}; on the cycle $C_n$ (walk
 $\eu^{-\mathrm itA}$) iff $n$ is a power of two, between antipodal vertices~\cite{PB17}; and between the end
-qubits of a Heisenberg chain of length $n$ iff $n$ is a power of two~\cite{BCGS17}.
+qubits of a Heisenberg chain of length $n$ iff $n$ is a power of two~\cite{BCGS17}. Pretty good fractional
+revival on paths and cycles is characterized through the same Kronecker lemma~\cite{ChanPGFR21}.
 
 \medskip\noindent\textbf{The composite gap.} For every composite $N$, then, $A_N<U_N$
 (Theorem~\ref{thm:classification}). The gap is
@@ -1088,6 +1089,9 @@ but \emph{rare}; the exponent $m/2$ governs the \emph{typical} gap, while the de
 bound still needs the Diophantine input above.
 
 \subsection{Disorder}
+The chain with random masses is Dyson's disordered chain~\cite{Dyson53}; on the infinite chain its normal
+modes are exponentially localized with probability one~\cite{MatsudaIshii70}. Here $N$ is fixed and
+$\varepsilon$ small, a different regime.
 Unequal masses $m_j=1+\varepsilon\xi_j$ turn the chain into the generalized problem $\LN v=\omega^2 Mv$,
 $M=\operatorname{diag}(m_j)$, with node-$0$ response $x_0(t)=\sum_r c_r\sin(\omega_r t)$,
 $c_r=v_r(0)^2/\omega_r>0$ ($M$-orthonormal modes $v_r^\top M v_s=\delta_{rs}$, unit \emph{momentum} impulse
@@ -1939,7 +1943,8 @@ $n\approx2t$ (dotted) whose height decays as $(2t)^{-1/3}$. On the ring this ker
 The recurrence structure of $\eu^{-\mathrm i t\LN}$ is arithmetic. Since $2\cos(2\pi/N)$ is rational
 only for $N\in\{1,2,3,4,6\}$ (Niven's theorem~\cite{Niven}; for general $r$, $2\cos(2\pi r/N)$ is
 rational only when $r/N$ reduces to such a denominator), the tight-binding spectrum is generically
-incommensurate: $\eu^{-\mathrm i t\LN}$ has \emph{no finite revival period}, and the return amplitude
+incommensurate: $\eu^{-\mathrm i t\LN}$ has \emph{no finite revival period} (in waveguide arrays the
+discrete Talbot effect likewise occurs only for a specific set of input periods~\cite{Iwanow05}), and the return amplitude
 $|K_N(0,t)|$ is almost-periodic, approaching $1$ along a wandering sequence of near-revival times
 (\texttt{verify\_revivals\_gauss.py}). In the long-wave limit $\lambda_r\approx(2\pi r/N)^2$ the model
 approaches the \emph{quadratic} dispersion of a free particle, where the dynamics becomes exactly
@@ -1950,7 +1955,8 @@ odd $q$ with $\gcd(a,q)=1$,
   \Bigl|\sum_{n=0}^{q-1}\eu^{2\pi\mathrm i a n^2/q}\Bigr|=\sqrt q,
 \]
 yielding an exact fractional revival of uniform amplitude $|U_{jk}|=1/\sqrt q$ (and a full revival
-$U(2\pi)=I$). The large wave thus inhabits the almost-periodic, Diophantine regime of the lattice, of
+$U(2\pi)=I$). On the cycle itself exact fractional revival occurs only for $C_4$ and
+$C_6$~\cite{ChanFR19}. The large wave thus inhabits the almost-periodic, Diophantine regime of the lattice, of
 which the discrete Talbot effect and Gauss-sum revivals are the exactly solvable continuum shadow.
 
 \begin{figure}[ht]\centering
