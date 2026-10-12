@@ -11,6 +11,7 @@ the Python core (`src/large_wave_effect`) and the paper's Section on exact arith
 | | `gap/prime_square.g` | the minimal mod-4 obstruction for `N = p^2` has support `p` on `{1} U {kp +- 1}` |
 | | `gap/export_rocq.g` | emits the Rocq certificate `formal/rocq/Mod4Criterion.v` |
 | **PARI/GP** | `pari/crosscheck.gp` | a second exact `Q`-rank implementation + the cyclotomic-degree identities behind the prime / `2^m` / `2p` proofs |
+| | `pari/bn_prime_square.gp` | `B_N = sqrt(N)` for `N = 4, 9, 25, 49`: relation lattices of the eigenvalues (ranks `1, 1, 2, 3`), one point with rational phases that satisfies every relation, and `|K(k)|^2 = 1/N` exactly for every `k`; controls: none for `N = 6`, and the relation test rejects the 12 off-closure flat points of `N = 9` |
 | | `pari/defect_sos.gp` | exact SOS certificates `U_N - A_N >= 0.06717197, 0.14754945, 0.11208183` for `N = 9, 15, 21`: subtorus relations in `Q(zeta_2N)`, Sturm enclosures of the weights, fraction-free `LDL*` of the Gram matrix, exact residual; seven mutated certificates must be rejected. Data: `pari/defect_sos_certs.gp`, written by `../numerics/build_defect_sos_certificates.py` |
 | | `pari/kjump_relations.gp` | exact `Q`-relation lattices of the `k`-jump circulant frequencies `sqrt(alpha_r)`, `5 <= N <= 126`: square classes in `Q(zeta_N)` (Legendre rows, then `nfroots`), integer kernels inside each class, the mod-4 test. `C_N({1,3})` has relations exactly at `N = 28, 56, 84, 112`, all with coefficient sum `0`; none for `{1,2}`, `{1,2,3}`; control: the ring `{1}` is independent exactly at primes and `2^m` (`N <= 48`) |
 | | `pari/kjump_nnn_primes.gp` | `C_p({1,2})` saturates for every prime `p >= 7`: the identities `alpha_r = -(3 + c_r)` mod squares and `prod (3 + c_r) = F_p` in `Z[x]/Phi_p`, `F_p` not a square, `p` not dividing `F_p`, for `7 <= p <= 211`; Legendre-character `F_2`-rank `k` certifies the conclusion; a mutated `alpha_r` must fail |
@@ -26,6 +27,7 @@ gap  -q --nointeract exact/gap/scan_classification.g
 gap  -q --nointeract exact/gap/prime_square.g
 gp   -q exact/pari/crosscheck.gp
 gp   -q -f exact/pari/bn_prime_flat.gp </dev/null
+gp   -q -f exact/pari/bn_prime_square.gp </dev/null
 gp   -q -f exact/pari/defect_sos.gp </dev/null
 gp   -q -f exact/pari/kjump_relations.gp </dev/null
 gp   -q -f exact/pari/kjump_nnn_primes.gp </dev/null

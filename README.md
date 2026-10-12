@@ -48,7 +48,9 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   unitarity bound `B_N ≤ √N` is sharp: **`B_p = √p` for every odd prime `p`** (proved: the eigenvalues
   `2 − 2cos(2πr/p)` are `ℚ`-independent, so Kronecker brings the flow arbitrarily close to the quadratic
   chirp, whose kernel is a flat Gauss sum — the ε-uniform mixing of Godsil–Mullin–Roy), hence
-  `limsup B_N/√N = 1`; and `liminf B_N/√N ≥ c_0/√2 = 0.861` is proved
+  `limsup B_N/√N = 1`. Exact flat points of the orbit closure also give `B_{p²} = p` for `p ≤ 7`
+  (`exact/pari/bn_prime_square.gp`); that `B_N = √N` iff `N` is a prime or a prime square is a
+  conjecture; and `liminf B_N/√N ≥ c_0/√2 = 0.861` is proved
   (`c_0 = (2/π)^{3/2} · B(1/2, 3/4)`). The finer constant lives on ballistic windows
   `B_N(S) = sup_{t ≤ SN/2} ‖K_N(·,t)‖_1`, where it splits by parity — numerically even `N → c_0/√2`, odd
   `N → β_odd = 0.928…`, an elliptic-integral constant for which no elementary closed

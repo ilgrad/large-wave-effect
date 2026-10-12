@@ -1256,8 +1256,29 @@ $\|K_p(\cdot,t)\|_1/\sqrt p>1-10^{-5}$ are exhibited for $p=5$ and $p=7$ ($t\app
 $t\approx2.0\cdot10^6$) (\texttt{verify\_bn\_prime\_flat.py}, \texttt{exact/pari/bn\_prime\_flat.gp}).
 \end{proof}
 
-\noindent This is the $\varepsilon$-uniform mixing on $C_p$ observed by Godsil, Mullin and
-Roy~\cite{GMR17}; we include the short proof because it decides the all-time constant. The aligning times
+\begin{remark}[prime squares]\label{rem:bn-psq}
+The all-time constant is also $\sqrt N$ at $N=4,9,25,49$, i.e.\ $B_{p^2}=p$ for $p\le7$. Here the
+$\lambda_r$ are $\Q$-dependent (the relation lattice of $\lambda_1,\dots,\lambda_{\lfloor N/2\rfloor}$ has rank
+$1,1,2,3$), so step~(i) of Proposition~\ref{prop:bn-prime} fails. But for each of these $N$ an explicit
+point with phases $\theta_r\in\tfrac{2\pi}p\Z$ ($\tfrac{2\pi}4\Z$ for $N=4$) satisfies every relation, so it
+lies in the orbit closure of $t\mapsto(t\lambda_r)_r$, and there $|K_N(k)|^2=1/N$ exactly for every $k$
+(\texttt{exact/pari/bn\_prime\_square.gp}). Kronecker then gives $B_N=\sqrt N$. In general $B_N=\sqrt N$
+holds exactly when $C_N$ admits $\varepsilon$-uniform mixing: the orbit closure is compact, so a maximizing
+sequence has a limit kernel with $\|K\|_1=\sqrt N$ and $\|K\|_2=1$, the equality case $|K(k)|=N^{-1/2}$ of
+Cauchy--Schwarz, and translation invariance makes every row flat. Cao and Zhu~\cite{CaoZhu26} state that
+$C_{p^2}$ admits $\varepsilon$-uniform mixing for every prime $p$, which would give $B_{p^2}=p$ for every
+$p$; that is an unrefereed preprint, and nothing here relies on it.
+\end{remark}
+
+\begin{conjecture}[the all-time constant]\label{conj:bn-psq}
+For $N\ge2$, $B_N=\sqrt N$ if and only if $N$ is a prime or the square of a prime.
+\end{conjecture}
+
+\noindent The ``if'' direction is proved for primes (Proposition~\ref{prop:bn-prime}) and for $N=4,9,25,49$
+(Remark~\ref{rem:bn-psq}); the ``only if'' direction is open.
+
+\noindent Proposition~\ref{prop:bn-prime} is the $\varepsilon$-uniform mixing on $C_p$ observed by Godsil,
+Mullin and Roy~\cite{GMR17}; we include the short proof because it decides the all-time constant. The aligning times
 $t_n$ are Diophantine-long (they align $\tfrac{p-1}2$ independent phases), far outside the ballistic
 windows $t=O(N)$ on which the Debye analysis below operates. The sharp constant that this analysis
 addresses is therefore the one of the \emph{windowed} amplification
@@ -2334,6 +2355,7 @@ Constant $B_N/\sqrt N$ scan (Table~\ref{tab:bn}) & \texttt{verify\_bn\_constant.
 $B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{verify\_bn\_parity.py}\\
 $B_p=\sqrt p$, $\limsup B_N/\sqrt N=1$ (Prop.~\ref{prop:bn-prime}) & \texttt{verify\_bn\_prime\_flat.py}\\
 \quad$\hookrightarrow$ exact independence and Gauss-sum flatness, $p\le53$ (PARI) & \texttt{exact/pari/bn\_prime\_flat.gp}\\
+\quad$\hookrightarrow$ flat closure points, $B_{p^2}=p$ for $p\le7$ (PARI; Rem.~\ref{rem:bn-psq}) & \texttt{exact/pari/bn\_prime\_square.gp}\\
 Two-copy profile $\max F=\beta_{\mathrm{odd}}$ (Prop.~\ref{prop:bn-profile}) & \texttt{verify\_bn\_profile\_max.py}\\
 $\quad$rigorous $F'>0$ on $[0.937,1]$ (interval arith.) & \texttt{verify\_bn\_profile\_rigorous.py}\\
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
