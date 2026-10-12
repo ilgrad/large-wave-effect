@@ -45,7 +45,7 @@ able to consult directly — Filimonov's 1992 C. R. Acad. Sci. note (its splash 
 (the arithmetic of *which* N, the free-ring setting, the order-theorem proof, the Schrödinger parity, and
 the formal layer) accordingly.
 
-**Open problems** are stated honestly and reduced to clean statements (a sharp B_N upper bound on t>N/2; a
+**Open problems** are stated honestly and reduced to clean statements (the sharp windowed bound B_N(S) on N/2 < t ≤ SN/2; a
 rigorous growth lower bound for the deficit; the strongly nonlinear regime; condition (B) for general
 quasi-1D lattices).
 
