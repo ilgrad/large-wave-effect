@@ -39,11 +39,12 @@ machine-checked in Rocq. The complete repository is public.
 
 **Scholarship.** I am careful to separate what is new from the prior Filimonov-group work: the segment
 constant C = 4/π² is the published Myshkis–Filimonov (2003) value, and the qualitative ring effect for
-prime/2^m is credited to that line. In the interest of full transparency I note one item I have not been
-able to consult directly — Filimonov's 1992 C. R. Acad. Sci. note (its splash table is reproduced in the
-2021 monograph of Andrianov, Awrejcewicz and Danishevskyy); the manuscript flags this and the novel content
-(the arithmetic of *which* N, the free-ring setting, the order-theorem proof, the Schrödinger parity, and
-the formal layer) accordingly.
+prime/2^m is credited to that line. Filimonov's 1992 C. R. Acad. Sci. note on the multiple-frequency case
+was obtained and compared on the ring: the rational-independence dichotomy (independence for N
+prime or 2^m, dependence for even composite N) and the unbounded ceiling are his, and the manuscript credits
+them in a priority remark. The novel content is marked accordingly: the rate (1/π) ln N, the mod-4
+classification of which N attain the ceiling, the order-theorem proof, the Schrödinger parity, and the
+formal layer.
 
 **Open problems** are stated honestly and reduced to clean statements (the sharp windowed bound B_N(S) on N/2 < t ≤ SN/2; a
 rigorous growth lower bound for the deficit; the strongly nonlinear regime; condition (B) for general
