@@ -2307,6 +2307,7 @@ NNN degeneracy law (Prop.~\ref{prop:nnn}) & \texttt{verify\_nnn\_collisions.py}\
 Quasi-1D order criterion, NNN ring (Prop.~\ref{prop:order-criterion}) & \texttt{verify\_quasi1d\_order.py}\\
 Order on ring products $C_N\square H$ (Cor.~\ref{cor:product}) & \texttt{verify\_product\_order.py}\\
 M\"obius ladder + $k$-jump saturation (Cor.~\ref{cor:mobius}, Rem.~\ref{rem:kjump}) & \texttt{verify\_kjump\_order.py}\\
+\quad$\hookrightarrow$ exact $k$-jump relation lattices and mod-$4$ test, $N\le126$ (PARI) & \texttt{exact/pari/kjump\_relations.gp}\\
 Excess lemma, prime-power odd part (Rem.~\ref{rem:defect}) & \texttt{verify\_excess\_smallcases.py}\\
 $\omega(m){=}2$ relation lattice $+$ deficit table & \texttt{verify\_excess\_omega2.py}\\
 Bedert/Chowla machinery does not transfer (spectral) & \texttt{verify\_excess\_omega2\_spectral.py}\\
@@ -2557,18 +2558,29 @@ For a $k$-jump circulant $C_N(S)$, $|S|\ge2$, the frequencies are the nested rad
 $\omega_r=\bigl(\sum_{s\in S}4\sin^2(\pi sr/N)\bigr)^{1/2}$, and condition~(A) holds with slope
 $1/(\pi\sqrt{\sum_{s\in S}s^2})$. Distinct frequencies coincide only along exact Conway--Jones congruences
 (for $S=\{1,2,3\}$: a collision iff $4\mid N$, $6\mid N$, or $7\mid N$; for $S=\{1,3\}$: iff $8\mid N$ or
-$5\mid N$), and---unlike the single sines of the ring, which carry the composite mod-$4$ obstruction of
-Theorem~\ref{thm:classification}---the \emph{distinct} radicals appear to satisfy no further $\Q$-relation
-(\textsc{pslq} to $250$ digits, the spurious relation norm diverging with precision). Numerically the
-multi-jump circulant then \emph{saturates}, $A_N=U_N$, for every $N$ off its collision congruences: the
-radical structure destroys the cyclotomic linear relations, so composite $N$ is no longer an obstruction
-(\texttt{verify\_kjump\_order.py}). For the nearest case $S=\{1,2\}$ this is no longer only numerical: the
+$5\mid N$; \texttt{verify\_kjump\_order.py}). Beyond the collisions the distinct radicals can still satisfy
+$\Q$-relations. An exact decision in $\Q(\zeta_N)$---split the $\alpha_r=\omega_r^2$ into square classes, then take the integer kernel of the
+quotients $\omega_r/\omega_b\in\Q(\zeta_N)$ inside each class (\texttt{exact/pari/kjump\_relations.gp})---finds
+none for $S=\{1,2\}$ and $S=\{1,2,3\}$ at any $5\le N\le126$. For $S=\{1,3\}$ it finds relations at exactly
+$N=28,56,84,112$ in that range, two independent ones at each; $N=28$ and $N=84$ lie off the collision
+congruences. At $N=28$ the relation lattice is spanned by
+\[
+  \omega_1-\omega_3-\omega_9+\omega_{14}=0,\qquad -\omega_5+\omega_{11}-\omega_{13}+\omega_{14}=0
+  \qquad(\omega_{14}=2\sqrt2),
+\]
+and the same forms are nonzero at $N=27$. These relations do not obstruct the ceiling. Each basis relation
+at these four $N$ has coefficient sum $0\equiv0\ (\mathrm{mod}\ 4)$, and collisions only merge weights,
+so the argument of Theorem~\ref{thm:ceiling} (node $0$, all coefficients positive, target
+$\varphi_r=\tfrac\pi2$) gives $A_N=U_N$ for these three $S$ at every $5\le N\le126$, composite $N$ included. So
+the mechanism is the mod-$4$ test, not $\Q$-independence: unlike the single sines of the ring, which carry
+the composite mod-$4$ obstruction of Theorem~\ref{thm:classification}, the radical relations found here
+all pass it. For the nearest case $S=\{1,2\}$ at primes $N=p$ the
 $\Q$-independence of $\{\sqrt{\alpha_r}\}$, $\alpha_r=4-2\cos\tfrac{2\pi r}p-2\cos\tfrac{4\pi r}p\in
 \Q(\zeta_p)$, is \emph{proved exactly} by the Besicovitch--Kummer criterion---no nonempty subset product
 $\prod_{r\in T}\alpha_r$ is a square in $\Q(\zeta_p)$ (checked over the cyclotomic field, not in
 floating point)---for every collision-free prime $p\le31$, so $A_p=U_p$ there is a theorem
-(\texttt{exact/pari/kjump\_kummer.gp}). The general (all-$N$, all-$S$) statement remains the
-nested-radical independence question.
+(\texttt{exact/pari/kjump\_kummer.gp}). Whether $A_N=U_N$ for every $N$ and every $S$ remains open; by
+$C_{28}(\{1,3\})$ it cannot be reduced to $\Q$-independence of the radicals.
 \end{remark}
 
 \noindent The remaining genuinely open case is a quasi-1D lattice \emph{without} any embedded ring---e.g.\

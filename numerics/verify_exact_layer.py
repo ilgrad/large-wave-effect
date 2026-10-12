@@ -15,6 +15,8 @@ machine-checked criterion certificate, then verifies they agree with src/large_w
           of the Schrodinger eigenvalues and the flat Gauss-sum kernel, p <= 53.
   * PARI  (exact/pari/defect_sos.gp)         -- exact SOS certificates of the defect U_N - A_N for
           N = 9, 15, 21, with mutated certificates that must be rejected.
+  * PARI  (exact/pari/kjump_relations.gp)    -- exact Q-relation lattices of the k-jump circulant
+          frequencies for N <= 126 (relations of C_N({1,3}) at N = 28, 56, 84, 112) and their mod-4 test.
   * Rocq  (formal/rocq/Mod4Criterion.v)      -- machine-checks (vm_compute) that the mod-4
           criterion on the GAP lattices reproduces the prime/2^m verdict.
 
@@ -91,6 +93,10 @@ def main() -> int:
         ds_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
         print(f"[pari]   defect SOS certificates N=9,15,21  : {'PASS' if ds_ok else 'FAIL'}")
         ok &= ds_ok
+        rc, out = run(["gp", "-q", "-f", "exact/pari/kjump_relations.gp"], stdin_file=Path("/dev/null"))
+        kr_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
+        print(f"[pari]   k-jump relation lattices N<=126    : {'PASS' if kr_ok else 'FAIL'}")
+        ok &= kr_ok
     else:
         print("[pari]   SKIP (gp not on PATH)")
 

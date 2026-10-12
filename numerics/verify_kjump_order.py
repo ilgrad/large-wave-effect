@@ -23,11 +23,14 @@ CONDITION (A) -- logarithmic ceiling, slope c = 1/(pi sqrt(sum_{s in S} s^2)) fo
 CONDITION (B) -- a Q-independent subset carries > U_N/2.  Two routes:
   (B-Mobius) the gapless even branch is the ring C_N, whose first phi(2N)/2 frequencies are
              Q-independent by the palindromic lemma (lem:prefix); they carry (1-o(1)) U.  RIGOROUS.
-  (B-kjump)  for the k-jump circulant the only Q-relations among {omega_r=sqrt(lambda_r)} found are the
-             COLLISIONS omega_a=omega_b (lambda_a=lambda_b); since collisions add weights, the DISTINCT
-             frequencies are Q-independent and carry the FULL U_N.  The collisions obey exact congruence
-             laws (Conway-Jones), proved here in integer arithmetic mod Phi_N; "no further relation" is
-             PSLQ-numerical (250 digits).  Where it holds, A_N = U_N (full saturation, by thm:ceiling).
+  (B-kjump)  for the k-jump circulant the frequencies omega_r = sqrt(lambda_r) collide (omega_a = omega_b)
+             along exact congruence laws (Conway-Jones), proved here in integer arithmetic mod Phi_N;
+             collisions only add weights.  The DISTINCT frequencies need not be Q-independent: for
+             S={1,3} there are Q-relations at N = 28, 56, 84, 112 (two each; 28 and 84 are off the
+             collision congruences), e.g. w1 - w3 - w9 + w14 = 0 at N = 28.  Every such relation has
+             coefficient sum 0 = 0 (mod 4), so thm:ceiling still gives A_N = U_N.  The exact relation
+             lattices for N <= 126 are in exact/pari/kjump_relations.gp; the PSLQ check (B) below is
+             numerical and covers S={1,2,3}, N <= 40 only.
 """
 
 from __future__ import annotations
@@ -277,7 +280,7 @@ def main() -> int:
     print("  prism = product (Cor. product); antiprism = NNN ring (Prop. nnn);")
     print("  Mobius ladder = NEW (embedded-ring gapless branch gives A=Theta(ln N), rigorous);")
     print("  k-jump C_N(S): condition (A) c=1/(pi sqrt(sum s^2)); collisions obey exact Conway-Jones")
-    print("  congruence laws; rank = #distinct (PSLQ); saturation A_N=U_N off the collision congruences.")
+    print("  congruence laws; S={1,2,3}: rank = #distinct (PSLQ, N<=40), so A_N=U_N there (thm:ceiling).")
     print("=" * 80)
     return 0 if ok else 1
 
