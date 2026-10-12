@@ -22,8 +22,9 @@ cell.  This script certifies the four numerical claims the proof makes:
 HONEST SCOPE.  (A)-(D) establish the joint equidistribution and the cell-wise transfer rigorously in the
 limit; what is NOT certified here (and is the stated open residue) is the UNIFORM-in-u discrepancy bound as
 the cell shrinks toward the finitely many band edges, where small-curvature combinations and the envelope
-singularity coincide.  That single uniform estimate is all that separates Theorem thm:joint-equi from an
-unconditional limsup_N B_N/sqrt(N) = beta_odd.
+singularity coincide.  That uniform estimate is Theorem thm:uniform-transfer (verify_bandedge_transfer.py).
+The all-time limsup_N B_N/sqrt(N) is 1 (B_p = sqrt(p), verify_bn_prime_flat.py); beta_odd is the expected
+constant on windows t <= SN/2 only.
 """
 
 from __future__ import annotations

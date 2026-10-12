@@ -43,25 +43,31 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   per-family limits `defect_∞(m) = lim_a (U − A)(m · 2^a)` are computed to `10⁻⁸`
   (`0.10368…`, `0.03824…`) as numerical constants with no closed form.
 - **Discrete Schrödinger.** A localized state is never amplified (unitarity), yet
-  `B_N = sup_t ‖e^{−it L_N}‖_{ℓ^∞ → ℓ^∞} = Θ(√N)`. Here
-  `liminf B_N/√N ≥ c_0/√2 = 0.861` is proved (`c_0 = (2/π)^{3/2} · B(1/2, 3/4)`; attained
-  numerically on even `N`), and the constant splits by parity — numerically even `N → c_0/√2`, odd
+  `B_N = sup_t ‖e^{−it L_N}‖_{ℓ^∞ → ℓ^∞} = Θ(√N)`, the sup over all `t`. Over all times the
+  unitarity bound `B_N ≤ √N` is sharp: **`B_p = √p` for every odd prime `p`** (proved: the eigenvalues
+  `2 − 2cos(2πr/p)` are `ℚ`-independent, so Kronecker brings the flow arbitrarily close to the quadratic
+  chirp, whose kernel is a flat Gauss sum — the ε-uniform mixing of Godsil–Mullin–Roy), hence
+  `limsup B_N/√N = 1`; and `liminf B_N/√N ≥ c_0/√2 = 0.861` is proved
+  (`c_0 = (2/π)^{3/2} · B(1/2, 3/4)`). The finer constant lives on ballistic windows
+  `B_N(S) = sup_{t ≤ SN/2} ‖K_N(·,t)‖_1`, where it splits by parity — numerically even `N → c_0/√2`, odd
   `N → β_odd = 0.928…`, an elliptic-integral constant for which no elementary closed
-  form was found — so `limsup ≥ β_odd`. For `t ≤ N/2` the limiting `ℓ¹` profile is the
+  form was found. For `t ≤ N/2` the limiting `ℓ¹` profile is the
   *explicit* elliptic-integral function `F(2t/N)` (one-copy term `A(s) = ₂F₁` in closed form), and its
   maximizer `max F = F(1) = β_odd` is now **fully proved** — analytically on `[1/2, 0.937]`
   (Jensen, sharpened by the tangent to a concave `h`) and by **validated interval arithmetic** on
-  `[0.937, 1]` (`F′(s) > 0`, worst case `0.051`). So the `t ≤ N/2` contribution to `B_N` is settled. For
-  `t > N/2` the whole `N → ∞` reduction is now **rigorous** — joint equidistribution of the multi-copy
-  Debye phases *and* its uniform-in-`u` transfer to the `ℓ¹` constant `F(s)` (a mollified Koksma–Hlawka /
-  cubic van der Corput estimate; the modulus has divergent Hardy–Krause variation) — leaving a **single**
-  validated residual, the Gaussian-excess inequality `E|Z| − E|G| ≤ K⋆ · Σ_2^{−3/2} Σ_ℓ a_ℓ⁴`
+  `[0.937, 1]` (`F′(s) > 0`, worst case `0.051`). So the window `t ≤ N/2` is settled. For
+  `t > N/2` the `N → ∞` reduction is **rigorous for each fixed `s = 2t/N`** — joint equidistribution of the
+  multi-copy Debye phases *and* its uniform-in-`u` transfer to the `ℓ¹` constant `F(s)` (a mollified
+  Koksma–Hlawka / cubic van der Corput estimate; the modulus has divergent Hardy–Krause variation) — leaving
+  two steps: the transfer uniformly in `s` on compact windows, and a **single** validated residual, the
+  Gaussian-excess inequality `E|Z| − E|G| ≤ K⋆ · Σ_2^{−3/2} Σ_ℓ a_ℓ⁴`
   (`K⋆ = (h(1) − √π/2)/2`) for the profile's **balanced** Debye configurations (the live set is an
   interval of consecutive integers, so the even/odd channel counts differ by `≤ 1`; sharp at the two-copy
   pair — imbalanced configs violate the unrestricted bound) whose integrated majorant clears
   `β_odd` — and whose residual is now **validated across the whole band** (the θ-Taylor enclosure `middle_far_point`
-  plus a 130-box rigorous-enclosure tiling, 0 failures), so `limsup B_N/√N = β_odd` holds modulo this one
-  numerically-validated inequality. On the **Dirichlet segment**
+  plus a 130-box enclosure tiling, 0 failures; see open problem (1) for what "validated" leaves out). So
+  the windowed constant `limsup_N B_N(S)/√N = β_odd` (fixed `S`) holds modulo this numerically-validated
+  inequality and the `s`-uniform transfer. On the **Dirichlet segment**
   `d_j^N ~ (4/π²) ln j` for `N+1` prime/`2^m` (the constant `C = 4/π²` is the published
   Myshkis–Filimonov 2003 value). Three large-wave laws on one Laplacian.
 - **Dimension, products & circulants (theorem).** The large wave lives exactly at spectral dimension
@@ -86,15 +92,18 @@ is energetically forbidden (it would force `⟨L_N u, u⟩ → 2P − (γ/2) P²
 strongly nonlinear regime (saturation, rogue-wave focusing), FPUT recurrence and the route to chaos remain
 computational/exploratory.
 
-**Open problems** (each reduced to a clean statement, with the proven part marked). (1) The *sharp* `B_N`
-upper bound. The `t ≤ N/2` case is **fully proved** (`max F = β_odd`, analytic + validated
-interval arithmetic), and for `t > N/2` the entire `N → ∞` reduction is now **rigorous** (joint
+**Open problems** (each reduced to a clean statement, with the proven part marked). (1) The *windowed*
+`B_N` constant. Over all times the answer is known — `limsup B_N/√N = 1` (`B_p = √p` on prime rings) — so
+the open question is `limsup_N sup_{t ≤ SN/2} ‖K_N(·,t)‖_1/√N = β_odd` for each fixed `S`. The
+`t ≤ N/2` case (`S = 1`) is **fully proved** (`max F = β_odd`, analytic + validated
+interval arithmetic), and for each fixed `s = 2t/N > 1` the `N → ∞` reduction is **rigorous** (joint
 equidistribution of the Debye phases *and* its uniform-in-`u` transfer to `F(s)` — a mollified Koksma–Hlawka /
-cubic van der Corput estimate). What remains is a **single** validated inequality: the Gaussian-excess
+cubic van der Corput estimate). What remains is that transfer uniformly in `s` on `[1, S]`, and a **single**
+validated inequality: the Gaussian-excess
 (expected-modulus) bound `E|Z| − E|G| ≤ K⋆ · Σ_2^{−3/2} Σ_ℓ a_ℓ⁴` for the
 profile's **balanced** Debye configs (live set = consecutive integers ⇒ even/odd counts differ by `≤ 1`;
 sharp at the two-copy pair — imbalanced configs violate it), whose integrated majorant clears
-`β_odd`. The continuum certificate is operational
+`β_odd`. Whether polynomial windows `t ≤ N^C` keep `β_odd` is open. The continuum certificate is operational
 (`verify_dagger_continuum.py`). The equal-amplitude singleton zone near `a_1 = a_3 ≈ 0.73` that the θ-ball
 middle could not reach (its rigorous radius blows up past `t = 12`; the true ratio there is only `≈ 0.88`, so
 it was enclosure-limited, not tight) is now covered by a **θ-Taylor + t-collocation** enclosure
@@ -102,8 +111,14 @@ it was enclosure-limited, not tight) is now covered by a **θ-Taylor + t-colloca
 boxes certify (e.g. `(0.70, 0.70) → 0.9915`; the hardest boxes sit at the high-λ edge `a_3 ≈ 0.61` and close
 under one refinement, worst leaf `0.9999`). The full singleton-band
 cover is now **validated across the whole band** — the adaptive, node-parallel, checkpointed tiling `run_dagger_campaign.py`
-certified all 130 leaf boxes with 0 failures — so `limsup B_N/√N = β_odd` holds at the
-dagger certificate's validated-enclosure standard, leaving problem (1) reduced to upgrading that one numerically-validated inequality to a proof. (2) The **excess lemma**
+certified all 130 leaf boxes with 0 failures. "Validated" is the accurate word, not "rigorous": besides the
+residual inequality itself, the box enclosures rest on non-rigorous steps — the far `t`-collocation
+remainder and the third derivatives of the amplitude stencil come from finite differences, not derivative
+bounds (and the stencil ignores the error propagated through its least-squares fit), the maximum of the
+quadratic model over a box is taken on a 41×41 float grid, band membership is read from 3×3 samples of `λ`,
+and the campaign records no manifest (library versions, precision, hashes, an exact cover check). So
+problem (1) is reduced to the `s`-uniform transfer plus a proof of that one inequality (or a fully
+rigorous cover). (2) The **excess lemma**
 `A_N ≤ L_pre + O(1)` (equivalent to a rigorous *growing* deficit bound) — proved when the odd
 part of `N` is a prime power (`N = 2p` sharp at `1/(2N)`, `N = 4p`), and **unconditional for any fixed `ω(m)`**
 via the Kronecker sandwich `|A_N − L_pre| ≤ U_N − L_pre = (1/π) ln(m/φ(m))`. The open

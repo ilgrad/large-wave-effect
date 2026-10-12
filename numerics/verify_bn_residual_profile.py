@@ -162,7 +162,7 @@ def main() -> int:
         fft_ok &= sup_hi <= at_half + 2e-3
         print(f"    {n:>7} {sup_hi:>11.4f} {at_half:>9.4f} {BETA_ODD:>9.4f}  {verdict}")
     ok &= fft_ok
-    print(f"    -> the global sup sits at t=N/2 (s=1): {'PASS' if fft_ok else 'FAIL'}")
+    print(f"    -> on the window t <= 1.25N the sup sits at t=N/2 (s=1): {'PASS' if fft_ok else 'FAIL'}")
 
     print("\n" + "=" * 78)
     print("RESULT:", "MULTI-COPY PROFILE VERIFIED -- t>N/2 SUBDOMINANT" if ok else "CHECK FAILED")

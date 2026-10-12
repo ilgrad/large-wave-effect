@@ -2,7 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["numpy>=2", "scipy>=1.11"]
 # ///
-"""B_N = sup_t ||exp(-i t L_N)||_{inf->inf}: an improved liminf and the parity of the constant.
+"""B_N = sup_t ||exp(-i t L_N)||_{inf->inf}: an improved liminf and the parity of the windowed constant.
 
 The paper's Theorem schr-lower proved liminf_N B_N/sqrt(N) >= (1/2) c_0 = 0.6086 by evaluating the
 Bessel front at t = N/8.  The *optimal* aliasing-free time is t = N/4: there 2t = N/2, the Bessel front
@@ -13,16 +13,18 @@ Bessel front at t = N/8.  The *optimal* aliasing-free time is t = N/4: there 2t 
 
 so  liminf_N B_N / sqrt(N) >= c_0 / sqrt(2) = 0.86068...,  a clean improvement.
 
-Beyond the liminf, B_N/sqrt(N) has NO limit -- it splits by the parity of N (the aliasing phase i^{-N}
-is real for even N, imaginary for odd N):
+Beyond the liminf, the sup over the ballistic window 0.2N <= t <= 0.6N has NO limit -- it splits by the
+parity of N (the aliasing phase i^{-N} is real for even N, imaginary for odd N):
 
   * EVEN N: the sup is at t = N/4 and B_N/sqrt(N) -> c_0/sqrt2 (the front-fills-half-period value;
     at t = N/2 the real aliasing partly cancels, giving less).
   * ODD N: the sup is at t = N/2, where |K_N(k,N/2)| = sqrt(J_k(N)^2 + J_{N-k}(N)^2) (no cancellation),
     and B_N/sqrt(N) -> beta_odd ~ 0.928 > c_0/sqrt2.
 
-So liminf B_N/sqrt(N) = c_0/sqrt2 (even subsequence) and limsup >= beta_odd ~ 0.928 (odd), both inside the
-unitarity band [c_0/sqrt2, 1].  This script certifies the liminf value and exhibits the parity split.
+So on that window the even subsequence tends to c_0/sqrt2 and the odd one to beta_odd ~ 0.928.  These are
+windowed values: over ALL t, B_p = sqrt(p) on prime rings (verify_bn_prime_flat.py), so the all-time
+limsup is 1 and only liminf B_N/sqrt(N) >= c_0/sqrt2 is known for the all-time liminf.  This script
+checks the t = N/4 lower bound and exhibits the windowed parity split.
 """
 
 from __future__ import annotations
@@ -62,7 +64,7 @@ def main() -> int:
         ok = False
 
     # (2) parity split of the sup
-    print("\n[2] global sup B_N/sqrt(N) by parity (no single limit):")
+    print("\n[2] windowed sup (0.2N <= t <= 0.6N) / sqrt(N) by parity (no single limit):")
     even, odd = [], []
     for n in [16384, 16385, 32768, 32769, 65536, 65537]:
         s = sup_over_t(n)
@@ -74,7 +76,7 @@ def main() -> int:
         ok = False
 
     print("=" * 64)
-    print("RESULT:", "PASS -- liminf >= c_0/sqrt2; B_N/sqrtN splits by parity" if ok else "FAIL")
+    print("RESULT:", "PASS -- liminf >= c_0/sqrt2; windowed constant splits by parity" if ok else "FAIL")
     return 0 if ok else 1
 
 

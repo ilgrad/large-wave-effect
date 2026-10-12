@@ -93,9 +93,11 @@ ceiling can always be aligned). The composite deficit $U_N-A_N$ is $O(\ln\ln\ln 
 and to every ring product $C_N\,\square\,H$. For the discrete Schr\"odinger propagator
 $\eu^{-\mathrm{i}t\LN}$, unitarity forbids amplification of a localized state, while the
 $\ell^\infty\!\to\!\ell^\infty$ amplification satisfies $B_N=\Theta(\sqrt N)$; here $\liminf B_N/\sqrt N\ge
-c_0/\sqrt2$ is proved and the constant splits by parity: numerically the even subsequence approaches
-$c_0/\sqrt2$ while the odd one approaches $\beta_{\mathrm{odd}}=0.928\ldots$ (a Bessel-envelope integral for
-which no elementary closed form was found), with the rigorous bound $\limsup\ge\beta_{\mathrm{odd}}$. For the focusing discrete NLS the
+c_0/\sqrt2$ is proved, and over all times the unitarity bound is sharp: $B_p=\sqrt p$ for every odd prime
+$p$, so $\limsup B_N/\sqrt N=1$. On ballistic windows $t=O(N)$ the constant splits by parity: numerically
+the even subsequence approaches $c_0/\sqrt2$, while on $t\le N/2$ the odd one attains
+$\beta_{\mathrm{odd}}=0.928\ldots$ (a Bessel-envelope integral for which no elementary closed form was
+found). For the focusing discrete NLS the
 linear large wave persists under weak nonlinearity, the modulational-instability band is read off the
 $\LN$ spectrum, and the on-site breather exists and is stable. Proved results are separated throughout
 from computational evidence and conjectures; all quantitative claims are reproduced by the accompanying
@@ -296,14 +298,15 @@ exact value is algebraic per $N$ with no apparent closed form
 ($A_N/U_N\in[0.84,1]$). (ii)~The saturation locus is settled---no composite $N$
 saturates (Theorem~\ref{thm:classification})---and $A_N$ for individual composite $N$ is algebraic
 (Proposition~\ref{prop:closed}) but computed per $N$, not given in closed form. (iii)~For the Schr\"odinger
-$B_N=\Theta(\sqrt N)$ the constant splits by parity (Remark~\ref{rem:bn-parity}):
-$\liminf_N B_N/\sqrt N\ge c_0/\sqrt2\approx0.861$ is proved and is attained numerically on the even
-subsequence, while the odd subsequence approaches $\beta_{\mathrm{odd}}\approx0.928$; closing the remaining
-upper bound would therefore give a parity split and no single limiting constant. The whole $t>N/2$
-reduction is now rigorous (joint equidistribution and its uniform transfer to $F(s)$,
-Theorems~\ref{thm:joint-equi},~\ref{thm:uniform-transfer}), leaving one validated sharp inequality (a
-Gaussian-excess/expected-modulus bound) before
-$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$. The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
+$B_N=\Theta(\sqrt N)$ the all-time constants are $\limsup_N B_N/\sqrt N=1$ (prime rings,
+Proposition~\ref{prop:bn-prime}) and $\liminf_N B_N/\sqrt N\ge c_0/\sqrt2\approx0.861$; the all-time
+$\liminf$ is not known. The finer constant is a windowed one, $B_N(S)=\sup_{t\le SN/2}\|K_N(\cdot,t)\|_1$, and
+it splits by parity (Remark~\ref{rem:bn-parity}): numerically $c_0/\sqrt2$ on the even subsequence and
+$\beta_{\mathrm{odd}}\approx0.928$ on the odd one. For fixed $s=2t/N>1$ the reduction is rigorous (joint
+equidistribution and its uniform transfer to $F(s)$, Theorems~\ref{thm:joint-equi},~\ref{thm:uniform-transfer}),
+leaving one validated sharp inequality (a Gaussian-excess/expected-modulus bound) and an $s$-uniform
+version of the transfer before the windowed constant
+$\limsup_N B_N(S)/\sqrt N=\beta_{\mathrm{odd}}$ (Conjecture~\ref{conj:bn-window}). The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
 published Myshkis--Filimonov value~\cite[Thm.~2]{MF03}, which the Schr\"odinger ceiling inherits because the
 two ceilings coincide. (iv)~On the Dirichlet segment the rank, saturation, \emph{and} order are now fully
 proved (Theorem~\ref{thm:segrank}; the order transfers verbatim from Theorem~\ref{thm:order}); what
@@ -345,10 +348,12 @@ $\omega(m)\to\infty$---the primal counterpart of McGehee--Pigno--Smith/Konyagin,
 overshoot; the min-side Chowla machinery (Bedert's $n^{1/7}$ growth) runs the opposite way and does
 \emph{not} transfer (\texttt{verify\_excess\_omega2\_spectral.py}). Structurally this is the \emph{same}
 obstruction as the multi-copy residual~(2) (\texttt{verify\_excess\_omega2.py}).
-\item The Schr\"odinger constant $B_N/\sqrt N$. The order $B_N=\Theta(\sqrt N)$ is settled,
-$\liminf\ge c_0/\sqrt2\approx0.861$ is proved (Theorem~\ref{thm:schr-lower}; numerically attained on the
-even subsequence), and the constant splits by the parity of $N$ (Remark~\ref{rem:bn-parity}): the
-odd-subsequence value $\beta_{\mathrm{odd}}=0.9280193048\ldots$ is the elliptic-integral average
+\item The windowed Schr\"odinger constant (Conjecture~\ref{conj:bn-window}). The order
+$B_N=\Theta(\sqrt N)$ is settled, $\liminf\ge c_0/\sqrt2\approx0.861$ is proved
+(Theorem~\ref{thm:schr-lower}), and over all times $\limsup_N B_N/\sqrt N=1$ (Proposition~\ref{prop:bn-prime}:
+$B_p=\sqrt p$ on prime rings). The open question is the windowed constant
+$\limsup_N\sup_{t\le SN/2}\|K_N(\cdot,t)\|_1/\sqrt N$ for fixed $S$, which splits by the parity of $N$
+(Remark~\ref{rem:bn-parity}): the odd-subsequence value $\beta_{\mathrm{odd}}=0.9280193048\ldots$ is the elliptic-integral average
 \eqref{eq:beta-odd} (a $25$-digit \textsc{pslq} search finds no elementary closed form), and
 $\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ holds on $t\le N/2$, now \emph{in full}: the
 two-copy reduction is rigorous, the limiting profile is the \emph{explicit} elliptic-integral function
@@ -359,9 +364,10 @@ reduction is now \emph{rigorous}: the Debye phases are jointly equidistributed (
 a van der Corput second-derivative bound) and this transfers \emph{uniformly in $u$} to the $\ell^1$ constant
 $F(s)$ (Theorem~\ref{thm:uniform-transfer}, a mollified Koksma--Hlawka estimate---the modulus has divergent
 Hardy--Krause variation---with the cubic van der Corput test at the coalescing points), alongside the
-variance-floor inequality and the tail $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). A
-\emph{single} validated residual now separates this from an unconditional
-$\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: the Gaussian-excess inequality
+variance-floor inequality and the tail $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). Two
+steps separate this from the windowed constant $\beta_{\mathrm{odd}}$: the transfer must hold uniformly in
+$s\in[1,S]$ (it is proved for each fixed $s$), and a \emph{single} validated residual must be proved, the
+Gaussian-excess inequality
 $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$, $K_\star=(h(1)-\sqrt\pi/2)/2$, for
 the \emph{balanced} Debye configurations of the profile (the live set is an interval of consecutive integers,
 so $|\#\,\mathrm{even}-\#\,\mathrm{odd}|\le1$; sharp at the two-copy pair, while imbalanced configurations

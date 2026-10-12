@@ -1217,17 +1217,20 @@ adjacency matrix of the cycle, this is instantaneous uniform mixing of the conti
 $C_p$. It occurs for $p=3$: at $t=2\pi/9$, $|1+2\eu^{-3\mathrm it}|=|1-\eu^{-3\mathrm it}|=\sqrt3$. For $p\ge5$
 it does not occur~\cite{GMR17}. The exact inputs (i) and (iii) are checked for $p\le53$, and times with
 $\|K_p(\cdot,t)\|_1/\sqrt p>1-10^{-5}$ are exhibited for $p=5$ and $p=7$ ($t\approx5.8\cdot10^4$ and
+
 $t\approx2.0\cdot10^6$) (\texttt{verify\_bn\_prime\_flat.py}, \texttt{exact/pari/bn\_prime\_flat.gp}).
 \end{proof}
 
 \noindent This is the $\varepsilon$-uniform mixing on $C_p$ observed by Godsil, Mullin and
 Roy~\cite{GMR17}; we include the short proof because it decides the all-time constant. The aligning times
+
 $t_n$ are Diophantine-long (they align $\tfrac{p-1}2$ independent phases), far outside the ballistic
 windows $t=O(N)$ on which the Debye analysis below operates. The sharp constant that this analysis
 addresses is therefore the one of the \emph{windowed} amplification
 \[
   B_N(S):=\sup_{0\le t\le SN/2}\|K_N(\cdot,t)\|_1\qquad(S>0\ \text{fixed}).
 \]
+
 
 \begin{conjecture}[windowed Schr\"odinger constant]\label{conj:bn-window}
 For every fixed $S\ge1$, $\limsup_N B_N(S)/\sqrt N=\beta_{\mathrm{odd}}$, the constant~\eqref{eq:beta-odd}.
@@ -1241,11 +1244,12 @@ with constants that depend on $s$). Some restriction of the window is necessary,
 constant is $1$ (Proposition~\ref{prop:bn-prime}); whether polynomial windows $t\le N^C$ keep the value
 $\beta_{\mathrm{odd}}$ is open.
 
-\begin{remark}[the candidate constant splits by parity]\label{rem:bn-parity}
-The sharp constant is expected to be parity-dependent: the aliasing phase $\mathrm i^{-N}$ is real for even
-$N$ and imaginary for odd $N$, so where the two overlapping fronts meet they add differently. Numerically
-(\texttt{verify\_bn\_parity.py}) the sup is at $t=N/4$ for even $N$, giving $B_N/\sqrt N\to c_0/\sqrt2$ (the
-value above), and at $t=N/2$ for odd $N$, where the two surviving aliasing copies give
+\begin{remark}[the windowed constant splits by parity]\label{rem:bn-parity}
+The windowed constant of Conjecture~\ref{conj:bn-window} is parity-dependent: the aliasing phase
+$\mathrm i^{-N}$ is real for even $N$ and imaginary for odd $N$, so where the two overlapping fronts meet they
+add differently. Numerically (\texttt{verify\_bn\_parity.py}, window $0.2N\le t\le0.6N$) the sup is at
+$t=N/4$ for even $N$, giving $\|K_N(\cdot,N/4)\|_1/\sqrt N\to c_0/\sqrt2$ (the value above), and at $t=N/2$
+for odd $N$, where the two surviving aliasing copies give
 $|K_N(k,N/2)|\approx\sqrt{J_k(N)^2+J_{N-k}(N)^2}$ across the front (no cancellation, since $\mathrm i^{-N}$
 is imaginary). The Debye envelope $|J_{Nu}(N)|\sim\sqrt{2/\pi N}\,(1-u^2)^{-1/4}|\cos\Phi|$
 (the uniform large-order asymptotics of~\cite[\S10.19]{DLMF}) then yields the
@@ -1260,9 +1264,11 @@ algebraic number (an integer-relation/\textsc{pslq} search returns nothing): no 
 found, and we treat $\beta_{\mathrm{odd}}$ as a new constant defined by \eqref{eq:beta-odd}
 (\texttt{verify\_beta\_odd.py}). The evaluations at $t=N/4$ and $t=N/2$ give the rigorous lower bounds
 $\liminf_N B_N/\sqrt N\ge c_0/\sqrt2$ (Theorem~\ref{thm:schr-lower}) and
-$\liminf_{\text{odd }N}B_N/\sqrt N\ge\beta_{\mathrm{odd}}$, whence
-$\limsup_N B_N/\sqrt N\in[\beta_{\mathrm{odd}},1]$; numerically the even subsequence attains $c_0/\sqrt2$,
-so the global $\liminf$ equals it.
+$\liminf_{\text{odd }N}B_N(1)/\sqrt N\ge\beta_{\mathrm{odd}}$. Over all times the $\limsup$ is $1$, reached
+along the primes (Proposition~\ref{prop:bn-prime}). On the window $t\le0.6N$ the even subsequence approaches
+$c_0/\sqrt2$ numerically, but longer times give more (for $N=10,12,14$ the sup over $t\le1500$ exceeds the
+windowed sup by $0.015$--$0.037$, \texttt{verify\_bn\_prime\_flat.py}), so for the all-time $B_N$ only
+$\liminf_N B_N/\sqrt N\ge c_0/\sqrt2$ is known.
 For the upper side, on the whole window $t\le N/2$ the two-copy reduction is rigorous: $2t\le N$, so only
 the two Poisson copies $\ell=0,-1$ survive (the rest are super-exponentially small), $|K_N(k,t)|\le
 |J_k(2t)|+|J_{N-k}(2t)|$, and the Debye envelope turns $\|K_N(\cdot,t)\|_1/\sqrt N$ into the two-copy profile
@@ -1278,13 +1284,15 @@ overlapping Debye phases is now \emph{proved}, with an explicit power saving
 toral profile $F(s)$ of Proposition~\ref{prop:multicopy}: $\|K_N(\cdot,sN/2)\|_1=(F(s)+o(1))\sqrt N$ for every
 fixed $s>1$, sharper than the bare unitarity $\|K_N(\cdot,t)\|_1\le\sqrt N$. Numerically the $\ell^1$ mass
 there falls back toward its
-time average $\approx0.79\sqrt N$ and never exceeds the $t=N/2$ value (checked out to $t=5N$ at
-$N=2^{20}$, where the $t>N/2$ supremum trails the $t=N/2$ value by a stable margin): the $\sin^2$
-dispersion admits no flat (Gauss-sum) revival, even at structured Talbot times $t=\pi p/q$. This is consistent with the
-dispersive-quantization picture---exact revivals of the periodic Schr\"odinger flow occur only for a
-\emph{quadratic} dispersion (rational times give Gauss sums)~\cite{Olver}, which the discrete
-$\lambda_r=4\sin^2(\pi r/N)$ is not. So numerically the global sup sits at $t=N/2$, and closing the residual
-upper bound would give $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$. The residual on $t>N/2$ has a clean form: $K_N(\cdot,t)$ is the inverse DFT
+time average $\approx0.79\sqrt N$ and stays below the $t=N/2$ value on the windows checked (out to $t=5N$
+at $N=2^{20}$, where the $t>N/2$ supremum trails the $t=N/2$ value by a stable margin): on windows
+$t=O(N)$ the $\sin^2$ dispersion shows no flat (Gauss-sum) revival, even at structured Talbot times
+$t=\pi p/q$. This is consistent with the dispersive-quantization picture---exact revivals of the periodic
+Schr\"odinger flow at rational times occur for a \emph{quadratic} dispersion (they give Gauss
+sums)~\cite{Olver}, which the discrete $\lambda_r=4\sin^2(\pi r/N)$ is not. It is a statement about windows
+only: at Diophantine-long times the prime-ring flow passes arbitrarily close to the quadratic Gauss chirp
+(Proposition~\ref{prop:bn-prime}), so the all-time supremum is $\sqrt p$. Closing the residual upper bound
+would give the windowed constant of Conjecture~\ref{conj:bn-window}. The residual on $t>N/2$ has a clean form: $K_N(\cdot,t)$ is the inverse DFT
 of the \emph{unimodular} symbol $(\eu^{-\mathrm i t\lambda_r})_r$---a chirp, since $2t\cos(2\pi r/N)$ is
 locally quadratic---so $B_N/\sqrt N$ is the maximal $L^1$-flatness ratio $\|P\|_1/\|P\|_2$ of a unimodular
 trigonometric polynomial. The limiting macroscopic profile of $\|K_N(\cdot,t)\|_1/\sqrt N$ is a
@@ -1294,15 +1302,18 @@ strictly subdominant for $t>N/2$, stably out to $t=5N$), the profile $F(s)$ of
 Proposition~\ref{prop:multicopy}. The joint equidistribution $\bmod\,2\pi$ of the coherent multi-copy Debye
 phases---the multidimensional Weyl sum on which $F$ rests---is settled in \S\ref{sub:multicopy}
 (Theorem~\ref{thm:joint-equi}) and its uniform-in-$u$ transfer makes $F$ the unconditional $t>N/2$ profile
-(Theorem~\ref{thm:uniform-transfer}); what remains for $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$ is only the
-profile-maximizer inequality $\max_{s\ge1}F(s)=F(1)$ (Lemma~\ref{lem:varfloor} and its residual Pearson-walk
-bound). That maximizer step aside, the difficulty is
+(Theorem~\ref{thm:uniform-transfer}) for each fixed $s$; what remains for the windowed constant of
+Conjecture~\ref{conj:bn-window} is the profile-maximizer inequality $\max_{1\le s\le S}F(s)=F(1)$
+(Lemma~\ref{lem:varfloor} and its residual Pearson-walk bound) and the uniformity of that transfer in
+$s\in[1,S]$. That maximizer step aside, the difficulty is
 intrinsic: Erd\H{o}s asked whether every unimodular polynomial must satisfy
 $\max|P|\ge(1+c)\sqrt{n}$~\cite{Erdos57}; Kahane's ultraflat polynomials answered no~\cite{Kahane80}, with
 the sharpest construction in~\cite{BombieriBourgain}, and the \emph{quadratic} chirp
-(Gauss--Fresnel/Talbot) is even $L^1$-flat with ratio $\to1$. So $\limsup<1$ is an \emph{anti}-flatness
-statement particular to the non-quadratic $\sin^2$ dispersion---precisely an Erd\H{o}s-type flatness
-question for one structured family, and no generic argument supplies it. (A single-period
+(Gauss--Fresnel/Talbot) is even $L^1$-flat with ratio $\to1$. So a windowed constant below $1$ is an
+\emph{anti}-flatness statement on time windows $t=O(N)$, particular to the non-quadratic $\sin^2$
+dispersion---an Erd\H{o}s-type flatness question for one structured family, and no generic argument
+supplies it. Over all times there is no anti-flatness: on prime rings the flow approaches the quadratic
+chirp itself (Proposition~\ref{prop:bn-prime}). (A single-period
 saddle van der Corput estimate fails: it predicts $0.61$ against the actual $0.93$, missing the Poisson-copy
 coherence---which is precisely why the correct object is the \emph{joint} multi-copy equidistribution of
 Theorem~\ref{thm:joint-equi}, not a single saddle. A fourth-moment/merit-factor route cannot supply the upper bound either:
@@ -1365,7 +1376,8 @@ there, and the maximizer $\max_{[0,1]}F=F(1)=\beta_{\mathrm{odd}}$ is proved.
 \noindent This settles the $t\le N/2$ supremum: $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}
 +o(1))\sqrt N$, since the maximization of the one explicit elliptic-integral function $F$ is now proved in
 full---analytically on $[\tfrac12,0.937]$ and by validated interval arithmetic on $[0.937,1]$. The only
-remaining piece of the constant is the multi-copy region $t>N/2$ (Remark~\ref{rem:bn-parity}).
+remaining piece of the windowed constant (Conjecture~\ref{conj:bn-window}) is the multi-copy region
+$N/2<t\le SN/2$ (Remark~\ref{rem:bn-parity}).
 
 \subsection{The multi-copy region \texorpdfstring{$t>N/2$}{t>N/2}: joint equidistribution of the Debye phases}\label{sub:multicopy}
 
@@ -1791,7 +1803,9 @@ $s>1$ unconditionally---the former residue (i) (the band-edge strips contributin
 the coalescing points $u=-(\ell+\ell')/2$ handled by the cubic test, $g_\ell'-g_{\ell'}'\ne0$, with no triple
 coincidence) is closed. There also hold the variance-floor inequality $F\le F_K$ and the tail limit
 $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). \emph{A single residual estimate}, validated
-numerically, now separates this from an unconditional $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$: the
+numerically, now separates this from $\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$, and with a transfer
+uniform in $s\in[1,S]$ from the windowed constant of Conjecture~\ref{conj:bn-window} (the all-time
+$\limsup_N B_N/\sqrt N$ is $1$, Proposition~\ref{prop:bn-prime}): the
 $\ge3$-copy case of the balanced Gaussian-excess inequality $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$
 above (the former residue (ii)). Its \emph{two-copy core} $R(1,\rho)\le K_\star$ is \emph{proved}
 (\texttt{verify\_dagger\_extremal2.py}), the sliver $s\in(1,1.005]$ is covered by the proved variance floor
@@ -1832,8 +1846,10 @@ through \texttt{prove\_box($\dots$,\,far\_slices=$\dots$)} the previously-failin
 $a_3\simeq0.61$, each closed by one refinement, the worst certified leaf reaching $0.9999$). The full singleton-band cover is the adaptive, node-parallel, checkpointed tiling
 \texttt{run\_dagger\_campaign.py}, which certified all $130$ leaf boxes with $0$ failures, so the residual
 inequality is validated across the whole band at the certificate's validated-enclosure standard (not yet a
-closed-form proof); the unconditional $\limsup_N B_N/\sqrt N=\beta_{\mathrm{odd}}$ awaits upgrading that one
-expected-modulus estimate from validated to proved. The honest status is that the multi-copy region is
+closed-form proof, and not a rigorous cover either: the far $t$-collocation remainder and the amplitude
+stencil's third derivatives come from finite differences, the box maximum of the quadratic model is taken on
+a grid, and band membership is read from sampled points); the windowed constant of Conjecture~\ref{conj:bn-window} awaits upgrading that one
+expected-modulus estimate from validated to proved, together with the $s$-uniform transfer. The honest status is that the multi-copy region is
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
 constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
@@ -1849,16 +1865,17 @@ $c_0\sqrt x$ Bessel asymptotics---is reproduced numerically (\texttt{verify\_sch
 Table~\ref{tab:bn}.
 
 \begin{table}[ht]\centering
-\caption{The constant in $B_N=\Theta(\sqrt N)$, by parity (Remark~\ref{rem:bn-parity}). A refined $t$-scan
-gives $B_N/\sqrt N$: even $N$ approach $c_0/\sqrt2=0.8607$ (sup at $t=N/4$), odd $N$ approach
-$\beta_{\mathrm{odd}}\approx0.928$ (sup at $t=N/2$). All lie in the rigorous band
-$[c_0/\sqrt2,1]$; the proved $\liminf$ is $c_0/\sqrt2$ (\texttt{verify\_bn\_parity.py}).}\label{tab:bn}
+\caption{The windowed constant, by parity (Remark~\ref{rem:bn-parity}). A refined scan of the window
+$0.2N\le t\le0.6N$ gives $\sup_t\|K_N(\cdot,t)\|_1/\sqrt N$: even $N$ approach $c_0/\sqrt2=0.8607$ (sup at
+$t=N/4$), odd $N$ approach $\beta_{\mathrm{odd}}\approx0.928$ (sup at $t=N/2$). These are windowed values;
+over all times $B_p=\sqrt p$ on primes (Proposition~\ref{prop:bn-prime}). The proved all-time $\liminf$
+bound is $c_0/\sqrt2$ (\texttt{verify\_bn\_parity.py}).}\label{tab:bn}
 \begin{tabular}{lccccc c}
 \toprule
 $N$ & $16,15$ & $64,63$ & $256,255$ & $1024,1023$ & $4096,4095$ & limit\\
 \midrule
-even $N$,\ $B_N/\sqrt N$ & $0.923$ & $0.907$ & $0.888$ & $0.878$ & $0.869$ & $c_0/\sqrt2=0.861$\\
-odd $N$,\ $B_N/\sqrt N$  & $0.981$ & $0.960$ & $0.950$ & $0.940$ & $0.935$ & $\beta_{\mathrm{odd}}\approx0.928$\\
+even $N$, windowed & $0.923$ & $0.907$ & $0.888$ & $0.878$ & $0.869$ & $c_0/\sqrt2=0.861$\\
+odd $N$, windowed  & $0.981$ & $0.960$ & $0.950$ & $0.940$ & $0.935$ & $\beta_{\mathrm{odd}}\approx0.928$\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2058,7 +2075,7 @@ quantity & dynamics / functional & leading asymptotic & sharp class\\
 \midrule
 $U_N$ & ring, velocity ceiling & $\tfrac1\pi\ln N+\tfrac1\pi(\gamma+\ln\tfrac2\pi)$ & all $N$\\
 $A_N$ & ring, $\sup_t\max_j|G_N(j,\cdot)|$ & $\tfrac1\pi\ln N$ & prime, $2^m$, $2p$\\
-$B_N$ & ring, $\ell^\infty\!\to\!\ell^\infty$ Schr\"odinger & $\Theta(\sqrt N)$, const $\in[c_0/\sqrt2,1]$ & all $N$\\
+$B_N$ & ring, $\ell^\infty\!\to\!\ell^\infty$ Schr\"odinger & $\Theta(\sqrt N)$; $\sqrt N$ on primes, $\liminf\ge c_0/\sqrt2$ & odd prime\\
 $d_j^N$ & segment, $\sup_t|z_j(\cdot)|$ Schr\"odinger & $\tfrac4{\pi^2}\ln j$ & prime, $2^m$ (suff.)\\
 $U_N^{(d)}$ & $d$-torus, velocity ceiling & $\tfrac1\pi\ln N$ ($d{=}1$), $\ O(1)$ ($d{\ge}2$) & $d_s=1$\\
 \bottomrule

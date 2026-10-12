@@ -157,9 +157,10 @@ def main() -> int:
     print("RESULT: OPEN-PROBLEMS MAP COMPLETE")
     print("Status (kept in sync with the paper): OP1 is now PROVED -- A_N ~ (1/pi) ln N for all N")
     print("(Theorem order), and with U_N - A_N = O(ln ln ln N) the ratio A_N/U_N -> 1; this scan is")
-    print("corroboration. OP2: liminf B_N/sqrt(N) >= c_0/sqrt2 is proved and the constant splits by")
-    print("parity; the t > N/2 upper bound (which would give limsup = beta_odd) remains open, and any")
-    print("t-scan here is a lower bound only.")
+    print("corroboration. OP2: liminf B_N/sqrt(N) >= c_0/sqrt2 is proved and the all-time limsup is 1")
+    print("(B_p = sqrt(p) on prime rings); the windowed constant splits by parity, and its t > N/2 upper")
+    print("bound (which would give beta_odd on windows t <= SN/2) remains open. Any t-scan here is a")
+    print("lower bound only.")
     print("=" * 72)
     return 0
 

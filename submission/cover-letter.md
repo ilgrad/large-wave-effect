@@ -23,9 +23,10 @@ the paper:
    equivalently, every integer frequency relation has coefficient-sum divisible by four — via an explicit
    root-of-unity obstruction valid for all composite N.
 3. **Sharpens the discrete Schrödinger amplification problem:** B_N = Θ(√N) in the ℓ∞ operator norm, with
-   liminf B_N/√N ≥ c₀/√2 proved and a parity split identified numerically; the odd-subsequence candidate
-   β_odd = 0.928… is an elliptic-integral constant with no elementary closed form, and the remaining sharp
-   upper bound is reduced to one validated residual inequality.
+   liminf B_N/√N ≥ c₀/√2 proved and B_p = √p on prime rings, so limsup B_N/√N = 1 over all times; on
+   ballistic windows t = O(N) a parity split is identified numerically, the odd-subsequence value
+   β_odd = 0.928… is an elliptic-integral constant with no elementary closed form, and the windowed sharp
+   upper bound is reduced to one validated residual inequality and an s-uniform transfer.
 4. **Extends and continues:** the order law to the Dirichlet segment and to every ring product C_N □ H; and
    a rigorous chain for the focusing discrete NLS (weak-nonlinear persistence, the modulational-instability
    band from the L_N spectrum, existence and stability of the on-site breather).

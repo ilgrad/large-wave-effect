@@ -33,8 +33,9 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
   (θ-Taylor + t-collocation; `verify_middle_far.py`); the previously-failing boxes now certify
   (e.g. `(0.70,0.70)→0.9915`; hardest boxes at the high-λ edge `a_3≈0.61`, closed by one refinement, worst
   leaf `0.9999`). Full band tiling **DONE**: `run_dagger_campaign.py` certified 130 leaf boxes, 0 fail (~7.2 h)
-  ⇒ A2 reduced to ONE numerically-validated ≥3-copy inequality (`limsup B_N/√N = β_odd` at the dagger
-  certificate's validated-enclosure standard; rigorous modulo that one estimate, NOT an unconditional proof).
+  ⇒ A2 reduced to ONE numerically-validated ≥3-copy inequality. **Corrected 2026-10-12:** the target is
+  the *windowed* constant (see A2), not the all-time `limsup B_N/√N`, which is `1` (`B_p = √p`); and the
+  cover is validated, not rigorous modulo one estimate — see the four further non-rigorous steps in A2.
 
 **Open — research wall (needs new mathematics).**
 - **A1** excess lemma, uniform in `m` = weighted-packing bound on the chained graph — sup-side
@@ -42,7 +43,7 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
 - Self-trapping window `gP∈[0.43,4)` — same focusing-sign motif (§C).
 
 **Open — execution / resource (idea exists, not a one-shot).**
-- β_odd full band tiling — **DONE** (`run_dagger_campaign.py`: 130 leaf boxes, 0 fail, ~7.2 h; A2 reduced to one validated inequality, rigorous modulo it);
+- β_odd full band tiling — **DONE** (`run_dagger_campaign.py`: 130 leaf boxes, 0 fail, ~7.2 h; A2 reduced to one validated inequality; the cover itself is validated, not rigorous — see A2);
   finite-time **lower** bound (+ damping, conditional on it);
   FPUT small-energy (Nekhoroshev, 4-wave resonances) and chaos (CAPD); arbitrary graphs (non-cyclotomic).
 
@@ -103,9 +104,20 @@ the chained relation graph**, NOT the `a -> infinity` limit (that direction is t
   `omega(m)->inf`); the excess lemma needs `C` uniform **in `m`**, not in `a`. Realistic target: the
   weighted-packing bound, uniform over odd `m`. (`a -> infinity` is the trivial direction.)
 
-### A2. Schrödinger constant `limsup B_N/sqrt(N) = beta_odd`  (review #5)
+### A2. Windowed Schrödinger constant `limsup_N sup_{t<=SN/2} ||K_N(.,t)||_1/sqrt(N) = beta_odd`  (review #5)
 
-**Goal.** `beta_odd = 0.92801930480793...` (odd subsequence); even subsequence `c0/sqrt(2)`.
+**Correction (2026-10-12).** As first stated, A2 asked for `limsup B_N/sqrt(N) = beta_odd` with
+`B_N = sup_t ||e^{-itL_N}||_{inf->inf}` over ALL `t`. That is false: `B_p = sqrt(p)` for every odd prime `p`
+(`lambda_r = 2 - 2cos(2 pi r/p)` are Q-independent — basis `zeta^j`, `1 = -sum 2cos(2 pi s/p)`; Kronecker
+aligns the phases to the chirp `2 pi r^2/p`; the Gauss sum gives `|K| = 1/sqrt(p)` everywhere), so the
+all-time `limsup` is `1` (paper `prop:bn-prime`; Godsil–Mullin–Roy's epsilon-uniform mixing on `C_p`;
+`verify_bn_prime_flat.py`, `exact/pari/bn_prime_flat.gp`). `thm:joint-equi` and `thm:uniform-transfer` hold
+for each FIXED `s = 2t/N`; the all-time sup needs `s` unbounded in `N`. The statement the analysis supports
+is the windowed one (paper `conj:bn-window`): for each fixed `S`, it needs (i) the ≥3-copy dagger
+inequality and (ii) the transfer uniform in `s` on `[1, S]`. Polynomial windows `t <= N^C`: open.
+
+**Goal.** `beta_odd = 0.92801930480793...` (odd subsequence, windowed); even subsequence `c0/sqrt(2)`
+(windowed, numerical).
 
 **Method (= the review's plan, fully executed).** `K_N(k,t)` via periodized Bessel images;
 `t=sN/2`; uniform Debye for `J_n(nz)`, Airy at the front, stationary phase for tails; interval
@@ -135,11 +147,19 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
   `(0.70,0.70)→0.9915`; the hardest boxes are the high-λ edge `a_3≈0.61`, closed by one refinement, worst
   leaf `0.9999`). Node-parallel (`prove_box_parallel.py`); the full band tiling is the adaptive, checkpointed
   `run_dagger_campaign.py`, which certified all 130 leaf boxes (0 fail, ~7.2 h) — the cover **validates** the
-  residual ≥3-copy inequality across the band (rigorous modulo that one estimate, NOT an unconditional proof).
+  residual ≥3-copy inequality across the band (NOT a proof). It is not "rigorous modulo one estimate":
+  besides (a) the far `t`-collocation remainder from finite differences (`verify_dagger_continuum.py`
+  `middle_far_point`), four further steps are non-rigorous (2026-10-12 audit): (b) `build_stencil` takes the
+  amplitude third derivatives from finite differences, not a derivative bound, and ignores the error
+  propagated through the least-squares fit; (c) `StencilModel.sup` maximizes the quadratic on a 41×41 float
+  grid instead of exactly over the box; (d) `run_dagger_campaign.py` reads band membership (`lam_conc`) and
+  `bmin` from 3×3 samples of each box; (f) no manifest — library versions, precision, hashes, an exact
+  rational cover check.
 - FIXED: the `beta_odd` literal (was wrong past digit 9).
 
 **A1 remains the signed-cancellation wall; A2's continuum cover is validated across the band (130 boxes, 0 fail;
-above), reducing A2 to one numerically-validated ≥3-copy inequality (rigorous modulo it, not an unconditional proof).**
+above), reducing the windowed A2 to one numerically-validated ≥3-copy inequality plus the `s`-uniform transfer
+(not a proof: the cover has the non-rigorous steps (a)–(d), (f) listed above).**
 
 ---
 
