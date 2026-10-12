@@ -13,6 +13,8 @@ machine-checked criterion certificate, then verifies they agree with src/large_w
           and the cyclotomic-degree identities behind the prime / 2^m / 2p proofs.
   * PARI  (exact/pari/bn_prime_flat.gp)      -- the exact inputs of B_p = sqrt(p): Q-independence
           of the Schrodinger eigenvalues and the flat Gauss-sum kernel, p <= 53.
+  * PARI  (exact/pari/defect_sos.gp)         -- exact SOS certificates of the defect U_N - A_N for
+          N = 9, 15, 21, with mutated certificates that must be rejected.
   * Rocq  (formal/rocq/Mod4Criterion.v)      -- machine-checks (vm_compute) that the mod-4
           criterion on the GAP lattices reproduces the prime/2^m verdict.
 
@@ -85,6 +87,10 @@ def main() -> int:
         bp_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
         print(f"[pari]   B_p = sqrt(p) exact inputs         : {'PASS' if bp_ok else 'FAIL'}")
         ok &= bp_ok
+        rc, out = run(["gp", "-q", "-f", "exact/pari/defect_sos.gp"], stdin_file=Path("/dev/null"))
+        ds_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
+        print(f"[pari]   defect SOS certificates N=9,15,21  : {'PASS' if ds_ok else 'FAIL'}")
+        ok &= ds_ok
     else:
         print("[pari]   SKIP (gp not on PATH)")
 

@@ -465,11 +465,23 @@ excess is a \emph{balance} of a positive dependent net ($\approx0.17$) against a
 (Conjecture~\ref{conj:excess}).
 For small $N$ the strict gap
 $A_N<U_N$ is \emph{certified rigorously}: the Lipschitz-grid certificate gives
-$U_N-A_N\ge0.049,0.057,0.030,0.082$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}), and a
-trigonometric Lasserre moment--SOS sharpens it (tight at $N=15$: $U_N-A_N=0.1475$, matching the optimizer
-to five decimals, at solver tolerance) and reaches $N=105$
-($M=24$), though too loosely there to certify the growth (\texttt{verify\_defect\_moment\_sos.py}). The exact
-value is algebraic per $N$ (Proposition~\ref{prop:closed}) with no universal closed form.
+$U_N-A_N\ge0.049,0.057,0.030,0.082$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}). For odd
+$N=9,15,21$ an exact sum-of-squares certificate pins the defect. Parametrize the orbit closure by the
+prefix phases, $\varphi_r=\langle n_r,\psi\rangle$ with $\psi\in\mathbb T^M$ and $n_r\in\Z^M$ (each relation
+$\omega_r=\sum_sn_{rs}\omega_s$ is checked in $\Q(\zeta_{2N})$), put $z_s=\eu^{\mathrm i\psi_s}$, and let $v=(z^{B_a})_a$ be a
+vector of monomials. A Gaussian-rational Gram matrix $Q$, whose fraction-free $LDL^*$ has positive pivots,
+gives $c-\tilde F=v^*Qv+\rho$ with $c=\operatorname{tr}Q$ and $\|\rho\|_1<10^{-9}$, where $\tilde F$ is
+$\sum_rb_r\sin\varphi_r$ with the weights $b_r$ replaced by rationals from Sturm enclosures of width
+$<10^{-39}$. Hence $A_N\le c+\|\rho\|_1+\sum_r(\text{enclosure widths})$, and in exact arithmetic
+\[
+  U_9-A_9\ge0.06717197,\qquad U_{15}-A_{15}\ge0.14754945,\qquad U_{21}-A_{21}\ge0.11208183 .
+\]
+The optimizer's values, which bound the defect from above, are larger by less than $10^{-7}$, so these
+defects are known to within $10^{-7}$ (\texttt{exact/pari/defect\_sos.gp}, with the certificates written by
+\texttt{build\_defect\_sos\_certificates.py}; the script rejects seven mutated certificates). The same
+relaxation in floating point reaches $N=105$ ($M=24$), though too loosely there to certify the growth
+(\texttt{verify\_defect\_moment\_sos.py}). The exact value is algebraic per $N$ (Proposition~\ref{prop:closed})
+with no universal closed form.
 \end{remark}
 
 The numerical picture condenses into a single clean implication.
@@ -2334,6 +2346,8 @@ Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \t
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\
 Certified gap $A_N<U_N$, $N\le15$ (Lipschitz grid) & \texttt{verify\_defect\_certified.py}\\
+Exact SOS defect certificates, $N=9,15,21$ (PARI; Rem.~\ref{rem:defect}) & \texttt{exact/pari/defect\_sos.gp}\\
+\quad$\hookrightarrow$ certificate generator (SDP, rounded Gram matrices) & \texttt{build\_defect\_sos\_certificates.py}\\
 Spectral-dimension threshold $d_s{=}1$ & \texttt{verify\_spectral\_dimension.py}\\
 Finite-time recurrence $T_\varepsilon(N)$ & \texttt{verify\_finite\_time.py}\\
 \quad$\hookrightarrow$ certified upper bound $T_{0.2}(N)\le\tilde t$, small primes (interval) & \texttt{verify\_finite\_time\_certified.py}\\
@@ -2353,7 +2367,7 @@ Machine-checked mod-4 criterion (Rocq) & \texttt{formal/rocq/Mod4Criterion.v}\\
 Machine-checked classification core, all $N$ (Rocq) & \texttt{formal/rocq/Classification.v}\\
 F92 splash table: segment $4/\pi^2$ vs ring $1/\pi$ & \texttt{verify\_filimonov\_table.py}\\
 $B_N$ multi-copy profile, $t>N/2$ subdominant & \texttt{verify\_bn\_residual\_profile.py}\\
-Defect moment--SOS certified bounds & \texttt{verify\_defect\_moment\_sos.py}\\
+Defect moment--SOS bounds (floating-point SDP) & \texttt{verify\_defect\_moment\_sos.py}\\
 \end{longtable}
 
 \section{Statistics: density of states and value distribution}\label{sec:stats}

@@ -23,7 +23,8 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
 - Dirichlet segment mod-4 ceiling criterion (`cor:segceiling`) — closed the "rank-deficient ⇒ A<U" gap.
 - Disorder: generic-independence via eigenvalue-map submersion (`F_k≠0`); finite-T continuity
   (`lem:disorder-finiteT`, gain needs `T≳1/eps`).
-- Exact-`A_N` table: `A_N<U_N` certified with explicit gap (Lipschitz-grid + moment-SOS).
+- Exact-`A_N` table: `A_N<U_N` certified with explicit gap (Lipschitz grid `N=6,9,12,15`; exact rational
+  SOS `N=9,15,21`, within `1e-7` of the optimizer, `exact/pari/defect_sos.gp`).
 - Breather **dichotomy** CAP (exact rational): site `n(L_+)=1` STABLE, bond `n(L_+)=2` UNSTABLE.
 - Finite-time **upper** bound `T_{0.2}(N)≤t~` certified (interval) for concrete primes `N=5,7,11,13`.
 - (Earlier in session: classification, `A_N~(1/π)ln N`, mod-4, β_odd profile/transfer/two-copy — see A2.)
@@ -84,8 +85,9 @@ the chained relation graph**, NOT the `a -> infinity` limit (that direction is t
   qualitative; lead Calegari-Huang arXiv:2510.04156).
 - DONE this session (`omega(m)=2`): relation lattice characterized — unimodular SNF, **chained**
   relations, support set by the smallest prime (`3|N`: `w_a+w_b=w_c`, `a+b=N/3`, from `2 sin(pi/6)=1`;
-  `5|N`: golden); per-N certificates `N=15` (elementary Lipschitz grid, `>=0.082`), `N=21,33,35`
-  (moment-SOS). `exact/gap/excess_omega2.g`, `numerics/verify_excess_omega2.py`.
+  `5|N`: golden); per-N certificates `N=15` (elementary Lipschitz grid, `>=0.082`; exact rational SOS,
+  `>=0.14754945`), `N=21` (exact rational SOS, `>=0.11208183`); `N=33,35` floating-point moment-SOS
+  only. `exact/gap/excess_omega2.g`, `numerics/verify_excess_omega2.py`.
 - TRIED → blocked: the **uniform** dual certificate is exactly the signed bound that overshoots.
   The obstruction is a **modest O(1) balance** — verified this session across `omega(m)=2..4`: as
   `dep_wt` grows `0.21 -> 0.34`, BOTH `dependent_net ~ +0.16` and `prefix_deficit ~ -0.05..-0.09` stay
@@ -171,7 +173,7 @@ above), reducing the windowed A2 to one numerically-validated ≥3-copy inequali
 | `N=2p, 4p` excess `O(1/N)` | sharp two-sided | ALREADY proved |
 | Self-trapping threshold `gP=4` energy-sharp; converse to `0.43` | energy / virial | ALREADY proved |
 | Dirichlet segment mod-4 reachability | port the ring criterion | **DONE** (`cor:segceiling`, `exact/gap/segment_mod4.g`; criterion <=> `N+1` prime/`2^m`, `N<=40`) |
-| Exact `A_N` table, small N | orbit-closure subtorus max + certified upper | **DONE** — Lipschitz-grid certifies `A_N<U_N` w/ explicit gap `N=6,9,12,15` (`verify_defect_certified.py`); moment-SOS `N=21,33,35`; orbit-closure values `verify_exact_AN.py`. Tight two-sided pin still needs SOS/SDP. |
+| Exact `A_N` table, small N | orbit-closure subtorus max + certified upper | **DONE** — Lipschitz-grid certifies `A_N<U_N` w/ explicit gap `N=6,9,12,15` (`verify_defect_certified.py`); exact rational SOS pins `N=9,15,21` to `1e-7` (`exact/pari/defect_sos.gp`); floating-point moment-SOS `N=33,35`; orbit-closure values `verify_exact_AN.py`. |
 | Generic disorder independence | eigenvalue map submersion; `F_k != 0` | **DONE** (Jacobian `d lambda_r/dm_j=-lambda_r v_r(j)^2` full row rank `N-1`, `verify_disorder.py` (A'); linear.tex Disorder) |
 | Fixed-T continuity under disorder | matrix-function Lipschitz `<= C_N(1+T)eps` | **DONE** (`lem:disorder-finiteT`; gain needs `T >~ 1/eps`; `verify_disorder.py` (A'')) |
 | **Damping criterion** (`T_eps >> 1/eta` => ceiling unreachable) | modal `e^{-eta t}` | OPEN — **conditional on `T_eps`** (the open finite-time lower bound); uniform envelope `e^{-gamma t}` kills the build-up only if `T_eps(N) >~ 1/gamma`. Not unconditionally closable. |

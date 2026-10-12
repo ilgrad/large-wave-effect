@@ -11,6 +11,7 @@ the Python core (`src/large_wave_effect`) and the paper's Section on exact arith
 | | `gap/prime_square.g` | the minimal mod-4 obstruction for `N = p^2` has support `p` on `{1} U {kp +- 1}` |
 | | `gap/export_rocq.g` | emits the Rocq certificate `formal/rocq/Mod4Criterion.v` |
 | **PARI/GP** | `pari/crosscheck.gp` | a second exact `Q`-rank implementation + the cyclotomic-degree identities behind the prime / `2^m` / `2p` proofs |
+| | `pari/defect_sos.gp` | exact SOS certificates `U_N - A_N >= 0.06717197, 0.14754945, 0.11208183` for `N = 9, 15, 21`: subtorus relations in `Q(zeta_2N)`, Sturm enclosures of the weights, fraction-free `LDL*` of the Gram matrix, exact residual; seven mutated certificates must be rejected. Data: `pari/defect_sos_certs.gp`, written by `../numerics/build_defect_sos_certificates.py` |
 | | `pari/bn_prime_flat.gp` | `B_p = sqrt(p)`: exact `Q`-independence of the Schrödinger eigenvalues `2 - 2cos(2 pi r/p)` and exact Gauss-sum flatness, `p <= 53`, plus numerical Kronecker witnesses for `p = 5, 7` |
 | **FriCAS** | `fricas/asymptotics.input` | `csc` Laurent series, the Appendix-B antiderivative, the constants `(2/pi)log(2/pi)` and `-pi/72` |
 
@@ -22,6 +23,7 @@ gap  -q --nointeract exact/gap/scan_classification.g
 gap  -q --nointeract exact/gap/prime_square.g
 gp   -q exact/pari/crosscheck.gp
 gp   -q -f exact/pari/bn_prime_flat.gp </dev/null
+gp   -q -f exact/pari/defect_sos.gp </dev/null
 fricas -nosman < exact/fricas/asymptotics.input
 
 # one-shot driver + cross-check against the Python core (skips missing tools):

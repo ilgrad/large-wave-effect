@@ -332,10 +332,11 @@ evidence and from the conjectures, and every quantitative claim is reproduced by
 part of $N$, and (Remark~\ref{rem:defect}) is \emph{unbounded}---numerically it grows with the number of
 distinct odd prime factors (the subtorus optimizer is validated by returning $U_N-A_N=0$ to machine
 precision on primes of the same size), so $\Theta(\ln\ln\ln N)$ along primorials. The gap $A_N<U_N$ is
-\emph{rigorously certified} for small $N$ (Lipschitz-grid / elementary Lasserre: $U_N-A_N\ge0.049,0.057,0.030,0.082$
-for $N=6,9,12,15$); what remains is a rigorous \emph{asymptotic} lower bound along primorials (the grid is
-exponential in $\tfrac12\varphi(2N)$) and the exact algebraic value per $N$ (certified per-$N$ brackets follow from the
-Lasserre moment--SOS hierarchy, Section~\ref{sec:exact}). For $\omega(m)=2$ (odd part a product of two primes)
+\emph{rigorously certified} for small $N$ (Lipschitz grid: $U_N-A_N\ge0.049,0.057,0.030,0.082$ for
+$N=6,9,12,15$; exact rational sum-of-squares certificates: $U_N-A_N\ge0.06717197,0.14754945,0.11208183$ for
+$N=9,15,21$, within $10^{-7}$ of the optimizer, Remark~\ref{rem:defect}); what remains is a rigorous
+\emph{asymptotic} lower bound along primorials (the grid is exponential in $\tfrac12\varphi(2N)$ and the
+certificate's monomial basis grows with $N$) and the exact algebraic value per $N$. For $\omega(m)=2$ (odd part a product of two primes)
 the structure is now explicit: the relation lattice has unimodular Smith normal form, and its shortest
 relations are \emph{chained} with support set by the smallest prime---$3\mid N$ gives a support-$3$ relation
 $\omega_a+\omega_b=\omega_c$ with $a+b=N/3$ (from $2\sin\tfrac\pi6=1$), $5\mid N$ a support-$5$

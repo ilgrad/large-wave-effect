@@ -37,8 +37,9 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   (`verify_classification_proof.py`, `exact/gap/scan_classification.g`).
 - **Composite deficit.** The order theorem gives the general upper envelope
   `0 ≤ U_N − A_N = O(ln ln ln N)`. The strict gap `A_N < U_N` for every composite non-power-of-two follows from
-  the saturation classification; quantitative small-`N` gaps are certified by Lipschitz-grid and
-  Lasserre moment–SOS checks. The sharper excess law
+  the saturation classification; quantitative small-`N` gaps are certified by a Lipschitz grid
+  (`N = 6, 9, 12, 15`) and by exact rational sum-of-squares certificates (`exact/pari/defect_sos.gp`):
+  `U_N − A_N ≥ 0.06717197, 0.14754945, 0.11208183` for `N = 9, 15, 21`, within `10⁻⁷` of the optimizer. The sharper excess law
   `U_N − A_N = (1/π) ln(m/φ(m)) + O(1)` for odd part `m` remains open beyond prime-power odd part. The
   per-family limits `defect_∞(m) = lim_a (U − A)(m · 2^a)` are computed to `10⁻⁸`
   (`0.10368…`, `0.03824…`) as numerical constants with no closed form.

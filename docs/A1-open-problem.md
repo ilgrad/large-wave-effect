@@ -96,6 +96,11 @@ the second prime $p_2$ supplies the longer combs; $\#K=O(p_2)$.
 - **Undecidable at any feasible $N$**: $U_N-L_{\mathrm{pre}}=\frac1\pi\ln\frac m{\varphi(m)}=\Theta(\ln\ln\ln N)$
   grows so slowly ($0.28$ at $\omega=4$, only $0.31$ at $\omega=6$) that $O(1)$ vs $\Theta(\ln\ln\ln)$ cannot be
   separated; $\omega=5$ ($N=15015$) already puts the exact cyclotomic relation matrix out of reach.
+- **Exact anchors.** For $N=9,15,21$ exact rational SOS certificates (`exact/pari/defect_sos.gp`) prove
+  $U_N-A_N\ge0.06717197,\ 0.14754945,\ 0.11208183$, within $10^{-7}$ of the optimizer, so there the optimized
+  $A_N$ is the global maximum to $10^{-7}$ and the excess is exact to that accuracy:
+  $E_9=0.0457$ (odd part a prime power), $E_{15}=0.0666$, $E_{21}=0.0907$ ($\omega(m)=2$). The certificate's
+  monomial basis grows with $N$ ($|B|=5,47,74$), so this does not reach the primorials.
 - The optimizer is **non-perturbative**: prefix phases sit at $|\theta-\pi/2|\sim0.8$ (far from the aligned
   point), and $E_N$ is a *balance* of a positive dependent net ($\approx0.17$) against a negative prefix
   deficit ($\approx-0.08$) — a large-amplitude coherent rearrangement, not near-total sign cancellation and
