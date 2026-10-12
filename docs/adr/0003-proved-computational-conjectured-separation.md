@@ -13,7 +13,8 @@ Status update: the former order conjecture `A_N = Theta(ln N)` for all `N` has s
 the order theorem (`verify_order_theorem.py`), and the saturation classification `A_N = U_N iff N` is
 prime or a power of two has since been upgraded from finite-range evidence to a theorem
 (`verify_classification_proof.py`, with exact/formal cross-checks). The remaining live open problems are
-now narrower: the sharp Schrödinger limsup constant, the uniform composite excess lemma, the self-trapping
+now narrower: the windowed Schrödinger constant (the all-time `limsup B_N/sqrt N` is `1`, since
+`B_p = sqrt p` on prime rings), the uniform composite excess lemma, the self-trapping
 proof gap, and the quasi-1D non-embedded-ring condition.
 
 ## Decision
