@@ -11,6 +11,8 @@ machine-checked criterion certificate, then verifies they agree with src/large_w
           classification A_N = U_N <=> N prime or 2^m, in exact cyclotomic arithmetic.
   * PARI  (exact/pari/crosscheck.gp)         -- a second exact implementation of the Q-rank
           and the cyclotomic-degree identities behind the prime / 2^m / 2p proofs.
+  * PARI  (exact/pari/bn_prime_flat.gp)      -- the exact inputs of B_p = sqrt(p): Q-independence
+          of the Schrodinger eigenvalues and the flat Gauss-sum kernel, p <= 53.
   * Rocq  (formal/rocq/Mod4Criterion.v)      -- machine-checks (vm_compute) that the mod-4
           criterion on the GAP lattices reproduces the prime/2^m verdict.
 
@@ -79,6 +81,10 @@ def main() -> int:
         pari_ok = rc == 0 and "FAIL" not in out and out.count("PASS") >= 5
         print(f"[pari]   cyclotomic cross-check             : {'PASS' if pari_ok else 'FAIL'}")
         ok &= pari_ok
+        rc, out = run(["gp", "-q", "-f", "exact/pari/bn_prime_flat.gp"], stdin_file=Path("/dev/null"))
+        bp_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
+        print(f"[pari]   B_p = sqrt(p) exact inputs         : {'PASS' if bp_ok else 'FAIL'}")
+        ok &= bp_ok
     else:
         print("[pari]   SKIP (gp not on PATH)")
 

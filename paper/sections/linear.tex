@@ -1185,6 +1185,62 @@ $\liminf_N B_N/\sqrt N\ge c_0/\sqrt2$. The upper bound $B_N\le\sqrt N$ is Theore
 \noindent The improvement over the cruder $t=N/8$ value $\tfrac12 c_0=0.6086$ is the optimal aliasing-free
 time $t=N/4$, at which the Bessel front exactly fills one half-period.
 
+Over \emph{all} times the upper bound $B_N\le\sqrt N$ is sharp: on a prime ring the flow passes
+arbitrarily close to a perfectly flat kernel.
+
+\begin{proposition}[prime rings reach the unitarity bound]\label{prop:bn-prime}
+For every odd prime $p$, $B_p=\sqrt p$. Consequently $\limsup_N B_N/\sqrt N=1$. The supremum is attained
+for $p=3$ (at $t=2\pi/9$) and is not attained for $p\ge5$.
+\end{proposition}
+
+\begin{proof}
+Put $m=\tfrac{p-1}2$ and $\zeta=\eu^{2\pi\mathrm i/p}$, so $\lambda_r=2-\zeta^r-\zeta^{-r}$.
+\emph{(i) Independence.} Suppose $\sum_{r=1}^m c_r\lambda_r=0$ with $c_r\in\Q$, and put $C=\sum_rc_r$.
+Substituting $1=-\sum_{j=1}^{p-1}\zeta^j$ in the constant term $2C$ gives
+$\sum_{j=1}^{p-1}(-2C)\,\zeta^j-\sum_{r=1}^m c_r(\zeta^r+\zeta^{p-r})=0$. The powers $\zeta,\dots,\zeta^{p-1}$ are
+$\zeta$ times the power basis of the degree-$(p-1)$ field $\Q(\zeta)$, hence a basis, so every coefficient
+vanishes: $c_r=-2C$ for each $r$. Summing, $C=-2mC=-(p-1)C$, so $pC=0$; hence $C=0$ and every $c_r=0$.
+\emph{(ii) Kronecker.} By (i) and Kronecker's theorem~\cite[Ch.~1]{KN} the flow
+$t\mapsto(t\lambda_r)_{r\le m}$, $t\ge0$, is dense in $\mathbb T^m$. Choose $t_n$ with
+$t_n\lambda_r\to-2\pi r^2/p\pmod{2\pi}$ for $1\le r\le m$. This target respects the spectrum:
+$\lambda_{p-r}=\lambda_r$ and $(p-r)^2\equiv r^2\pmod p$, while $\lambda_0=0$ matches $0^2$. So
+$\eu^{-\mathrm it_n\lambda_r}\to\zeta^{r^2}$ for every $r\in\Z/p$.
+\emph{(iii) Gauss sum.} Hence $K_p(k,t_n)\to\frac1p\sum_{r\bmod p}\zeta^{r^2+rk}$. Completing the square
+($p$ odd), $r^2+rk\equiv(r+\bar2k)^2-\bar4k^2\pmod p$ with $\bar2,\bar4$ the inverses of $2,4$ mod $p$, so the
+sum is a unimodular multiple of the quadratic Gauss sum $\sum_r\zeta^{r^2}$, whose modulus is $\sqrt p$. So
+$|K_p(k,t_n)|\to p^{-1/2}$ for every $k$ and $\sum_k|K_p(k,t_n)|\to\sqrt p$. With $B_p\le\sqrt p$
+(Theorem~\ref{thm:schr}(2)) this gives $B_p=\sqrt p$, and since $B_N\le\sqrt N$ for every $N$,
+$\limsup_NB_N/\sqrt N=1$.
+\emph{(iv) Attainment.} $\sum_k|K_p(k,t)|=\sqrt p$ is the equality case of Cauchy--Schwarz,
+$|K_p(k,t)|=p^{-1/2}$ for all $k$. As $\eu^{-\mathrm it\LN}=\eu^{-2\mathrm it}\eu^{\mathrm itA}$ with $A$ the
+adjacency matrix of the cycle, this is instantaneous uniform mixing of the continuous-time quantum walk on
+$C_p$. It occurs for $p=3$: at $t=2\pi/9$, $|1+2\eu^{-3\mathrm it}|=|1-\eu^{-3\mathrm it}|=\sqrt3$. For $p\ge5$
+it does not occur~\cite{GMR17}. The exact inputs (i) and (iii) are checked for $p\le53$, and times with
+$\|K_p(\cdot,t)\|_1/\sqrt p>1-10^{-5}$ are exhibited for $p=5$ and $p=7$ ($t\approx5.8\cdot10^4$ and
+$t\approx2.0\cdot10^6$) (\texttt{verify\_bn\_prime\_flat.py}, \texttt{exact/pari/bn\_prime\_flat.gp}).
+\end{proof}
+
+\noindent This is the $\varepsilon$-uniform mixing on $C_p$ observed by Godsil, Mullin and
+Roy~\cite{GMR17}; we include the short proof because it decides the all-time constant. The aligning times
+$t_n$ are Diophantine-long (they align $\tfrac{p-1}2$ independent phases), far outside the ballistic
+windows $t=O(N)$ on which the Debye analysis below operates. The sharp constant that this analysis
+addresses is therefore the one of the \emph{windowed} amplification
+\[
+  B_N(S):=\sup_{0\le t\le SN/2}\|K_N(\cdot,t)\|_1\qquad(S>0\ \text{fixed}).
+\]
+
+\begin{conjecture}[windowed Schr\"odinger constant]\label{conj:bn-window}
+For every fixed $S\ge1$, $\limsup_N B_N(S)/\sqrt N=\beta_{\mathrm{odd}}$, the constant~\eqref{eq:beta-odd}.
+\end{conjecture}
+
+\noindent For $S=1$ the window is the two-copy range, where Proposition~\ref{prop:bn-profile} gives the
+value $\beta_{\mathrm{odd}}$. For $S>1$ two steps remain open: the $\ge3$-copy expected-modulus inequality
+of \S\ref{sub:multicopy} (validated numerically, not proved), and a version of
+Theorem~\ref{thm:uniform-transfer} that is uniform in $s$ on $[1,S]$ (the theorem holds for each fixed $s$,
+with constants that depend on $s$). Some restriction of the window is necessary, since over all times the
+constant is $1$ (Proposition~\ref{prop:bn-prime}); whether polynomial windows $t\le N^C$ keep the value
+$\beta_{\mathrm{odd}}$ is open.
+
 \begin{remark}[the candidate constant splits by parity]\label{rem:bn-parity}
 The sharp constant is expected to be parity-dependent: the aliasing phase $\mathrm i^{-N}$ is real for even
 $N$ and imaginary for odd $N$, so where the two overlapping fronts meet they add differently. Numerically
@@ -2220,6 +2276,8 @@ Relation lattices $\Lambda_N$ (Table~\ref{tab:lattices}) & \texttt{verify\_relat
 Schr\"odinger lower bound $\Omega(\sqrt N)$ & \texttt{verify\_schrodinger\_lower.py}\\
 Constant $B_N/\sqrt N$ scan (Table~\ref{tab:bn}) & \texttt{verify\_bn\_constant.py}\\
 $B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{verify\_bn\_parity.py}\\
+$B_p=\sqrt p$, $\limsup B_N/\sqrt N=1$ (Prop.~\ref{prop:bn-prime}) & \texttt{verify\_bn\_prime\_flat.py}\\
+\quad$\hookrightarrow$ exact independence and Gauss-sum flatness, $p\le53$ (PARI) & \texttt{exact/pari/bn\_prime\_flat.gp}\\
 Two-copy profile $\max F=\beta_{\mathrm{odd}}$ (Prop.~\ref{prop:bn-profile}) & \texttt{verify\_bn\_profile\_max.py}\\
 $\quad$rigorous $F'>0$ on $[0.937,1]$ (interval arith.) & \texttt{verify\_bn\_profile\_rigorous.py}\\
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
