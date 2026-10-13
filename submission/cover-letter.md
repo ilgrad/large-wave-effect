@@ -21,15 +21,20 @@ the paper:
    central open question for the effect.
 2. **Classifies saturation:** A_N = U_N (the ceiling) if and only if N is prime or a power of two —
    equivalently, every integer frequency relation has coefficient-sum divisible by four — via an explicit
-   root-of-unity obstruction valid for all composite N.
-3. **Sharpens the discrete Schrödinger amplification problem:** B_N = Θ(√N) in the ℓ∞ operator norm, with
-   liminf B_N/√N ≥ c₀/√2 proved and B_p = √p on prime rings, so limsup B_N/√N = 1 over all times; on
-   ballistic windows t = O(N) a parity split is identified numerically, the odd-subsequence value
-   β_odd = 0.928… is an elliptic-integral constant with no elementary closed form, and the windowed sharp
-   upper bound is reduced to one validated residual inequality and an s-uniform transfer.
+   root-of-unity obstruction valid for every composite N that is not a power of two.
+3. **Locates the infinite-time saturation of the discrete Schrödinger amplification:** B_N = Θ(√N)
+   in the ℓ∞ operator norm, with liminf B_N/√N ≥ c₀/√2 proved; B_N = √N exactly when the orbit closure (of
+   dimension φ(N)/2) contains a flat phase vector, which holds for N = p and N = p² (the ε-uniform mixing
+   of Godsil–Mullin–Roy and Cao–Zhu) and fails for every even N ≥ 6 (new for the even squares; for the
+   other even N it also follows from Monterde's bipartite conditions) and for N = 15 (an exact Nullstellensatz
+   certificate, computer-assisted), so limsup B_N/√N = 1. On the
+   dispersive time scale t = O(N) the constant splits by parity; the odd-N value β_odd = 0.928… is an elliptic-integral constant with no elementary closed form, and its
+   windowed sharp upper bound is reduced to one validated residual inequality and an s-uniform transfer.
 4. **Extends and continues:** the order law to the Dirichlet segment and to every ring product C_N □ H; and
    a rigorous chain for the focusing discrete NLS (weak-nonlinear persistence, the modulational-instability
-   band from the L_N spectrum, existence and stability of the on-site breather).
+   band from the L_N spectrum, no dispersal of a single-site excitation above γP = 4 and on-site trapping
+   above γP = 8, existence of breathers and orbital stability of the site-centred one in the anti-continuum
+   regime, with computer-assisted verdicts at one frequency).
 
 **Methodology and reproducibility.** The arguments combine almost-periodicity (Bohr/Kronecker–Weyl),
 cyclotomic field theory, Toeplitz/circulant spectral analysis, and Bessel/Debye asymptotics. Every
@@ -39,14 +44,15 @@ machine-checked in Rocq. The complete repository is public.
 
 **Scholarship.** I am careful to separate what is new from the prior Filimonov-group work: the segment
 constant C = 4/π² is the published Myshkis–Filimonov (2003) value, and the qualitative ring effect for
-prime/2^m is credited to that line. Filimonov's 1992 C. R. Acad. Sci. note on the multiple-frequency case
-was obtained and compared on the ring: the rational-independence dichotomy (independence for N
-prime or 2^m, dependence for even composite N) and the unbounded ceiling are his, and the manuscript credits
-them in a priority remark. The novel content is marked accordingly: the rate (1/π) ln N, the mod-4
-classification of which N attain the ceiling, the order-theorem proof, the Schrödinger parity, and the
-formal layer.
+prime/2^m is credited to that line. Filimonov's 1992 C. R. Acad. Sci. note, compared in detail in the
+manuscript, already contains the Kronecker identification of the ring ceiling under Q-independence, the
+prime/2^m independence by the same cyclotomic argument (our proof is a streamlined reproof), the
+even-composite dependence, and the unbounded growth. The new content is the rate (1/π) ln N for every N,
+the saturation classification with its mod-4 criterion, the closed-form rank, the Schrödinger results, and
+the formal layer.
 
-**Open problems** are stated honestly and reduced to clean statements (the sharp windowed bound B_N(S) on N/2 < t ≤ SN/2; a
+**Open problems** are stated honestly and reduced to clean statements (the remaining odd composite N in the B_N
+saturation pattern, and the sharp windowed B_N bound on N/2 < t ≤ SN/2; a
 rigorous growth lower bound for the deficit; the strongly nonlinear regime; condition (B) for general
 quasi-1D lattices).
 

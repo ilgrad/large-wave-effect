@@ -76,32 +76,34 @@
 \begin{abstract}
 We study the large-wave effect for free oscillations of the periodic discrete chain
 (the ring of $N$ beads) and for the discrete Schr\"odinger equation on the same ring.
-Writing $A_N=\sup_{t}\max_j|u_j(t)|$ for the unit-impulse Green's function, we show that the
-supremum is, by Bohr's theorem, the $\ell^1$ mass of the Fourier coefficients whenever the
-frequencies $\{2\sin(\pi r/N)\}$ are linearly independent over $\Q$, and we prove this
-independence for $N$ an odd prime and for $N=2^m$ by a cyclotomic argument. Consequently
+Writing $A_N=\sup_{t}\max_j|u_j(t)|$ for the unit-impulse Green's function, we recall, after
+Filimonov (1992), that the supremum is, by Bohr's theorem, the $\ell^1$ mass of the Fourier coefficients
+whenever the frequencies $\{2\sin(\pi r/N)\}$ are linearly independent over $\Q$, which holds for $N$ an odd
+prime and for $N=2^m$; we give a streamlined cyclotomic reproof. Consequently
 $A_N=U_N:=\tfrac1{2N}\sum_{r=1}^{N-1}\csc(\pi r/N)=\tfrac1\pi\ln N+\tfrac1\pi(\gamma+\ln\tfrac2\pi)+o(1)$
 unconditionally on these classes, and the same sharp constant holds for the composite family $N=2p$.
 For every $N$ the upper bound $A_N\le U_N=\tfrac1\pi\ln N+O(1)$ is rigorous; the orbit-closure subtorus
 has dimension exactly $\tfrac12\varphi(2N)$, and $A_N=U_N$ holds \emph{if and only if} every integer
 relation among the frequencies has coefficient-sum divisible by four (with an antipodal variant for even
 $N$)---an arithmetic criterion met \emph{exactly} by the primes and the powers of two
-(Theorem~\ref{thm:classification}), and by no composite $N$. Moreover the \emph{order} is now settled for
+(Theorem~\ref{thm:classification}), and by no other composite $N$. Moreover the \emph{order} is now settled for
 \emph{all} $N$: $A_N\sim\tfrac1\pi\ln N$ unconditionally (the lower bound from a palindromic argument
-showing the first $\tfrac12\varphi(2N)$ frequencies are $\Q$-independent, so a $\ln N$ fraction of the
+showing the first $\tfrac12\varphi(2N)$ frequencies are $\Q$-independent, so a $(1-o(1))$ fraction of the
 ceiling can always be aligned). The composite deficit $U_N-A_N$ is $O(\ln\ln\ln N)$, and the order law extends to the Dirichlet segment
 and to every ring product $C_N\,\square\,H$. For the discrete Schr\"odinger propagator
 $\eu^{-\mathrm{i}t\LN}$, unitarity forbids amplification of a localized state, while the
-$\ell^\infty\!\to\!\ell^\infty$ amplification satisfies $B_N=\Theta(\sqrt N)$; here $\liminf B_N/\sqrt N\ge
-c_0/\sqrt2$ is proved, and over all times the unitarity bound is sharp: $B_p=\sqrt p$ for every odd prime
-$p$, so $\limsup B_N/\sqrt N=1$. On ballistic windows $t=O(N)$ the constant splits by parity: numerically
-the even subsequence approaches $c_0/\sqrt2$, while on $t\le N/2$ the odd one attains
-$\beta_{\mathrm{odd}}=0.928\ldots$ (a Bessel-envelope integral for which no elementary closed form was
-found). For the focusing discrete NLS the
+$\ell^\infty\!\to\!\ell^\infty$ amplification satisfies $B_N=\Theta(\sqrt N)$ with $\liminf B_N/\sqrt N\ge
+c_0/\sqrt2$. The unitarity ceiling $\sqrt N$ is reached, as a supremum, exactly when the orbit closure---a
+subtorus of dimension $\tfrac12\varphi(N)$---contains a flat phase vector. This holds for $N$ an odd prime
+(a Gauss sum) and for $N=p^2$ (an even Frank sequence), as known from $\varepsilon$-uniform mixing of quantum walks
+on cycles, so $\limsup B_N/\sqrt N=1$; we show that it fails for every even $N\ge6$ (a Golay-pair obstruction) and, by an exact certificate, for $N=15$. On the dispersive time scale $t=O(N)$ the constant is smaller and splits
+by parity: numerically $c_0/\sqrt2$ for even $N$ and $\beta_{\mathrm{odd}}=0.928\ldots$ for odd $N$ (a
+Bessel-envelope integral for which no elementary closed form was found). For the focusing discrete NLS the
 linear large wave persists under weak nonlinearity, the modulational-instability band is read off the
-$\LN$ spectrum, and the on-site breather exists and is stable. Proved results are separated throughout
+$\LN$ spectrum, a single-site excitation cannot disperse above $\gamma P=4$, and localized breathers exist,
+the site-centred one orbitally stable in the anti-continuum regime. Proved results are separated throughout
 from computational evidence and conjectures; all quantitative claims are reproduced by the accompanying
-scripts, with a \textsc{Gap}/\textsc{Pari}/\textsc{FriCAS}/\textsc{Rocq} exact-arithmetic layer.
+scripts, with a \textsc{Gap}/\textsc{Pari}/\textsc{Julia}/\textsc{FriCAS}/\textsc{Rocq} exact-arithmetic layer.
 \end{abstract}
 
 \maketitle
@@ -128,9 +130,9 @@ lattice optics~\cite{Longhi}, and discrete nonlinear models of anomalous (rogue)
 studying the lattice in its own right.
 
 \smallskip
-\noindent\textbf{Contributions.} (i) We identify $\sup_t G_N(0,t)=U_N$ through Bohr's theorem under
-rational independence of the frequencies (Section~3), and prove this independence for $N$ prime and
-$N=2^m$ by a cyclotomic argument (Theorems~\ref{thm:prime},~\ref{thm:two}), giving the unconditional
+\noindent\textbf{Contributions.} (i) Following~\cite{F92}, we identify $\sup_t G_N(0,t)=U_N$ through Bohr's
+theorem under rational independence of the frequencies (Section~3), which holds for $N$ prime and $N=2^m$
+(Theorems~\ref{thm:prime},~\ref{thm:two}, a streamlined reproof of~\cite[Thm.~2]{F92}), giving the unconditional
 asymptotics $A_N\sim\tfrac1\pi\ln N$ with the explicit constant of Lemma~\ref{lem:asym}; the same sharp
 constant extends to the composite family $N=2p$ (Proposition~\ref{prop:2p}). (ii) For every
 $N$ the upper bound $A_N\le U_N$ is rigorous, and we reduce $A_N$ \emph{exactly} to an optimization over
@@ -146,7 +148,9 @@ $A_N\sim\tfrac1\pi\ln N$ (Theorem~\ref{thm:order}), the lower bound coming from 
 amplitude and show both the finite-horizon recurrence time and the effect of mass disorder
 (Section~\ref{sec:reach}). (iv) For the discrete Schr\"odinger equation a localized state is never
 amplified (unitarity, rigorous), and the $\ell^\infty\!\to\!\ell^\infty$ norm satisfies
-$B_N=\Theta(\sqrt N)$, both bounds rigorous (Theorems~\ref{thm:schr},~\ref{thm:schr-lower}). (v)~As a
+$B_N=\Theta(\sqrt N)$, both bounds rigorous (Theorems~\ref{thm:schr},~\ref{thm:schr-lower}); the ceiling
+$B_N=\sqrt N$ is reached for $N=p,p^2$~\cite{GMR17,CaoZhu26} and missed for every even $N\ge6$ and for $N=15$, on an
+orbit closure of dimension $\tfrac12\varphi(N)$ (Theorem~\ref{thm:bn-saturation}). (v)~As a
 nonlinear outlook we connect $\LN$
 to the rogue-wave problem (Section~\ref{sec:rogue}): the discrete NLS
 $\mathrm i\dot z=-\LN z+\gamma|z|^2z$ has $\LN$ as its linear part and the focusing NLS as its
@@ -177,9 +181,9 @@ without bound (its Thm~4, with no rate); the discrete peaks exceed the continuum
 or $2^m$ (its Corollary); and a continuum model finer than the wave equation (its \S3). A recent
 monograph~\cite{AAD21} reproduces its splash table (Table~10.1, $P_N\to\infty$), at the \emph{segment}
 constant $4/\pi^2$. Thus the qualitative ring effect, the prime/$2^m$ independence and its cyclotomic
-proof, the even-composite dependence, and the unbounded growth are already Filimonov's; our contribution
-is the \emph{rate, the constant, and the arithmetic of which $N$ saturate}, as follows.
-Our contribution is \emph{quantitative and structural}: the order theorem $A_N\sim\tfrac1\pi\ln N$ for
+proof, the even-composite dependence, and the unbounded growth are already Filimonov's.
+Our contribution is \emph{quantitative and structural}---the rate, the constant, and the arithmetic of which
+$N$ saturate: the order theorem $A_N\sim\tfrac1\pi\ln N$ for
 \emph{every} $N$, via the palindromic prefix-independence lemma (Theorem~\ref{thm:order},
 Lemma~\ref{lem:prefix}); the saturation classification $A_N=U_N\Leftrightarrow N$ prime or $2^m$
 (Theorem~\ref{thm:classification}); the explicit ring constant $\tfrac1\pi$ and the
@@ -189,7 +193,11 @@ independence as its full-rank case (Theorems~\ref{thm:qrank},~\ref{thm:prime},~\
 the ceiling (Theorem~\ref{thm:ceiling}); the new composite family $N=2p$ (Proposition~\ref{prop:2p}); the
 spectral-zeta systematization; the finite-time/disorder dichotomy (Section~\ref{sec:reach}); the
 sharp $B_N=\Theta(\sqrt N)$ growth of the discrete Schr\"odinger propagator
-(Theorem~\ref{thm:schr-lower}); the segment rank and classification (Theorem~\ref{thm:segrank}); and the
+(Theorem~\ref{thm:schr-lower}) and the exclusion $B_N<\sqrt N$ for every even $N\ge6$, i.e.\ no
+$\varepsilon$-uniform mixing on even cycles (Theorem~\ref{thm:bn-saturation}; for $N$ not an even square it
+also follows from the bipartite conditions of~\cite{Monterde}, and its saturating cases $N=p,p^2$ are the
+$\varepsilon$-uniform mixing of~\cite{GMR17,CaoZhu26}), and for $N=15$ by an exact certificate; the segment rank for every $N$ and its $\bmod\,4$
+classification (Theorem~\ref{thm:segrank}; the full-rank case is in~\cite{GKSS12}); and the
 order criterion with its ring-product corollary (Proposition~\ref{prop:order-criterion},
 Corollary~\ref{cor:product}). We claim as new neither the large-wave phenomenon, nor its appearance on the
 ring for $N$ prime or $2^m$, nor the prime/$2^m$ $\Q$-independence and its cyclotomic proof, nor the
@@ -214,15 +222,18 @@ Thm.~\ref{thm:ceiling}); this holds \emph{exactly} for $N$ prime or $N=2^m$, so
 $\{N:A_N=U_N\}=\{\text{prime}\}\cup\{2^m\}$ (Thm.~\ref{thm:classification}, via an explicit
 root-of-unity obstruction for every composite $N$).
 \item[\textbf{T4}] Discrete Schr\"odinger: localized states never amplify (unitarity), yet
-$B_N=\Theta(\sqrt N)$ in $\ell^\infty$ (Thms.~\ref{thm:schr},~\ref{thm:schr-lower}).
+$B_N=\Theta(\sqrt N)$ in $\ell^\infty$ (Thms.~\ref{thm:schr},~\ref{thm:schr-lower}); $B_N=\sqrt N$ for $N=p,p^2$
+\cite{GMR17,CaoZhu26}, so $\limsup B_N/\sqrt N=1$, and $B_N<\sqrt N$ for even $N\ge6$ and $N=15$ (Thm.~\ref{thm:bn-saturation}).
 \item[\textbf{T5}] \emph{Order, all $N$}: $A_N\sim\tfrac1\pi\ln N$ for \emph{every} $N$
 (Thm.~\ref{thm:order})---the lower bound from an alignable independent prefix of length
 $\tfrac12\varphi(2N)$ (Lemma~\ref{lem:prefix}, by a palindromic argument).
 \item[\textbf{T6}] The incoherent \emph{ceiling} has critical spectral dimension $d_s=1$ (incl.\ quasi-1D);
 the amplitude is an infinite-time, Diophantine-limited quantity (\S\ref{sec:dim},~\S\ref{sec:reach}).
 \item[\textbf{T7}] Focusing DNLS: the linear large wave persists under weak nonlinearity, the
-modulational-instability band is read off the $\LN$ spectrum, and the on-site breather exists and is
-stable (Props.~\ref{prop:dnls-persist},~\ref{prop:mi},~\ref{prop:breather},~\ref{prop:breather-stab}).
+modulational-instability band is read off the $\LN$ spectrum, a single-site excitation never disperses for
+$\gamma P>4$ and stays on its site for $\gamma P>8$, and localized breathers exist, the site-centred one
+orbitally stable in the anti-continuum regime
+(Props.~\ref{prop:dnls-persist},~\ref{prop:mi},~\ref{prop:threshold},~\ref{prop:breather},~\ref{prop:breather-stab}).
 \end{itemize}}}
 
 We treat the periodic chain (the ring) with \emph{free} oscillations, and contrast it with the
@@ -248,7 +259,7 @@ purely number-theoretic one (rational relations among the frequencies).
 
 The ring and the Dirichlet segment realize the same mechanism---constructive phase alignment of a
 logarithmically weighted family of modes---through different arithmetic. On the segment the
-frequencies $2\sin(\pi k/2N)$ lie in $\Q(\zeta_{4N})$; on the ring $2\sin(\pi r/N)\in\Q(\zeta_{2N})$,
+frequencies $2\sin\frac{\pi k}{2(N+1)}$ lie in $\Q(\zeta_{4(N+1)})$; on the ring $2\mathrm i\sin(\pi r/N)\in\Q(\zeta_{2N})$,
 with the twofold degeneracy $\omega_r=\omega_{N-r}$ that halves the number of independent phases and
 (as the time-averaged $\mathrm{RMS}_t|G_N(0,\cdot)|=\sqrt{(N^2-1)/(12N^2)}\to1/\sqrt{12}$ shows) doubles the typical energy
 relative to a naive independent count. The growth constant $1/\pi$ is identical on the classes where
@@ -295,29 +306,33 @@ $A_N\sim\tfrac1\pi\ln N$ is now proved for \emph{every} $N$ (Theorem~\ref{thm:or
 $U_N-A_N$ on the non-saturating $N$ is $O(\ln\ln\ln N)$ (proved), and on the numerical evidence
 \emph{unbounded}---growing with the number of distinct odd prime factors (Remark~\ref{rem:defect}); its
 exact value is algebraic per $N$ with no apparent closed form
-($A_N/U_N\in[0.84,1]$). (ii)~The saturation locus is settled---no composite $N$
+($A_N/U_N\in[0.84,1]$). (ii)~The saturation locus is settled---no composite $N$ other than $2^m$
 saturates (Theorem~\ref{thm:classification})---and $A_N$ for individual composite $N$ is algebraic
 (Proposition~\ref{prop:closed}) but computed per $N$, not given in closed form. (iii)~For the Schr\"odinger
-$B_N=\Theta(\sqrt N)$ the all-time constants are $\limsup_N B_N/\sqrt N=1$ (prime rings,
-Proposition~\ref{prop:bn-prime}) and $\liminf_N B_N/\sqrt N\ge c_0/\sqrt2\approx0.861$; the all-time
-$\liminf$ is not known. The finer constant is a windowed one, $B_N(S)=\sup_{t\le SN/2}\|K_N(\cdot,t)\|_1$, and
-it splits by parity (Remark~\ref{rem:bn-parity}): numerically $c_0/\sqrt2$ on the even subsequence and
-$\beta_{\mathrm{odd}}\approx0.928$ on the odd one. For fixed $s=2t/N>1$ the reduction is rigorous (joint
-equidistribution and its uniform transfer to $F(s)$, Theorems~\ref{thm:joint-equi},~\ref{thm:uniform-transfer}),
-leaving one validated sharp inequality (a Gaussian-excess/expected-modulus bound) and an $s$-uniform
-version of the transfer before the windowed constant
-$\limsup_N B_N(S)/\sqrt N=\beta_{\mathrm{odd}}$ (Conjecture~\ref{conj:bn-window}). The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
+$B_N=\Theta(\sqrt N)$ the infinite-time constant is arithmetic: $\limsup_NB_N/\sqrt N=1$ along the primes,
+$B_N<\sqrt N$ for even $N\ge6$ and for $N=15$ (an exact certificate); the other odd composites
+that are not prime squares are open
+(Theorem~\ref{thm:bn-saturation}, Conjecture~\ref{conj:bn-psq}). The proved
+$\liminf_NB_N/\sqrt N\ge c_0/\sqrt2\approx0.861$ is probably far from sharp: every $N$ tested has
+$B_N/\sqrt N\ge0.93$. On the dispersive window $t=O(N)$ the constant splits by parity
+(Remark~\ref{rem:bn-parity}): $c_0/\sqrt2$ for even $N$ (attained numerically) and $\beta_{\mathrm{odd}}\approx0.928$
+for odd $N$. The $t>N/2$ reduction is rigorous for each fixed $s$ (joint equidistribution and its uniform-in-$u$
+transfer to $F(s)$, Theorems~\ref{thm:joint-equi},~\ref{thm:uniform-transfer}), leaving one validated sharp
+inequality (a Gaussian-excess/expected-modulus bound) and uniformity in $s$ before the windowed constant
+$\limsup_NB_N(SN/2)/\sqrt N=\beta_{\mathrm{odd}}$ (Conjecture~\ref{conj:bn-window}). The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
 published Myshkis--Filimonov value~\cite[Thm.~2]{MF03}, which the Schr\"odinger ceiling inherits because the
 two ceilings coincide. (iv)~On the Dirichlet segment the rank, saturation, \emph{and} order are now fully
 proved (Theorem~\ref{thm:segrank}; the order transfers verbatim from Theorem~\ref{thm:order}); what
 remains there, as on the ring, is the exact deficit on the non-saturating $N+1$. (v)~Part~II is in larger
 part computational; its rigorous chain comprises the Hamiltonian conservation laws
 (Proposition~\ref{prop:dnls-cons}), the weak-nonlinearity persistence of the linear large wave
-(Proposition~\ref{prop:dnls-persist}), the modulational-instability band (Proposition~\ref{prop:mi}), and
-the existence and stability of the discrete breathers
-(Propositions~\ref{prop:breather},~\ref{prop:breather-stab}), the no-dispersal side of the dynamical
-self-trapping threshold with the exact constant $4$ (Proposition~\ref{prop:threshold}), and the
-weak-coupling converse (Proposition~\ref{prop:dispersal}); the threshold window $\gamma P\in[0.43,4)$, the
+(Proposition~\ref{prop:dnls-persist}), the modulational-instability band (Proposition~\ref{prop:mi}), the
+existence of the discrete breathers and the stability of the site-centred one in the anti-continuum regime,
+with computer-assisted verdicts at $\Omega=2$ (Propositions~\ref{prop:breather},~\ref{prop:breather-stab}),
+the no-dispersal bound for $\gamma P>4$ with its energy-sharp constant and on-site trapping for $\gamma P>8$
+(Proposition~\ref{prop:threshold}), and quantitative dispersal for $\gamma P<0.43$
+(Proposition~\ref{prop:dispersal}). The range $\gamma P\in[0.43,4)$ (numerically, dispersal up to $\approx3.4$
+and a localized remnant from $\approx3.5$), the breather stability along the whole branch, the
 saturation/rogue dynamics, and the route to chaos are simulated, not proved. (vi)~The
 supremum $A_N$ is an \emph{infinite-time} quantity; the amplitude reached on any physical horizon is
 Diophantine-limited (Section~\ref{sec:reach}). Proved statements are separated throughout from numerical
@@ -332,7 +347,7 @@ evidence and from the conjectures, and every quantitative claim is reproduced by
 part of $N$, and (Remark~\ref{rem:defect}) is \emph{unbounded}---numerically it grows with the number of
 distinct odd prime factors (the subtorus optimizer is validated by returning $U_N-A_N=0$ to machine
 precision on primes of the same size), so $\Theta(\ln\ln\ln N)$ along primorials. The gap $A_N<U_N$ is
-\emph{rigorously certified} for small $N$ (Lipschitz grid: $U_N-A_N\ge0.049,0.057,0.030,0.082$ for
+\emph{certified} for small $N$ (Lipschitz grid in double precision: $U_N-A_N\ge0.048,0.056,0.029,0.081$ for
 $N=6,9,12,15$; exact rational sum-of-squares certificates: $U_N-A_N\ge0.06717197,0.14754945,0.11208183$ for
 $N=9,15,21$, within $10^{-7}$ of the optimizer, Remark~\ref{rem:defect}); what remains is a rigorous
 \emph{asymptotic} lower bound along primorials (the grid is exponential in $\tfrac12\varphi(2N)$ and the
@@ -349,49 +364,50 @@ $\omega(m)\to\infty$---the primal counterpart of McGehee--Pigno--Smith/Konyagin,
 overshoot; the min-side Chowla machinery (Bedert's $n^{1/5-o(1)}$ bound~\cite{Bedert25}) runs the opposite way and does
 \emph{not} transfer (\texttt{verify\_excess\_omega2\_spectral.py}). Structurally this is the \emph{same}
 obstruction as the multi-copy residual~(2) (\texttt{verify\_excess\_omega2.py}).
-\item The windowed Schr\"odinger constant (Conjecture~\ref{conj:bn-window}). The order
-$B_N=\Theta(\sqrt N)$ is settled, $\liminf\ge c_0/\sqrt2\approx0.861$ is proved
-(Theorem~\ref{thm:schr-lower}), and over all times $\limsup_N B_N/\sqrt N=1$ (Proposition~\ref{prop:bn-prime}:
-$B_p=\sqrt p$ on prime rings). The open question is the windowed constant
-$\limsup_N\sup_{t\le SN/2}\|K_N(\cdot,t)\|_1/\sqrt N$ for fixed $S$, which splits by the parity of $N$
-(Remark~\ref{rem:bn-parity}): the odd-subsequence value $\beta_{\mathrm{odd}}=0.9280193048\ldots$ is the elliptic-integral average
-\eqref{eq:beta-odd} (a $25$-digit \textsc{pslq} search finds no elementary closed form), and
-$\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ holds on $t\le N/2$, now \emph{in full}: the
-two-copy reduction is rigorous, the limiting profile is the \emph{explicit} elliptic-integral function
-$F(s)$ (Proposition~\ref{prop:bn-profile}), and its maximization $\max F=F(1)=\beta_{\mathrm{odd}}$ is
-\emph{proved}---analytically on $[\tfrac12,0.937]$ (Jensen, sharpened by the tangent to the concave $h$) and
-by validated interval arithmetic on $[0.937,1]$. For the multi-copy region $t>N/2$ the entire $N\to\infty$
-reduction is now \emph{rigorous}: the Debye phases are jointly equidistributed (Theorem~\ref{thm:joint-equi},
-a van der Corput second-derivative bound) and this transfers \emph{uniformly in $u$} to the $\ell^1$ constant
-$F(s)$ (Theorem~\ref{thm:uniform-transfer}, a mollified Koksma--Hlawka estimate---the modulus has divergent
-Hardy--Krause variation---with the cubic van der Corput test at the coalescing points), alongside the
-variance-floor inequality and the tail $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). Two
-steps separate this from the windowed constant $\beta_{\mathrm{odd}}$: the transfer must hold uniformly in
-$s\in[1,S]$ (it is proved for each fixed $s$), and a \emph{single} validated residual must be proved, the
-Gaussian-excess inequality
+\item The Schr\"odinger constant $B_N/\sqrt N$ (Conjectures~\ref{conj:bn-psq} and~\ref{conj:bn-window}). The
+order $B_N=\Theta(\sqrt N)$ is settled. Over infinite time
+the constant is arithmetic: $B_N=\sqrt N$ iff the orbit closure contains a flat phase vector, which holds for
+$N=p,p^2$ and fails for even $N\ge6$ and for $N=15$ (Theorem~\ref{thm:bn-saturation}). Two questions remain. Is
+$B_N<\sqrt N$ for every odd composite $N$ that is not a prime square? For those tested in $21\le N\le81$ the best values found (lower bounds for $B_N/\sqrt N$) lie between $0.996$ and $0.99992$, the closest being
+$N=27$ with $1-0.99992\approx8\times10^{-5}$, so an exact certificate (an ideal-membership identity, as at $N=15$, or a rational sum-of-squares bound on the
+orbit closure) is the natural tool. And is $\liminf_NB_N/\sqrt N$, proved $\ge c_0/\sqrt2\approx0.861$ (Theorem~\ref{thm:schr-lower}), in fact
+$1$? On the dispersive window $t\le SN/2$ the constant splits by the parity of $N$ (Remark~\ref{rem:bn-parity}):
+$c_0/\sqrt2$ for even $N$ (numerically) and, for odd $N$, the elliptic-integral average
+$\beta_{\mathrm{odd}}=0.9280193048\ldots$ \eqref{eq:beta-odd} (a $25$-digit \textsc{pslq} search finds no
+elementary closed form). For odd $N$ and each fixed $s=2t/N\le1$ the limit of $\|K_N(\cdot,t)\|_1/\sqrt N$ is
+the \emph{explicit} elliptic-integral profile $F(s)$ (Proposition~\ref{prop:bn-profile}), whose maximization
+$\max F=F(1)=\beta_{\mathrm{odd}}$ is \emph{proved} by validated interval arithmetic. For the multi-copy region
+$t>N/2$ the $N\to\infty$ reduction at each fixed $s$ is \emph{rigorous} as well: the Debye phases are jointly
+equidistributed (Theorem~\ref{thm:joint-equi}, a van der Corput second-derivative bound) and this transfers
+\emph{uniformly in $u$} to the $\ell^1$ constant $F(s)$ (Theorem~\ref{thm:uniform-transfer}: panels away from the
+band edges, an $O(\varepsilon^{3/4})$ bound on the edge strips), alongside the variance-floor inequality and the
+tail $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). Two steps separate this from the windowed
+constant of Conjecture~\ref{conj:bn-window}: convergence uniform in $s$ (on $t\le N/2$ as on
+$t>N/2$), and the validated Gaussian-excess inequality
 $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$, $K_\star=(h(1)-\sqrt\pi/2)/2$, for
 the \emph{balanced} Debye configurations of the profile (the live set is an interval of consecutive integers,
 so $|\#\,\mathrm{even}-\#\,\mathrm{odd}|\le1$; sharp at the two-copy pair, while imbalanced configurations
-violate the unrestricted bound), whose integrated majorant clears $\beta_{\mathrm{odd}}$ on $(1,20]$; proving
+violate the unrestricted bound), whose integrated majorant clears $\beta_{\mathrm{odd}}$ on $[1.005,\infty)$
+(the variance floor covers $(1,1.005]$); proving
 it needs a bound on the Bessel-ring tail of the Kluyver excess
 (\texttt{verify\_bn\_profile\_gaussian.py}, \texttt{verify\_bandedge\_transfer.py}).
 \item A rigorous nonlinear theory of the discrete NLS \eqref{eq:dnls} on the ring
-(Section~\ref{sec:rogue}). Two pieces are now settled: the linear large wave persists in the weakly
-nonlinear regime (Proposition~\ref{prop:dnls-persist}), and the modulational-instability band and growth
+(Section~\ref{sec:rogue}). Settled: the linear large wave persists in the weakly
+nonlinear regime (Proposition~\ref{prop:dnls-persist}); the modulational-instability band and growth
 rates $\sigma_Q=\sqrt{\lambda_Q(2\gamma A^2-\lambda_Q)}$ are read off the $\LN$ spectrum
-(Proposition~\ref{prop:mi}); breathers \emph{exist} on the ring by a finite-dimensional
-variational argument (Proposition~\ref{prop:breather}); and the site-centred breather is \emph{stable}
-(Vakhitov--Kolokolov, $\mathrm dP/\mathrm d\Omega>0$) while the bond-centred one is unstable
-(Proposition~\ref{prop:breather-stab}); one side of the dynamical launch threshold is settled with the
-\emph{sharp} constant $4=\|\LN\|$---full dispersal is energetically forbidden for $\gamma P>4$, since it
-would force $\langle\LN u,u\rangle\to2P-\tfrac\gamma2P^2<0$ (Proposition~\ref{prop:threshold})---and the
-converse is settled at weak coupling---quantitative dispersal $\inf_t\max_j|u_j|^2\le1.52P\sqrt{\gamma P}$
-for $N\gtrsim(\gamma P)^{-3/4}$ (Proposition~\ref{prop:dispersal}; on the finite ring $\sup_t$ recurs by
-Poincar\'e). The window $\gamma P\in[0.43,4)$ is a \emph{proof gap}, not a behavioural unknown: the seed
-disperses cleanly up to $\gamma P\approx4$ numerically (\texttt{verify\_selftrapping\_transition.py}), but
-the rigorous drop is proven only up to $0.43$. What remains open is this dispersive proof gap together with
-the \emph{fully} nonlinear regime---saturation and the rogue-wave focusing---where the admissible coupling
-shrinks with the Diophantine alignment time.
+(Proposition~\ref{prop:mi}); localized breathers exist by a finite-dimensional variational argument
+(Proposition~\ref{prop:breather}); in the anti-continuum regime the site-centred breather is orbitally stable
+and the bond-centred one unstable, with computer-assisted verdicts at $\Omega=2$
+(Proposition~\ref{prop:breather-stab}); full dispersal of a single-site launch is energetically forbidden for
+$\gamma P>4$, an energy-sharp constant, and the excitation stays on its site for $\gamma P>8$
+(Proposition~\ref{prop:threshold}); and dispersal is quantitative at weak coupling,
+$\inf_t\max_j|u_j|^2\le1.52P\sqrt{\gamma P}$ for $N\gtrsim(\gamma P)^{-3/4}$
+(Proposition~\ref{prop:dispersal}; on the finite ring $\sup_t$ recurs by Poincar\'e). Open: dispersal on
+$\gamma P\in[0.43,4)$, where numerically the seed disperses only up to $\gamma P\approx3.4$ and keeps a
+localized remnant from about $3.5$ (\texttt{verify\_selftrapping\_transition.py}; a long-time threshold near
+$3.45$ in~\cite{JHR95}), so a proof can reach at most that crossover; stability along the whole breather
+branch; and the \emph{fully} nonlinear regime---saturation and the rogue-wave focusing---where the admissible
+coupling shrinks with the Diophantine alignment time.
 \item The multidimensional nonlinear large wave (Section~\ref{sec:highd}): existence, stability, and
 the energy threshold of the $2$D/$3$D discrete breathers (cf.~\cite{FKM97}), and the long-wave dynamics in the
 Zakharov--Kuznetsov regime~\cite{ZakharovKuznetsov}---a nonlinear counterpart to the dimensional
@@ -429,7 +445,7 @@ we subtract symmetrically:
   S_N=\frac N\pi\sum_{r=1}^{N-1}\Bigl(\frac1r+\frac1{N-r}\Bigr)
       +\sum_{r=1}^{N-1}\underbrace{\Bigl[\csc\tfrac{\pi r}N-\frac N{\pi r}-\frac N{\pi(N-r)}\Bigr]}_{=\,R(r/N)} .
 \]
-The first sum is $\tfrac{2N}\pi H_{N-1}=\tfrac{2N}\pi(\ln N+\gamma)+O(1/N)$. The integrand
+The first sum is $\tfrac{2N}\pi H_{N-1}=\tfrac{2N}\pi(\ln N+\gamma)-\tfrac1\pi+O(1/N)$. The integrand
 $R(x)=\csc\pi x-\tfrac1{\pi x}-\tfrac1{\pi(1-x)}$ is smooth and bounded on $[0,1]$ (both poles cancel), so
 the second sum is a Riemann sum, $\sum_{r=1}^{N-1}R(r/N)=N\!\int_0^1\!R(x)\,dx+O(1)$, and the integral is
 elementary (using $\int\csc\pi x\,dx=\tfrac1\pi\ln\tan\tfrac{\pi x}2$):
@@ -514,11 +530,12 @@ modulational-instability solvability condition of Proposition~\ref{prop:mi}.
 \bibitem{Bohr} H.~Bohr, \emph{Almost Periodic Functions}, Chelsea, New York, 1947.
 \bibitem{Weyl} H.~Weyl, \emph{\"Uber die Gleichverteilung von Zahlen mod.\ Eins}, Math.\ Ann.\ \textbf{77} (1916), 313--352.
 \bibitem{KN} L.~Kuipers, H.~Niederreiter, \emph{Uniform Distribution of Sequences}, Wiley, New York, 1974 (reprinted Dover, 2006). (Ch.~1: Weyl criterion; Ch.~2: the Erd\H{o}s--Tur\'an inequality.)
-\bibitem{Montgomery} H.~L.~Montgomery, \emph{Ten Lectures on the Interface between Analytic Number Theory and Harmonic Analysis}, CBMS Reg.\ Conf.\ Ser.\ Math.\ \textbf{84}, Amer.\ Math.\ Soc., 1994. (van der Corput's method, \S8.)
+\bibitem{Montgomery} H.~L.~Montgomery, \emph{Ten Lectures on the Interface between Analytic Number Theory and Harmonic Analysis}, CBMS Reg.\ Conf.\ Ser.\ Math.\ \textbf{84}, Amer.\ Math.\ Soc., 1994. \texttt{doi:10.1090/cbms/084}. (Weyl and van der Corput: Ch.~3.)
 \bibitem{GrahamKolesnik} S.~W.~Graham, G.~Kolesnik, \emph{Van der Corput's Method of Exponential Sums}, London Math.\ Soc.\ Lecture Note Ser.\ \textbf{126}, Cambridge Univ.\ Press, 1991.
 \bibitem{Niven} I.~Niven, \emph{Irrational Numbers}, Carus Math.\ Monographs \textbf{11}, MAA, 1956.
 \bibitem{Cohn64} J.~H.~E.~Cohn, \emph{On square Fibonacci numbers}, J.\ London Math.\ Soc.\ \textbf{39} (1964), 537--540. \texttt{doi:10.1112/jlms/s1-39.1.537}.
 \bibitem{CJ} J.~H.~Conway and A.~J.~Jones, \emph{Trigonometric Diophantine equations (on vanishing sums of roots of unity)}, Acta Arith.\ \textbf{30} (1976), 229--240.
+\bibitem{LamLeung} T.~Y.~Lam, K.~H.~Leung, \emph{On vanishing sums of roots of unity}, J.\ Algebra \textbf{224} (2000), no.~1, 91--109. \texttt{doi:10.1006/jabr.1999.8089}.
 \bibitem{RS62} J.~B.~Rosser, L.~Schoenfeld, \emph{Approximate formulas for some functions of prime numbers}, Illinois J.\ Math.\ \textbf{6} (1962), 64--94. \texttt{doi:10.1215/ijm/1255631807}.
 \bibitem{Watson} G.~N.~Watson, \emph{A Treatise on the Theory of Bessel Functions}, Cambridge Univ.\ Press, 1944.
 \bibitem{Iwanow05} R.~Iwanow, D.~A.~May-Arrioja, D.~N.~Christodoulides, G.~I.~Stegeman, Y.~Min, W.~Sohler, \emph{Discrete Talbot effect in waveguide arrays}, Phys.\ Rev.\ Lett.\ \textbf{95} (2005), 053902. \texttt{doi:10.1103/PhysRevLett.95.053902}.
@@ -526,7 +543,7 @@ modulational-instability solvability condition of Proposition~\ref{prop:mi}.
 \bibitem{GMR17} C.~Godsil, N.~Mullin, A.~Roy, \emph{Uniform mixing and association schemes}, Electron.\ J.\ Combin.\ \textbf{24} (2017), no.~3, P3.22. \texttt{doi:10.37236/4745}, \texttt{arXiv:1301.5889}.
 \bibitem{CaoZhu26} X.~Cao, C.~Zhu, \emph{Uniform mixing and $\varepsilon$-uniform mixing on cycles}, preprint (2026), \texttt{arXiv:2607.04207} (not refereed).
 \bibitem{BombieriBourgain} E.~Bombieri, J.~Bourgain, \emph{On Kahane's ultraflat polynomials}, J.\ Eur.\ Math.\ Soc.\ \textbf{11} (2009), no.~3, 627--703. \texttt{doi:10.4171/JEMS/163}.
-\bibitem{Erdos57} P.~Erd\H{o}s, \emph{Some unsolved problems}, Michigan Math.\ J.\ \textbf{4} (1957). \texttt{doi:10.1307/mmj/1028997963}.
+\bibitem{Erdos57} P.~Erd\H{o}s, \emph{Some unsolved problems}, Michigan Math.\ J.\ \textbf{4} (1957), no.~3, 291--300. \texttt{doi:10.1307/mmj/1028997963}.
 \bibitem{Kahane80} J.-P.~Kahane, \emph{Sur les polyn\^omes \`a coefficients unimodulaires}, Bull.\ London Math.\ Soc.\ \textbf{12} (1980), no.~5, 321--342. \texttt{doi:10.1112/blms/12.5.321}.
 \bibitem{Bedert25} B.~Bedert, \emph{Polynomial bounds for the Chowla cosine problem}, preprint (2025; v3, 2026), \texttt{arXiv:2509.05260}.
 \bibitem{JMTZ25} Z.~Jin, A.~Milojevi\'c, I.~Tomon, S.~Zhang, \emph{From small eigenvalues to large cuts, and Chowla's cosine problem}, preprint (2025), \texttt{arXiv:2509.03490}.
@@ -537,20 +554,31 @@ modulational-instability solvability condition of Proposition~\ref{prop:mi}.
 \bibitem{ChanFR19} A.~Chan, G.~Coutinho, C.~Tamon, L.~Vinet, H.~Zhan, \emph{Quantum fractional revival on graphs}, Discrete Appl.\ Math.\ \textbf{269} (2019), 86--98. \texttt{doi:10.1016/j.dam.2018.12.017}, \texttt{arXiv:1801.09654}.
 \bibitem{ChanPGFR21} A.~Chan, W.~Drazen, O.~Eisenberg, M.~Kempton, G.~Lippner, \emph{Pretty good quantum fractional revival in paths and cycles}, Algebr.\ Comb.\ \textbf{4} (2021), no.~6, 989--1004. \texttt{doi:10.5802/alco.189}.
 \bibitem{BCGS17} L.~Banchi, G.~Coutinho, C.~Godsil, S.~Severini, \emph{Pretty good state transfer in qubit chains---the Heisenberg Hamiltonian}, J.\ Math.\ Phys.\ \textbf{58} (2017), 032202. \texttt{doi:10.1063/1.4978327}.
+\bibitem{ABTW} A.~Ahmadi, R.~Belk, C.~Tamon, C.~Wendler, \emph{On mixing in continuous-time quantum walks on some circulant graphs}, Quantum Inf.\ Comput.\ \textbf{3} (2003), no.~6, 611--618. \texttt{doi:10.26421/QIC3.6-4}.
+\bibitem{GPY} A.~Gray, P.~Patel, I.~Young, \emph{The cycle $C_9$ does not admit uniform mixing}, preprint (2026), \texttt{arXiv:2607.28345}.
+\bibitem{Monterde} H.~Monterde, \emph{Local $\epsilon$-uniform mixing in continuous quantum walks}, preprint (2026), \texttt{arXiv:2603.20977}.
+\bibitem{CBGSW} G.~Coutinho, P.~F.~Baptista, C.~Godsil, T.~J.~Spier, R.~Werner, \emph{Irrational quantum walks}, SIAM J.\ Appl.\ Algebra Geom.\ \textbf{7} (2023), no.~3, 567--584. \texttt{doi:10.1137/22M1521262}.
+\bibitem{FrankZadoff} R.~L.~Frank, S.~A.~Zadoff, R.~Heimiller, \emph{Phase shift pulse codes with good periodic correlation properties}, IRE Trans.\ Inform.\ Theory \textbf{8} (1962), no.~6, 381--382. \texttt{doi:10.1109/TIT.1962.1057786}.
+\bibitem{KSW} P.~V.~Kumar, R.~A.~Scholtz, L.~R.~Welch, \emph{Generalized bent functions and their properties}, J.\ Combin.\ Theory Ser.~A \textbf{40} (1985), no.~1, 90--107. \texttt{doi:10.1016/0097-3165(85)90049-4}.
 \bibitem{MPS81} O.~C.~McGehee, L.~Pigno, B.~Smith, \emph{Hardy's inequality and the $L^1$ norm of exponential sums}, Ann.\ of Math.\ (2) \textbf{113} (1981), no.~3, 613--618. \texttt{doi:10.2307/2007000}.
-\bibitem{Konyagin81} S.~V.~Konyagin, \emph{On the Littlewood problem}, Izv.\ Akad.\ Nauk SSSR Ser.\ Mat.\ \textbf{45} (1981), no.~2, 243--265 (MR0637621).
+\bibitem{Konyagin81} S.~V.~Konyagin, \emph{On the Littlewood problem}, Izv.\ Akad.\ Nauk SSSR Ser.\ Mat.\ \textbf{45} (1981), no.~2, 243--265; Engl.\ transl.\ Math.\ USSR-Izv.\ \textbf{18} (1982), 205--225. \texttt{doi:10.1070/IM1982v018n02ABEH001386}.
 \bibitem{AlonNaor06} N.~Alon, A.~Naor, \emph{Approximating the cut-norm via Grothendieck's inequality}, SIAM J.\ Comput.\ \textbf{35} (2006), no.~4, 787--803. \texttt{doi:10.1137/S0097539704441629}.
 \bibitem{Lighthill} M.~J.~Lighthill, \emph{Contributions to the theory of waves in non-linear dispersive systems}, IMA J.\ Appl.\ Math.\ \textbf{1} (1965), no.~3, 269--306. \texttt{doi:10.1093/imamat/1.3.269}.
 \bibitem{KERDS08} P.~G.~Kevrekidis, J.~A.~Espinola-Rocha, Y.~Drossinos, A.~Stefanov, \emph{Dynamical barrier for the formation of solitary waves in discrete lattices}, Phys.\ Lett.\ A \textbf{372} (2008), 2247--2253. \texttt{doi:10.1016/j.physleta.2007.11.029}.
+\bibitem{BDF93} L.~J.~Bernstein, K.~W.~DeLong, N.~Finlayson, \emph{Self-trapping transitions in a discrete NLS model with localized initial conditions}, Phys.\ Lett.\ A \textbf{181} (1993), no.~2, 135--141. \texttt{doi:10.1016/0375-9601(93)90910-R}.
+\bibitem{KenkreCampbell} V.~M.~Kenkre, D.~K.~Campbell, \emph{Self-trapping on a dimer: time-dependent solutions of a discrete nonlinear Schr\"odinger equation}, Phys.\ Rev.\ B \textbf{34} (1986), no.~7, 4959--4961. \texttt{doi:10.1103/PhysRevB.34.4959}.
+\bibitem{MolinaTsironis} M.~I.~Molina, G.~P.~Tsironis, \emph{Dynamics of self-trapping in the discrete nonlinear Schr\"odinger equation}, Physica D \textbf{65} (1993), no.~3, 267--273. \texttt{doi:10.1016/0167-2789(93)90162-T}.
+\bibitem{JHR95} M.~Johansson, M.~H\"ornquist, R.~Riklund, \emph{Effects of nonlinearity on the time evolution of single-site localized states in periodic and aperiodic discrete systems}, Phys.\ Rev.\ B \textbf{52} (1995), no.~1, 231--240. \texttt{doi:10.1103/PhysRevB.52.231}.
+\bibitem{ShiWong} Y.~Shi, T.~G.~Wong, \emph{Self-trapping bounds for continuous-time nonlinear quantum walks on path and cycle graphs}, Phys.\ Scr.\ \textbf{101} (2026), 365101. \texttt{doi:10.1088/1402-4896/aea02d}.
 \bibitem{StefanovKevrekidis05} A.~Stefanov, P.~G.~Kevrekidis, \emph{Asymptotic behaviour of small solutions for the discrete nonlinear Schr\"odinger and Klein--Gordon equations}, Nonlinearity \textbf{18} (2005), 1841--1857. \texttt{doi:10.1088/0951-7715/18/4/022}.
 \bibitem{PelinovskyStefanov08} D.~E.~Pelinovsky, A.~Stefanov, \emph{On the spectral theory and dispersive estimates for a discrete Schr\"odinger equation in one dimension}, J.\ Math.\ Phys.\ \textbf{49} (2008), no.~11, 113501. \texttt{doi:10.1063/1.3005597}.
 \bibitem{EKT15} I.~Egorova, E.~Kopylova, G.~Teschl, \emph{Dispersion estimates for one-dimensional discrete Schr\"odinger and wave equations}, J.\ Spectr.\ Theory \textbf{5} (2015), 663--696. \texttt{doi:10.4171/JST/110}.
-\bibitem{RyskinTrubetskov} N.~M.~Ryskin, D.~I.~Trubetskov, \emph{Nonlinear Waves} [in Russian], Saratov Univ.\ Press, 2010.
+\bibitem{RyskinTrubetskov} N.~M.~Ryskin, D.~I.~Trubetskov, \emph{Nonlinear Waves} [in Russian], LENAND, Moscow, 2016.
 \bibitem{OEIS} OEIS Foundation Inc., \emph{The On-Line Encyclopedia of Integer Sequences}, sequences A174090 and A055034, \url{https://oeis.org}.
 \bibitem{DLMF} \emph{NIST Digital Library of Mathematical Functions}, F.~W.~J.~Olver et al.\ (eds.), \url{https://dlmf.nist.gov/}.
 \bibitem{Gray} R.~M.~Gray, \emph{Toeplitz and Circulant Matrices: A Review}, Found.\ Trends Commun.\ Inf.\ Theory \textbf{2} (2006), 155--239.
 \bibitem{Lasserre} J.~B.~Lasserre, \emph{Global optimization with polynomials and the problem of moments}, SIAM J.\ Optim.\ \textbf{11} (2001), 796--817.
-\bibitem{Levinson} N.~Levinson, \emph{The Wiener RMS error criterion in filter design and prediction}, J.\ Math.\ Phys.\ \textbf{25} (1947), 261--278.
+\bibitem{Levinson} N.~Levinson, \emph{The Wiener (root mean square) error criterion in filter design and prediction}, J.\ Math.\ Phys.\ \textbf{25} (1946), 261--278. \texttt{doi:10.1002/sapm1946251261}.
 \bibitem{Durbin} J.~Durbin, \emph{The fitting of time-series models}, Rev.\ Inst.\ Internat.\ Statist.\ \textbf{28} (1960), 233--244.
 \bibitem{Trench} W.~F.~Trench, \emph{An algorithm for the inversion of finite Toeplitz matrices}, J.\ SIAM \textbf{12} (1964), 515--522.
 \bibitem{GS} I.~C.~Gohberg, A.~A.~Semencul, \emph{On the inversion of finite Toeplitz matrices and their continuous analogues}, Mat.\ Issled.\ \textbf{7} (1972), 201--223.
@@ -567,7 +595,7 @@ modulational-instability solvability condition of Proposition~\ref{prop:mi}.
 % Filimonov-group references below verified via Crossref (DOIs included); MF03 from info/ PDF.
 \bibitem{MF03} A.~D.~Myshkis, A.~M.~Filimonov, \emph{About the string with beads}, Mat.\ Fiz.\ Anal.\ Geom.\ \textbf{10} (2003), no.~3, 301--306. (Segment $\ln$-asymptotics.)
 \bibitem{KMF} P.~F.~Kurchanov, A.~D.~Myshkis, A.~M.~Filimonov, \emph{Vibrations of rolling stock and a theorem of Kronecker}, J.~Appl.\ Math.\ Mech.\ \textbf{55} (1991), no.~6, 870--876 (Russian original: Prikl.\ Mat.\ Mekh.\ \textbf{55}(6), 989--995). \texttt{doi:10.1016/0021-8928(91)90140-P}.
-\bibitem{FKM91} A.~M.~Filimonov, P.~F.~Kurchanov, A.~D.~Myshkis, \emph{Some unexpected results in the classical problem of vibration of the string with $n$ beads when $n$ is large}, C.~R.~Acad.\ Sci.\ Paris S\'er.~I \textbf{313} (1991), 961--965. (Reference [1] of~\cite{F92}, which develops it to the multiple-frequency case.)
+\bibitem{FKM91} A.~M.~Filimonov, P.~F.~Kurchanov, A.~D.~Myshkis, \emph{Some unexpected results in the classical problem of vibration of the string with $n$ beads when $n$ is large}, C.~R.~Acad.\ Sci.\ Paris S\'er.~I \textbf{313} (1991), no.~13, 961--965. Zbl~0752.73044. (Reference [1] of~\cite{F92}, which develops it to the multiple-frequency case.)
 \bibitem{F92} A.~M.~Filimonov, \emph{Some unexpected results on the classical problem of vibrations of the string with $N$ beads. The case of multiple frequencies}, C.~R.~Acad.\ Sci.\ Paris S\'er.~I \textbf{315} (1992), no.~8, 957--961 (Note pr\'esent\'ee par \'E.~Sanchez-Palencia; re\c{c}ue 28~juillet, accept\'ee 12~ao\^ut 1992). Zbl~0761.73053. (Circular string, $\omega_k=2\sin(\pi k/N)$: ceiling under $\Q$-independence (Thm~1), $\Q$-independence for $N$ prime or $2^m$ (Thm~2), dependence for even composite $N=2^m q$ (Thm~3), unbounded ceiling $b_j\to\infty$ (Thm~4), peaks $>F/2$, and a continuum model finer than the wave equation (\S3); primary source consulted.)
 \bibitem{FM98} A.~M.~Filimonov, A.~D.~Myshkis, \emph{Asymptotic estimate of solution of one mixed difference--differential equation of oscillations theory}, J.~Difference Equ.\ Appl.\ \textbf{4} (1998), no.~1, 13--16. \texttt{doi:10.1080/10236199808808125}. (First $\ln$-growth result; cited from~\cite{MF03}.)
 \bibitem{FMM} A.~M.~Filimonov, X.~Mao, S.~Maslov, \emph{Splash effect and ergodic properties of solutions of the classical difference--differential equation}, J.~Difference Equ.\ Appl.\ \textbf{6} (2000), no.~3, 319--328. \texttt{doi:10.1080/10236190008808231}.
@@ -579,7 +607,7 @@ modulational-instability solvability condition of Proposition~\ref{prop:mi}.
 \bibitem{ZakharovShabat} V.~E.~Zakharov, A.~B.~Shabat, \emph{Exact theory of two-dimensional self-focusing and one-dimensional self-modulation of waves in nonlinear media}, Zh.\ Eksp.\ Teor.\ Fiz.\ \textbf{61} (1971), 118--134 [Sov.\ Phys.\ JETP \textbf{34} (1972), 62--69].
 \bibitem{ZakharovFaddeev} V.~E.~Zakharov, L.~D.~Faddeev, \emph{Korteweg--de Vries equation: a completely integrable Hamiltonian system}, Funct.\ Anal.\ Appl.\ \textbf{5} (1971), 280--287. \texttt{doi:10.1007/BF01086739}.
 \bibitem{ZakharovOstrovsky} V.~E.~Zakharov, L.~A.~Ostrovsky, \emph{Modulation instability: the beginning}, Phys.\ D \textbf{238} (2009), 540--548. \texttt{doi:10.1016/j.physd.2008.12.002}.
-\bibitem{ZakharovKuznetsov} V.~E.~Zakharov, E.~A.~Kuznetsov, \emph{On three-dimensional solitons}, Zh.\ Eksp.\ Teor.\ Fiz.\ \textbf{66} (1974), 594--597 [Sov.\ Phys.\ JETP \textbf{39} (1974), 285--286].
+\bibitem{ZakharovKuznetsov} V.~E.~Zakharov, E.~A.~Kuznetsov, \emph{On three-dimensional solitons}, Zh.\ Eksp.\ Teor.\ Fiz.\ \textbf{66} (1974), 594--597 [Sov.\ Phys.\ JETP \textbf{39} (1974), 285--286, ``Three-dimensional solitons''].
 \bibitem{ZakharovLvovFalkovich} V.~E.~Zakharov, V.~S.~L'vov, G.~Falkovich, \emph{Kolmogorov Spectra of Turbulence~I: Wave Turbulence}, Springer, 1992.
 \bibitem{DengHani} Y.~Deng, Z.~Hani, \emph{Full derivation of the wave kinetic equation}, Invent.\ Math.\ \textbf{233} (2023), 543--724. \texttt{doi:10.1007/s00222-023-01189-2}.
 \bibitem{BerryUpstill} M.~V.~Berry, C.~Upstill, \emph{Catastrophe optics: morphologies of caustics and their diffraction patterns}, Prog.\ Opt.\ \textbf{18} (1980), 257--346. \texttt{doi:10.1016/S0079-6638(08)70215-4}.
@@ -598,6 +626,7 @@ modulational-instability solvability condition of Proposition~\ref{prop:mi}.
 \bibitem{Kevrekidis09} P.~G.~Kevrekidis, \emph{The Discrete Nonlinear Schr\"odinger Equation: Mathematical Analysis, Numerical Computations and Physical Perspectives}, Springer Tracts Mod.\ Phys., Springer, Berlin, 2009. \texttt{doi:10.1007/978-3-540-89199-4}.
 \bibitem{MacKayAubry} R.~S.~MacKay, S.~Aubry, \emph{Proof of existence of breathers for time-reversible or Hamiltonian networks of weakly coupled oscillators}, Nonlinearity \textbf{7} (1994), 1623--1643. \texttt{doi:10.1088/0951-7715/7/6/006}.
 \bibitem{GSS} M.~Grillakis, J.~Shatah, W.~Strauss, \emph{Stability theory of solitary waves in the presence of symmetry, I}, J.\ Funct.\ Anal.\ \textbf{74} (1987), 160--197. \texttt{doi:10.1016/0022-1236(87)90044-9}.
+\bibitem{GSS2} M.~Grillakis, J.~Shatah, W.~Strauss, \emph{Stability theory of solitary waves in the presence of symmetry, II}, J.\ Funct.\ Anal.\ \textbf{94} (1990), no.~2, 308--348. \texttt{doi:10.1016/0022-1236(90)90016-E}.
 \bibitem{VK} N.~G.~Vakhitov, A.~A.~Kolokolov, \emph{Stationary solutions of the wave equation in a medium with nonlinearity saturation}, Radiophys.\ Quantum Electron.\ \textbf{16} (1973), 783--789. \texttt{doi:10.1007/BF01031343}.
 \bibitem{KC86} V.~M.~Kenkre, D.~K.~Campbell, \emph{Self-trapping on a dimer: time-dependent solutions of a discrete nonlinear Schr\"odinger equation}, Phys.\ Rev.\ B \textbf{34} (1986), 4959--4961. \texttt{doi:10.1103/PhysRevB.34.4959}.
 \bibitem{Weinstein99} M.~I.~Weinstein, \emph{Excitation thresholds for nonlinear localized modes on lattices}, Nonlinearity \textbf{12} (1999), no.~3, 673--691. \texttt{doi:10.1088/0951-7715/12/3/314}.

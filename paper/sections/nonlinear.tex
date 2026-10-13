@@ -36,8 +36,8 @@ norm-preserving on $\mathbb C^N$.
 
 \begin{proof}
 $\tfrac{d}{dt}P=2\,\mathrm{Re}\sum_j\dot z_j\bar z_j
- =2\,\mathrm{Re}\bigl[-\mathrm i\bigl(\langle\LN z,z\rangle-\gamma\textstyle\sum_j|z_j|^4\bigr)\bigr]=0$,
-since $\langle\LN z,z\rangle$ and $\sum_j|z_j|^4$ are real (so $-\mathrm i(\cdot)$ is purely imaginary); and
+ =2\,\mathrm{Re}\bigl[\mathrm i\bigl(\langle\LN z,z\rangle-\gamma\textstyle\sum_j|z_j|^4\bigr)\bigr]=0$,
+since $\langle\LN z,z\rangle$ and $\sum_j|z_j|^4$ are real (so $\mathrm i(\cdot)$ is purely imaginary); and
 $\partial H/\partial\bar z_j=(z_{j+1}+z_{j-1}-2z_j)+\gamma|z_j|^2z_j=-(\LN z)_j+\gamma|z_j|^2z_j$, so
 $\mathrm i\dot z=\partial H/\partial\bar z$ and $H$ is conserved along the flow. With $P$ bounded, no
 finite-time blow-up occurs. Both invariants are reproduced numerically: the norm-preserving split-step
@@ -103,14 +103,14 @@ whose solvability condition $\sigma^2+(\gamma A^2-\lambda_\kappa)^2=(\gamma A^2)
 \begin{equation}\label{eq:mi}
   \sigma(\kappa)=\sqrt{\lambda_\kappa\,(2\gamma A^2-\lambda_\kappa)},\qquad \lambda_\kappa=4\sin^2\tfrac\kappa2,
 \end{equation}
-so the band $\lambda_\kappa<2\gamma A^2$ is unstable (continuum form $\sigma=|k|\sqrt{2\gamma A^2-k^2}$, the
+so the band $0<\lambda_\kappa<2\gamma A^2$ is unstable (continuum form $\sigma=|k|\sqrt{2\gamma A^2-k^2}$, the
 classical $|k|\sqrt{4A^2-k^2}$ at $\gamma=2$). This linear-stability computation is exact:
 
 \begin{proposition}[modulational-instability band]\label{prop:mi}
 The uniform state $z_j=A\,\eu^{-\mathrm i\gamma A^2t}$ of \eqref{eq:dnls} is linearly unstable to the
-Fourier mode $\kappa$ if and only if $\lambda_\kappa<2\gamma A^2$, with growth rate
-$\sigma(\kappa)=\sqrt{\lambda_\kappa(2\gamma A^2-\lambda_\kappa)}$; the rate is maximal,
-$\sigma_{\max}=\gamma A^2$, at $\lambda_\kappa=\gamma A^2$.
+Fourier mode $\kappa$ if and only if $0<\lambda_\kappa<2\gamma A^2$, with growth rate
+$\sigma(\kappa)=\sqrt{\lambda_\kappa(2\gamma A^2-\lambda_\kappa)}\le\gamma A^2$; equality holds exactly when
+$\lambda_\kappa=\gamma A^2$, so $\sigma_{\max}=\gamma A^2$ is attained only if $\gamma A^2$ is an eigenvalue of $\LN$.
 \end{proposition} The spectrum of the full $2N\times2N$ linearised generator matches $\sigma(\kappa)$
 exactly (\texttt{verify\_dnls\_mi.py}), and a direct split-step simulation of \eqref{eq:dnls} reproduces
 \eqref{eq:mi} to better than $1\%$ across the band interior (Figure~\ref{fig:mi}); the fastest mode
@@ -135,11 +135,12 @@ opposite routes---interference versus self-focusing.
 
 Of the rigorous nonlinear programme, three pieces are settled in this paper: the weak-nonlinearity
 persistence (Proposition~\ref{prop:dnls-persist}), the modulational-instability band---the role of the
-$\LN$ spectrum---(Proposition~\ref{prop:mi}), and the existence and stability of the discrete breathers
-(Propositions~\ref{prop:breather},~\ref{prop:breather-stab} in Section~\ref{sec:breather}). Integrable
+$\LN$ spectrum---(Proposition~\ref{prop:mi}), and the localized discrete breathers with their stability in
+the anti-continuum regime (Propositions~\ref{prop:breather},~\ref{prop:breather-stab} in
+Section~\ref{sec:breather}). Integrable
 discretizations of \eqref{eq:nls} and the fully nonlinear saturation/rogue regime are left to future work;
 equation~\eqref{eq:dnls} is the natural nonlinear continuation of the linear \emph{Schr\"odinger} large wave
-$B_N$ of Section~\ref{sec:schr} (the first-order $\ell^1\!\to\!\ell^\infty$ amplification), not of the
+$B_N$ of Section~\ref{sec:schr} (the first-order $\ell^\infty\!\to\!\ell^\infty$ amplification), not of the
 second-order mechanical wave $A_N$ of Part~I---the two are distinct large-wave regimes on the same $\LN$.
 Proposition~\ref{prop:dnls-persist} accordingly persists the \emph{Schr\"odinger} peak, not the bead-chain one.
 
@@ -154,8 +155,8 @@ $t=0$ (right).}\label{fig:peregrine}
 \includegraphics[width=.66\textwidth]{fig_mi.pdf}
 \caption{Modulational (Benjamin--Feir) instability gain~\eqref{eq:mi} of the plane wave under the
 DNLS~\eqref{eq:dnls}: lattice rate (solid), continuum approximation (dotted) and simulated growth
-rates (squares), with unstable band edge $\kappa=\pi/2$ and maximal rate
-$\sigma_{\max}=\gamma A^2$.}\label{fig:mi}
+rates (squares; $N=512$, \texttt{verify\_rogue\_dnls.py}), for $\gamma A^2=1$: unstable band edge
+$\kappa=\pi/2$ and maximal rate $\sigma_{\max}=\gamma A^2$.}\label{fig:mi}
 \end{figure}
 
 \begin{figure}[ht]\centering
@@ -171,33 +172,41 @@ opposite of the platykurtic linear value law.}\label{fig:rogue}
 Nonlinearity does not only sharpen extremes; it can \emph{localize}. On a lattice, \eqref{eq:dnls} is the
 discrete self-trapping equation of Eilbeck, Lomdahl and Scott~\cite{ELS85}; for discrete breathers and the
 DNLS see~\cite{FlachGorbach08,Kevrekidis09}. Seed the DNLS \eqref{eq:dnls} with a
-single excited site, $z_j(0)=A\,\delta_{j0}$ (norm $\Lambda=\sum_j|z_j|^2=A^2$), and track the
+single excited site, $z_j(0)=A\,\delta_{j0}$ (power $P=\sum_j|z_j|^2=A^2$), and track the
 \emph{participation ratio}
 \begin{equation}\label{eq:pr}
-  P=\frac{\bigl(\sum_j|z_j|^2\bigr)^2}{\sum_j|z_j|^4}\in[1,N],
+  \mathrm{PR}=\frac{\bigl(\sum_j|z_j|^2\bigr)^2}{\sum_j|z_j|^4}\in[1,N],
 \end{equation}
 which is $1$ for a single occupied site and $\sim N$ when the excitation spreads over the ring. A
-norm-conserving split-step integrator (norm exact to $10^{-12}$, $H$ to $O(\Delta t^2)$) shows a sharp
-\emph{self-trapping transition} at the on-site nonlinear frequency $\gamma|z_0|^2\approx4$---exactly the
-top of the spectrum of $\LN$, the band $[0,4]$. Below it the excitation disperses ($P\to N$); above it the
-site detunes out of the linear band and forms a long-lived, exponentially localized \emph{breather-like
-state} $z_j(t)\approx\phi_j\eu^{-\mathrm i\Omega t}$ consistent with the stationary DNLS branch, whose real profile solves
-$\Omega\phi_j=-(\LN\phi)_j+\gamma\phi_j^3$ with frequency $\Omega\approx\gamma|z_0|^2$ pushed above the
-whole phonon band $[0,4]$, so no extended mode can resonate (Figure~\ref{fig:selftrapping}; the trapped
-profile is steady, the temporal standard deviation of $|z_j|$ staying below $0.02$). This is the dynamical
-\emph{opposite} of the linear large wave, a fully delocalized interference of all $N$ modes ($P\sim N$):
+norm-conserving split-step integrator (norm exact to $10^{-12}$, $H$ to $O(\Delta t^2)$) shows a
+\emph{self-trapping crossover} just below $\gamma P=4$, the bandwidth of $\LN$ on the infinite lattice. For
+$\gamma P\le3.4$ the excitation disperses (the power within ten sites of the seed decays like the linear
+$1/t$; $t\le3200$, $N=16384$). From $\gamma P\approx3.5$ a localized remnant survives: a weak one at $3.5$
+($2$--$7\%$ of the power within ten sites for $800\le t\le3200$), a third of the power at $3.6$ and nearly half
+at $3.7$ ($t\le800$, $N=4096$; \texttt{verify\_selftrapping\_transition.py}). Above $4$ the site detunes out of the linear band and
+forms a long-lived, exponentially localized \emph{breather-like state} $z_j(t)\approx\phi_j\eu^{-\mathrm i\Omega t}$
+consistent with the stationary DNLS branch, whose real profile solves $\Omega\phi_j=-(\LN\phi)_j+\gamma\phi_j^3$
+with frequency $\Omega\approx\gamma|z_0|^2-2>0$, above the whole phonon band $[-4,0]$ (a linear mode
+$\eu^{\mathrm i\kappa j}$ has frequency $-\lambda_\kappa$ here), so no extended mode can resonate
+(Figure~\ref{fig:selftrapping}; the trapped profile is steady, the temporal standard deviation of $|z_j|$
+staying below $0.02$). This is the dynamical \emph{opposite} of the linear large wave, a fully delocalized
+interference of all $N$ modes ($\mathrm{PR}\sim N$):
 the same operator $\LN$ supports both a spread-out resonance (linear) and a pinned soliton (nonlinear),
 selected by the size of the cubic term (\texttt{verify\_dnls\_selftrapping.py}).
 
 \emph{Two thresholds.} An anti-continuum estimate places the \emph{stationary} single-site breather at
 $\gamma|\phi_0|^2\gtrsim2$: from $\Omega\phi_j=-(\LN\phi)_j+\gamma\phi_j^3$ with $\phi\approx\sqrt P\,\delta_{j0}$
 one gets $\Omega\approx\gamma P-2$, which clears the band \emph{top} ($\Omega>0$) at $\gamma P\gtrsim2$. The
-larger \emph{dynamical} threshold $\gamma|z_0|^2\approx4$ measured from a single-site \emph{launch} is the
-bandwidth: the spreading excitation must outrun the entire band $[0,4]$, not merely its edge. This
-single-site barrier at $A_*^2=2(\sigma+1)^{1/\sigma}=4$ (cubic $\sigma=1$) was identified by
-Kevrekidis--Espinola-Rocha--Drossinos--Stefanov~\cite{KERDS08} as a \emph{sufficient} trapping condition
-($H_{\mathrm{ss}}<0$); we make that side a theorem with the sharp constant and show it is \emph{energy-sharp}
-(below). One side of the dynamical threshold is thus settled, with the constant exactly the bandwidth $4$.
+larger \emph{dynamical} threshold of a single-site \emph{launch} sits near the bandwidth
+$4=2\langle\LN\delta_j,\delta_j\rangle$: the spreading excitation must outrun the entire band, not merely its
+edge. Comparing the single-site energy with that of a spread state gives this constant in $1$D
+(Bernstein, DeLong and Finlayson~\cite{BDF93}; for the dimer it is the classical $\chi_c=4V$ of Kenkre and
+Campbell~\cite{KenkreCampbell}), and Kevrekidis--Espinola-Rocha--Drossinos--Stefanov~\cite{KERDS08}
+identified the single-site barrier $A_*^2=[2(\sigma+1)]^{1/\sigma}=4$ (cubic $\sigma=1$) as a
+\emph{sufficient} trapping condition ($H_{\mathrm{ss}}<0$). We make that side a theorem
+(Proposition~\ref{prop:threshold}) and show that the constant is \emph{energy-sharp} (below); it is not the
+dynamical threshold, which the long runs of Johansson, H\"ornquist and Riklund place near
+$3.45$~\cite{JHR95} (chain numerics also in~\cite{MolinaTsironis}), in line with the crossover above.
 (The \emph{static} excitation threshold of~\cite{Weinstein99} is a different object: a positive minimal
 power for a ground state exists only when $\sigma\ge2/d$, so in $1$D cubic there is none---localized modes
 exist at arbitrarily small power, while the dynamical launch barrier $4$ persists. Positive breather energy
@@ -219,8 +228,9 @@ $\gamma P>4$. Then for \emph{all} $t$,
   \max_j|u_j(t)|^2\ \ge\ P-\tfrac4\gamma\ >\ 0,\qquad
   \mathrm{PR}\bigl(u(t)\bigr)\ \le\ \frac1{1-4/(\gamma P)},
 \]
-where $\mathrm{PR}(u)=\bigl(\sum_j|u_j|^2\bigr)^2\!/\sum_j|u_j|^4$ is the participation ratio: the
-excitation never disperses.
+where $\mathrm{PR}(u)$ is the participation ratio~\eqref{eq:pr}: the excitation never disperses. If moreover
+$\gamma P>8$, it stays on its initial site: $|u_{j_0}(t)|^2\ge\tfrac P2\bigl(1+\sqrt{1-8/(\gamma P)}\bigr)$ for
+all $t$.
 \end{proposition}
 
 \begin{proof}
@@ -229,7 +239,16 @@ $H=-\langle\LN u,u\rangle+\tfrac\gamma2\sum_j|u_j|^4$ and the power $P$ are cons
 $H_0=-2P+\tfrac\gamma2P^2$; at any $t$, $\tfrac\gamma2\sum|u|^4=H_0+\langle\LN u,u\rangle\ge H_0$ since
 $\LN\succeq0$, giving the first bound. Dividing by $\sum|u|^2=P$ gives
 $\max_j|u_j|^2\ge\sum|u|^4/P\ge P-4/\gamma$ and the participation bound (cf.\ the variational excitation
-thresholds of~\cite{Weinstein99}; \texttt{verify\_selftrapping\_threshold.py}). \end{proof}
+thresholds of~\cite{Weinstein99}). For the last claim put $q=|u_{j_0}|^2/P$. Since
+$\sum_{j\ne j_0}|u_j|^4\le(P-|u_{j_0}|^2)^2$, the first bound gives $q^2+(1-q)^2\ge1-4/(\gamma P)$, that is
+$q(1-q)\le2/(\gamma P)$. For $\gamma P>8$ this excludes the open interval between the roots
+$q_\pm=\frac12\bigl(1\pm\sqrt{1-8/(\gamma P)}\bigr)$; as $q$ is continuous with $q(0)=1$, $q(t)\ge q_+$ for all
+$t$ (\texttt{verify\_selftrapping\_threshold.py}). \end{proof}
+
+\noindent Shi and Wong~\cite{ShiWong} recently proved this on-site trapping for a single-vertex walk on the
+cycle above coupling $9$ (in our normalization $\gamma P>9$), bounding the hopping energy through $q$ alone;
+the operator bound $\LN\succeq0$ used here lowers the constant to $8$, while their lower bound on $q$ is the
+sharper one above $9$.
 
 \noindent The converse needs care: on the \emph{finite} ring nothing disperses forever. The flow is
 Hamiltonian, hence preserves Lebesgue measure on the invariant bounded shell
@@ -250,13 +269,13 @@ constant~\cite{Landau00}. If $N\ge5t_\ast$ (i.e.\ $N\gtrsim(\gamma P)^{-3/4}$), 
   \inf_t\,\max_j|u_j(t)|^2\ \le\ \tfrac{16}{3^{3/2}}\,\bigl(c_L2^{-1/3}\bigr)^{3/2}\,P\sqrt{\gamma P}\,
   \bigl(1+o(1)\bigr)\ \le\ 1.52\,P\sqrt{\gamma P}\,\bigl(1+o(1)\bigr).
 \]
-In particular for $\gamma P\le0.43$ the infimum sits strictly below $P$: the excitation quantitatively
-disperses, and with Proposition~\ref{prop:threshold} the undecided window of the threshold narrows to
-$\gamma P\in[0.43,\,4)$.
+The bound is below $P$ for $\gamma P<0.43$ and of order $\sqrt{\gamma P}\,P$ as $\gamma P\to0$. (That
+$\inf_t\max_j|u_j|^2<P$ holds for every $\gamma$, since mass leaves the seed at once; the content is the size
+of the bound.)
 \end{proposition}
 
 \begin{proof}
-For $t\le N/5$ the aliased copies of the ring kernel are super-exponentially small (the periodization
+For $t\le N/5$ the aliased copies of the ring kernel are exponentially small (the periodization
 estimate of Theorem~\ref{thm:schr-lower}), so by Landau's bound $\max_n|J_n(x)|\le c_Lx^{-1/3}$,
 $\max_j|u_{\mathrm{lin},j}(t)|\le\sqrt P\,c_L(2t)^{-1/3}+\varepsilon_N$. Adding
 $\|u-u_{\mathrm{lin}}\|_\infty\le\gamma P^{3/2}t$ (Proposition~\ref{prop:dnls-persist}),
@@ -267,16 +286,18 @@ The right side is minimized at $t=t_\ast$, where it equals
 $4\cdot3^{-3/4}\bigl(c_L2^{-1/3}\bigr)^{3/4}(\gamma P)^{1/4}\sqrt P\,(1+o(1))$; squaring gives the claim
 (\texttt{verify\_dispersal\_weak.py}). \end{proof}
 
-\noindent The threshold constant $4=\|\LN\|$ is \emph{sharp}, not merely sufficient: full dispersal
-($\|u\|_4^4\to0$) forces, by energy conservation, $\langle\LN u,u\rangle\to 2P-\tfrac\gamma2P^2$, which is
-non-negative \emph{iff} $\gamma P\le4$. Above $4$ full dispersal is thus energetically forbidden (the bound
-$P-4/\gamma$); the identity is confirmed to four digits at the dispersal minimum, e.g.\ $\langle\LN
-u,u\rangle\to0.503$ versus $2P-\tfrac\gamma2P^2=0.500$ at $\gamma P=3$ (\texttt{verify\_selftrapping\_transition.py}).
-Numerically the single-site seed disperses cleanly for $\gamma P\lesssim3.5$ and self-traps (tracking
-$P-4/\gamma$) for $\gamma P\gtrsim4.5$, the crossover straddling $4$. So the window $\gamma P\in[0.43,4)$ is a
-\emph{proof gap}---dispersal is the established behaviour, proven (Proposition~\ref{prop:dispersal}) only up
-to $0.43$---rather than a behavioural unknown. Closing it, beyond perturbation theory, is the genuinely
-dispersive open direction.
+\noindent The threshold constant $4=2\langle\LN\delta_j,\delta_j\rangle$ (the infinite-lattice bandwidth;
+$\|\LN\|=4\cos^2\frac\pi{2N}<4$ for odd $N$) is \emph{energy-sharp}: full dispersal ($\|u\|_4^4\to0$) forces,
+by energy conservation, $\langle\LN u,u\rangle\to 2P-\tfrac\gamma2P^2$, which is non-negative \emph{iff}
+$\gamma P\le4$. Above $4$ full dispersal is thus energetically forbidden (the bound $P-4/\gamma$); the
+identity holds to within $0.01P$ at the dispersal minimum, e.g.\ $\langle\LN u,u\rangle\to0.503$ versus
+$2P-\tfrac\gamma2P^2=0.500$ at $\gamma P=3$ (\texttt{verify\_selftrapping\_transition.py}). Energy-sharp is not
+dynamically sharp: below $4$ energy permits dispersal, yet the seed disperses only up to $\gamma P\approx3.4$
+and keeps a localized remnant from about $3.5$; above $4$ it self-traps well above the bound
+($\min_t\max_j|u_j|^2=0.40P$ against $P-4/\gamma=0.11P$ at $\gamma P=4.5$). Neither
+Proposition~\ref{prop:dispersal} nor Proposition~\ref{prop:threshold} says anything on $[0.43,4)$; proving
+dispersal there up to the true crossover, beyond perturbation theory, is the genuinely dispersive open
+direction.
 
 \emph{The virial obstruction, located precisely.} A second-moment (Morawetz-type) attempt isolates the
 wall to a single estimate. On the line---the ring for $t\lesssim N/5$, where aliasing is negligible---the
@@ -290,7 +311,7 @@ where $L_2$ is the next-nearest-neighbour Laplacian (symbol $2-2\cos2k=4\sin^2k$
 $2\langle L_2a,a\rangle=2\langle v^2\rangle P\ge0$ ($v_k=2\sin k$ the group velocity) is a manifestly
 non-negative \emph{dispersive} term and the position-weighted sum is the nonlinear correction. At the
 single-site seed the correction vanishes, giving $\ddot V(0)=4P$ independently of $\gamma$; numerically
-$\ddot V>0$ throughout the window, decaying to $0$ as $\gamma P\to4$, so the virial is convex, $V\to\infty$,
+$\ddot V>0$ for $\gamma P\le3.5$, decaying toward $0$ as $\gamma P\to4$, so the virial is convex, $V\to\infty$,
 which \emph{supports} dispersal. Closing the argument needs the correction bounded by
 $(1-\epsilon)\,2\langle L_2a,a\rangle$; numerically it is small (a few percent of the dispersive term) and
 degenerates to exactly $-2\langle L_2a,a\rangle$ as $\gamma P\to4$, but its position weight $(2n+1)$ is not
@@ -302,7 +323,7 @@ avoids the staggered ($k=\pi$) trap (numerically $\langle v^2\rangle>0$) but the
 see it. This is exactly where Morawetz/Strichartz arguments stall: the discrete Strichartz estimates of
 Stefanov--Kevrekidis~\cite{StefanovKevrekidis05} (built on the sharp $t^{-1/3}$ decay~\cite{Landau00,PelinovskyStefanov08,EKT15})
 close small-data scattering only for $\sigma\ge3/d$---in $1$D, power $\ge7$, not the cubic
-here---so they provably cannot reach the window, and the continuum interaction-Morawetz/concentration
+here---so they cannot reach the range $[0.43,4)$, and the continuum interaction-Morawetz/concentration
 machinery consumes the Galilean invariance the lattice lacks. Equation~\eqref{eq:virial} thus reduces the
 open problem to a single estimate---a bound on the position-weighted nonlinear term, i.e.\ on the staggered
 momentum content $\langle\cos2k\rangle$.
@@ -316,11 +337,13 @@ nonlinear and carries \emph{no} position weight:
    =-\gamma\sum_n\bigl(|a_n|^2-|a_{n+2}|^2\bigr)\mathrm{Im}(\bar a_na_{n+2}),\qquad
   \Bigl|\frac{d}{dt}\,\mathrm{Re}\!\sum_n\bar a_na_{n+2}\Bigr|\le2\gamma\|a\|_4^4
 \end{equation}
-(the identity proven symbolically; the bound by Cauchy--Schwarz; \texttt{verify\_stagger\_morawetz.py}). So
-the whole question rests on the \emph{focusing interaction-Morawetz} spacetime norm
-$\gamma\int_0^\infty\|a\|_4^4\,dt$---the standard scattering criterion---which is numerically bounded for
-$\gamma P<4$ and divergent above (matching the sharp threshold $4$); its focusing-sign obstruction is exactly
-the barrier~\cite{StefanovKevrekidis05} cannot cross at the cubic power. The integrable Ablowitz--Ladik
+(the identity proven symbolically; the bound by Cauchy--Schwarz; \texttt{verify\_stagger\_morawetz.py}).
+Integrating the bound does not close the argument: even on the linear flow
+$\|a(t)\|_4^4=P^2\sum_nJ_n(2t)^4\sim P^2\ln t/(2\pi^2t)$, so $\gamma\int_0^T\|a\|_4^4\,dt$ grows like
+$\gamma P^2(\ln T)^2/(4\pi^2)$ for every $\gamma\ge0$ (and linearly in $T$ above $\gamma P=4$, where
+$\|a\|_4^4\ge P^2-4P/\gamma$); with the $t^{-1/3}$ decay the Strichartz exponent for $\ell^4$ is $12$, not
+$4$~\cite{StefanovKevrekidis05}. What has to be controlled is the signed right-hand side
+of~\eqref{eq:stagger}, not its modulus. The integrable Ablowitz--Ladik
 cousin, whose hierarchy \emph{conserves} a staggered-momentum functional, motivates~\eqref{eq:stagger}; but
 that functional \emph{drifts} under the non-integrable flow~\eqref{eq:dnls}, the $O(1)$ Ablowitz--Ladik gap
 made quantitative.
@@ -344,20 +367,23 @@ on the discrete flow, where the distance-$1$ current is $O(1)$ by contrast
 (\texttt{verify\_staggered\_current.py}). \end{proof}
 
 \noindent Since the right-hand side of~\eqref{eq:stagger} is $O(\gamma)$ and vanishes on the linear flow
-(Lemma~\ref{lem:stagger-leading}), the staggered momentum drifts only at $O(\gamma^2)$: numerically
+(Lemma~\ref{lem:stagger-leading}), the staggered momentum drifts only at $O(\gamma^2)$ on bounded time
+intervals (the Duhamel error of Proposition~\ref{prop:dnls-persist} is $O(\gamma t)$); numerically the drift
+stays $O(\gamma^2)$ for all simulated times,
 $\sup_t|\Delta\!\operatorname{Re}\!\sum_n\bar a_na_{n+2}|\sim(\gamma P)^2$ (exponent $2.08$, uniform in $N$
-over $N=1024$--$4096$), with $\inf_t\langle v^2\rangle\simeq0.49>0$ across the window
+over $N=1024$--$4096$), with $\inf_t\langle v^2\rangle\simeq0.49>0$ for $\gamma P\in[0.43,4)$
 (\texttt{verify\_modified\_energy\_window.py}). The lemma removes the leading order of the obstruction;
-closing the window still needs an $N$-uniform bound on the $O(\gamma^2)$ remainder and the nonperturbative
-approach to $\gamma P=4$.
+a dispersal proof beyond perturbation theory still needs an $N$-uniform bound on the $O(\gamma^2)$ remainder,
+and it can reach at most the crossover near $\gamma P\approx3.5$, where the localized remnant appears.
 
 On the finite ring the \emph{existence} of these breathers needs no MacKay--Aubry continuation from the
 anti-continuum limit~\cite{MacKayAubry}---it is a compactness statement.
 
 \begin{proposition}[existence of discrete breathers]\label{prop:breather}
-For every $\Omega>0$ the focusing ring DNLS \eqref{eq:dnls} ($\gamma>0$) has a standing-wave breather
-$z_j(t)=\eu^{-\mathrm i\Omega t}\phi_j$ with real $\phi\ne0$ solving $(\LN+\Omega)\phi=\gamma|\phi|^2\phi$;
-for large $\Omega$ it is on-site localized.
+For every $\Omega>0$ the minimizer of $\langle(\LN+\Omega)\phi,\phi\rangle$ on $\{\|\phi\|_4=1\}$, rescaled,
+is a real standing wave $z_j(t)=\eu^{-\mathrm i\Omega t}\phi_j$ of the focusing ring DNLS \eqref{eq:dnls}
+($\gamma>0$), $(\LN+\Omega)\phi=\gamma|\phi|^2\phi$. For $\Omega>2/(\sqrt N-1)$ it is not the uniform state
+(which solves the equation for every $\Omega$), and as $\Omega\to\infty$ it concentrates on one site.
 \end{proposition}
 
 \begin{proof}
@@ -365,57 +391,72 @@ $M:=\LN+\Omega$ is positive definite ($\LN\succeq0$, $\Omega>0$). Minimize the c
 M\phi,\phi\rangle$ over the compact set $\{\|\phi\|_4^4=1\}$; a nonzero minimizer $\phi_\ast$ exists. Its
 Lagrange condition is $M\phi_\ast=2\mu\,|\phi_\ast|^2\phi_\ast$, i.e.\ $(\LN+\Omega)\phi_\ast=\gamma|\phi_\ast|^2\phi_\ast$
 with $\gamma=2\mu>0$; the scaling $\phi\mapsto s\phi$ sends $\gamma\mapsto\gamma/s^2$, so every $\gamma>0$ is
-realised. As $\Omega\to\infty$, $\langle M\phi,\phi\rangle\sim\Omega\|\phi\|_2^2$, so the minimizer maximises
-$\|\phi\|_4/\|\phi\|_2$, i.e.\ concentrates on one site (\texttt{verify\_dnls\_breather.py}: the minimizer
-solves the equation to $\sim\!10^{-7}$ and its participation ratio $\to1$). \end{proof}
+realised. The uniform state $\sqrt{\Omega/\gamma}\,\mathbf 1$ also solves the equation ($\LN\mathbf1=0$), so
+existence alone is trivial; but $\langle M\phi,\phi\rangle$ equals $\Omega\sqrt N$ at $N^{-1/4}\mathbf 1$ and
+$\Omega+2$ at $\delta_{j}$, so the minimizer is not uniform once $\Omega(\sqrt N-1)>2$. (For
+$\Omega<2\sin^2\frac\pi N$ the uniform state is a strict local minimizer: the constrained Hessian on
+$\mathbf 1^\perp$ is $\ge2\lambda_1-4\Omega$.) As $\Omega\to\infty$, $\langle M\phi,\phi\rangle\sim\Omega\|\phi\|_2^2$,
+so the minimizer maximises $\|\phi\|_4/\|\phi\|_2$, i.e.\ concentrates on one site
+(\texttt{verify\_dnls\_breather.py}: the minimizer solves the equation to $\sim\!10^{-7}$ and its participation
+ratio $\to1$). \end{proof}
 
-\noindent So existence is settled on the ring; the anti-continuum estimate $\gamma P\gtrsim2$ matches the
+\noindent So localized breathers exist on the ring; the anti-continuum estimate $\gamma P\gtrsim2$ matches the
 $\Omega>0$ (above-band) condition. Stability follows the classical site-vs-bond dichotomy.
 
 \begin{proposition}[stability of the site-centred breather]\label{prop:breather-stab}
-Along the site-centred branch $P(\Omega)=\|\phi_\Omega\|^2=\Omega/\gamma+O(1)$, so
-$\mathrm dP/\mathrm d\Omega>0$; by the Vakhitov--Kolokolov slope criterion and Grillakis--Shatah--Strauss
-theory~\cite{VK,GSS} the breather is orbitally stable, and its linearisation
-$\left[\begin{smallmatrix}0&-L_-\\L_+&0\end{smallmatrix}\right]$ with $L_+=\LN+\Omega-3\gamma\phi^2$,
-$L_-=\LN+\Omega-\gamma\phi^2$ has purely imaginary spectrum. The bond-centred branch carries a real
-eigenvalue pair and is unstable.
+There is $\Omega_0$, independent of $N$, such that for $\Omega\ge\Omega_0$ the site-centred breather is
+orbitally stable, by the Vakhitov--Kolokolov slope criterion and Grillakis--Shatah--Strauss
+theory~\cite{VK,GSS,GSS2}: its linearisation $\left[\begin{smallmatrix}0&-L_-\\L_+&0\end{smallmatrix}\right]$
+with $L_+=\LN+\Omega-3\gamma\phi^2$, $L_-=\LN+\Omega-\gamma\phi^2$ has purely imaginary spectrum, while the
+bond-centred breather carries a real eigenvalue pair and is unstable. At $\Omega=2$, $\gamma=1$ the same
+dichotomy is certified by a computer-assisted proof for $N=5$ (site) and $N=6$ (bond).
 \end{proposition}
 
 \begin{proof}
 Grillakis--Shatah--Strauss gives orbital stability once three hypotheses hold: (i) the slope
 $\mathrm dP/\mathrm d\Omega>0$; (ii) $L_-\ge0$ with $\ker L_-=\operatorname{span}\phi$; (iii) $n(L_+)=1$, a
 single negative direction. We establish them.
-\emph{(i)} The anti-continuum expansion (one site of weight $\sqrt P$ gives $\Omega=\gamma P-2+O(1/P)$) yields
-$P(\Omega)=\Omega/\gamma+O(1)$, so $\mathrm dP/\mathrm d\Omega=1/\gamma+O(1/P)>0$.
+\emph{(i)} With $\phi=\sqrt{\Omega/\gamma}\,\psi$ and $\varepsilon=1/\Omega$ the stationary equation reads
+$(1+\varepsilon\LN)\psi=\psi^3$; at $\varepsilon=0$ the site solution $\psi=\delta_{j}$ has the invertible
+Jacobian $\mathrm{diag}(-2,1,\dots,1)$, so the implicit function theorem (uniformly in $N$, as
+$\|\varepsilon\LN\|\le4\varepsilon$) gives a branch analytic in $\varepsilon$, as in the anti-continuum
+continuation of~\cite{MacKayAubry}. Hence $P(\Omega)=(\Omega+2)/\gamma+O(1/\Omega)$ with
+$\mathrm dP/\mathrm d\Omega=1/\gamma+O(\Omega^{-2})>0$ for large $\Omega$.
 \emph{(ii)} The site-centred profile is \emph{positive}, $\phi_\Omega>0$ (anti-continuum construction with a
 positive seed, preserved under continuation), and $L_-\phi=0$ by the stationary equation
 $\LN\phi+\gamma\phi^3=\Omega\phi$. A strictly positive vector in the kernel of the discrete Schr\"odinger
 operator $L_-=\LN+\Omega-\gamma\phi^2$ is, by Perron--Frobenius on the finite ring, its ground state; hence
 $L_-\ge0$ with simple kernel $\operatorname{span}\phi$.
 \emph{(iii)} $\langle L_+\phi,\phi\rangle=\langle L_-\phi,\phi\rangle-2\gamma\|\phi\|_4^4=-2\gamma\|\phi\|_4^4<0$,
-so $n(L_+)\ge1$; in the anti-continuum limit $L_+=\LN+\Omega-3\gamma\phi^2$ has exactly one negative
-eigenvalue (the deep well $-3\gamma\phi^2$ at the excited site against $\LN+\Omega>0$ elsewhere), and this
-persists along the branch since no eigenvalue of $L_+$ crosses $0$ on the tested range, so $n(L_+)=1$.
-With (i)--(iii), GSS yields orbital stability of the site-centred wave. \emph{Both} branches are moreover
-\emph{certified in exact rational arithmetic} (\texttt{verify\_dnls\_breather\_cap.py}): a Newton--Kantorovich
+so $n(L_+)\ge1$; at $\varepsilon=0$, $L_+/\Omega=\mathrm{diag}(-2,1,\dots,1)$ has exactly one negative
+eigenvalue and no small one, so $n(L_+)=1$ for large $\Omega$. With (i)--(iii), GSS yields orbital stability
+of the site-centred wave for $\Omega\ge\Omega_0$. For the bond-centred wave the same expansion gives
+$n(L_+)=2$ and $\lambda_2(L_-)\to2$, so the GSS index $n(L_+)-1$ is odd and the wave is
+unstable~\cite{GSS2}. \emph{Both} verdicts are moreover \emph{certified in exact rational arithmetic} at
+$\Omega=2$ (\texttt{verify\_dnls\_breather\_cap.py}): a Newton--Kantorovich
 test promotes a rational profile $\tilde\phi$ to a true breather (here $\|\phi-\tilde\phi\|_2\le4\times10^{-9}$),
 exact $\mathrm{LDL}^\top$ inertia (Sylvester's law) at $\pm I$ pins the Morse index with the spectrum a distance
 $\ge1$ from $0$, and a congruence $Q^\top(L_--I)Q\succ0$ on $\tilde\phi^\perp$ gives $\lambda_2(L_-)\ge1$; a
-Weyl bound ($\delta\le5\times10^{-8}\ll1$) carries both signatures to the true $\phi$. This yields $n(L_+)=1$
-for the site-centred ring $N=5,\Omega=2$ (GSS index $0$, stable) and $n(L_+)=2$ for the bond-centred ring
-$N=6,\Omega=2$ (GSS index $n(L_+)-1=1$, odd, hence orbitally \emph{unstable})---upgrading both verdicts from
-numerical to computer-assisted. Over the full branch \texttt{verify\_dnls\_breather\_stability.py} tracks the
-spectrum ($\max|\mathrm{Re}\,\lambda|\sim10^{-7}$ site; a real pair $\in[3.9,8.9]$ bond) on
-$\Omega\in[2,20]$. \end{proof}
+Weyl bound ($\delta\le5\times10^{-8}\ll1$) carries both signatures to the true $\phi$; the slope
+$\mathrm dP/\mathrm d\Omega=-2\langle\phi,L_+^{-1}\phi\rangle$ is enclosed by its exact value at $\tilde\phi$
+plus the same perturbation bound. This yields $n(L_+)=1$ and $\mathrm dP/\mathrm d\Omega\in[0.918491,0.918492]$
+for the site-centred ring $N=5$ (GSS index $0$, stable) and $n(L_+)=2$,
+$\mathrm dP/\mathrm d\Omega\in[2.020498,2.020500]$ for the bond-centred ring $N=6$ (GSS index $n(L_+)-1=1$,
+odd, hence orbitally \emph{unstable}). Between $\Omega=2$ and the anti-continuum regime the verdicts are
+numerical: \texttt{verify\_dnls\_breather\_stability.py} tracks the spectrum
+($\max|\mathrm{Re}\,\lambda|\sim10^{-7}$ on the site branch for $\Omega\in[2,20]$; a real pair in $[3.9,8.9]$ on
+the bond branch at $\Omega=4,8,12,20$). \end{proof}
 
-\noindent Thus on the ring the linear stage (persistence, the MI band), the breather's \emph{existence},
-and its \emph{stability} are all rigorous; the precise dynamical launch threshold $\approx4$ and the fully
-nonlinear saturation/rogue dynamics remain the open sequel.
+\noindent Thus on the ring the linear stage (persistence, the MI band), the existence of localized
+breathers and their stability in the anti-continuum regime are rigorous, with computer-assisted verdicts at
+$\Omega=2$; stability along the whole branch, the dynamical launch threshold (numerically near $3.5$) and the
+fully nonlinear saturation/rogue dynamics remain the open sequel.
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.92\textwidth]{fig_selftrapping.pdf}
-\caption{DNLS self-trapping ($N=128$, single-site seed). Left: the participation ratio $P$ collapses from
-$\sim N$ (dispersed) to $\sim1$ (trapped) as the nonlinearity crosses the band top $\gamma\approx4$.
+\caption{DNLS self-trapping ($N=128$, single-site seed). Left: the participation ratio $\mathrm{PR}$
+collapses from $\sim N$ (dispersed) to $\sim1$ (trapped) as $\gamma P$ crosses the region near the bandwidth
+$4$ (a localized remnant appears from $\gamma P\approx3.5$).
 Right: above threshold the excitation is a persistent localized breather-like state---a localized column in
 space-time.}\label{fig:selftrapping}
 \end{figure}
@@ -475,25 +516,25 @@ chaotic cloud---the same regular-to-chaotic transition measured by $\lambda_{\ma
 \section{Diagnostics and the fate of the large wave}\label{sec:fate}
 
 The linear large wave and its nonlinear continuations are cleanly separated by a small set of dynamical
-diagnostics---localization (participation ratio $P$), value statistics (kurtosis $\kappa$) and chaos
+diagnostics---localization (participation ratio $\mathrm{PR}$), value statistics (kurtosis $\kappa$) and chaos
 (Lyapunov exponent $\lambda_{\max}$)---all built on the \emph{same} lattice operator $\LN$
 (Table~\ref{tab:diagnostics}). The linear large wave is a delocalized, thin-tailed, integrable resonance
-($P\sim N$, $\kappa<3$, $\lambda_{\max}=0$); nonlinearity opens three distinct routes to a large local
+($\mathrm{PR}\sim N$, $\kappa<3$, $\lambda_{\max}=0$); nonlinearity opens three distinct routes to a large local
 amplitude---\emph{self-focusing} into rogue extremes (heavy tails, $\kappa>3$), \emph{self-trapping} into
-a pinned breather ($P\sim1$), and \emph{chaotic} thermalization ($\lambda_{\max}>0$). Which one is
+a pinned breather ($\mathrm{PR}\sim1$), and \emph{chaotic} thermalization ($\lambda_{\max}>0$). Which one is
 realized is set by the sign and strength of the nonlinearity and by the energy; the linear theory of
 Part~I is the $\beta,\gamma\to0$ corner of this picture, and supplies the spectral data ($\LN$, the band
-$[0,4]$, the modal frequencies) that organize every regime. A rigorous nonlinear theory on the
-ring---existence and stability of the discrete breathers, the precise role of the $\LN$ spectrum in the
-modulational band, and the energy threshold for chaos---is the natural sequel.
+$[0,4]$, the modal frequencies) that organize every regime. A rigorous nonlinear theory on the ring beyond
+what is proved here---stability along the whole breather branch, the self-trapping threshold, and the energy
+threshold for chaos---is the natural sequel.
 
 \begin{table}[ht]\centering
 \caption{The large wave and its nonlinear continuations, separated by dynamical diagnostics on the common
-operator $\LN$. ($P$: participation ratio; $\kappa$: kurtosis; $\lambda_{\max}$: largest Lyapunov
+operator $\LN$. ($\mathrm{PR}$: participation ratio; $\kappa$: kurtosis; $\lambda_{\max}$: largest Lyapunov
 exponent; ``---'' marks a diagnostic not characteristic of that regime.)}\label{tab:diagnostics}
 \begin{tabular}{lllll}
 \hline
-Regime & Model & Localization $P$ & Statistics $\kappa$ & $\lambda_{\max}$\\
+Regime & Model & Localization $\mathrm{PR}$ & Statistics $\kappa$ & $\lambda_{\max}$\\
 \hline
 Linear large wave & $\ddot u=-\LN u$ & delocalized $\sim N$ & platykurtic $<3$ & $0$\\
 Rogue / self-focusing & DNLS, noisy plane wave & localized bursts & leptokurtic $>3$ & ---\\
@@ -510,8 +551,8 @@ Part~I established that the \emph{linear} large wave is one-dimensional: on the 
 $U_N^{(d)}$ is bounded for $d\ge2$ (Section~\ref{sec:dim}), so a localized linear disturbance cannot
 amplify in two or three dimensions. Nonlinearity removes the obstruction. On the $2$-torus $(\Z_N)^2$
 the DNLS with the block-circulant Laplacian $\LN^{(2)}$ (eigenvalues
-$\lambda_{\mathbf r}=4\sin^2\frac{\pi r_1}{N}+4\sin^2\frac{\pi r_2}{N}$, band $[0,8]$, with the
-dispersion surface of Figure~\ref{fig:dispersion3d}) self-traps a single-site excitation into a
+$\lambda_{\mathbf r}=4\sin^2\frac{\pi r_1}{N}+4\sin^2\frac{\pi r_2}{N}$, band $[0,8]$; Figure~\ref{fig:dispersion3d}
+shows the corresponding phonon dispersion $\sqrt{\lambda_{\mathbf r}}$) self-traps a single-site excitation into a
 long-lived, exponentially localized \emph{two-dimensional breather-like state} once the on-site nonlinear
 frequency crosses the $2$D band top, $\gamma|z|^2\approx8$: the norm is conserved to $10^{-12}$ and the
 participation ratio collapses from $\sim N^2$ to $O(1)$ across the threshold

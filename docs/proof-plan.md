@@ -33,10 +33,11 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
 - **A2** β_odd continuum cover — the θ-ball middle blow-up past `t=12` is fixed by `middle_far_point`
   (θ-Taylor + t-collocation; `verify_middle_far.py`); the previously-failing boxes now certify
   (e.g. `(0.70,0.70)→0.9915`; hardest boxes at the high-λ edge `a_3≈0.61`, closed by one refinement, worst
-  leaf `0.9999`). Full band tiling **DONE**: `run_dagger_campaign.py` certified 130 leaf boxes, 0 fail (~7.2 h)
-  ⇒ A2 reduced to ONE numerically-validated ≥3-copy inequality. **Corrected 2026-10-12:** the target is
-  the *windowed* constant (see A2), not the all-time `limsup B_N/√N`, which is `1` (`B_p = √p`); and the
-  cover is validated, not rigorous modulo one estimate — see the four further non-rigorous steps in A2.
+  leaf `0.9999`). Full band tiling **DONE**: `run_dagger_campaign.py` certified 136 leaf boxes, 0 fail (~7.2 h; 6 boxes
+  added 2026-10-13 after `--coverage` found a gap at `a_1≈1.11–1.13`)
+  ⇒ A2 reduced to ONE numerically-validated ≥3-copy inequality. **Corrected 2026-10-12/13:** the target is
+  the *windowed* constant (see A2), not the all-time `limsup B_N/√N`, which is `1` (`B_N = √N` for `N = p, p²`);
+  and the cover is validated, not rigorous modulo one estimate — see the further non-rigorous steps in A2.
 
 **Open — research wall (needs new mathematics).**
 - **A1** excess lemma, uniform in `m` = weighted-packing bound on the chained graph — sup-side
@@ -44,7 +45,7 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
 - Self-trapping window `gP∈[0.43,4)` — same focusing-sign motif (§C).
 
 **Open — execution / resource (idea exists, not a one-shot).**
-- β_odd full band tiling — **DONE** (`run_dagger_campaign.py`: 130 leaf boxes, 0 fail, ~7.2 h; A2 reduced to one validated inequality; the cover itself is validated, not rigorous — see A2);
+- β_odd full band tiling — **DONE** (`run_dagger_campaign.py`: 136 leaf boxes, 0 fail, ~7.2 h, band coverage checked by `--coverage`; A2 reduced to one validated inequality; the cover itself is validated, not rigorous — see A2);
   finite-time **lower** bound (+ damping, conditional on it);
   FPUT small-energy (Nekhoroshev, 4-wave resonances) and chaos (CAPD); arbitrary graphs (non-cyclotomic).
 
@@ -82,10 +83,10 @@ the chained relation graph**, NOT the `a -> infinity` limit (that direction is t
   the open worst-case recurrence); `g=1` NNN collision law via Conway-Jones 5-term sums (was verified `N<=120`).
   Commits 678b896,9e49f37,43ea733,1af324f,6982178,d38096d,9cb53df. Walls re-confirmed untooled (2026 lit):
   A1 sup-side MPS (Bedert min-side), cubic DNLS scattering (only modified), Baker for `2sin` vector (only
-  qualitative; lead Calegari-Huang arXiv:2510.04156).
+  qualitative; lead Calegari-Dimitrov-Tang arXiv:2510.04156).
 - DONE this session (`omega(m)=2`): relation lattice characterized — unimodular SNF, **chained**
   relations, support set by the smallest prime (`3|N`: `w_a+w_b=w_c`, `a+b=N/3`, from `2 sin(pi/6)=1`;
-  `5|N`: golden); per-N certificates `N=15` (elementary Lipschitz grid, `>=0.082`; exact rational SOS,
+  `5|N`: golden); per-N certificates `N=15` (elementary Lipschitz grid, `>=0.081`; exact rational SOS,
   `>=0.14754945`), `N=21` (exact rational SOS, `>=0.11208183`); `N=33,35` floating-point moment-SOS
   only. `exact/gap/excess_omega2.g`, `numerics/verify_excess_omega2.py`.
 - TRIED → blocked: the **uniform** dual certificate is exactly the signed bound that overshoots.
@@ -108,15 +109,20 @@ the chained relation graph**, NOT the `a -> infinity` limit (that direction is t
 
 ### A2. Windowed Schrödinger constant `limsup_N sup_{t<=SN/2} ||K_N(.,t)||_1/sqrt(N) = beta_odd`  (review #5)
 
-**Correction (2026-10-12).** As first stated, A2 asked for `limsup B_N/sqrt(N) = beta_odd` with
-`B_N = sup_t ||e^{-itL_N}||_{inf->inf}` over ALL `t`. That is false: `B_p = sqrt(p)` for every odd prime `p`
-(`lambda_r = 2 - 2cos(2 pi r/p)` are Q-independent — basis `zeta^j`, `1 = -sum 2cos(2 pi s/p)`; Kronecker
-aligns the phases to the chirp `2 pi r^2/p`; the Gauss sum gives `|K| = 1/sqrt(p)` everywhere), so the
-all-time `limsup` is `1` (paper `prop:bn-prime`; Godsil–Mullin–Roy's epsilon-uniform mixing on `C_p`;
-`verify_bn_prime_flat.py`, `exact/pari/bn_prime_flat.gp`). `thm:joint-equi` and `thm:uniform-transfer` hold
-for each FIXED `s = 2t/N`; the all-time sup needs `s` unbounded in `N`. The statement the analysis supports
-is the windowed one (paper `conj:bn-window`): for each fixed `S`, it needs (i) the ≥3-copy dagger
-inequality and (ii) the transfer uniform in `s` on `[1, S]`. Polynomial windows `t <= N^C`: open.
+**Correction (2026-10-12/13).** As first stated, A2 asked for `limsup B_N/sqrt(N) = beta_odd` with
+`B_N = sup_t ||e^{-itL_N}||_{inf->inf}` over ALL `t`. That is false. `B_N = max` over the orbit closure `H_N`
+(dim `phi(N)/2`), and `B_N = sqrt(N)` iff `H_N` holds a flat phase vector (epsilon-uniform mixing on `C_N`):
+true for `N = p` (Gauss chirp; Godsil–Mullin–Roy) and `N = p^2` (even Frank point), false for even `N >= 6`
+(symmetric periodic Golay-pair obstruction) — `thm:bn-saturation`, `verify_bn_saturation.py`,
+`exact/pari/bn_saturation.gp`; a second implementation of the prime and prime-square cases in
+`verify_bn_prime_flat.py`, `exact/pari/bn_prime_flat.gp`, `exact/pari/bn_prime_square.gp`. So
+`limsup B_N/sqrt(N) = 1`. Also false for `N = 15`: exact Nullstellensatz certificate `D y^4 = sum N_j m_j f_j`
+(`exact/julia/c15_flat_certificate.jl`, re-checked in PARI); Cao–Zhu's Thm 3.2 Gröbner basis implies it too.
+Open (paper `conj:bn-psq`): the other odd composite non-prime-square `N` (numerics `< 1`, closest `N = 27`,
+`0.99992`). `thm:joint-equi` and `thm:uniform-transfer` hold for each FIXED `s = 2t/N`. The statement the
+analysis supports is the windowed one (paper `conj:bn-window`): for each fixed `S`, it needs (i) the ≥3-copy
+dagger inequality and (ii) the transfer uniform in `s` on `[1, S]` (and on `t <= N/2` as well). Polynomial
+windows `t <= N^C`: open.
 
 **Goal.** `beta_odd = 0.92801930480793...` (odd subsequence, windowed); even subsequence `c0/sqrt(2)`
 (windowed, numerical).
@@ -148,20 +154,22 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
   via `prove_box(..., far_slices=...)` certifies the previously-failing boxes (e.g.
   `(0.70,0.70)→0.9915`; the hardest boxes are the high-λ edge `a_3≈0.61`, closed by one refinement, worst
   leaf `0.9999`). Node-parallel (`prove_box_parallel.py`); the full band tiling is the adaptive, checkpointed
-  `run_dagger_campaign.py`, which certified all 130 leaf boxes (0 fail, ~7.2 h) — the cover **validates** the
-  residual ≥3-copy inequality across the band (NOT a proof). It is not "rigorous modulo one estimate":
-  besides (a) the far `t`-collocation remainder from finite differences (`verify_dagger_continuum.py`
-  `middle_far_point`), four further steps are non-rigorous (2026-10-12 audit): (b) `build_stencil` takes the
-  amplitude third derivatives from finite differences, not a derivative bound, and ignores the error
-  propagated through the least-squares fit; (c) `StencilModel.sup` maximizes the quadratic on a 41×41 float
-  grid instead of exactly over the box; (d) `run_dagger_campaign.py` reads band membership (`lam_conc`) and
-  `bmin` from 3×3 samples of each box; (f) no manifest — library versions, precision, hashes, an exact
-  rational cover check.
+  `run_dagger_campaign.py`, which certified all 136 leaf boxes (0 fail, ~7.2 h; `--coverage` checks the band is
+  covered) — the cover **validates** the residual ≥3-copy inequality across the band (NOT a proof). It is not
+  "rigorous modulo one estimate": besides (a) the far `t`-collocation remainder from finite differences
+  (`verify_dagger_continuum.py` `middle_far_point`), further steps are non-rigorous (2026-10-12 audit):
+  (b) `build_stencil` takes the amplitude third derivatives from finite differences, not a derivative bound,
+  and ignores the error propagated through the least-squares fit; (c) `StencilModel.sup` maximizes the
+  quadratic on a 41×41 float grid instead of exactly over the box; (d) `run_dagger_campaign.py` reads the
+  per-box `lam_lo/lam_hi` and `bmin` from 3×3 samples — since 2026-10-13 band coverage is checked separately
+  with interval bounds (`--coverage`), and `bmin` is attained at the sampled corner because
+  `b = sqrt(2 − a1² − a3²)` decreases in both amplitudes (up to float rounding); (f) no manifest — library
+  versions, precision, hashes.
 - FIXED: the `beta_odd` literal (was wrong past digit 9).
 
-**A1 remains the signed-cancellation wall; A2's continuum cover is validated across the band (130 boxes, 0 fail;
-above), reducing the windowed A2 to one numerically-validated ≥3-copy inequality plus the `s`-uniform transfer
-(not a proof: the cover has the non-rigorous steps (a)–(d), (f) listed above).**
+**A1 remains the signed-cancellation wall; A2's continuum cover is validated across the band (136 boxes, 0 fail,
+coverage checked; above), reducing the windowed A2 to one numerically-validated ≥3-copy inequality plus the
+`s`-uniform transfer (not a proof: the cover has the non-rigorous steps (a)–(c), (f) listed above).**
 
 ---
 
@@ -171,7 +179,7 @@ above), reducing the windowed A2 to one numerically-validated ≥3-copy inequali
 |---|---|---|
 | DNLS weak persistence `‖z-z_lin‖_inf <= |g|T P^{3/2}` | Duhamel | ALREADY proved (`prop:dnls-persist`) |
 | `N=2p, 4p` excess `O(1/N)` | sharp two-sided | ALREADY proved |
-| Self-trapping threshold `gP=4` energy-sharp; converse to `0.43` | energy / virial | ALREADY proved |
+| No dispersal for `gP>4` (energy-sharp, not dynamically sharp), on-site trapping for `gP>8`; quantitative dispersal for `gP<0.43` | energy / Duhamel + Landau | ALREADY proved (`prop:threshold`, `prop:dispersal`) |
 | Dirichlet segment mod-4 reachability | port the ring criterion | **DONE** (`cor:segceiling`, `exact/gap/segment_mod4.g`; criterion <=> `N+1` prime/`2^m`, `N<=40`) |
 | Exact `A_N` table, small N | orbit-closure subtorus max + certified upper | **DONE** — Lipschitz-grid certifies `A_N<U_N` w/ explicit gap `N=6,9,12,15` (`verify_defect_certified.py`); exact rational SOS pins `N=9,15,21` to `1e-7` (`exact/pari/defect_sos.gp`); floating-point moment-SOS `N=33,35`; orbit-closure values `verify_exact_AN.py`. |
 | Generic disorder independence | eigenvalue map submersion; `F_k != 0` | **DONE** (Jacobian `d lambda_r/dm_j=-lambda_r v_r(j)^2` full row rank `N-1`, `verify_disorder.py` (A'); linear.tex Disorder) |
@@ -194,16 +202,20 @@ above), reducing the windowed A2 to one numerically-validated ≥3-copy inequali
   homogeneous Dirichlet pigeonhole (the target `pi/2` is inhomogeneous); it needs a Baker-type Diophantine
   lower bound on linear forms in the cyclotomic frequencies `omega_r=2 sin(pi r/N)` — a genuine
   number-theoretic wall, like A1. (Upper Dirichlet `~delta^{-m}` bound + per-N certified witnesses: done.)
-- **Self-trapping window `gP in [0.43,4)`** (review #8): reduced to a focusing interaction-Morawetz
-  `L^4` bound = a bound on the staggered-momentum drift (`eq:stagger`). **Leading order now PROVED**
+- **Self-trapping window `gP in [0.43,4)`** (review #8): reduced to a bound on the signed
+  staggered-momentum drift (`eq:stagger`); bounding it by its modulus fails, since the `L^4` spacetime norm
+  diverges like `(ln T)^2` even on the free flow (`verify_stagger_morawetz.py`). Numerically the seed
+  disperses only up to `gP≈3.4` and keeps a remnant from `≈3.5` (`verify_selftrapping_transition.py`; JHR95
+  `≈3.45`), so the target is that crossover, not `4`. **Leading order now PROVED**
   (`lem:stagger-leading`): along the linear flow from the single-site seed `a_n=e^{2it}(-i)^n J_n(2t)`,
   the distance-2 current `Im(conj(a_n) a_{n+2})=0` identically (phase `(-i)^2=-1` is real => `a_{n+2}` is a
   real multiple of `a_n`), so the O(g) drift cancels: `sup_t|ΔS|~(gP)^2` (exp 2.08, N-uniform),
   `inf<v^2>≈0.49>0`. Verified Maxima (ODE residual 0, phase -1) + Rocq (`formal/rocq/StaggeredCurrent.v`,
   real-multiple=>zero-current) + numerics (`verify_staggered_current.py`, `verify_modified_energy_window.py`,
-  GPU). OPEN: N-uniform bound on the `O(g^2)` remainder + nonperturbative top `gP->4` (focusing sign
+  GPU). OPEN: N-uniform bound on the `O(g^2)` remainder + nonperturbative approach to the crossover `gP≈3.5` (focusing sign
   survives there — still a signed-cancellation motif).
-- **Breather stability** (review #4): VK/GSS stated; (i) `dP/dOmega>0` analytic. **DONE this session** —
+- **Breather stability** (review #4): VK/GSS stated; (i) `dP/dOmega>0` for large `Omega` (IFT in `eps=1/Omega`), and enclosed at `Omega=2`
+  (site `N=5`: `[0.9184911, 0.9184913]`; bond `N=6`: `[2.0204989, 2.0204992]`). **DONE this session** —
   the full site/bond **dichotomy** is **CAP-certified in exact rational arithmetic**: Newton--Kantorovich
   existence of the true profile (`rho<=4e-9`) + Sylvester-inertia `LDL^T` + Weyl transport
   (`verify_dnls_breather_cap.py`). Site `N=5,Omega=2`: `n(L_+)=1`, `lambda_2(L_-)>0` => GSS index 0, STABLE.

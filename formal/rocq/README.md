@@ -64,3 +64,14 @@ and `numerics/verify_classification_proof.py`.
 ```bash
 rocq compile formal/rocq/Classification.v
 ```
+
+## `StaggeredCurrent.v` — the staggered-current lemma
+
+The algebraic step of Lemma `stagger-leading`: if `w` is a real multiple of `z`, the current
+`Im(conj(z) w)` vanishes. With `z = a_n`, `w = a_{n+2}` on the linear flow from the single-site seed (the phase
+ratio `(-i)^2 = -1` is real, checked in Maxima by `numerics/verify_staggered_current.mac`), the distance-2
+current is zero, so the order-`gamma` staggered-momentum drift vanishes. Stdlib-only (`Reals`).
+
+```bash
+rocq compile formal/rocq/StaggeredCurrent.v
+```

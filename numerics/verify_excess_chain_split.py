@@ -13,8 +13,12 @@ Hence for any lambda in [0,1), partitioning the prefix penalty and using lem:tri
 The triplet sum is bounded (for square-free N=3p it is a Riemann sum of (1/2) int_{1/2}^{2/3} csc(pi x) dx
 = ln3/(4pi) ~ 0.087; stays < 0.1 across the set). So the excess lemma for 3|N is ISOLATED to the comb
 block F_comb = O(1) -- the remaining open core. This script verifies (i) vertex-disjointness, (ii) the
-split is a valid upper bound on the true excess, (iii) the triplet bound, on 3|N up to N=315 (M<=240).
+split is a valid upper bound on the true excess, (iii) the triplet bound, on ten odd 3|N up to N=315 (M<=240).
+For 30|N the triplets are NOT disjoint: the extra relation (N/10, N/6, 3N/10) shares two vertices, and its top
+mode moves into K (Lemma cleancomb; exact/pari/support3_relations.gp).  F_comb is estimated by multistart
+local maximisation, a lower estimate of the sup, so the printed splitBound is numerical, not certified.
 """
+
 from __future__ import annotations
 
 import sys
@@ -54,9 +58,15 @@ def f_comb(n, lam, combs, c, b, big_m, *, starts=30, seed=2):
     rng = np.random.default_rng(seed)
     best = -np.inf
     for _ in range(starts):
-        r = minimize(lambda p: (-(float(bc @ np.sin(cf @ p)) - lam * float((bs * (1 - np.sin(p))).sum())),
-                                -(cf.T @ (bc * np.cos(cf @ p)) + lam * (bs * np.cos(p)))),
-                     rng.uniform(0, 2 * pi, big_m), jac=True, method="L-BFGS-B")
+        r = minimize(
+            lambda p: (
+                -(float(bc @ np.sin(cf @ p)) - lam * float((bs * (1 - np.sin(p))).sum())),
+                -(cf.T @ (bc * np.cos(cf @ p)) + lam * (bs * np.cos(p))),
+            ),
+            rng.uniform(0, 2 * pi, big_m),
+            jac=True,
+            method="L-BFGS-B",
+        )
         best = max(best, -r.fun)
     return best
 
@@ -64,29 +74,46 @@ def f_comb(n, lam, combs, c, b, big_m, *, starts=30, seed=2):
 def main() -> int:
     t0, ok = time.time(), True
     print("=" * 92)
-    print("Chain-split reduction of the excess lemma for 3|N: excess <= (1/(1-lam)) sum_T b_c/2 + F_comb(lam)")
+    print(
+        "Chain-split reduction of the excess lemma for 3|N: excess <= (1/(1-lam)) sum_T b_c/2 + F_comb(lam)"
+    )
     print("=" * 92)
-    print(f"  {'N':>4} {'#T':>4} {'#K':>4} {'disj':>5} {'cf':>4} {'sum b_c/2':>10} {'splitBound':>11} {'excess':>8} {'bnd>=exc':>9}")
+    print(
+        f"  {'N':>4} {'#T':>4} {'#K':>4} {'disj':>5} {'cf':>4} {'sum b_c/2':>10} {'splitBound':>11} {'excess':>8} {'bnd>=exc':>9}"
+    )
     riem = log(3.0) / (4.0 * pi)  # (1/2) * int_{1/2}^{2/3} csc(pi x) dx = ln3/(4pi)
     for n in [15, 21, 33, 45, 63, 99, 105, 135, 165, 315]:
         if 3 not in prime_factors(n):
             continue
         _m, big_m, c, b, trip, combs, disjoint = split_data(n)
         # proved closed form (identity omega_{N/3+a}=omega_a+omega_{N/3-a}): each clean triplet is (a, N/3-a, N/3+a)
-        cf = all((a + 1) + (bb + 1) == n // 3 and (cg + 1) == n // 3 + (a + 1) for cg, a, bb in trip)
+        cf = all(
+            (a + 1) + (bb + 1) == n // 3 and (cg + 1) == n // 3 + (a + 1) for cg, a, bb in trip
+        )
         tsum = sum(b[cg] / 2 for cg, _, _ in trip)
-        bound = min((1.0 / (1 - lam)) * tsum + f_comb(n, lam, combs, c, b, big_m, starts=20)
-                    for lam in np.linspace(0.05, 0.9, 10))
+        bound = min(
+            (1.0 / (1 - lam)) * tsum + f_comb(n, lam, combs, c, b, big_m, starts=20)
+            for lam in np.linspace(0.05, 0.9, 10)
+        )
         a_n, _sv, bb = optimize_AN(n, seed=0, starts=80)
         exc = a_n - float(bb[:big_m].sum())
         valid = bound >= exc - 1e-3
         ok &= disjoint and valid and (tsum < 0.1) and cf
-        print(f"  {n:>4} {len(trip):>4} {len(combs):>4} {disjoint!s:>5} {cf!s:>4} {tsum:>10.4f} {bound:>11.4f} "
-              f"{exc:>8.4f} {valid!s:>9}")
-    print(f"\n  (square-free N=3p: sum_T b_c/2 -> ln3/(4pi) = {riem:.4f}; combs carry the open core F_comb)")
+        print(
+            f"  {n:>4} {len(trip):>4} {len(combs):>4} {disjoint!s:>5} {cf!s:>4} {tsum:>10.4f} {bound:>11.4f} "
+            f"{exc:>8.4f} {valid!s:>9}"
+        )
+    print(
+        f"\n  (square-free N=3p: sum_T b_c/2 -> ln3/(4pi) = {riem:.4f}; combs carry the open core F_comb)"
+    )
     print("=" * 92)
-    print("RESULT:", "CHAIN-SPLIT VERIFIED (triplets disjoint; split valid; triplet part <0.1)" if ok
-          else "CHECK FAILED", f"[{time.time()-t0:.0f}s]")
+    print(
+        "RESULT:",
+        "CHAIN-SPLIT VERIFIED (triplets disjoint; split valid; triplet part <0.1)"
+        if ok
+        else "CHECK FAILED",
+        f"[{time.time() - t0:.0f}s]",
+    )
     print("=" * 92)
     return 0 if ok else 1
 

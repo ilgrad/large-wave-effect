@@ -5,7 +5,8 @@
 """Two-copy profile for t <= N/2 and its maximizer (Proposition bn-profile).
 
 For the Schroedinger ring kernel at t = sN/2, s in [0,1], the Poisson periodization keeps only the two
-copies ell = 0, -1 (the rest are super-exponentially small since 2t <= N), and the Debye envelope turns
+copies ell = 0, -1 (the rest have index |n| >= N > 2t, so are exponentially small for s < 1 by
+DLMF 10.14.5), and the Debye envelope turns
 ||K_N(.,t)||_1 / sqrt(N) into an explicit limiting profile F(s):
 
     F(s) = c0 sqrt(s)                                                 for s in [0, 1/2],
@@ -21,10 +22,11 @@ This script certifies the maximizer structure (Proposition bn-profile):
   (i)   closed-form endpoints  F(1/2) = c0/sqrt2 = 0.86068...,  F(1) = beta_odd = 0.92802...;
   (ii)  ANALYTIC majorant bounds: Jensen g(a,b) <= sqrt((a+b)/2) gives F < beta_odd on [1/2,4/5] (60%);
         the concavity of h (h'' < 0) sharpens this to the tangent g(a,b) <= sqrt(max)[h(1)+h'(1)(min/max-1)],
-        pushing the analytic region to [1/2, 0.9366] -- 87% of [1/2,1];
-  (iii) on the residual [0.9366, 1], F is real-analytic (the w=sin^2 substitution removes the band-edge
-        singularities) and a Lipschitz-grid bound certifies inf F' >= min_i F'(s_i) - max_i|F''| * delta/2
-        ~ 0.20 > 0; hence max_{s in [0,1]} F(s) = F(1) = beta_odd;
+        used on [1/2, 0.90] (80% of [1/2,1]) with margin >= 0.008; it crosses beta_odd at s* = 0.93658.
+        The majorants are evaluated by ordinary (non-interval) quadrature on a grid;
+  (iii) on [0.90, 1] the monotonicity F' > 0 is proved by verify_bn_profile_rigorous.py (validated
+        interval arithmetic); here a central-difference Lipschitz grid on [0.8, 1] is a NON-rigorous
+        cross-check; hence max_{s in [0,1]} F(s) = F(1) = beta_odd;
   (iv)  cross-checks: the single-integral form F(s) = sqrt(2/pi) int_0^1 g(...) du agrees with the A,B
         split, and the one-copy term has the closed form A(s) = s^{1/2}/(1-s) x 2F1(1/4,1/2;3/2;x^2),
         x=(1-s)/s (matched to 1e-9).
@@ -83,7 +85,9 @@ def g_upper(a: float, b: float, mode: str) -> float:
 def _overlap(s: float, mode: str = "exact") -> float:
     q = 2 * s - 1
 
-    def integrand(theta: float) -> float:  # w = sin^2(theta) removes the w^-1/4, (1-w)^-1/4 endpoints
+    def integrand(
+        theta: float,
+    ) -> float:  # w = sin^2(theta) removes the w^-1/4, (1-w)^-1/4 endpoints
         w = np.sin(theta) ** 2
         ah = ((1 - w) * (1 + q * w)) ** -0.5
         bh = (w * (2 * s - q * w)) ** -0.5
@@ -94,7 +98,9 @@ def _overlap(s: float, mode: str = "exact") -> float:
 
 
 def _one_copy(s: float) -> float:
-    val, _ = quad(lambda w: (s**2 - (1 - s) ** 2 * w**2) ** -0.25, 0.0, 1.0, epsabs=1e-12, epsrel=1e-12)
+    val, _ = quad(
+        lambda w: (s**2 - (1 - s) ** 2 * w**2) ** -0.25, 0.0, 1.0, epsabs=1e-12, epsrel=1e-12
+    )
     return val
 
 
@@ -139,19 +145,25 @@ def main() -> int:
     e1 = abs(f_half - C0 / np.sqrt(2)) < 1e-7 and abs(f_one - BETA_ODD) < 1e-6
     ok &= e1
     print("[i]  endpoints:")
-    print(f"     F(1/2) = {f_half:.10f}  (c0/sqrt2 = {C0/np.sqrt(2):.10f})")
+    print(f"     F(1/2) = {f_half:.10f}  (c0/sqrt2 = {C0 / np.sqrt(2):.10f})")
     print(f"     F(1)   = {f_one:.10f}  (beta_odd = {BETA_ODD:.10f})    {'ok' if e1 else 'FAIL'}")
 
     print("[ii] analytic majorant bounds  F(s) < beta_odd  (concave-h tangent sharpens Jensen):")
     jen = max(profile(s, "jensen") - BETA_ODD for s in np.linspace(0.5, 0.8, 31))
-    tan = max(profile(s, "tangent") - BETA_ODD for s in np.linspace(0.5, 0.93, 44))
+    tan = max(profile(s, "tangent") - BETA_ODD for s in np.linspace(0.5, 0.90, 201))
     e2 = jen < 0 and tan < 0
     ok &= e2
-    print(f"     Jensen   F+(s) - beta_odd <= {jen:.5f} on [1/2, 4/5]   (elementary, 60% of window)")
-    print(f"     tangent  F+(s) - beta_odd <= {tan:.5f} on [1/2, 0.93]  (sharper, 87% of window)   "
-          f"{'ok' if e2 else 'FAIL'}")
+    print(
+        f"     Jensen   F+(s) - beta_odd <= {jen:.5f} on [1/2, 4/5]   (elementary, 60% of window)"
+    )
+    print(
+        f"     tangent  F+(s) - beta_odd <= {tan:.5f} on [1/2, 0.90]  (sharper, 80% of window)   "
+        f"{'ok' if e2 else 'FAIL'}"
+    )
 
-    print("[iii] residual monotonicity of F on [0.93, 1] via a Lipschitz-grid lower bound on F':")
+    print(
+        "[iii] cross-check (non-rigorous) of the monotonicity of F on [0.8, 1] via a Lipschitz grid on F':"
+    )
     # F is real-analytic on [4/5,1] (sin^2 substitution removes the band-edge singularities); compute
     # F', F'' by central differences and certify  inf F' >= min_i F'(s_i) - max_i|F''| * delta/2 > 0.
     hh = 0.004
@@ -162,23 +174,35 @@ def main() -> int:
     lower = fp.min() - np.abs(fpp).max() * delta / 2
     e3 = lower > 0
     ok &= e3
-    print(f"     min F'(s_i) = {fp.min():.4f},  max|F''(s_i)| = {np.abs(fpp).max():.4f},  delta = {delta:.4f}")
-    print(f"     => inf_[0.8,1] F' >= {lower:.4f} > 0  (covers the residual [0.93,1]; max at s=1)   "
-          f"{'ok' if e3 else 'FAIL'}")
+    print(
+        f"     min F'(s_i) = {fp.min():.4f},  max|F''(s_i)| = {np.abs(fpp).max():.4f},  delta = {delta:.4f}"
+    )
+    print(
+        f"     => inf_[0.8,1] F' >= {lower:.4f} > 0  (proved on [0.90,1] by the interval script)   "
+        f"{'ok' if e3 else 'FAIL'}"
+    )
 
     print("[iv] cross-checks (single-integral form; closed form for the one-copy term A(s)):")
     uni = max(abs(profile_unified(s) - profile(s)) for s in (0.6, 0.85, 0.97))
     a_err = max(abs(one_copy_hyp(s) - _one_copy(s)) for s in (0.8, 0.9, 0.97))
     e4 = uni < 1e-7 and a_err < 1e-9
     ok &= e4
-    print(f"     |F_unified - F| = {uni:.2e};  |A_2F1 - A_quad| = {a_err:.2e}   {'ok' if e4 else 'FAIL'}")
+    print(
+        f"     |F_unified - F| = {uni:.2e};  |A_2F1 - A_quad| = {a_err:.2e}   {'ok' if e4 else 'FAIL'}"
+    )
     grid_c = np.linspace(0.5, 0.7, 41)
     fc = np.array([profile(s) for s in grid_c])
-    print(f"     (for the record: interior dip min F = {fc.min():.6f} at s ~ {grid_c[fc.argmin()]:.3f})")
+    print(
+        f"     (for the record: interior dip min F = {fc.min():.6f} at s ~ {grid_c[fc.argmin()]:.3f})"
+    )
 
     print("=" * 70)
-    print("RESULT:", "PASS -- max_{[0,1]} F = F(1) = beta_odd; analytic on [1/2,0.93] (87%), F'>0 on residual"
-          if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- max_{[0,1]} F = F(1) = beta_odd; majorant on [1/2,0.90] (80%), F'>0 on [0.90,1]"
+        if ok
+        else "FAIL",
+    )
     return 0 if ok else 1
 
 

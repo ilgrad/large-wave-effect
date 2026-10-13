@@ -1,4 +1,4 @@
-\\ Exact layer for B_p = sqrt(p) on prime rings (Proposition prop:bn-prime of the paper).
+\\ Exact layer for B_p = sqrt(p) on prime rings (Theorem bn-saturation (2) of the paper).
 \\
 \\   gp -q -f exact/pari/bn_prime_flat.gp </dev/null
 \\

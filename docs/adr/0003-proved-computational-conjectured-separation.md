@@ -14,8 +14,9 @@ the order theorem (`verify_order_theorem.py`), and the saturation classification
 prime or a power of two has since been upgraded from finite-range evidence to a theorem
 (`verify_classification_proof.py`, with exact/formal cross-checks). The remaining live open problems are
 now narrower: the windowed Schrödinger constant (the all-time `limsup B_N/sqrt N` is `1`, since
-`B_p = sqrt p` on prime rings), the uniform composite excess lemma, the self-trapping
-proof gap, and the quasi-1D non-embedded-ring condition.
+`B_N = sqrt N` on primes and prime squares), saturation `B_N = sqrt N` for the odd composites other than `15`
+that are not prime squares, the uniform composite excess lemma, dispersal on the self-trapping range
+`gamma P in [0.43, 4)` (numerically only up to about 3.4), and the quasi-1D non-embedded-ring condition.
 
 ## Decision
 
@@ -24,9 +25,9 @@ Every claim carries its epistemic status explicitly and consistently:
 - **Proved** statements are `theorem`/`proposition`/`corollary` with proofs.
 - **Computational** statements say "verified for `N <= ...`, conjectured in general" and name the script.
 - **Conjectures** are `conjecture` environments, referenced as such everywhere they appear.
-- Attribution is split: borrowed results are cited to their authors (e.g. Filimonov's segment theorems to
-  `\cite{F23}`); our additions on top (the constant `C = 4/pi^2`, the prime extension) are marked "we
-  identify / we show".
+- Attribution is split: borrowed results are cited to their authors (e.g. the segment constant
+  `C = 4/pi^2` to Myshkis–Filimonov `\cite{MF03}`, the ring `Q`-independence for `N` prime or `2^m` to
+  `\cite{F92}`); our additions on top are marked "we identify / we show".
 - A consolidated **Limitations** paragraph collects all caveats in one place.
 
 ## Consequences

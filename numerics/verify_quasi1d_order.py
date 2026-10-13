@@ -11,9 +11,10 @@ illustrate on the next-nearest-neighbour ring with Laplacian symbol
 so omega_r = 2 sin(pi r/N) sqrt(2 + cos(2 pi r/N)).
 
 (A) ceiling U_N = sum_{r=1}^{floor N/2} 2/(N omega_r) ~ c ln N with c = 1/(pi sqrt(1+4g)) = 1/(pi sqrt3).
-(B) is per-family: at N=15 the omega_r are Q-independent (PSLQ finds no relation) -> the NNN ring SATURATES
-    (A_N = U_N), whereas at N=12 there is the degeneracy omega_3 = omega_6 = 2.  So (B) must be decided
-    case by case -- exactly what the criterion isolates.
+(B) is per-family: at N=15 the omega_r are Q-independent (PSLQ finds no relation; proved exactly in
+    exact/pari/kjump_kummer.gp) -> the NNN ring SATURATES (A_N = U_N), whereas at N=12 there is the
+    degeneracy omega_3 = omega_6 = 2.  So (B) must be decided case by case -- exactly what the criterion
+    isolates.
 """
 
 from __future__ import annotations
@@ -25,7 +26,10 @@ G = mp.mpf(1) / 2  # next-nearest coupling
 
 
 def omega(n: int) -> list:
-    return [2 * mp.sin(mp.pi * r / n) * mp.sqrt(2 + mp.cos(2 * mp.pi * r / n)) for r in range(1, n // 2 + 1)]
+    return [
+        2 * mp.sin(mp.pi * r / n) * mp.sqrt(2 + mp.cos(2 * mp.pi * r / n))
+        for r in range(1, n // 2 + 1)
+    ]
 
 
 def ceiling(n: int) -> mp.mpf:
@@ -59,7 +63,10 @@ def main() -> int:
 
     ok = a_ok and b_ok
     print("=" * 64)
-    print("RESULT:", "PASS -- d_s=1 ceiling c=1/(pi sqrt3); (B) per-family (N=15 vs N=12)" if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- d_s=1 ceiling c=1/(pi sqrt3); (B) per-family (N=15 vs N=12)" if ok else "FAIL",
+    )
     return 0 if ok else 1
 
 

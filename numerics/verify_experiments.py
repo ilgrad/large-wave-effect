@@ -8,7 +8,8 @@ Wave (bead chain): A_N = sup_t max_j |G_N(j,t)|. For prime and 2^m this equals t
 U_N = (1/2N) sum csc(pi r/N) ~ (1/pi) ln N (Theorems 1', 1''); for composite N the exact subtorus
 value (from verify_exact_AN.py) sits a little below.
 
-Schrodinger: B_N = sup_t ||e^{-itL_N}||_{inf->inf} = Theta(sqrt N) (ballistic).
+Schrodinger: B_N = sup_t ||e^{-itL_N}||_{inf->inf} = Theta(sqrt N) (ballistic).  The table column is the
+windowed B_N(6N) on an 8000-point t-grid, a lower bound for B_N (B_p = sqrt(p) exactly, at far larger t).
 
 This reproduces the summary table of the paper (Section "Numerical experiments").
 """
@@ -37,21 +38,29 @@ def main() -> int:
     print("=" * 78)
     print("Numerical experiments: wave A_N and Schrodinger B_N over three families of N")
     print("=" * 78)
-    print(f"  {'family':>10} {'N':>5} {'U_N':>8} {'A_N(wave)':>10} {'A_N/U_N':>8} "
-          f"{'B_N(Schr)':>10} {'B_N/sqrtN':>10}")
+    print(
+        f"  {'family':>10} {'N':>5} {'U_N':>8} {'A_N(wave)':>10} {'A_N/U_N':>8} "
+        f"{'B_N(6N)':>10} {'ratio':>10}"
+    )
     ok = True
     for fam, ns in FAMILIES.items():
         for n in ns:
             u = ceiling_u(n)
             a = u if fam != "composite" else A_COMPOSITE[n]
             b = schrodinger_b(n)
-            print(f"  {fam:>10} {n:>5} {u:>8.4f} {a:>10.4f} {a / u:>8.4f} "
-                  f"{b:>10.4f} {b / np.sqrt(n):>10.4f}")
+            print(
+                f"  {fam:>10} {n:>5} {u:>8.4f} {a:>10.4f} {a / u:>8.4f} "
+                f"{b:>10.4f} {b / np.sqrt(n):>10.4f}"
+            )
             ok &= (a <= u + 1e-9) and (0.7 < b / np.sqrt(n) < 1.1)
     print("=" * 78)
     print("RESULT:", "CONSISTENT" if ok else "UNEXPECTED")
-    print("Wave: A_N = U_N ~ (1/pi) ln N for prime/2^m, slightly below for composite (A_N/U_N >= 0.84);")
-    print("Schrodinger: B_N ~ sqrt(N) across all families. Two dynamics, two growth laws (ln N vs sqrt N).")
+    print(
+        "Wave: A_N = U_N ~ (1/pi) ln N for prime/2^m, slightly below for composite (A_N/U_N >= 0.84);"
+    )
+    print(
+        "Schrodinger: B_N ~ sqrt(N) across all families. Two dynamics, two growth laws (ln N vs sqrt N)."
+    )
     print("=" * 78)
     return 0 if ok else 1
 

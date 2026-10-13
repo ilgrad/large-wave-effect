@@ -44,33 +44,41 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   per-family limits `defect_∞(m) = lim_a (U − A)(m · 2^a)` are computed to `10⁻⁸`
   (`0.10368…`, `0.03824…`) as numerical constants with no closed form.
 - **Discrete Schrödinger.** A localized state is never amplified (unitarity), yet
-  `B_N = sup_t ‖e^{−it L_N}‖_{ℓ^∞ → ℓ^∞} = Θ(√N)`, the sup over all `t`. Over all times the
-  unitarity bound `B_N ≤ √N` is sharp: **`B_p = √p` for every odd prime `p`** (proved: the eigenvalues
-  `2 − 2cos(2πr/p)` are `ℚ`-independent, so Kronecker brings the flow arbitrarily close to the quadratic
-  chirp, whose kernel is a flat Gauss sum — the ε-uniform mixing of Godsil–Mullin–Roy), hence
-  `limsup B_N/√N = 1`. Exact flat points of the orbit closure also give `B_{p²} = p` for `p ≤ 7`
-  (`exact/pari/bn_prime_square.gp`); that `B_N = √N` iff `N` is a prime or a prime square is a
-  conjecture; and `liminf B_N/√N ≥ c_0/√2 = 0.861` is proved
-  (`c_0 = (2/π)^{3/2} · B(1/2, 3/4)`). The finer constant lives on ballistic windows
-  `B_N(S) = sup_{t ≤ SN/2} ‖K_N(·,t)‖_1`, where it splits by parity — numerically even `N → c_0/√2`, odd
+  `B_N = sup_t ‖e^{−it L_N}‖_{ℓ^∞ → ℓ^∞} = Θ(√N)`, with `liminf B_N/√N ≥ c_0/√2 = 0.861` proved
+  (`c_0 = (2/π)^{3/2} · B(1/2, 3/4)`). **Infinite-time saturation (theorem).** `B_N = √N` iff the
+  orbit closure — a subtorus of dimension exactly `φ(N)/2` — contains a flat phase vector
+  (ε-uniform mixing of the quantum walk on `C_N`). This holds for `N = p` (the Gauss chirp;
+  Godsil–Mullin–Roy) and for `N = p²` (an even Frank sequence; Cao–Zhu, arXiv:2607.04207), so
+  `limsup B_N/√N = 1`; it fails for every even `N ≥ 6` (a symmetric periodic Golay-pair obstruction: no
+  ε-uniform mixing on even cycles; for `N` not an even square this also follows from Monterde's bipartite
+  conditions, arXiv:2603.20977, so the even squares `16, 36, 64, …` are the new cases). It fails for `N = 15` as well (computer-assisted): an exact
+  Nullstellensatz certificate `D y⁴ = Σ N_j m_j f_j` (2159 terms) puts `y⁴` in the flatness ideal, `y` a coordinate
+  of the orbit-closure torus (`exact/julia/c15_flat_certificate.jl`, re-checked in `exact/pari/c15_flat_check.gp`);
+  the Gröbner basis in Cao–Zhu's Thm 3.2 implies it too, as it lives on the whole closure. That `B_N = √N`
+  iff `N` is a prime or a prime square is a conjecture: the other odd composites that are not prime squares
+  are open; numerically `B_N/√N < 1` there, closest at `N = 27` (`0.99992`)
+  (`verify_bn_saturation.py`, `exact/pari/bn_saturation.gp`; a second implementation of the prime and
+  prime-square cases in `verify_bn_prime_flat.py`, `exact/pari/bn_prime_flat.gp`,
+  `exact/pari/bn_prime_square.gp`). **Windowed constant.** On the
+  dispersive window `t = O(N)` the constant splits by parity — numerically even `N → c_0/√2`, odd
   `N → β_odd = 0.928…`, an elliptic-integral constant for which no elementary closed
-  form was found. For `t ≤ N/2` the limiting `ℓ¹` profile is the
-  *explicit* elliptic-integral function `F(2t/N)` (one-copy term `A(s) = ₂F₁` in closed form), and its
-  maximizer `max F = F(1) = β_odd` is now **fully proved** — analytically on `[1/2, 0.937]`
-  (Jensen, sharpened by the tangent to a concave `h`) and by **validated interval arithmetic** on
-  `[0.937, 1]` (`F′(s) > 0`, worst case `0.051`). So the window `t ≤ N/2` is settled. For
-  `t > N/2` the `N → ∞` reduction is **rigorous for each fixed `s = 2t/N`** — joint equidistribution of the
-  multi-copy Debye phases *and* its uniform-in-`u` transfer to the `ℓ¹` constant `F(s)` (a mollified
-  Koksma–Hlawka / cubic van der Corput estimate; the modulus has divergent Hardy–Krause variation) — leaving
-  two steps: the transfer uniformly in `s` on compact windows, and a **single** validated residual, the
-  Gaussian-excess inequality `E|Z| − E|G| ≤ K⋆ · Σ_2^{−3/2} Σ_ℓ a_ℓ⁴`
+  form was found. For odd `N` and each fixed `s = 2t/N ≤ 1` the limiting `ℓ¹`
+  profile is the *explicit* elliptic-integral function `F(s)` (one-copy term `A(s) = ₂F₁` in closed form),
+  and its maximizer `max F = F(1) = β_odd` is **proved by validated interval arithmetic** on all of
+  `[0, 1]` (`verify_bn_profile_rigorous.py`: a chord minorant `β_odd ≥ 0.92735` from AGM-enclosed elliptic
+  integrals, analytic bounds on `[0, 0.575]`, an enclosed tangent majorant on `[0.575, 0.90]`, and
+  `F′(s) > 0` on `[0.90, 1]`). For `t > N/2` the whole `N → ∞` reduction at each fixed `s` is
+  **rigorous** as well — joint equidistribution of the multi-copy Debye phases *and* its uniform-in-`u`
+  transfer to the `ℓ¹` constant `F(s)` (panels away from the band edges, `O(ε^{3/4})` edge strips; no
+  rate) — leaving two steps: convergence uniform in `s` (on `t ≤ N/2` as on `t > N/2`), and a **single**
+  validated residual, the Gaussian-excess inequality `E|Z| − E|G| ≤ K⋆ · Σ_2^{−3/2} Σ_ℓ a_ℓ⁴`
   (`K⋆ = (h(1) − √π/2)/2`) for the profile's **balanced** Debye configurations (the live set is an
   interval of consecutive integers, so the even/odd channel counts differ by `≤ 1`; sharp at the two-copy
   pair — imbalanced configs violate the unrestricted bound) whose integrated majorant clears
   `β_odd` — and whose residual is now **validated across the whole band** (the θ-Taylor enclosure `middle_far_point`
-  plus a 130-box enclosure tiling, 0 failures; see open problem (1) for what "validated" leaves out). So
-  the windowed constant `limsup_N B_N(S)/√N = β_odd` (fixed `S`) holds modulo this numerically-validated
-  inequality and the `s`-uniform transfer. On the **Dirichlet segment**
+  plus a 136-box tiling with 0 failures, whose band coverage `run_dagger_campaign.py --coverage` checks; see
+  open problem (1) for what "validated" leaves out). So the windowed constant `limsup_N B_N(SN/2)/√N = β_odd`
+  (fixed `S`) holds modulo this numerically-validated inequality and the `s`-uniform transfer. On the **Dirichlet segment**
   `d_j^N ~ (4/π²) ln j` for `N+1` prime/`2^m` (the constant `C = 4/π²` is the published
   Myshkis–Filimonov 2003 value). Three large-wave laws on one Laplacian.
 - **Dimension, products & circulants (theorem).** The large wave lives exactly at spectral dimension
@@ -83,29 +91,33 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   every relation has coefficient sum `0`, so the mod-4 test passes. For the nearest case `S = {1, 2}`
   saturation is **proved for every prime `p ≥ 7`**: up to squares `α_r = −(3 + c_r)`, and
   `∏ (3 + c_r) = F_p` is not a square (Cohn), so by Kummer theory no subset product of the `α_r` is a
-  square in `ℚ(ζ_p)` (`exact/pari/kjump_nnn_primes.gp` checks the identities for `p ≤ 211`). It is an
+  square in `ℚ(ζ_p)` (`exact/pari/kjump_nnn_primes.gp` checks the identities for `p ≤ 211`;
+  `exact/pari/kjump_kummer.gp` certifies the conclusion independently for `7 ≤ p ≤ 97` by quadratic characters). It is an
   *infinite-time* ceiling: the finite-time amplitude is Diophantine-limited (recurrence time
   exponential in `N`).
 
 **Nonlinear extension (Part II), focusing DNLS — now a rigorous chain.** The linear large wave **persists**
 under weak nonlinearity (Duhamel); the **modulational-instability band**
-`σ_Q = √(λ_Q (2γ A² − λ_Q))` is read off the `L_N` spectrum; the on-site
-**breather exists** (a finite-dimensional
-variational argument, no MacKay–Aubry continuation) and is **stable** (Vakhitov–Kolokolov / Grillakis–
-Shatah–Strauss), while the bond-centred breather is unstable. The **self-trapping threshold is proved
-energy-sharp** at the exact constant `γP = 4 = ‖L_N‖`: above it, full dispersal of the single-site seed
-is energetically forbidden (it would force `⟨L_N u, u⟩ → 2P − (γ/2) P² < 0`). The remaining
-strongly nonlinear regime (saturation, rogue-wave focusing), FPUT recurrence and the route to chaos remain
-computational/exploratory.
+`σ_Q = √(λ_Q (2γ A² − λ_Q))` is read off the `L_N` spectrum; localized
+**breathers exist** (a finite-dimensional variational argument, no MacKay–Aubry continuation); in the
+anti-continuum regime the site-centred breather is **orbitally stable** (Vakhitov–Kolokolov / Grillakis–
+Shatah–Strauss) and the bond-centred one unstable, with both verdicts certified at `Ω = 2` in exact rational
+arithmetic (`verify_dnls_breather_cap.py`, `N = 5` site, `N = 6` bond). Full dispersal of a single-site seed
+is **energetically forbidden for `γP > 4`** (it would force `⟨L_N u, u⟩ → 2P − (γ/2) P² < 0`;
+`4 = 2⟨L_N δ, δ⟩` is the infinite-lattice bandwidth), and for `γP > 8` the excitation stays on its site
+(Shi–Wong prove this above `9`). The constant `4` is energy-sharp, not dynamically sharp: dispersal is proved
+for `γP < 0.43`, and numerically the seed disperses up to `γP ≈ 3.4` and keeps a localized remnant from
+`≈ 3.5`. The remaining strongly nonlinear regime (saturation, rogue-wave focusing), FPUT recurrence and the
+route to chaos remain computational/exploratory.
 
-**Open problems** (each reduced to a clean statement, with the proven part marked). (1) The *windowed*
-`B_N` constant. Over all times the answer is known — `limsup B_N/√N = 1` (`B_p = √p` on prime rings) — so
-the open question is `limsup_N sup_{t ≤ SN/2} ‖K_N(·,t)‖_1/√N = β_odd` for each fixed `S`. The
-`t ≤ N/2` case (`S = 1`) is **fully proved** (`max F = β_odd`, analytic + validated
-interval arithmetic), and for each fixed `s = 2t/N > 1` the `N → ∞` reduction is **rigorous** (joint
-equidistribution of the Debye phases *and* its uniform-in-`u` transfer to `F(s)` — a mollified Koksma–Hlawka /
-cubic van der Corput estimate). What remains is that transfer uniformly in `s` on `[1, S]`, and a **single**
-validated inequality: the Gaussian-excess
+**Open problems** (each reduced to a clean statement, with the proven part marked). (1) The Schrödinger
+constant. Over infinite time: is `B_N < √N` for every odd composite `N` that is not a prime square (known for `N = 15`), and is
+`liminf B_N/√N = 1`? On the dispersive window: the windowed constant
+`limsup_N sup_{t ≤ SN/2} ‖K_N(·,t)‖_1/√N = β_odd` for each fixed `S`. For each fixed `s ≤ 1` (odd `N`) the
+profile maximizer is **proved** (`max F = β_odd`, validated interval arithmetic), and for `t > N/2` the entire
+fixed-`s` `N → ∞` reduction is **rigorous** (joint equidistribution of the Debye phases *and* its uniform-in-`u`
+transfer to `F(s)`); a supremum over `t` further needs convergence uniform in `s`. What remains beyond that is a
+**single** validated inequality: the Gaussian-excess
 (expected-modulus) bound `E|Z| − E|G| ≤ K⋆ · Σ_2^{−3/2} Σ_ℓ a_ℓ⁴` for the
 profile's **balanced** Debye configs (live set = consecutive integers ⇒ even/odd counts differ by `≤ 1`;
 sharp at the two-copy pair — imbalanced configs violate it), whose integrated majorant clears
@@ -117,14 +129,14 @@ it was enclosure-limited, not tight) is now covered by a **θ-Taylor + t-colloca
 boxes certify (e.g. `(0.70, 0.70) → 0.9915`; the hardest boxes sit at the high-λ edge `a_3 ≈ 0.61` and close
 under one refinement, worst leaf `0.9999`). The full singleton-band
 cover is now **validated across the whole band** — the adaptive, node-parallel, checkpointed tiling `run_dagger_campaign.py`
-certified all 130 leaf boxes with 0 failures. "Validated" is the accurate word, not "rigorous": besides the
+certified all 136 leaf boxes with 0 failures, and its `--coverage` mode checks, with interval bounds on `λ`,
+that they cover the band. "Validated" is the accurate word, not "rigorous": besides the
 residual inequality itself, the box enclosures rest on non-rigorous steps — the far `t`-collocation
 remainder and the third derivatives of the amplitude stencil come from finite differences, not derivative
 bounds (and the stencil ignores the error propagated through its least-squares fit), the maximum of the
-quadratic model over a box is taken on a 41×41 float grid, band membership is read from 3×3 samples of `λ`,
-and the campaign records no manifest (library versions, precision, hashes, an exact cover check). So
-problem (1) is reduced to the `s`-uniform transfer plus a proof of that one inequality (or a fully
-rigorous cover). (2) The **excess lemma**
+quadratic model over a box is taken on a 41×41 float grid, and the campaign records no manifest (library
+versions, precision, hashes). So the window part of problem (1) is reduced to the `s`-uniform transfer plus a
+proof of that one inequality (or a fully rigorous cover). (2) The **excess lemma**
 `A_N ≤ L_pre + O(1)` (equivalent to a rigorous *growing* deficit bound) — proved when the odd
 part of `N` is a prime power (`N = 2p` sharp at `1/(2N)`, `N = 4p`), and **unconditional for any fixed `ω(m)`**
 via the Kronecker sandwich `|A_N − L_pre| ≤ U_N − L_pre = (1/π) ln(m/φ(m))`. The open
@@ -135,12 +147,13 @@ content is an **absolute** constant **uniform as `ω(m) → ∞`**. A proved bui
 uniform coupling of `Θ(N)` relations (comb generators + shared phases), the sup-side counterpart of
 McGehee–Pigno–Smith/Konyagin in the Chowla cosine-extremum circle (where Jin–Milojević–Tomon–Zhang and
 Bedert recently proved the first polynomial bounds, `n^{1/10−o(1)}` and `n^{1/5−o(1)}`, in the *opposite*
-direction; Chowla's conjectured `√n` is still open). (3) A rigorous dispersal proof on the **proof gap** `γP ∈ [0.43, 4)`: the
-threshold `4` is now energy-sharp and dispersal is the numerically established behaviour up to `≈ 4`,
-but the rigorous drop is proven only to `0.43`. The **leading-order drift now vanishes provably** (along the
+direction; Chowla's conjectured `√n` is still open). (3) A rigorous dispersal proof on `γP ∈ [0.43, 4)`: the constant `4` is
+energy-sharp, not dynamically sharp — numerically the seed disperses only up to `γP ≈ 3.4` and keeps a
+localized remnant from `≈ 3.5` (Johansson–Hörnquist–Riklund: `≈ 3.45`), so a proof can reach at most that
+crossover, while the rigorous drop is proven only to `0.43`. The **leading-order drift now vanishes provably** (along the
 linear flow the distance-2 current `Im(ā_n a_{n+2}) ≡ 0`, so the staggered momentum drifts
 only at `O(γ²)` — Maxima + Rocq `StaggeredCurrent.v`, `verify_modified_energy_window.py`); what remains
-is the `O(γ²)` remainder and the nonperturbative approach to `4`. (4) Condition (B) of the order criterion for quasi-1D
+is the `O(γ²)` remainder and the nonperturbative approach to the crossover. (4) Condition (B) of the order criterion for quasi-1D
 lattices *without* an embedded ring (the Möbius ladder and multi-jump circulants are now settled; the
 next-nearest-neighbour degeneracy law holds for all couplings `g` via Conway–Jones). **Priority note
 (resolved):** Filimonov's 1992 C. R. Acad. Sci. note has been obtained and compared on the ring — the
@@ -161,22 +174,23 @@ cd paper && latexmk -pdf large-wave-effect.tex # build the paper (run twice to r
 ```
 
 Headline checks: `verify_order_theorem.py` (the order law + palindromic prefix lemma),
-`verify_classification_proof.py` (saturation classification), `verify_bn_parity.py` /
-`verify_beta_odd.py` / `verify_bn_profile_max.py` (the Schrödinger constant, its parity split, and the
-explicit `t ≤ N/2` profile maximizer), `verify_defect_certified.py` (certified `A_N < U_N`),
+`verify_classification_proof.py` (saturation classification), `verify_bn_saturation.py` (infinite-time
+Schrödinger saturation), `verify_bn_parity.py` / `verify_beta_odd.py` / `verify_bn_profile_max.py` (the
+windowed Schrödinger constant, its parity split, and the explicit `t ≤ N/2` profile maximizer), `verify_defect_certified.py` (certified `A_N < U_N`),
 `verify_excess_smallcases.py` (excess lemma for prime-power odd part), `verify_product_order.py` and
 `verify_kjump_order.py` (`C_N □ H`, Möbius ladder, `k`-jump saturation), the DNLS chain
 `verify_dnls_persistence.py` / `verify_dnls_mi.py` / `verify_dnls_breather_stability.py`, and
-`verify_selftrapping_transition.py` (the energy-sharp `γP = 4` threshold).
+`verify_selftrapping_transition.py` (the energy-sharp `γP = 4` bound and the onset of trapping near `3.5`).
 
 For the Schrödinger continuum cover: `verify_middle_far.py` validates the θ-Taylor enclosure that closes
 the `a_1 = a_3 ≈ 0.73` zone, `prove_box_parallel.py` certifies a single box on all cores, and the full band is
 tiled by the adaptive, checkpointed campaign:
 `uv run --script numerics/run_dagger_campaign.py --jobs 14` (writes each box to `dagger_campaign.jsonl`).
 
-**Exact-arithmetic + formal layer** (Fedora: `dnf install gap pari-gp fricas rocq-prover`). The
+**Exact-arithmetic + formal layer** (Fedora: `dnf install gap pari-gp fricas rocq-prover`; Julia from juliaup). The
 linear-theory arithmetic is reproduced floating-point-free in **GAP** and **PARI/GP**, symbolically in
-**FriCAS**, and the mod-4 criterion is machine-checked in **Rocq** — see [`exact/`](exact/) and
+**FriCAS**, the `N = 15` exclusion `B_15 < √15` is certified in **Julia** and re-checked in PARI/GP, and the
+mod-4 criterion is machine-checked in **Rocq** — see [`exact/`](exact/) and
 [`formal/rocq/`](formal/rocq/). One driver runs the lot and cross-checks against the Python core (missing
 tools are skipped, not failed):
 
@@ -191,7 +205,7 @@ rocq compile formal/rocq/Mod4Criterion.v              # machine-checked criterio
 ```
 src/large_wave_effect/   shared spectral core (ring, cyclotomic, Schrödinger)
 numerics/                verify_*.py (one per claim) + make_figures.py
-exact/                   GAP / PARI / FriCAS exact + symbolic cross-checks (gap/, pari/, fricas/)
+exact/                   GAP / PARI / Julia / FriCAS exact + symbolic checks (gap/, pari/, julia/, fricas/)
 formal/rocq/             Rocq machine-checked mod-4 criterion certificate
 tests/                   pytest suite for the core package
 paper/

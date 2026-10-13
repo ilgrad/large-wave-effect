@@ -12,7 +12,7 @@ OP1. Historical check: is the sharp constant of A_N ~ c ln N equal to 1/pi for C
      defect -> 1 there and for highly composite N, that is corroboration for the now-proved universal
      1/pi order theorem.
 
-OP2. The constant of B_N = sup_t ||e^{-it L_N}||_{inf->inf} = c_S sqrt(N).
+OP2. The constant of B_N = sup_t ||e^{-it L_N}||_{inf->inf} ~ c_S sqrt(N) (limsup c_S = 1: primes).
      B_N = sup_t sum_m |K(m,t)|, K(m,t) = (1/N) sum_r e^{-i lambda_r t} e^{2 pi i r m/N}. A t-scan gives
      a LOWER bound on c_S (almost-periodic sup is not scan-reachable); we also probe the Talbot/Gauss
      times t = pi a / N where the kernel is a Gauss sum. We report the apparent constant honestly.
@@ -111,10 +111,12 @@ def is_prime(n: int) -> bool:
 
 def schrodinger_B(n: int) -> float:
     lam = 4.0 * np.sin(np.pi * np.arange(n) / n) ** 2
-    ts = np.concatenate([
-        np.linspace(0.01, 6.0 * n, 8000),
-        np.pi * np.arange(1, 4 * n) / n,        # Talbot / Gauss-sum times t = pi a / N
-    ])
+    ts = np.concatenate(
+        [
+            np.linspace(0.01, 6.0 * n, 8000),
+            np.pi * np.arange(1, 4 * n) / n,  # Talbot / Gauss-sum times t = pi a / N
+        ]
+    )
     return max(float(np.sum(np.abs(np.fft.ifft(np.exp(-1j * t * lam))))) for t in ts)
 
 
@@ -138,10 +140,14 @@ def main() -> int:
     # trend of the 2p family defect
     defects_2p = [(n, a / u) for (n, a, u) in rows if n in fam2p]
     trend_up = defects_2p[-1][1] > defects_2p[0][1]
-    print(f"\n    deficit-1 family N=2p: A_N/U_N from {defects_2p[0][1]:.4f} (N={defects_2p[0][0]}) "
-          f"to {defects_2p[-1][1]:.4f} (N={defects_2p[-1][0]})")
-    print(f"    -> defect {'increasing toward 1 (corroborates universal 1/pi)' if trend_up else 'NOT increasing'}; "
-          "this scan is evidence only; the proof is verify_order_theorem.py.")
+    print(
+        f"\n    deficit-1 family N=2p: A_N/U_N from {defects_2p[0][1]:.4f} (N={defects_2p[0][0]}) "
+        f"to {defects_2p[-1][1]:.4f} (N={defects_2p[-1][0]})"
+    )
+    print(
+        f"    -> defect {'increasing toward 1 (corroborates universal 1/pi)' if trend_up else 'NOT increasing'}; "
+        "this scan is evidence only; the proof is verify_order_theorem.py."
+    )
 
     print("\nOP2. Schrodinger constant c_S = lim B_N/sqrt(N)  (t-scan = LOWER bound on c_S)")
     print(f"    {'N':>5} {'B_N':>9} {'B_N/sqrt(N)':>12}")
@@ -150,17 +156,26 @@ def main() -> int:
         b = schrodinger_B(n)
         cs.append(b / np.sqrt(n))
         print(f"    {n:>5} {b:>9.4f} {b / np.sqrt(n):>12.4f}")
-    print(f"    -> B_N/sqrt(N) clusters near {np.median(cs):.3f} (scan lower bound); the exact constant")
+    print(
+        f"    -> B_N/sqrt(N) clusters near {np.median(cs):.3f} (scan lower bound); the exact constant"
+    )
     print("       is an almost-periodic / Gauss-sum supremum -- precise value remains open.")
 
     print("\n" + "=" * 72)
     print("RESULT: OPEN-PROBLEMS MAP COMPLETE")
     print("Status (kept in sync with the paper): OP1 is now PROVED -- A_N ~ (1/pi) ln N for all N")
-    print("(Theorem order), and with U_N - A_N = O(ln ln ln N) the ratio A_N/U_N -> 1; this scan is")
-    print("corroboration. OP2: liminf B_N/sqrt(N) >= c_0/sqrt2 is proved and the all-time limsup is 1")
-    print("(B_p = sqrt(p) on prime rings); the windowed constant splits by parity, and its t > N/2 upper")
-    print("bound (which would give beta_odd on windows t <= SN/2) remains open. Any t-scan here is a")
-    print("lower bound only.")
+    print(
+        "(Theorem order), and with U_N - A_N = O(ln ln ln N) the ratio A_N/U_N -> 1; this scan is"
+    )
+    print("corroboration. OP2: liminf B_N/sqrt(N) >= c_0/sqrt2 is proved; over infinite time")
+    print("limsup B_N/sqrt(N) = 1 (B_p = sqrt p: the Gauss chirp lies in the orbit closure) and")
+    print(
+        "B_N < sqrt(N) for even N >= 6 (verify_bn_saturation.py). On the window t = O(N) the constant"
+    )
+    print(
+        "splits by parity; its t > N/2 upper bound (which would give beta_odd on windows t <= SN/2)"
+    )
+    print("remains open. Any t-scan here is a lower bound only.")
     print("=" * 72)
     return 0
 

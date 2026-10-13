@@ -6,7 +6,7 @@
 
 For the standing wave z=e^{-i Omega t}phi, (L_N+Omega)phi=gamma phi^3, the linearization splits into
     L_+ = L_N + Omega - 3 gamma diag(phi^2),    L_- = L_N + Omega - gamma diag(phi^2).
-Grillakis-Shatah-Strauss + Vakhitov-Kolokolov: with dP/dOmega>0 (anti-continuum expansion) and phi>0
+Grillakis-Shatah-Strauss + Vakhitov-Kolokolov: with dP/dOmega>0 (the GSS count p=1) and phi>0
 (Perron-Frobenius => lambda_1(L_-)=0, ker L_- = span phi), the orbital stability is decided by the
 Morse index n(L_+) together with the gap lambda_2(L_-)>0:
     SITE-centred  n(L_+) = 1  => GSS index n(L_+)-1 = 0  => orbitally STABLE;
@@ -22,6 +22,11 @@ concrete rings with no SDP and no interval library -- exact rational arithmetic 
      Q^T(L_-(phi~)-eps*I)Q with Q a rational basis of phi~^perp proves lambda_2(L_-(phi~)) >= eps.
   3. WEYL: ||L_+(phi)-L_+(phi~)||_2 <= 3gamma(2max|phi~|+rho)rho =: delta_+ < eps transports both
      signatures from phi~ to the true phi. Hence n(L_+(phi)) is certified and lambda_2(L_-(phi))>0.
+     The true phi is positive because min phi~ > rho >= ||phi - phi~||_inf.
+  4. SLOPE: L_+(phi) is invertible, so the implicit-function branch through phi has
+     dP/dOmega = -2 <phi, L_+(phi)^{-1} phi>.  The exact value at phi~ (Fraction inverse) differs from it
+     by at most b'(rho(2||phi~|| + rho) + delta_+ ||J^{-1}|| ||phi~||^2), b' = ||J^{-1}||/(1 - ||J^{-1}||
+     delta_+) >= ||L_+(phi)^{-1}||, which certifies dP/dOmega > 0, the slope both GSS verdicts use.
 
 No floating-point value enters the proof: floats only seed the rational profile; every inequality is
 checked with exact Fractions. (Perron-Frobenius for phi>0 supplies lambda_1(L_-)=0, the missing kernel.)
@@ -141,17 +146,24 @@ def newton_profile(n: int, omega: int, seed: np.ndarray) -> np.ndarray:
 
 
 def certify(label: str, n: int, omega: int, seed: np.ndarray, expected_n: int) -> bool:
-    print(f"\n{'-' * 84}\n{label}:  N={n}, gamma={GAMMA}, Omega={omega}, expected n(L_+)={expected_n}\n{'-' * 84}")
+    print(
+        f"\n{'-' * 84}\n{label}:  N={n}, gamma={GAMMA}, Omega={omega}, expected n(L_+)={expected_n}\n{'-' * 84}"
+    )
     lap = lap_int(n)
     phit: Vec = [Fraction(round(v * DENOM), DENOM) for v in newton_profile(n, omega, seed)]
     phi2 = [p**2 for p in phit]
-    pos = all(p > 0 for p in phit)
 
     def lplus() -> Mat:
-        return [[lap[i][j] + ((omega - 3 * GAMMA * phi2[i]) if i == j else 0) for j in range(n)] for i in range(n)]
+        return [
+            [lap[i][j] + ((omega - 3 * GAMMA * phi2[i]) if i == j else 0) for j in range(n)]
+            for i in range(n)
+        ]
 
     def lminus() -> Mat:
-        return [[lap[i][j] + ((omega - GAMMA * phi2[i]) if i == j else 0) for j in range(n)] for i in range(n)]
+        return [
+            [lap[i][j] + ((omega - GAMMA * phi2[i]) if i == j else 0) for j in range(n)]
+            for i in range(n)
+        ]
 
     # (1) Newton-Kantorovich existence
     lp_v = matvec(lap, phit)
@@ -161,6 +173,7 @@ def certify(label: str, n: int, omega: int, seed: np.ndarray, expected_n: int) -
     bnd = upper_sqrt(norm1(jinv) * norminf(jinv))
     maxabs = max(abs(p) for p in phit)
     rho = 2 * bnd * norm_r
+    pos = min(phit) > rho
     contraction = bnd * (3 * GAMMA * (2 * maxabs + rho)) * rho
     exist_ok = contraction <= Fraction(1, 2) and pos
     delta_p = 3 * GAMMA * (2 * maxabs + rho) * rho
@@ -181,12 +194,28 @@ def certify(label: str, n: int, omega: int, seed: np.ndarray, expected_n: int) -
     piv = ldlt_pivots(proj)
     gap_ok = piv is not None and all(p > 0 for p in piv) and delta_m < EPS and pos
 
-    print(f"(1) existence: ||R||_2<={float(norm_r):.2e}, ||J^-1||<={float(bnd):.3f}, rho<={float(rho):.2e}, "
-          f"contraction={float(contraction):.2e}<=1/2 & phi~>0: {exist_ok}")
-    print(f"(3) Morse: #eig<+EPS={nlo}, #eig<-EPS={nhi} => n(L_+)={nlo}; delta_+={float(delta_p):.2e}<EPS; "
-          f"matches expected {expected_n}: {morse_ok}")
-    print(f"(2) gap: Q^T(L_- - EPS I)Q > 0 (pivots>0): {piv is not None and all(p > 0 for p in piv)}; "
-          f"delta_-={float(delta_m):.2e}<EPS => lambda_2(L_-(phi))>0: {gap_ok}")
+    # (4) VK slope dP/dOmega = -2 <phi, L_+(phi)^{-1} phi> on the implicit-function branch
+    s_t = sum(a * b for a, b in zip(phit, matvec(jinv, phit), strict=True))
+    norm_phi = upper_sqrt(sum((v * v for v in phit), Fraction(0)))
+    inv_ok = bnd * delta_p < 1
+    binv = bnd / (1 - bnd * delta_p) if inv_ok else Fraction(0)
+    err = binv * (rho * (2 * norm_phi + rho) + delta_p * bnd * norm_phi**2)
+    slope_lo, slope_hi = -2 * s_t - 2 * err, -2 * s_t + 2 * err
+    slope_ok = inv_ok and slope_lo > 0
+
+    print(
+        f"(1) existence: ||R||_2<={float(norm_r):.2e}, ||J^-1||<={float(bnd):.3f}, rho<={float(rho):.2e}, "
+        f"contraction={float(contraction):.2e}<=1/2 & phi~>0: {exist_ok}"
+    )
+    print(
+        f"(3) Morse: #eig<+EPS={nlo}, #eig<-EPS={nhi} => n(L_+)={nlo}; delta_+={float(delta_p):.2e}<EPS; "
+        f"matches expected {expected_n}: {morse_ok}"
+    )
+    print(
+        f"(2) gap: Q^T(L_- - EPS I)Q > 0 (pivots>0): {piv is not None and all(p > 0 for p in piv)}; "
+        f"delta_-={float(delta_m):.2e}<EPS => lambda_2(L_-(phi))>0: {gap_ok}"
+    )
+    print(f"(4) slope: dP/dOmega in [{float(slope_lo):.7f}, {float(slope_hi):.7f}] > 0: {slope_ok}")
 
     lapf = 2 * np.eye(n) - np.eye(n, k=1) - np.eye(n, k=-1)
     lapf[0, -1] = lapf[-1, 0] = -1.0
@@ -194,7 +223,7 @@ def certify(label: str, n: int, omega: int, seed: np.ndarray, expected_n: int) -
     ep = np.sort(np.linalg.eigvalsh(lapf + omega * np.eye(n) - 3 * GAMMA * np.diag(phif**2)))
     print(f"    [float check] eig(L_+) = {np.round(ep, 3)}  (n(L_+)={int((ep < 0).sum())})")
 
-    ok = exist_ok and morse_ok and gap_ok
+    ok = exist_ok and morse_ok and gap_ok and slope_ok
     verdict = "STABLE (index 0)" if expected_n == 1 else "UNSTABLE (GSS odd index 1)"
     print(f"    => hypotheses certified: {ok}   [orbital {verdict}]")
     return ok
@@ -202,7 +231,9 @@ def certify(label: str, n: int, omega: int, seed: np.ndarray, expected_n: int) -
 
 def main() -> int:
     print("=" * 84)
-    print("Computer-assisted proof of the DNLS breather stability dichotomy (exact rational arithmetic)")
+    print(
+        "Computer-assisted proof of the DNLS breather stability dichotomy (exact rational arithmetic)"
+    )
     print("=" * 84)
 
     def site_seed(n: int, omega: int) -> np.ndarray:
@@ -220,7 +251,10 @@ def main() -> int:
 
     ok = site and bond
     print("\n" + "=" * 84)
-    print("RESULT:", "BREATHER DICHOTOMY CERTIFIED -- site stable, bond unstable (exact)" if ok else "FAIL")
+    print(
+        "RESULT:",
+        "BREATHER DICHOTOMY CERTIFIED -- site stable, bond unstable (exact)" if ok else "FAIL",
+    )
     print("=" * 84)
     return 0 if ok else 1
 

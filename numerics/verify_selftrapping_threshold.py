@@ -11,11 +11,16 @@ give, for ALL t (three lines: <L u0,u0> = 2P, L_N >= 0):
     sum_j |u_j(t)|^4  >=  P^2 - 4P/gamma ,
     max_j |u_j(t)|^2  >=  P - 4/gamma ,          PR(u(t)) <= 1 / (1 - 4/(gamma P)) ,
 
-all nontrivial exactly when gamma P > 4 -- the dynamical threshold constant is the bandwidth 4.  Below
-the threshold the bound is vacuous and the excitation may disperse (and numerically does).
+all nontrivial exactly when gamma P > 4, where 4 = 2<L_N delta_j, delta_j> (the bandwidth of the infinite
+lattice; ||L_N|| = 4 cos^2(pi/2N) < 4 for odd N).  Below the threshold the bound is vacuous and the
+excitation may disperse (and numerically does).
 
-This script integrates eq:dnls (mass-conserving Strang splitting) and checks the three bounds along the
-flow for gamma P > 4, and exhibits dispersal at gamma P = 3.
+For gamma P > 8 the excitation stays on its initial site: with q = |u_j0|^2 / P, the first bound and
+sum_j |u_j|^4 <= P^2 (q^2 + (1-q)^2) give q(1-q) <= 2/(gamma P), so q never enters the gap between the
+roots, and continuity from q(0) = 1 keeps  q(t) >= (1 + sqrt(1 - 8/(gamma P)))/2  for all t.
+
+This script integrates eq:dnls (mass-conserving Strang splitting) and checks the bounds along the flow for
+gamma P > 4 (the on-site bound for gamma P > 8), and exhibits dispersal at gamma P = 3.
 """
 
 from __future__ import annotations
@@ -23,14 +28,16 @@ from __future__ import annotations
 import numpy as np
 
 
-def evolve_extrema(n: int, p: float, gamma: float, t_final: float, steps: int) -> tuple[float, float, float]:
-    """(min_t max_j|u|^2, max_t PR, min_t sum|u|^4) sampled along the flow."""
+def evolve_extrema(
+    n: int, p: float, gamma: float, t_final: float, steps: int
+) -> tuple[float, float, float, float]:
+    """(min_t max_j|u|^2, max_t PR, min_t sum|u|^4, min_t |u_0|^2) sampled along the flow."""
     lam = 4 * np.sin(np.pi * np.arange(n) / n) ** 2
     u = np.zeros(n, complex)
     u[0] = np.sqrt(p)
     dt = t_final / steps
     half = np.exp(1j * lam * dt / 2)
-    min_max2, max_pr, min_q4 = np.inf, 0.0, np.inf
+    min_max2, max_pr, min_q4, min_site = np.inf, 0.0, np.inf, np.inf
     for s in range(steps):
         u = np.fft.ifft(half * np.fft.fft(u))
         u = np.exp(-1j * gamma * np.abs(u) ** 2 * dt) * u
@@ -41,24 +48,40 @@ def evolve_extrema(n: int, p: float, gamma: float, t_final: float, steps: int) -
             min_max2 = min(min_max2, float(m2.max()))
             max_pr = max(max_pr, float(m2.sum() ** 2 / q4))
             min_q4 = min(min_q4, q4)
-    return min_max2, max_pr, min_q4
+            min_site = min(min_site, float(m2[0]))
+    return min_max2, max_pr, min_q4, min_site
 
 
 def main() -> int:
     n, p = 256, 1.0
     ok = True
     print("Single-site launch, eq:dnls; conservation bounds for gamma P > 4 (exact constant 4):")
-    print(f"  {'gP':>5} {'P-4/g':>7} {'min max|u|^2':>13} {'PR bound':>9} {'max PR':>7} {'min sum|u|^4':>13} {'>=P^2-4P/g':>11}")
-    for gp in [4.5, 6.0, 8.0, 12.0]:
+    print(
+        f"  {'gP':>5} {'P-4/g':>7} {'min max|u|^2':>13} {'PR bound':>9} {'max PR':>7} {'min sum|u|^4':>13} {'>=P^2-4P/g':>11}"
+    )
+    site_rows = []
+    for gp in [4.5, 6.0, 8.0, 8.5, 12.0]:
         g = gp / p
         b1, b4 = p - 4 / g, p**2 - 4 * p / g
         prb = 1 / (1 - 4 / gp)
-        mm, pr, q4 = evolve_extrema(n, p, g, t_final=200.0, steps=40000)
+        mm, pr, q4, ms = evolve_extrema(n, p, g, t_final=200.0, steps=40000)
         good = mm >= b1 - 1e-6 and pr <= prb + 1e-6 and q4 >= b4 - 1e-6
+        if gp > 8:
+            q_plus = (1 + np.sqrt(1 - 8 / gp)) / 2
+            site_rows.append((gp, q_plus * p, ms))
+            good &= ms >= q_plus * p - 1e-6
         ok &= good
-        print(f"  {gp:>5.1f} {b1:>7.3f} {mm:>13.4f} {prb:>9.2f} {pr:>7.2f} {q4:>13.4f} {b4:>11.3f}  {'ok' if good else 'FAIL'}")
-    mm3, pr3, _ = evolve_extrema(n, p, 3.0 / p, t_final=200.0, steps=40000)
-    print(f"  below threshold (gP=3): min max|u|^2 = {mm3:.4f} (dispersal; bound vacuous), PR reaches {pr3:.0f}")
+        print(
+            f"  {gp:>5.1f} {b1:>7.3f} {mm:>13.4f} {prb:>9.2f} {pr:>7.2f} {q4:>13.4f} {b4:>11.3f}  {'ok' if good else 'FAIL'}"
+        )
+    for gp, bound, ms in site_rows:
+        print(
+            f"  on-site (gP={gp}): min_t |u_0|^2 = {ms:.4f} >= P (1 + sqrt(1 - 8/(gP)))/2 = {bound:.4f}"
+        )
+    mm3, pr3, _, _ = evolve_extrema(n, p, 3.0 / p, t_final=200.0, steps=40000)
+    print(
+        f"  below threshold (gP=3): min max|u|^2 = {mm3:.4f} (dispersal; bound vacuous), PR reaches {pr3:.0f}"
+    )
     ok &= mm3 < 0.05  # genuinely disperses below the bandwidth
 
     # Poincare recurrence (Remark): on the finite ring the maximum RECURS after the dip -- the correct
@@ -82,12 +105,19 @@ def main() -> int:
             if dipped and m > 0.5:
                 recovered = m
                 break
-    print(f"  recurrence (N=32, gP=3): dip to {dip_val:.3f}, then recovery to {recovered:.3f} "
-          f"({'observed' if recovered > 0.5 else 'NOT observed in window'})")
+    print(
+        f"  recurrence (N=32, gP=3): dip to {dip_val:.3f}, then recovery to {recovered:.3f} "
+        f"({'observed' if recovered > 0.5 else 'NOT observed in window'})"
+    )
     ok &= dipped and recovered > 0.5
 
     print("=" * 72)
-    print("RESULT:", "PASS -- no dispersal above gamma P = 4; below it the max dips but recurs" if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- no dispersal above gamma P = 4; below it the max dips but recurs"
+        if ok
+        else "FAIL",
+    )
     return 0 if ok else 1
 
 

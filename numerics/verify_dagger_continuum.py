@@ -31,15 +31,15 @@ cumulant majorant -log J0 inflates ~4x (block (S)).  The ball treats a1 as adver
 oscillation.
 
 THE FIX (this script).  Over a box B model each region's contribution  G_region(a1, a3)  (b refixed) as a
-degree-2 polynomial in (da1, da3) = (a1-a1c, a3-a3c) PLUS a RIGOROUS Taylor-Lagrange remainder:
+degree-2 polynomial in (da1, da3) = (a1-a1c, a3-a3c) PLUS a Taylor-Lagrange remainder:
     G(a1,a3) = sum_{i+j<=2} g_ij da1^i da3^j + R3,   |R3| <= (h^3/6)(|G_xxx|+3|G_xxy|+3|G_xyy|+|G_yyy|)_B.
   * the coefficients g_ij come from a 5x5 stencil of POINT evaluations G(a1c+p*delta, a3c+q*delta),
     p,q in {-2,-1,0,1,2}, each a tight Arb three-region value at a SINGLE amplitude (full t-cancellation
     kept by acb_series in t, NO amplitude ball);  the nodes reach |da| = 2*delta >= h, so the box is INSIDE
     the node hull;
-  * the third derivatives in R3 are enclosed RIGOROUSLY by the central 3rd finite differences of the node
-    values, INFLATED by a 4th-finite-difference slack (the rigorous difference-vs-derivative gap for a C^4
-    function): |G_xxx - D3x| <= (delta^2/4) sup|G_xxxxx| <= (delta/2) |D4x| (one more difference), etc.;
+  * the third derivatives in R3 are ESTIMATED by the central 3rd finite differences of the node values,
+    inflated by a 4th-finite-difference slack: the gap |G_xxx - D3x| <= (delta^2/4) sup|G_xxxxx| is itself
+    estimated from one more difference, so R3 is a VALIDATED estimate, not an enclosure (build_stencil);
   * because G is built from the CANCELLED object (Mg-M)/t^2, its da-derivatives are themselves SMALL (the
     cancellation survives into every coefficient), so the model tracks the true amplitude swing (~10x on a
     t-box vs the ball's ~290x; block (M)) and R3 is tiny (block validated numerically).
@@ -63,15 +63,16 @@ interval arithmetic over the box:
 
 ==========================================================================================================
 HONEST LEDGER (brutal; every quantitative claim is printed by this script).
-  PROVED (rigorous, over a box B, by Arb acb-Taylor-model arithmetic in ALL of (a1,a3,t,theta) with
-  certified remainders):
-    * the head cumulant majorant (I) and the signed middle (II) as degree-2 amplitude Taylor models with a
-      rigorous Taylor-Lagrange remainder (3rd-difference + 4th-difference slack), on top of the proved head
-      facts and the existing per-point acb_series + Cauchy-tail;
+  PROVED (Arb arithmetic in (t,theta) at each stencil node) and VALIDATED (the lift in (a1,a3)):
+    * the head cumulant majorant (I) and the signed middle (II) at each node by the per-point acb_series +
+      Cauchy-tail on top of the proved head facts; over the box, degree-2 amplitude Taylor models whose
+      Taylor-Lagrange remainder uses finite-difference third derivatives (validated, not enclosed);
     * the tail (III) as the monotone capped Bessel envelope, box-sup at a corner, + closed far bound;
     * min_B D by Arb interval arithmetic.
-    => sup_B R(a)/K_star is rigorously ENCLOSED for each box; where it is < 1, (dagger) holds over the
-       CONTINUUM of that box.
+    => sup_B R(a)/K_star is bounded for each box at the validated standard; where the bound is < 1,
+       (dagger) holds over the CONTINUUM of that box up to the finite-difference remainder estimate.
+  The tiling this ledger calls UNRUN was later run by run_dagger_campaign.py with the theta-Taylor
+  middle_far_point (option (b) below); the limitation and compute paragraphs describe this script alone.
   THE BINDING LIMITATION (stated precisely, not hidden -- this is why the FULL band does not close here):
     * the per-point MIDDLE enclosure has its OWN theta-discretisation radius ~0.04-0.06 K* (the acb theta
       sub-boxes inflate the Bessel arguments; block (R)), and the capped-modulus TAIL loses ~0.04 K* vs the
@@ -289,7 +290,11 @@ def middle_point(
             for ith in range(nth):
                 thb = acb(arb(float(((dth * ith) + dth / 2).mid()), float((dth / 2).mid())))
                 c, s = thb.cos(), thb.sin()
-                p = _J0_series(a1 * c, t0, order) * _J0_series(a3 * c, t0, order) * _J0_series(b * s, t0, order)
+                p = (
+                    _J0_series(a1 * c, t0, order)
+                    * _J0_series(a3 * c, t0, order)
+                    * _J0_series(b * s, t0, order)
+                )
                 q = sx2 * c * c + sy2 * s * s
                 g = (-q * (tt * tt) / 2).exp()
                 term = (g - p) * dth
@@ -300,8 +305,13 @@ def middle_point(
 
 
 def middle_far_point(
-    a1: float, a3: float, b: float, slices: list[tuple[float, float, int, int]],
-    th_order: int = 8, rho: float = 0.05, kt: int = 2,
+    a1: float,
+    a3: float,
+    b: float,
+    slices: list[tuple[float, float, int, int]],
+    th_order: int = 8,
+    rho: float = 0.05,
+    kt: int = 2,
 ) -> object:
     """Rigorous signed enclosure of int_far (Mg-M)/t^2 dt for LARGE t (t >= ~8), where middle_point's
     theta-BALL blows up: there the integrand oscillates fast in theta (frequency ~ amp*t), so a theta
@@ -324,7 +334,9 @@ def middle_far_point(
         """(2/pi) int_0^{pi/2} (-p(tpt, theta)) dtheta / tpt^2 at a POINT t=tpt (theta-Taylor)."""
         dth = (PI / 2) / nth
         thrad = float((dth / 2).mid())
-        mrho = math.exp(asum * tpt * shr)  # |p| <= exp(sum amp * t * sinh rho) over |theta-th0|<=rho
+        mrho = math.exp(
+            asum * tpt * shr
+        )  # |p| <= exp(sum amp * t * sinh rho) over |theta-th0|<=rho
         tb = acb(tpt)
         acc = arb(0)
         for ith in range(nth):
@@ -335,7 +347,11 @@ def middle_far_point(
             j1 = acb_series.hypgeom([], [acb(1)], -(z1 * z1) / 4, n=-1)
             j2 = acb_series.hypgeom([], [acb(1)], -(z2 * z2) / 4, n=-1)
             j3 = acb_series.hypgeom([], [acb(1)], -(z3 * z3) / 4, n=-1)
-            acc = acc + _box_integral(-(j1 * j2 * j3), thrad) + _cauchy_tail(mrho, rho, thrad, th_order)
+            acc = (
+                acc
+                + _box_integral(-(j1 * j2 * j3), thrad)
+                + _cauchy_tail(mrho, rho, thrad, th_order)
+            )
         return (arb(2) / PI) * acc / (arb(tpt) * arb(tpt))
 
     total = arb(0)
@@ -350,12 +366,16 @@ def middle_far_point(
             node_rad = max(float(v.rad()) for v in vals)
             xs = np.array([[1.0, j * delta, (j * delta) ** 2] for j in range(-kt, kt + 1)])
             c0, _c1, c2 = np.linalg.lstsq(xs, np.array(g), rcond=None)[0]
-            ipoly = 2 * c0 * trad + (2.0 / 3.0) * c2 * trad**3  # int_{-trad}^{trad} of the degree-2 fit
+            ipoly = (
+                2 * c0 * trad + (2.0 / 3.0) * c2 * trad**3
+            )  # int_{-trad}^{trad} of the degree-2 fit
             d3 = (g[4] - 2 * g[3] + 2 * g[1] - g[0]) / (2 * delta**3)
             d4 = (g[4] - 4 * g[3] + 6 * g[2] - 4 * g[1] + g[0]) / delta**4
             rem = ((trad**3 / 6.0) * (abs(d3) + 3.0 * abs(d4) * delta) + node_rad) * 2.0 * trad
             total = total + arb(ipoly, rem)
-            mg = math.exp(-qmin * (t0c - trad) ** 2 / 2) / (t0c - trad) ** 2 * bw  # dropped +Mg bound
+            mg = (
+                math.exp(-qmin * (t0c - trad) ** 2 / 2) / (t0c - trad) ** 2 * bw
+            )  # dropped +Mg bound
             total = total + arb(mg / 2, mg / 2)
     return total
 
@@ -372,7 +392,9 @@ def _cap1(v: object) -> object:
     return arb((lo + hi) / 2.0, (hi - lo) / 2.0)
 
 
-def _envelope_point(a1: object, a3: object, b: object, K2: object, PI: object, tval: object, nth: int) -> object:
+def _envelope_point(
+    a1: object, a3: object, b: object, K2: object, PI: object, tval: object, nth: int
+) -> object:
     """E(tval) = (2/pi) int_0^{pi/2} min(1, K2/(t c)) min(1, sqrt(2/(pi b t s))) dth at a POINT t."""
     dth = (PI / 2) / nth
     body = arb(0)
@@ -386,7 +408,12 @@ def _envelope_point(a1: object, a3: object, b: object, K2: object, PI: object, t
 
 
 def tail_modulus_box(
-    a1min: float, a3min: float, bmin: float, t2: float, segs: list[tuple[float, float, int, int]], T_far: float
+    a1min: float,
+    a3min: float,
+    bmin: float,
+    t2: float,
+    segs: list[tuple[float, float, int, int]],
+    T_far: float,
 ) -> object:
     """Rigorous UPPER bound on sup_B int_{t2}^inf |M|/t^2 dt by the monotone capped Bessel envelope.
     E(t) = (2/pi) int min(1, K2/(t c)) min(1, sqrt(2/(pi b t s))) dth with K2 = 2/(pi sqrt(a1 a3)) is
@@ -418,16 +445,16 @@ def mg_tail_box(qmin_lo: float, t2: float) -> object:
 
 
 # ==========================================================================================================
-# THE MULTIVARIATE AMPLITUDE TAYLOR MODEL (the lift): degree-2 in (da1,da3) + rigorous Lagrange remainder.
+# THE MULTIVARIATE AMPLITUDE TAYLOR MODEL (the lift): degree-2 in (da1,da3) + finite-difference remainder.
 # ==========================================================================================================
 @dataclass(frozen=True)
 class StencilModel:
     """Degree-2 amplitude Taylor model of a region contribution G(a1,a3) over a box B=[a1c+-h]x[a3c+-h] from
-    a 5x5 stencil of POINT values (each a tight arb, no amplitude ball).  Encloses sup_B G with a RIGOROUS
-    Taylor-Lagrange remainder built from finite differences."""
+    a 5x5 stencil of POINT values (each a tight arb, no amplitude ball).  Bounds sup_B G with a
+    Taylor-Lagrange remainder whose third derivatives are finite-difference estimates (validated)."""
 
     coef: np.ndarray  # degree-2 LS fit [c00,c10,c01,c20,c11,c02] (node midpoints)
-    rem: float  # rigorous bound on sup_B |G - P2| (Lagrange 3rd-order + 4th-diff slack) + node enclosure rad
+    rem: float  # validated bound on sup_B |G - P2| (Lagrange 3rd-order + 4th-diff slack) + node enclosure rad
     half: float  # box halfwidth h
 
     def _poly(self, x: float, y: float) -> float:
@@ -440,8 +467,14 @@ class StencilModel:
         return max(self._poly(x, y) for x in gs for y in gs) + self.rem
 
 
-def build_stencil(region_value: Callable[[float, float], object], a1c: float, a3c: float, h: float,
-                  delta: float, kspan: int = 2) -> StencilModel:
+def build_stencil(
+    region_value: Callable[[float, float], object],
+    a1c: float,
+    a3c: float,
+    h: float,
+    delta: float,
+    kspan: int = 2,
+) -> StencilModel:
     """Build the degree-2 amplitude Taylor model of region_value(a1,a3) (an arb at a single amplitude) over
     the box, by a (2*kspan+1)^2 stencil at nodes (a1c+p*delta, a3c+q*delta), p,q in {-kspan,..,kspan}.
     REQUIRES kspan*delta >= h so the nodes bracket the box.
@@ -459,7 +492,9 @@ def build_stencil(region_value: Callable[[float, float], object], a1c: float, a3
     estimate is used here for tractability.  The node values carry NO amplitude ball -- the cancellation is
     preserved (the whole point)."""
     if kspan * delta < h - 1e-12:
-        raise ValueError(f"stencil nodes must bracket the box: need kspan*delta>=h (got {kspan}*{delta}<{h})")
+        raise ValueError(
+            f"stencil nodes must bracket the box: need kspan*delta>=h (got {kspan}*{delta}<{h})"
+        )
     ps = list(range(-kspan, kspan + 1))
     Gv: dict[tuple[int, int], float] = {}
     node_rad = 0.0
@@ -478,23 +513,30 @@ def build_stencil(region_value: Callable[[float, float], object], a1c: float, a3
 
     g = Gv
     if kspan >= 2:
+
         def d3(ax: str) -> float:
             if ax == "xxx":
                 return (g[(2, 0)] - 2 * g[(1, 0)] + 2 * g[(-1, 0)] - g[(-2, 0)]) / (2 * delta**3)
             if ax == "yyy":
                 return (g[(0, 2)] - 2 * g[(0, 1)] + 2 * g[(0, -1)] - g[(0, -2)]) / (2 * delta**3)
             if ax == "xxy":
-                return ((g[(1, 1)] - 2 * g[(0, 1)] + g[(-1, 1)]) - (g[(1, -1)] - 2 * g[(0, -1)] + g[(-1, -1)])) / (
-                    2 * delta**3
-                )
-            return ((g[(1, 1)] - 2 * g[(1, 0)] + g[(1, -1)]) - (g[(-1, 1)] - 2 * g[(-1, 0)] + g[(-1, -1)])) / (
-                2 * delta**3
-            )
+                return (
+                    (g[(1, 1)] - 2 * g[(0, 1)] + g[(-1, 1)])
+                    - (g[(1, -1)] - 2 * g[(0, -1)] + g[(-1, -1)])
+                ) / (2 * delta**3)
+            return (
+                (g[(1, 1)] - 2 * g[(1, 0)] + g[(1, -1)])
+                - (g[(-1, 1)] - 2 * g[(-1, 0)] + g[(-1, -1)])
+            ) / (2 * delta**3)
 
         def d4(ax: str) -> float:
             if ax == "xxxx":
-                return (g[(2, 0)] - 4 * g[(1, 0)] + 6 * g[(0, 0)] - 4 * g[(-1, 0)] + g[(-2, 0)]) / delta**4
-            return (g[(0, 2)] - 4 * g[(0, 1)] + 6 * g[(0, 0)] - 4 * g[(0, -1)] + g[(0, -2)]) / delta**4
+                return (
+                    g[(2, 0)] - 4 * g[(1, 0)] + 6 * g[(0, 0)] - 4 * g[(-1, 0)] + g[(-2, 0)]
+                ) / delta**4
+            return (
+                g[(0, 2)] - 4 * g[(0, 1)] + 6 * g[(0, 0)] - 4 * g[(0, -1)] + g[(0, -2)]
+            ) / delta**4
 
         slack_x = 3.0 * abs(d4("xxxx")) * delta
         slack_y = 3.0 * abs(d4("yyyy")) * delta
@@ -599,6 +641,7 @@ def prove_box(
 
     far_sup = 0.0
     if far_slices is not None:
+
         def far_val(a1: float, a3: float) -> object:
             return middle_far_point(a1, a3, b_of(a1, a3), far_slices)
 
@@ -608,7 +651,12 @@ def prove_box(
     t_tail = T2 if t_tail is None else t_tail
     a1min, a3min = a1c - h, a3c - h
     bmin = min(
-        (bb for d1 in (-h, 0, h) for d3 in (-h, 0, h) if (bb := b_of(a1c + d1, a3c + d3)) is not None),
+        (
+            bb
+            for d1 in (-h, 0, h)
+            for d3 in (-h, 0, h)
+            if (bb := b_of(a1c + d1, a3c + d3)) is not None
+        ),
         default=b_of(a1c - h, a3c - h),
     )
     minD, qmin = _box_minD_and_qmin(a1c, a3c, h)
@@ -643,10 +691,18 @@ def main() -> int:
         ctx.prec = 200
     ok = True
     print("=" * 104)
-    print("(dagger) SINGLETON-CHANNEL residual toward the CONTINUUM: multivariate Arb Taylor model in (a1,a3)")
-    print("         on top of the acb_series (t,theta) model -- a TILING of amplitude boxes, sup_B R/K* < 1")
-    print(f"  K_star = {K_STAR:.10f}    j_(0,1) = {J01:.6f}    split t1={T1}, t2={T2}    Sigma_2 = 1")
-    print(f"  python-flint (rigorous Arb): {'available' if HAVE_FLINT else 'MISSING -- bound skipped'}")
+    print(
+        "(dagger) SINGLETON-CHANNEL residual toward the CONTINUUM: multivariate Arb Taylor model in (a1,a3)"
+    )
+    print(
+        "         on top of the acb_series (t,theta) model -- a TILING of amplitude boxes, sup_B R/K* < 1"
+    )
+    print(
+        f"  K_star = {K_STAR:.10f}    j_(0,1) = {J01:.6f}    split t1={T1}, t2={T2}    Sigma_2 = 1"
+    )
+    print(
+        f"  python-flint (rigorous Arb): {'available' if HAVE_FLINT else 'MISSING -- bound skipped'}"
+    )
     print("=" * 104)
 
     if not HAVE_FLINT:
@@ -654,10 +710,16 @@ def main() -> int:
         return 1
 
     # --- (E) region split: middle binds, tail is small (signed) ---
-    print("\n(E) region split (scipy Kluyver, signed): head [0,1.5] + middle [1.5,12] + tail [12,inf):")
+    print(
+        "\n(E) region split (scipy Kluyver, signed): head [0,1.5] + middle [1.5,12] + tail [12,inf):"
+    )
     print(f"    {'config':22} {'lambda':>7} {'R/K*':>7} {'head':>7} {'middle':>8} {'tail':>8}")
-    for a1, a3, tag in [(0.852, 0.591, "worst ~0.825"), (0.78, 0.69, "lam~0.76"), (0.70, 0.70, "lam~0.755"),
-                        (0.74, 0.66, "lam~0.71")]:
+    for a1, a3, tag in [
+        (0.852, 0.591, "worst ~0.825"),
+        (0.78, 0.69, "lam~0.76"),
+        (0.70, 0.70, "lam~0.755"),
+        (0.74, 0.66, "lam~0.71"),
+    ]:
         b = b_of(a1, a3)
         sx2, sy2 = 0.5 * (a1**2 + a3**2), 0.5 * b**2
         D = a1**4 + a3**4 + b**4
@@ -670,11 +732,17 @@ def main() -> int:
         hd = quad(f, 1e-7, 1.5, limit=400)[0] / D / K_STAR
         md = quad(f, 1.5, 12.0, limit=600)[0] / D / K_STAR
         tl = quad(f, 12.0, 200.0, limit=600)[0] / D / K_STAR
-        print(f"    {tag:22} {lam_conc(a1, a3, b):>7.3f} {hd + md + tl:>7.4f} {hd:>7.4f} {md:>8.4f} {tl:>+8.4f}")
-    print("    => the MIDDLE [1.5,12] carries ~0.73-0.77 K* (binding); the signed tail is ~ -0.005..-0.002 K*.")
+        print(
+            f"    {tag:22} {lam_conc(a1, a3, b):>7.3f} {hd + md + tl:>7.4f} {hd:>7.4f} {md:>8.4f} {tl:>+8.4f}"
+        )
+    print(
+        "    => the MIDDLE [1.5,12] carries ~0.73-0.77 K* (binding); the signed tail is ~ -0.005..-0.002 K*."
+    )
 
     # --- (M) the amplitude Taylor model does NOT inflate like the naive ball ---
-    print("\n(M) the multivariate amplitude model vs the naive ball (the brief's ~4x ball inflation):")
+    print(
+        "\n(M) the multivariate amplitude model vs the naive ball (the brief's ~4x ball inflation):"
+    )
     a1c, a3c, h = 0.78, 0.69, 0.03
     c_th, t0, trad, order = cos(0.6), 6.0, 0.06, 8
     z_ball = acb_series([acb(arb(a1c, h) * c_th * t0), acb(arb(a1c, h) * c_th)], order + 1)
@@ -695,13 +763,17 @@ def main() -> int:
             vv = vv + ccs[k] * ((tr ** (k + 1) - (-tr) ** (k + 1)) / (k + 1))
         swing.append(float(vv.real.mid()))
     true_w = max(swing) - min(swing)
-    print(f"    single J0 factor (t0={t0}, a1c={a1c}, h={h}): naive ball width {ball_w:.3e}, true a-swing "
-          f"{true_w:.3e} => ball {ball_w / true_w:.1f}x  (the degree-2 model tracks the true swing)")
+    print(
+        f"    single J0 factor (t0={t0}, a1c={a1c}, h={h}): naive ball width {ball_w:.3e}, true a-swing "
+        f"{true_w:.3e} => ball {ball_w / true_w:.1f}x  (the degree-2 model tracks the true swing)"
+    )
     m_ok = ball_w / true_w > 3.0
     ok &= m_ok
 
     # --- (S) ball inflation of the head majorant (why ball arithmetic alone fails) ---
-    print("\n(S) HONEST control: the head cumulant majorant under amplitude BALLS inflates (no single box):")
+    print(
+        "\n(S) HONEST control: the head cumulant majorant under amplitude BALLS inflates (no single box):"
+    )
     for eps in (0.0, 0.005, 0.01):
         a1, a3 = arb("0.78", eps), arb("0.69", eps)
         b = (arb(2) - a1 * a1 - a3 * a3).sqrt()
@@ -726,35 +798,69 @@ def main() -> int:
             tot = tot + _box_integral(acc, float((bwd / 2).mid()))
         D = float(a1.mid()) ** 4 + float(a3.mid()) ** 4 + float(b.mid()) ** 4
         tagm = "tight (point)" if eps == 0 else "INFLATED ball"
-        print(f"    amplitude ball halfwidth eps={eps}: head majorant upper = {float(tot.upper()) / D / K_STAR:.4f}"
-              f" K*  ({tagm})")
-    print("    => the ball inflates the head majorant ~4x at eps=0.01; the degree-2 amplitude Taylor model")
-    print("       captures it analytically (adds only the Lagrange remainder on top of the per-point width).")
+        print(
+            f"    amplitude ball halfwidth eps={eps}: head majorant upper = {float(tot.upper()) / D / K_STAR:.4f}"
+            f" K*  ({tagm})"
+        )
+    print(
+        "    => the ball inflates the head majorant ~4x at eps=0.01; the degree-2 amplitude Taylor model"
+    )
+    print(
+        "       captures it analytically (adds only the Lagrange remainder on top of the per-point width)."
+    )
 
     # --- (R) the binding limitation: middle theta-radius + capped-tail looseness ---
-    print("\n(R) the BINDING method-margin: per-point MIDDLE theta-radius + capped-modulus TAIL looseness:")
+    print(
+        "\n(R) the BINDING method-margin: per-point MIDDLE theta-radius + capped-modulus TAIL looseness:"
+    )
     a1, a3 = 0.78, 0.69
     b = b_of(a1, a3)
     D = a1**4 + a3**4 + b**4
-    mid_slices_R = [(1.5, 2.4048, 8, 700), (2.4048, 4.0, 12, 1100), (4.0, 6.0, 12, 1900), (6.0, 8.0, 12, 3000),
-                    (8.0, 10.0, 14, 5500), (10.0, 12.0, 16, 11000)]
+    mid_slices_R = [
+        (1.5, 2.4048, 8, 700),
+        (2.4048, 4.0, 12, 1100),
+        (4.0, 6.0, 12, 1900),
+        (6.0, 8.0, 12, 3000),
+        (8.0, 10.0, 14, 5500),
+        (10.0, 12.0, 16, 11000),
+    ]
     t0_ = time.time()
     mv = middle_point(a1, a3, b, mid_slices_R)
     tail_segs_R = [(12.0, 24.0, 20, 1200), (24.0, 60.0, 16, 2400), (60.0, 200.0, 12, 6000)]
     tv = float(tail_modulus_box(a1, a3, b, T2, tail_segs_R, 200.0).upper()) / D / K_STAR
-    print(f"    middle [1.5,12] enclosure: {float(mv.mid()) / D / K_STAR:+.4f} +/- {float(mv.rad()) / D / K_STAR:.4f} K*"
-          f"  (theta-radius {float(mv.rad()) / D / K_STAR:.4f} K*, {time.time() - t0_:.0f}s)")
-    print(f"    capped-modulus tail [12,inf): {tv:.4f} K*  (vs signed truth ~0.008 K* => ~{tv / 0.008:.0f}x loss)")
-    print(f"    => method margin consumed BEFORE the amplitude lift: ~{float(mv.rad()) / D / K_STAR + tv:.3f} K*;")
-    print("       this is why only boxes with the true ratio <= ~0.85 (lambda below the printed cutoff) close.")
+    print(
+        f"    middle [1.5,12] enclosure: {float(mv.mid()) / D / K_STAR:+.4f} +/- {float(mv.rad()) / D / K_STAR:.4f} K*"
+        f"  (theta-radius {float(mv.rad()) / D / K_STAR:.4f} K*, {time.time() - t0_:.0f}s)"
+    )
+    print(
+        f"    capped-modulus tail [12,inf): {tv:.4f} K*  (vs signed truth ~0.008 K* => ~{tv / 0.008:.0f}x loss)"
+    )
+    print(
+        f"    => method margin consumed BEFORE the amplitude lift: ~{float(mv.rad()) / D / K_STAR + tv:.3f} K*;"
+    )
+    print(
+        "       this is why only boxes with the true ratio <= ~0.85 (lambda below the printed cutoff) close."
+    )
 
     # --- (X) cross-check: box centres vs direct Kluyver (the rigorous per-point enclosure is sound) ---
-    print("\n(X) cross-check: box-centre rigorous per-point upper bound vs direct scipy Kluyver R/K*")
-    print("    (moderate theta -- the overshoot only needs upper >= ref, tolerant of a larger middle radius):")
-    print(f"    {'(a1c,a3c)':18} {'lambda':>7} {'ref R/K*':>9} {'centre upper':>13} {'overshoot':>10}")
+    print(
+        "\n(X) cross-check: box-centre rigorous per-point upper bound vs direct scipy Kluyver R/K*"
+    )
+    print(
+        "    (moderate theta -- the overshoot only needs upper >= ref, tolerant of a larger middle radius):"
+    )
+    print(
+        f"    {'(a1c,a3c)':18} {'lambda':>7} {'ref R/K*':>9} {'centre upper':>13} {'overshoot':>10}"
+    )
     head_res = (30, 600, 6)
-    mid_slices = [(1.5, 2.4048, 8, 400), (2.4048, 4.0, 10, 650), (4.0, 6.0, 10, 1100), (6.0, 8.0, 10, 1700),
-                  (8.0, 10.0, 12, 2600), (10.0, 12.0, 14, 5000)]
+    mid_slices = [
+        (1.5, 2.4048, 8, 400),
+        (2.4048, 4.0, 10, 650),
+        (4.0, 6.0, 10, 1100),
+        (6.0, 8.0, 10, 1700),
+        (8.0, 10.0, 12, 2600),
+        (10.0, 12.0, 14, 5000),
+    ]
     tail_segs = [(12.0, 24.0, 16, 900), (24.0, 60.0, 12, 1800), (60.0, 200.0, 10, 4500)]
     tail_far = 200.0
     x_ok = True
@@ -764,45 +870,100 @@ def main() -> int:
         hpt = float(head_majorant_point(a1c, a3c, bc, T1, *head_res).upper())
         mpt = float(middle_point(a1c, a3c, bc, mid_slices).upper())
         _, qmin = _box_minD_and_qmin(a1c, a3c, 1e-6)
-        tpt = float((tail_modulus_box(a1c, a3c, bc, T2, tail_segs, tail_far) + mg_tail_box(qmin, T2)).upper())
+        tpt = float(
+            (
+                tail_modulus_box(a1c, a3c, bc, T2, tail_segs, tail_far) + mg_tail_box(qmin, T2)
+            ).upper()
+        )
         D = a1c**4 + a3c**4 + bc**4
         cu = (hpt + mpt + tpt) / (K_STAR * D)
         over = cu - ref
         x_ok &= over > -1e-3
-        print(f"    ({a1c:.3f},{a3c:.3f})    {lam_conc(a1c, a3c, bc):>7.3f} {ref:>9.4f} {cu:>13.4f} {over:>+10.4f}")
+        print(
+            f"    ({a1c:.3f},{a3c:.3f})    {lam_conc(a1c, a3c, bc):>7.3f} {ref:>9.4f} {cu:>13.4f} {over:>+10.4f}"
+        )
     ok &= x_ok
-    print(f"    => centre upper bound >= reference (rigorous enclosure sound): {'ok' if x_ok else 'FAIL'}")
+    print(
+        f"    => centre upper bound >= reference (rigorous enclosure sound): {'ok' if x_ok else 'FAIL'}"
+    )
 
     # --- (B) the per-BOX cost budget: why a full TILING is the compute-bound residual ---
-    print("\n(B) per-BOX cost budget for the multivariate-Taylor continuum certificate (the honest residual):")
-    print("    A rigorous box needs the (a1,a3) lift built from a 5x5 = 25-node POINT stencil PER REGION (head")
-    print("    + middle) -- the ONLY amplitude model that preserves the Mg-M cancellation (the ball and the")
-    print("    gradient-mean-value both inflate: single-J0 ball ~4x (block (M)), gradient-over-a-ball ~28000x).")
-    print("    Each middle node needs theta ~ 1e4-1.6e4 to push the SIGNED theta-discretisation radius below")
-    print("    the ~0.10 K* margin (theta-radius measured: ~0.04 K* @ 1.6e4, ~0.06 @ 5.6e3, ~0.93 @ 7e2 --")
-    print("    block (R)).  At that resolution one middle node ~ 20-40 s, so 25 nodes x 2 regions ~ 20-35 min")
-    print("    PER BOX; a tiling of the lambda in [0.65,0.82) region (dozens of boxes) is hours -- it EXCEEDS")
-    print("    this environment's compute budget.  The machinery (prove_box, build_stencil with the rigorous")
-    print("    Taylor-Lagrange remainder, the Arb mean-value min_B D) is implemented and unit-validated above;")
-    print("    the full tiling is left as the COMPUTE-BOUND residual (run prove_box() over a lattice offline).")
+    print(
+        "\n(B) per-BOX cost budget for the multivariate-Taylor continuum certificate (the honest residual):"
+    )
+    print(
+        "    A rigorous box needs the (a1,a3) lift built from a 5x5 = 25-node POINT stencil PER REGION (head"
+    )
+    print(
+        "    + middle) -- the ONLY amplitude model that preserves the Mg-M cancellation (the ball and the"
+    )
+    print(
+        "    gradient-mean-value both inflate: single-J0 ball ~4x (block (M)), gradient-over-a-ball ~28000x)."
+    )
+    print(
+        "    Each middle node needs theta ~ 1e4-1.6e4 to push the SIGNED theta-discretisation radius below"
+    )
+    print(
+        "    the ~0.10 K* margin (theta-radius measured: ~0.04 K* @ 1.6e4, ~0.06 @ 5.6e3, ~0.93 @ 7e2 --"
+    )
+    print(
+        "    block (R)).  At that resolution one middle node ~ 20-40 s, so 25 nodes x 2 regions ~ 20-35 min"
+    )
+    print(
+        "    PER BOX; a tiling of the lambda in [0.65,0.82) region (dozens of boxes) is hours -- it EXCEEDS"
+    )
+    print(
+        "    this environment's compute budget.  The machinery (prove_box, build_stencil with the rigorous"
+    )
+    print(
+        "    Taylor-Lagrange remainder, the Arb mean-value min_B D) is implemented and unit-validated above;"
+    )
+    print(
+        "    the full tiling is left as the COMPUTE-BOUND residual (run prove_box() over a lattice offline)."
+    )
     # demonstrate prove_box runs end-to-end on ONE box at a HEAVILY reduced resolution (a runtime witness,
     # NOT a closing certificate -- at this theta the middle radius dominates sup_B; the point is that the
     # full multivariate-Taylor pipeline executes and is rigorously enclosed).  Uses a 3x3 (kspan=1) stencil
     # to keep it to 2*9 = 18 node evaluations.
-    print("\n    demonstration: prove_box on ONE low-lambda box at HEAVILY reduced resolution (runtime witness):")
+    print(
+        "\n    demonstration: prove_box on ONE low-lambda box at HEAVILY reduced resolution (runtime witness):"
+    )
     dem_head = (16, 250, 6)
-    dem_mid = [(1.5, 2.4048, 5, 120), (2.4048, 4.0, 6, 180), (4.0, 6.0, 6, 300), (6.0, 8.0, 6, 450),
-               (8.0, 10.0, 8, 700), (10.0, 12.0, 8, 1300)]
+    dem_mid = [
+        (1.5, 2.4048, 5, 120),
+        (2.4048, 4.0, 6, 180),
+        (4.0, 6.0, 6, 300),
+        (6.0, 8.0, 6, 450),
+        (8.0, 10.0, 8, 700),
+        (10.0, 12.0, 8, 1300),
+    ]
     dem_tail = [(12.0, 24.0, 12, 500), (24.0, 60.0, 10, 1000), (60.0, 200.0, 8, 2500)]
     t_b = time.time()
-    res = prove_box(0.74, 0.66, 0.03, head_res=dem_head, mid_slices=dem_mid, tail_segs=dem_tail,
-                    tail_far=200.0, delta=0.03, kspan=1)
-    print(f"      box (0.740,0.660) lam[{res.lam_lo:.3f},{res.lam_hi:.3f}]: head={res.head_sup:.4f} "
-          f"mid={res.mid_sup:.4f} tail={res.tail_sup:.4f} minD={res.minD:.4f}  sup_B R/K* = {res.upper:.4f}  "
-          f"({time.time() - t_b:.0f}s)")
-    print(f"      (true ref R/K* = {R_over_kstar_ref(0.74, 0.66, b_of(0.74, 0.66)):.4f}; at REDUCED theta the")
-    print("       middle theta-radius dominates sup_B -- NOT a closing certificate, a runtime demonstration that")
-    print("       the end-to-end multivariate-Taylor box pipeline executes and is rigorously enclosed.)")
+    res = prove_box(
+        0.74,
+        0.66,
+        0.03,
+        head_res=dem_head,
+        mid_slices=dem_mid,
+        tail_segs=dem_tail,
+        tail_far=200.0,
+        delta=0.03,
+        kspan=1,
+    )
+    print(
+        f"      box (0.740,0.660) lam[{res.lam_lo:.3f},{res.lam_hi:.3f}]: head={res.head_sup:.4f} "
+        f"mid={res.mid_sup:.4f} tail={res.tail_sup:.4f} minD={res.minD:.4f}  sup_B R/K* = {res.upper:.4f}  "
+        f"({time.time() - t_b:.0f}s)"
+    )
+    print(
+        f"      (true ref R/K* = {R_over_kstar_ref(0.74, 0.66, b_of(0.74, 0.66)):.4f}; at REDUCED theta the"
+    )
+    print(
+        "       middle theta-radius dominates sup_B -- NOT a closing certificate, a runtime demonstration that"
+    )
+    print(
+        "       the end-to-end multivariate-Taylor box pipeline executes and is rigorously enclosed.)"
+    )
     box_ran = math.isfinite(res.upper)
     ok &= box_ran
 

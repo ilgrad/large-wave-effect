@@ -7,24 +7,25 @@
 The paper's Theorem schr-lower proved liminf_N B_N/sqrt(N) >= (1/2) c_0 = 0.6086 by evaluating the
 Bessel front at t = N/8.  The *optimal* aliasing-free time is t = N/4: there 2t = N/2, the Bessel front
 |n| ~ 2t = N/2 exactly fills one half-period, the aliased copies sit beyond the front (distance
->= N - 2t = N/2 > 2t, super-exponentially small), and
+>= N - 2t > 2t at t = N/4(1-delta), so exponentially small by DLMF 10.14.5), and
 
     sum_k |K_N(k, N/4(1-delta))| = (1+o(1)) sum_n |J_n(N/2)| = (1+o(1)) c_0 sqrt(N/2) = (c_0/sqrt2) sqrt(N),
 
 so  liminf_N B_N / sqrt(N) >= c_0 / sqrt(2) = 0.86068...,  a clean improvement.
 
-Beyond the liminf, the sup over the ballistic window 0.2N <= t <= 0.6N has NO limit -- it splits by the
-parity of N (the aliasing phase i^{-N} is real for even N, imaginary for odd N):
+On the dispersive window t = O(N) the constant has NO single limit -- the windowed amplification
+B_N(T) = sup_{t <= T} ||exp(-i t L_N)||_{inf->inf} splits by the parity of N (the aliasing phase i^{-N}
+is real for even N, imaginary for odd N):
 
-  * EVEN N: the sup is at t = N/4 and B_N/sqrt(N) -> c_0/sqrt2 (the front-fills-half-period value;
-    at t = N/2 the real aliasing partly cancels, giving less).
-  * ODD N: the sup is at t = N/2, where |K_N(k,N/2)| = sqrt(J_k(N)^2 + J_{N-k}(N)^2) (no cancellation),
-    and B_N/sqrt(N) -> beta_odd ~ 0.928 > c_0/sqrt2.
+  * EVEN N: the window sup is at t = N/4 and B_N(0.6N)/sqrt(N) -> c_0/sqrt2 (the front-fills-half-period
+    value; at t = N/2 the real aliasing partly cancels, giving less).
+  * ODD N: the window sup is at t = N/2, where |K_N(k,N/2)| = sqrt(J_k(N)^2 + J_{N-k}(N)^2) (no
+    cancellation), and B_N(0.6N)/sqrt(N) -> beta_odd ~ 0.928 > c_0/sqrt2.
 
-So on that window the even subsequence tends to c_0/sqrt2 and the odd one to beta_odd ~ 0.928.  These are
-windowed values: over ALL t, B_p = sqrt(p) on prime rings (verify_bn_prime_flat.py), so the all-time
-limsup is 1 and only liminf B_N/sqrt(N) >= c_0/sqrt2 is known for the all-time liminf.  This script
-checks the t = N/4 lower bound and exhibits the windowed parity split.
+These are constants of the window, not of the infinite-time B_N: over all t, B_p = sqrt(p) for p prime
+(the orbit closure contains the Gauss chirp; verify_bn_prime_flat.py), so limsup B_N/sqrt(N) = 1, and
+B_N < sqrt(N) for even N >= 6 (verify_bn_saturation.py).  This script certifies the t = N/4 lower bound and
+exhibits the parity split of the window sup.
 """
 
 from __future__ import annotations
@@ -70,13 +71,18 @@ def main() -> int:
         s = sup_over_t(n)
         (even if n % 2 == 0 else odd).append(s)
         print(f"    N={n:>6} ({'even' if n % 2 == 0 else 'odd '}): {s:.4f}")
-    print(f"    even -> {np.mean(even):.4f} (~ c_0/sqrt2 = {TARGET:.4f});  "
-          f"odd -> {np.mean(odd):.4f} (~ beta_odd ~ 0.928)")
+    print(
+        f"    even -> {np.mean(even):.4f} (~ c_0/sqrt2 = {TARGET:.4f});  "
+        f"odd -> {np.mean(odd):.4f} (~ beta_odd ~ 0.928)"
+    )
     if not (np.mean(odd) - np.mean(even) > 0.04):  # parity gap is real
         ok = False
 
     print("=" * 64)
-    print("RESULT:", "PASS -- liminf >= c_0/sqrt2; windowed constant splits by parity" if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- liminf >= c_0/sqrt2; windowed constant splits by parity" if ok else "FAIL",
+    )
     return 0 if ok else 1
 
 

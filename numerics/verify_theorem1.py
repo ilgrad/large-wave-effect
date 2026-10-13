@@ -35,17 +35,17 @@ def operators(n: int):
     """Return DFT-domain multipliers and an apply() for the chain of size n."""
     r = np.arange(n)
     theta = np.pi * r / n
-    lam = 4.0 * np.sin(theta) ** 2          # eigenvalues of L_N, lam[0] = 0
-    omega = 2.0 * np.abs(np.sin(theta))     # sqrt(lam)
-    nz = lam > 1e-12                         # non-zero (drop the r=0 mode)
+    lam = 4.0 * np.sin(theta) ** 2  # eigenvalues of L_N, lam[0] = 0
+    omega = 2.0 * np.abs(np.sin(theta))  # sqrt(lam)
+    nz = lam > 1e-12  # non-zero (drop the r=0 mode)
 
     lpinv = np.zeros(n)
-    lpinv[nz] = 1.0 / lam[nz]                # L_N^+ multiplier
+    lpinv[nz] = 1.0 / lam[nz]  # L_N^+ multiplier
 
     def apply(mult: np.ndarray, x: np.ndarray) -> np.ndarray:
         return np.real(np.fft.ifft(mult * np.fft.fft(x)))
 
-    def m_cos(t: float) -> np.ndarray:       # cos(t sqrt(L))
+    def m_cos(t: float) -> np.ndarray:  # cos(t sqrt(L))
         return np.cos(omega * t)
 
     def m_lm12_sin(t: float) -> np.ndarray:  # L^{-1/2} sin(t sqrt(L)), 0 at r=0
@@ -57,8 +57,14 @@ def operators(n: int):
         return omega * np.sin(omega * t)
 
     return {
-        "n": n, "lam": lam, "omega": omega, "lpinv": lpinv, "apply": apply,
-        "m_cos": m_cos, "m_lm12_sin": m_lm12_sin, "m_sqrtl_sin": m_sqrtl_sin,
+        "n": n,
+        "lam": lam,
+        "omega": omega,
+        "lpinv": lpinv,
+        "apply": apply,
+        "m_cos": m_cos,
+        "m_lm12_sin": m_lm12_sin,
+        "m_sqrtl_sin": m_sqrtl_sin,
     }
 
 
@@ -71,7 +77,9 @@ def diag_lpinv_dense(n: int) -> np.ndarray:
     """Diagonal of the Moore-Penrose pseudoinverse of the dense circulant L_N."""
     lap = 2.0 * np.eye(n) - np.eye(n, k=1) - np.eye(n, k=-1)
     lap[0, -1] = lap[-1, 0] = -1.0
-    return np.diag(np.linalg.pinv(lap))
+    # The default cutoff 1e-15 * s_max sits below the SVD backward error ~ n * eps * s_max, so for n >= 64
+    # the numerically zero singular value of the singular L_N survives the cutoff and gets inverted.
+    return np.diag(np.linalg.pinv(lap, rtol=n * np.finfo(float).eps))
 
 
 def energy(op, u: np.ndarray, udot: np.ndarray) -> float:
@@ -121,11 +129,13 @@ def check_invariance(n: int) -> bool:
         e = np.zeros(n)
         e[j] = 1.0
         for t in ts:
-            c = apply(op["m_cos"](t), e)            # cos(t sqrt L) e_j
-            s = apply(op["m_lm12_sin"](t), e)       # L^{-1/2} sin(t sqrt L) e_j
-            val = c @ apply(lpinv, c) + s @ s       # a^T H^+ a
+            c = apply(op["m_cos"](t), e)  # cos(t sqrt L) e_j
+            s = apply(op["m_lm12_sin"](t), e)  # L^{-1/2} sin(t sqrt L) e_j
+            val = c @ apply(lpinv, c) + s @ s  # a^T H^+ a
             worst = max(worst, abs(val - target) / target)
-    ok &= check(f"max rel dev over {len(js)}x{len(ts)} (t,j) samples", worst, 0.0, rtol=0.0, atol=1e-9)
+    ok &= check(
+        f"max rel dev over {len(js)}x{len(ts)} (t,j) samples", worst, 0.0, rtol=0.0, atol=1e-9
+    )
     return ok
 
 
@@ -142,8 +152,8 @@ def check_reachability(n: int, e0: float = 1.0, tstar: float = 7.3, j0: int = 0)
     sstar = apply(op["m_lm12_sin"](tstar), e)
     a_h_a = cstar @ apply(lpinv, cstar) + sstar @ sstar
     scale = math.sqrt(2 * e0 / a_h_a)
-    u0 = scale * apply(lpinv, cstar)     # u0* = c L^+ cos(t* sqrt L) e_j0
-    v0 = scale * sstar                   # v0* = c L^{-1/2} sin(t* sqrt L) e_j0
+    u0 = scale * apply(lpinv, cstar)  # u0* = c L^+ cos(t* sqrt L) e_j0
+    v0 = scale * sstar  # v0* = c L^{-1/2} sin(t* sqrt L) e_j0
 
     def state(t: float):
         u = apply(op["m_cos"](t), u0) + apply(op["m_lm12_sin"](t), v0)
@@ -171,22 +181,26 @@ def check_reachability(n: int, e0: float = 1.0, tstar: float = 7.3, j0: int = 0)
 
 def contrast_step(ns: list[int]) -> None:
     print("(4) Contrast: diploma step IC vs the sqrt(N) ceiling (illustrative)")
-    print(f"  {'N':>6} {'E0':>10} {'M_N(ceil)':>12} {'peak(grid)':>12} {'peak/M_N':>10} {'peak/sqrtN':>11}")
+    print(
+        f"  {'N':>6} {'E0':>10} {'M_N(ceil)':>12} {'peak(grid)':>12} {'peak/M_N':>10} {'peak/sqrtN':>11}"
+    )
     for n in ns:
         op = operators(n)
         diag = diag_lpinv_spectral(op)
         alpha = np.ones(n)
         alpha[0] = 0.0
-        alpha = alpha - alpha.mean()                 # zero-mean displacement
+        alpha = alpha - alpha.mean()  # zero-mean displacement
         e0 = 0.5 * alpha @ op["apply"](op["lam"], alpha)
         m_n = math.sqrt(2 * e0 * diag)
-        tgrid = np.linspace(0.0, 4.0 * n, 4000)      # accessible-time grid scan
+        tgrid = np.linspace(0.0, 4.0 * n, 4000)  # accessible-time grid scan
         peak = 0.0
         for t in tgrid:
-            u = op["apply"](op["m_cos"](t), alpha)   # v0 = 0
+            u = op["apply"](op["m_cos"](t), alpha)  # v0 = 0
             peak = max(peak, float(np.max(np.abs(u))))
-        print(f"  {n:>6} {e0:>10.4f} {m_n:>12.4f} {peak:>12.4f} "
-              f"{peak / m_n:>10.4f} {peak / math.sqrt(n):>11.5f}")
+        print(
+            f"  {n:>6} {e0:>10.4f} {m_n:>12.4f} {peak:>12.4f} "
+            f"{peak / m_n:>10.4f} {peak / math.sqrt(n):>11.5f}"
+        )
     print("  -> observed peak is O(1) (lower bound on sup_t); ceiling grows ~sqrt(N):")
     print("     simple ICs stay far from the variational optimum (cf. log N growth, §10).")
 

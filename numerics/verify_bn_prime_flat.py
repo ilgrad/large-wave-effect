@@ -2,7 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["numpy>=2"]
 # ///
-"""B_p = sqrt(p) for every odd prime p, hence limsup_N B_N/sqrt(N) = 1 (Proposition prop:bn-prime).
+"""B_p = sqrt(p) for every odd prime p, hence limsup_N B_N/sqrt(N) = 1 (Theorem bn-saturation (2)).
 
 B_N = sup_t ||e^{-it L_N}||_{inf->inf} = sup_t sum_k |K_N(k,t)| <= sqrt(N), the sup over ALL t >= 0.
 For an odd prime p the bound is reached in the limit:

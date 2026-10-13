@@ -9,6 +9,8 @@ machine-checked criterion certificate, then verifies they agree with src/large_w
 
   * GAP   (exact/gap/scan_classification.g)  -- rank = 1/2 phi(2N) and the saturation
           classification A_N = U_N <=> N prime or 2^m, in exact cyclotomic arithmetic.
+  * GAP   (exact/gap/schrodinger_saturation.g) -- rank_Q{lambda_r} = 1/2 phi(N) and the prime-power
+          relation lattice of the Schrodinger frequencies (second implementation of the PARI check).
   * PARI  (exact/pari/crosscheck.gp)         -- a second exact implementation of the Q-rank
           and the cyclotomic-degree identities behind the prime / 2^m / 2p proofs.
   * PARI  (exact/pari/bn_prime_flat.gp)      -- the exact inputs of B_p = sqrt(p): Q-independence
@@ -21,19 +23,32 @@ machine-checked criterion certificate, then verifies they agree with src/large_w
           frequencies for N <= 126 (relations of C_N({1,3}) at N = 28, 56, 84, 112) and their mod-4 test.
   * PARI  (exact/pari/kjump_nnn_primes.gp)   -- the exact identities behind A_p = U_p for C_p({1,2}),
           every prime 7 <= p <= 211, and a Legendre-character certificate of the conclusion.
+  * PARI  (exact/pari/bn_saturation.gp)      -- the Schrodinger saturation B_N = sqrt(N): rank of the
+          lambda_r, the Gauss chirp and the even Frank point as exact flat points, the Golay search.
+  * PARI  (exact/pari/support3_relations.gp) -- Lemma cleancomb: every support-3 relation
+          omega_a + omega_b = omega_c for 3 | N <= 330, each decided modulo Phi_2N.
+  * PARI  (exact/pari/kjump_kummer.gp)       -- Kummer certificate: saturation of C_p({1,2}) for primes
+          7 <= p <= 97 and Q-independence of the NNN-ring frequencies at N = 15.
+  * Julia (exact/julia/c15_flat_certificate.jl) -- Nullstellensatz certificate D y^4 = sum N_j m_j f_j
+          for the N = 15 flatness system, by P-adic lifting, checked over Z: H_15 has no flat point.
+  * PARI  (exact/pari/c15_flat_check.gp)     -- rebuilds the N = 15 flatness polynomials and re-checks
+          that certificate by exact polynomial arithmetic.
   * Rocq  (formal/rocq/Mod4Criterion.v)      -- machine-checks (vm_compute) that the mod-4
-          criterion on the GAP lattices reproduces the prime/2^m verdict.
+          criterion on the GAP lattices reproduces the prime/2^m verdict; Classification.v and
+          StaggeredCurrent.v are compiled as well.
 
 Tools are optional: a missing tool is reported as SKIP, not FAIL, so the script still runs the
-pure-Python cross-checks. With GAP/PARI/Rocq installed (Fedora: dnf install gap pari-gp fricas
-rocq-prover) every layer is exercised.
+pure-Python cross-checks. With GAP/PARI/Julia/Rocq installed (Fedora: dnf install gap pari-gp fricas
+rocq-prover; Julia from juliaup) every layer is exercised.
 """
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from math import gcd
 from pathlib import Path
 
@@ -50,8 +65,15 @@ def is_prime_or_2pow(n: int) -> bool:
     return n > 1 and all(n % d for d in range(2, int(n**0.5) + 1))
 
 
-def run(cmd: list[str], stdin_file: Path | None = None, timeout: int = 300) -> tuple[int, str]:
+def run(
+    cmd: list[str],
+    stdin_file: Path | None = None,
+    timeout: int = 300,
+    env: dict[str, str] | None = None,
+) -> tuple[int, str]:
     kw: dict = dict(cwd=ROOT, capture_output=True, text=True, timeout=timeout)
+    if env is not None:
+        kw["env"] = {**os.environ, **env}
     if stdin_file is not None:
         with stdin_file.open() as fh:
             return _finish(subprocess.run(cmd, stdin=fh, **kw))
@@ -77,9 +99,15 @@ def main() -> int:
     if shutil.which("gap"):
         env = "LW_MAXN := 60;;"
         rc, out = run(["gap", "-q", "--nointeract", "-c", env, "exact/gap/scan_classification.g"])
-        gap_ok = rc == 0 and "RESULT: PASS" in out  # require clean exit, like the PARI/Rocq branches
+        gap_ok = (
+            rc == 0 and "RESULT: PASS" in out
+        )  # require clean exit, like the PARI/Rocq branches
         print(f"[gap]    classification scan N<=60          : {'PASS' if gap_ok else 'FAIL'}")
         ok &= gap_ok
+        rc, out = run(["gap", "-q", "-A", "--quitonbreak", "exact/gap/schrodinger_saturation.g"])
+        sgap_ok = rc == 0 and "RESULT: PASS" in out
+        print(f"[gap]    Schrodinger rank + p^a lattice     : {'PASS' if sgap_ok else 'FAIL'}")
+        ok &= sgap_ok
     else:
         print("[gap]    SKIP (gap not on PATH)")
 
@@ -89,11 +117,15 @@ def main() -> int:
         pari_ok = rc == 0 and "FAIL" not in out and out.count("PASS") >= 5
         print(f"[pari]   cyclotomic cross-check             : {'PASS' if pari_ok else 'FAIL'}")
         ok &= pari_ok
-        rc, out = run(["gp", "-q", "-f", "exact/pari/bn_prime_flat.gp"], stdin_file=Path("/dev/null"))
+        rc, out = run(
+            ["gp", "-q", "-f", "exact/pari/bn_prime_flat.gp"], stdin_file=Path("/dev/null")
+        )
         bp_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
         print(f"[pari]   B_p = sqrt(p) exact inputs         : {'PASS' if bp_ok else 'FAIL'}")
         ok &= bp_ok
-        rc, out = run(["gp", "-q", "-f", "exact/pari/bn_prime_square.gp"], stdin_file=Path("/dev/null"))
+        rc, out = run(
+            ["gp", "-q", "-f", "exact/pari/bn_prime_square.gp"], stdin_file=Path("/dev/null")
+        )
         bq_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
         print(f"[pari]   B_(p^2) = p for p <= 7             : {'PASS' if bq_ok else 'FAIL'}")
         ok &= bq_ok
@@ -101,20 +133,61 @@ def main() -> int:
         ds_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
         print(f"[pari]   defect SOS certificates N=9,15,21  : {'PASS' if ds_ok else 'FAIL'}")
         ok &= ds_ok
-        rc, out = run(["gp", "-q", "-f", "exact/pari/kjump_relations.gp"], stdin_file=Path("/dev/null"))
+        rc, out = run(
+            ["gp", "-q", "-f", "exact/pari/kjump_relations.gp"], stdin_file=Path("/dev/null")
+        )
         kr_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
         print(f"[pari]   k-jump relation lattices N<=126    : {'PASS' if kr_ok else 'FAIL'}")
         ok &= kr_ok
-        rc, out = run(["gp", "-q", "-f", "exact/pari/kjump_nnn_primes.gp"], stdin_file=Path("/dev/null"))
+        rc, out = run(
+            ["gp", "-q", "-f", "exact/pari/kjump_nnn_primes.gp"], stdin_file=Path("/dev/null")
+        )
         kp_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
         print(f"[pari]   C_p({{1,2}}) saturation p<=211       : {'PASS' if kp_ok else 'FAIL'}")
         ok &= kp_ok
+        # gp exits 0 after an error, so the *** marker is checked as well as the verdict line
+        rc, out = run(["gp", "-q", "-f", "exact/pari/bn_saturation.gp"], timeout=600)
+        sat_ok = rc == 0 and "RESULT: PASS" in out and "***" not in out
+        print(f"[pari]   Schrodinger saturation B_N         : {'PASS' if sat_ok else 'FAIL'}")
+        ok &= sat_ok
+        rc, out = run(["gp", "-q", "-f", "exact/pari/support3_relations.gp"], timeout=600)
+        s3_ok = rc == 0 and "RESULT: PASS" in out and "***" not in out
+        print(f"[pari]   support-3 relations, 3|N<=330      : {'PASS' if s3_ok else 'FAIL'}")
+        ok &= s3_ok
+        rc, out = run(["gp", "-q", "-f", "exact/pari/kjump_kummer.gp"], timeout=600)
+        kj_ok = rc == 0 and "RESULT: PASS" in out and "***" not in out
+        print(f"[pari]   Kummer certificate, C_p({{1,2}})    : {'PASS' if kj_ok else 'FAIL'}")
+        ok &= kj_ok
     else:
         print("[pari]   SKIP (gp not on PATH)")
 
+    # --- Julia: Nullstellensatz certificate for N = 15, re-checked in PARI ---
+    if shutil.which("julia"):
+        with tempfile.TemporaryDirectory() as tmp:
+            cert = Path(tmp) / "c15_certificate.gp"
+            jl = ["julia", "--startup-file=no", "exact/julia/c15_flat_certificate.jl", str(cert)]
+            rc, out = run(jl, timeout=900)
+            jl_ok = rc == 0 and "RESULT: PASS" in out
+            print(f"[julia]  N=15 certificate, no flat point    : {'PASS' if jl_ok else 'FAIL'}")
+            ok &= jl_ok
+            if jl_ok and shutil.which("gp"):
+                gp = ["gp", "-q", "-f", "exact/pari/c15_flat_check.gp"]
+                rc, out = run(gp, timeout=600, env={"C15_CERT": str(cert)})
+                chk_ok = rc == 0 and "RESULT: PASS" in out and "***" not in out
+                print(
+                    f"[pari]   N=15 certificate re-checked        : {'PASS' if chk_ok else 'FAIL'}"
+                )
+                ok &= chk_ok
+    else:
+        print("[julia]  SKIP (julia not on PATH)")
+
     # --- Rocq: machine-checked certificates ---
     if shutil.which("rocq"):
-        for vname in ("formal/rocq/Mod4Criterion.v", "formal/rocq/Classification.v"):
+        for vname in (
+            "formal/rocq/Mod4Criterion.v",
+            "formal/rocq/Classification.v",
+            "formal/rocq/StaggeredCurrent.v",
+        ):
             if (ROOT / vname).exists():
                 rc, out = run(["rocq", "compile", vname], timeout=300)
                 rocq_ok = rc == 0

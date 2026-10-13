@@ -13,7 +13,7 @@ UPPER (rigorous, from unitarity): ||K_N(.,t)||_2 = 1 (Parseval), so ||K_N(.,t)||
     Hence  B_N <= sqrt(N)  for every N.
 
 LOWER (the new theorem): evaluate at t = N/8, so 2t = N/4. The infinite-chain front sits at |n| ~ 2t = N/4;
-beyond it J_n(2t) decays super-exponentially, so the aliasing copies p != 0 (located at |n| >= N - N/2 = N/2)
+beyond it J_n(2t) decays exponentially (DLMF 10.14.5), so the aliasing copies p != 0 (at |n| >= N/2)
 are negligible. Therefore
     ||K_N(.,N/8)||_1 = (1 + o(1)) sum_{|n| < N/2} |J_n(N/4)| = (1 + o(1)) sum_{n in Z} |J_n(N/4)|.
 The classical Bessel L1 asymptotic sum_n |J_n(x)| ~ c sqrt(x) (c = sqrt(2/pi) * Beta(1/4,1/2)/2 ...,
@@ -58,7 +58,9 @@ def main() -> int:
     print("=" * 76)
     ok = True
 
-    print("\n(A) Bessel L1 asymptotic:  sum_n |J_n(x)| ~ c sqrt(x),  c = (2/pi) sqrt(2/pi) B(1/2,3/4)")
+    print(
+        "\n(A) Bessel L1 asymptotic:  sum_n |J_n(x)| ~ c sqrt(x),  c = (2/pi) sqrt(2/pi) B(1/2,3/4)"
+    )
     c_inf = (2.0 / np.pi) * np.sqrt(2.0 / np.pi) * beta(0.5, 0.75)
     print(f"    {'x':>6} {'sum|J_n|':>12} {'/sqrt(x)':>10}    (analytic limit c = {c_inf:.4f})")
     cs = []
@@ -69,8 +71,10 @@ def main() -> int:
     monotone = all(a >= b for a, b in pairwise(cs))
     converging = c_inf <= cs[-1] < c_inf + 0.04 and all(c_inf < c < 1.4 for c in cs)
     ok &= monotone and converging
-    print(f"    -> ratio decreases monotonically toward c = {c_inf:.4f}, bounded in (c, 1.34): "
-          f"{'OK' if monotone and converging else 'FAIL'}")
+    print(
+        f"    -> ratio decreases monotonically toward c = {c_inf:.4f}, bounded in (c, 1.34): "
+        f"{'OK' if monotone and converging else 'FAIL'}"
+    )
     print("       (so sum_n |J_n(x)| = Theta(sqrt x), the input to the lower bound)")
 
     print("\n(B) Aliasing at t=N/8 is negligible: ||K_N(.,N/8)||_1 vs sum_{|n|<N/2} |J_n(N/4)|")
@@ -97,12 +101,16 @@ def main() -> int:
     c_lower = min(lows)
     bounded = c_lower > 0.45
     ok &= bounded
-    print(f"    -> lower constant c' = inf ||K||_1/sqrt(N) ~ {c_lower:.4f} > 0, and B_N <= sqrt(N): {'OK' if bounded else 'FAIL'}")
+    print(
+        f"    -> lower constant c' = inf ||K||_1/sqrt(N) ~ {c_lower:.4f} > 0, and B_N <= sqrt(N): {'OK' if bounded else 'FAIL'}"
+    )
     print("    => 0.45 sqrt(N) <~ B_N <= sqrt(N):  B_N = Theta(sqrt N).")
 
     print("\n" + "=" * 76)
     print("RESULT:", "B_N = Theta(sqrt N) ESTABLISHED" if ok else "CHECK FAILED")
-    print("Upper sqrt(N) from unitarity; lower c' sqrt(N) from the unwrapped Bessel front at t = N/8.")
+    print(
+        "Upper sqrt(N) from unitarity; lower c' sqrt(N) from the unwrapped Bessel front at t = N/8."
+    )
     print("=" * 76)
     return 0 if ok else 1
 

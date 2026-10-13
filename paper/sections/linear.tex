@@ -186,7 +186,7 @@ for continuous $F$,
 so spectral sums such as $U_N$ and $(\LN^{+})_{jj}$ are Riemann sums of the symbol; the logarithmic
 growth of $U_N$ is exactly the borderline (logarithmically divergent) singularity
 $f^{-1/2}\sim|\theta|^{-1}$ at $\theta=0$. (Szeg\H{o}'s theorem
-proper requires continuous $F$; the \emph{singular} sums $U_N=\tfrac1{2N}\sum\lambda_r^{-1/2}$ and
+proper requires continuous $F$; the \emph{singular} sums $U_N=\tfrac1N\sum\lambda_r^{-1/2}$ and
 $(\LN^{+})_{jj}=\tfrac1N\sum\lambda_r^{-1}$ are made rigorous by Euler--Maclaurin at the band edge,
 Appendix~\ref{app:bernoulli}, the singularity producing the logarithm and the $N^2$ growth.) The propagators
 $\cos(t\sqrt{\LN})$, $\eu^{-\mathrm i t\LN}$, $\LN^{-1/2}\sin(t\sqrt{\LN})$ are functions of the matrix
@@ -381,15 +381,17 @@ $A_N\sim\tfrac1\pi\ln N$ for \emph{every} $N$; precisely $A_N=\tfrac1\pi\ln N+O(
 
 \begin{proof}
 The upper bound is $A_N\le U_N=\tfrac1\pi\ln N+O(1)$ (Proposition~\ref{prop:bohr}, Lemma~\ref{lem:asym}). For
-the lower bound, write $b_r=2/(N\omega_r)>0$, $L_{\mathrm{pre}}=\sum_{r=1}^M b_r$, $M=\tfrac12\varphi(2N)$.
+the lower bound, write $b_r=2/(N\omega_r)>0$ (halved to $b_{N/2}=\tfrac1{2N}$ for even $N$),
+$L_{\mathrm{pre}}=\sum_{r=1}^M b_r$, $M=\tfrac12\varphi(2N)$.
 By Lemma~\ref{lem:prefix} the $\omega_1,\dots,\omega_M$ are $\Q$-independent, so by Kronecker there are
 times $t$ with $\sin(\omega_r t)\to1$ for all $r\le M$ at once; at such $t$, since the remaining
 $\sin(\omega_r t)\ge-1$,
 \[
   A_N\ \ge\ \sup_t G_N(0,t)\ \ge\ L_{\mathrm{pre}}-\!\!\sum_{r=M+1}^{\lfloor N/2\rfloor}\!\!b_r\ =\ 2L_{\mathrm{pre}}-U_N .
 \]
-As $\sin(\pi r/N)\le\pi r/N$, $\,b_r=1/(N\sin(\pi r/N))\ge1/(\pi r)$, so
-$L_{\mathrm{pre}}\ge\tfrac1\pi\sum_{r=1}^M\tfrac1r\ge\tfrac1\pi\ln M$, giving
+As $\sin(\pi r/N)\le\pi r/N$, $\,b_r=1/(N\sin(\pi r/N))\ge1/(\pi r)$ for $r<N/2$ (the halved Nyquist weight,
+inside the prefix only for $N=2^m$, costs $O(1/N)$), so
+$L_{\mathrm{pre}}\ge\tfrac1\pi\sum_{r=1}^M\tfrac1r-O(\tfrac1N)\ge\tfrac1\pi\ln M-O(\tfrac1N)$, giving
 \[
   A_N\ \ge\ \tfrac2\pi\ln M-U_N\ =\ \tfrac1\pi\ln\frac{M^2}{N}-O(1)
         \ =\ \tfrac1\pi\Bigl(2\ln\tfrac{\varphi(2N)}2-\ln N\Bigr)-O(1).
@@ -416,8 +418,9 @@ and the exact defect converges within the family to a limit depending only on th
 $U_N-A_N<0.18$ for composite $N\le60$, e.g.\ $0.05,0.08,0.09,0.10$ along $m=3$; \texttt{verify\_exact\_AN.py}).
 Globally, since $m/\varphi(m)\sim\eu^{\gamma}\ln\ln m$ along primorials, this is $O(\ln\ln\ln N)$---slower than
 any iterate of the logarithm. On all the numerical evidence the defect is \emph{not} bounded, and for a
-clean reason: the \emph{excess} $A_N-L_{\mathrm{pre}}$ stays in $[0.05,0.12]$ across every tested $N$
-($\omega(m)\le4$, up to $N=1155$ with prefix dimension $240$; the optimized $A_N$ is a lower bound, so
+clean reason: the \emph{excess} $A_N-L_{\mathrm{pre}}$ stays in $[0.05,0.12]$ for every tested odd $N$ with
+$\omega(m)\ge2$ ($\omega(m)\le4$, up to $N=1155$ with prefix dimension $240$; the families $2p$, $4p$ have
+excess $O(1/N)$, below; the optimized $A_N$ is a lower bound, so
 these are lower estimates of the excess), so numerically
 \[
   U_N-A_N=(U_N-L_{\mathrm{pre}})-(A_N-L_{\mathrm{pre}})=\tfrac1\pi\ln\tfrac{m}{\varphi(m)}-O(1)\longrightarrow\infty
@@ -458,14 +461,16 @@ weight $\tfrac1{2N}$, giving the sharp two-sided $|A_N-L_{\mathrm{pre}}|\le\tfra
 (Proposition~\ref{prop:2p}); for $N=4p$ the two dependent modes $\{2p-1,2p\}$ give
 $|A_N-L_{\mathrm{pre}}|\le U_N-L_{\mathrm{pre}}=\tfrac1N\bigl(\sec\tfrac\pi{4p}+\tfrac12\bigr)=O(1/N)$, and
 the same bookkeeping settles any family with $O(1)$ dependent modes (\texttt{verify\_excess\_smallcases.py}).
-The genuinely open case is $\omega(m)\ge2$, where the dependent band carries $\Theta(N)$ modes of total
-weight $\to\infty$ yet the excess stays $\approx0.1$; the accessible range ($\omega(m)\le3$) shows the small
+The genuinely open regime is $\omega(m)\to\infty$. Already for $\omega(m)\ge2$ the dependent band carries
+$\Theta(N)$ modes (of bounded total weight while $\omega(m)$ stays bounded), yet the excess stays $\approx0.1$;
+the accessible range ($\omega(m)\le3$) shows the small
 excess is a \emph{balance} of a positive dependent net ($\approx0.17$) against a negative prefix deficit
 ($\approx-0.08$) rather than near-total sign cancellation, so the asymptotic mechanism remains conjectural
 (Conjecture~\ref{conj:excess}).
 For small $N$ the strict gap
-$A_N<U_N$ is \emph{certified rigorously}: the Lipschitz-grid certificate gives
-$U_N-A_N\ge0.049,0.057,0.030,0.082$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}). For odd
+$A_N<U_N$ is \emph{certified}: the Lipschitz-grid certificate (double precision without directed rounding,
+its slack exceeding the rounding error by orders of magnitude) gives
+$U_N-A_N\ge0.048,0.056,0.029,0.081$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}). For odd
 $N=9,15,21$ an exact sum-of-squares certificate pins the defect. Parametrize the orbit closure by the
 prefix phases, $\varphi_r=\langle n_r,\psi\rangle$ with $\psi\in\mathbb T^M$ and $n_r\in\Z^M$ (each relation
 $\omega_r=\sum_sn_{rs}\omega_s$ is checked in $\Q(\zeta_{2N})$), put $z_s=\eu^{\mathrm i\psi_s}$, and let $v=(z^{B_a})_a$ be a
@@ -479,9 +484,9 @@ $<10^{-39}$. Hence $A_N\le c+\|\rho\|_1+\sum_r(\text{enclosure widths})$, and in
 The optimizer's values, which bound the defect from above, are larger by less than $10^{-7}$, so these
 defects are known to within $10^{-7}$ (\texttt{exact/pari/defect\_sos.gp}, with the certificates written by
 \texttt{build\_defect\_sos\_certificates.py}; the script rejects seven mutated certificates). The same
-relaxation in floating point reaches $N=105$ ($M=24$), though too loosely there to certify the growth
-(\texttt{verify\_defect\_moment\_sos.py}). The exact value is algebraic per $N$ (Proposition~\ref{prop:closed})
-with no universal closed form.
+trigonometric Lasserre moment--SOS relaxation~\cite{Lasserre} in floating point reaches $N=105$ ($M=24$), though too
+loosely there to certify the growth (\texttt{verify\_defect\_moment\_sos.py}). The exact value is algebraic per
+$N$ (Proposition~\ref{prop:closed}) with no universal closed form.
 \end{remark}
 
 The numerical picture condenses into a single clean implication.
@@ -530,29 +535,45 @@ $\omega_c=\omega_a+\omega_b$), so $g(b_a,b_b,b_c)\le\tfrac{b_c^2}2\cdot\tfrac1{b
 \end{proof}
 
 \begin{lemma}[the clean support-$3$ relations for $3\mid N$]\label{lem:cleancomb}
-For $3\mid N$, the only solutions of $\omega_a+\omega_b=\omega_c$ with $1\le a<b<c\le N/2$ are
-$a+b=N/3$, $c=N/3+a$. Hence the clean triplets $(a,\,N/3-a,\,N/3+a)$ are vertex-disjoint.
+For $3\mid N$, the solutions of $\omega_a+\omega_b=\omega_c$ with $1\le a<b<c\le N/2$ are
+$a+b=N/3$, $c=N/3+a$, together with, when $30\mid N$, the single extra triple $(N/10,\,N/6,\,3N/10)$
+($\sin\tfrac\pi{10}+\sin\tfrac\pi6=\sin\tfrac{3\pi}{10}$). The standard triplets $(a,\,N/3-a,\,N/3+a)$ are
+vertex-disjoint; the extra one shares $N/10$ with $(N/10,\,7N/30,\,13N/30)$ and $3N/10$ with
+$(N/30,\,3N/10,\,11N/30)$.
 \end{lemma}
 \begin{proof}
 With $\zeta=\eu^{\mathrm i\pi/N}$ one has $\omega_r=-\mathrm i(\zeta^r-\zeta^{-r})$, so the relation is
 $\operatorname{Im}(\zeta^a+\zeta^b-\zeta^c)=0$, i.e.\ (using $-\zeta^{-r}=\zeta^{N-r}$) the vanishing sum of
 six $2N$-th roots of unity $\zeta^a+\zeta^{N-a}+\zeta^b+\zeta^{N-b}+\zeta^{N+c}+\zeta^{2N-c}=0$. By the
 Conway--Jones classification of vanishing sums of roots of unity~\cite{CJ}, such a six-term sum is a union of
-rotated minimal relations, and the only partitions of $6$ are $R_2^3$ (three antipodal pairs $\{x,x+N\}$) and
-$R_3^2$ (two equilateral triples $\{x,x+\tfrac{2N}3,x+\tfrac{4N}3\}$). An antipodal pair within
+rotated minimal relations, and the only decompositions are $R_2^3$ (three antipodal pairs $\{x,x+N\}$),
+$R_3^2$ (two equilateral triples $\{x,x+\tfrac{2N}3,x+\tfrac{4N}3\}$), and the minimal six-term relation
+$(R_5{:}R_3)$: four vertices of a regular pentagon and two of an equilateral triangle, the two omitted vertices
+antipodal. In the last case the six roots are distinct, so $b,c<N/2$. The set is invariant under the
+reflection $z\mapsto-\bar z$, which swaps $\zeta^a\leftrightarrow\zeta^{N-a}$, $\zeta^b\leftrightarrow\zeta^{N-b}$,
+$\zeta^{N+c}\leftrightarrow\zeta^{2N-c}$. It maps the four pentagon points onto themselves (two triangle points
+are $\tfrac{2\pi}3$ apart, not a multiple of $\tfrac{2\pi}5$, and a triangle point on the pentagon would be its
+omitted vertex, whose antipode is not on the triangle), so it fixes the omitted pentagon vertex, which is
+therefore $\pm\mathrm i$. Exactly four of the six roots, $\zeta^a,\zeta^{N-a},\zeta^b,\zeta^{N-b}$, lie in
+the open upper half-plane, which forces the omitted pentagon vertex to be $\mathrm i$. The roots are then at
+angles $18^\circ,162^\circ,234^\circ,306^\circ$ and $30^\circ,150^\circ$, i.e.\ $(a,b,c)=(N/10,N/6,3N/10)$, which
+needs $30\mid N$. An antipodal pair within
 $\{a,N-a,b,N-b,N+c,2N-c\}$ forces $c\in\{a,N-a\}$, impossible for distinct $a,b,c\in[1,N/2]$ (the case
-$c=N-a$ needs $c=N/2$, collapsing $N+c=2N-c$); so the sum is $R_3^2$. The partner $a+\tfrac{2N}3$ of $a$ must
+$c=N-a$ needs $c=N/2$, collapsing $N+c=2N-c$); so the remaining case is $R_3^2$. The partner $a+\tfrac{2N}3$ of $a$ must
 lie in $\{b,N-a,N-b,N+c,2N-c\}$; since $b-a<\tfrac N2<\tfrac{2N}3$, the cases $a+\tfrac{2N}3\in\{b,N+c,2N-c\}$
 put the third triple member outside $[1,N/2]$ (or force $c=N/2$), and $a+\tfrac{2N}3=N-a$ needs $a=N/6=b$;
 only $a+\tfrac{2N}3=N-b$ survives, giving $a+b=N/3$ and $c=N/3+a$. Conversely the identity
 $\omega_{N/3+a}=\omega_a+\omega_{N/3-a}$ (i.e.\ $\sin(\tfrac\pi3+x)=\sin x+\sin(\tfrac\pi3-x)$,
-$x=\pi a/N$; the collapse $2\sin\tfrac\pi6=1$) gives these relations. Vertex-disjointness is the involution
-$a\mapsto N/3-a$ (verified exhaustively to $N=315$, \texttt{verify\_excess\_chain\_split.py}).
+$x=\pi a/N$; the collapse $2\sin\tfrac\pi6=1$) gives these relations. The standard triplets are
+vertex-disjoint because $a$, $N/3-a$ and $N/3+a$ range over the disjoint intervals $(0,\tfrac N6)$,
+$(\tfrac N6,\tfrac N3)$ and $(\tfrac N3,\tfrac N2)$. The full solution set, extra triple included, is checked
+exactly for $3\mid N\le330$ (\texttt{exact/pari/support3\_relations.gp}).
 \end{proof}
 
 \noindent This controls each clean relation \emph{in isolation}. For $3\mid N$ the \emph{coupled} triplets
-separate too: by Lemma~\ref{lem:cleancomb} the clean (support-$3$) relations are exactly the vertex-disjoint
-triples $(a,\,N/3-a,\,N/3+a)$, so partitioning the prefix penalty by any
+separate too: by Lemma~\ref{lem:cleancomb} the clean (support-$3$) relations are the vertex-disjoint
+standard triples $(a,\,N/3-a,\,N/3+a)$, plus for $30\mid N$ the extra triple, whose top mode $3N/10$ (always
+beyond the prefix) we assign to the comb block $K$ below. Partitioning the prefix penalty by any
 $\lambda\in[0,1)$ and applying Lemma~\ref{lem:triplet} at weights $(1-\lambda)b_a,(1-\lambda)b_b$ with
 $\sup(X{+}Y)\le\sup X+\sup Y$ yields the rigorous reduction
 \[
@@ -575,7 +596,8 @@ prime factor), with content only once $\omega(m)\ge3$---the sup-side cancellatio
 As $\omega(m)\to\infty$ the excess obeys exactly one of two laws, and which one is open:
 \begin{itemize}
 \item[\textup{(O1)}] \emph{bounded}---there is an absolute constant $C$ with $A_N-L_{\mathrm{pre}}\le C$ for
-every $N$, equivalently the sharp deficit law $U_N-A_N=\tfrac1\pi\ln(m/\varphi(m))+O(1)$ of
+every $N$, equivalently the sharp deficit lower bound $U_N-A_N\ge\tfrac1\pi\ln(m/\varphi(m))-O(1)$; with
+the numerically evident $A_N\ge L_{\mathrm{pre}}-C$ it gives the sharp deficit law of
 Proposition~\ref{prop:defect-cond};
 \item[\textup{(L)}] \emph{logarithmic}---$A_N-L_{\mathrm{pre}}=c\,(U_N-L_{\mathrm{pre}})+o(U_N-L_{\mathrm{pre}})$
 for a constant $c\in(0,1)$, whence the sharp deficit constant is $(1-c)/\pi$ rather than $1/\pi$.
@@ -591,20 +613,20 @@ prime-power odd part (Remark~\ref{rem:defect}) and for square-free $N=3p$ (above
 which alternative governs the general case is open, with content only once $\omega(m)\ge3$, and the numerical
 evidence is genuinely \emph{ambiguous}---the two signals point opposite ways and neither turns over by
 $\omega(m)=4$. For \textup{(O1)}: the raw excess is small ($A_N-L_{\mathrm{pre}}\in[0.05,0.12]$ through
-$\omega(m)=4$) and the split upper bound
+$\omega(m)=4$) and the split bound
 $\min_\lambda[\tfrac1{1-\lambda}\sum_{c\in T}\tfrac{b_c}2+F_{\mathrm{comb}}(\lambda)]$, evaluated numerically,
-stays $\approx0.19$ to $N=1155$ while $U_N-L_{\mathrm{pre}}$ grows. The reduction is rigorous, but this value is
-not a certified bound: $F_{\mathrm{comb}}$ is computed by multi-start local optimization, which can only
-underestimate the maximum (\texttt{verify\_excess\_chain\_split.py}). For \textup{(L)}: the \emph{ratio}
+stays between $0.117$ and $0.194$ on the ten tested odd $3\mid N\le315$ while $U_N-L_{\mathrm{pre}}$ grows. The
+reduction is rigorous, but this value is not a certified bound: $F_{\mathrm{comb}}$ is computed by multi-start
+local optimization, which can only underestimate the maximum (\texttt{verify\_excess\_chain\_split.py}). For \textup{(L)}: the \emph{ratio}
 $(A_N-L_{\mathrm{pre}})/(U_N-L_{\mathrm{pre}})\approx0.31\approx1/\pi$ is \emph{stable} across $\omega(m)=2,3,4$,
 whereas \textup{(O1)} would force it to $0$. None of these can be pushed to a decision: since
-$U_N-L_{\mathrm{pre}}=\tfrac1\pi\ln(m/\varphi(m))\sim\tfrac1\pi\ln\ln\ln N$ grows glacially ($0.28$ at
-$\omega(m)=4$, only $0.31$ at $\omega(m)=6$, $N=510510$), \emph{no} computationally accessible $N$ reaches the
+$U_N-L_{\mathrm{pre}}=\tfrac1\pi\ln(m/\varphi(m))+O(1)\sim\tfrac1\pi\ln\ln\ln N$ grows glacially ($0.34$ at
+$N=1155$, $\omega(m)=4$; only $0.39$ at $N=510510$, $\omega(m)=6$), \emph{no} computationally accessible $N$ reaches the
 crossover---and the direct time-domain probe $\sup_t\sum_r b_r\sin(\omega_r t)$ is itself defeated by the
 finite-time barrier for $\omega(m)\ge3$ (the recurrence floor $U_N-\sup_{t\le T}$ exceeds the excess
 sixfold already at $N=105$). The dichotomy is thus intrinsically analytic. An exhaustive search of the
 McGehee--Pigno--Smith/Konyagin $L^1$ circle~\cite{MPS81,Konyagin81} and its modern descendants, the
-Conway--Jones/Lam--Leung vanishing-sum classification~\cite{CJ}, and cyclotomic-lattice \textsc{cvp} turns up
+Conway--Jones/Lam--Leung vanishing-sum classification~\cite{CJ,LamLeung}, and cyclotomic-lattice \textsc{cvp} turns up
 \emph{no} sup-side upper-bound tool---each is $L^1$/lower-bound or carries no metric---so the constrained sup
 is, at present, untooled. We have ruled out the obvious levers for \textup{(O1)} (a diagonal/packing
 relaxation, the local quadratic Gram form, a support-$k$ extension of Lemma~\ref{lem:triplet}, an
@@ -663,6 +685,11 @@ and the same minus-eigenspace argument identifies the rank \emph{exactly}. The $
 distinct frequencies of the ring on $N'=2(N+1)$ nodes; the excluded middle index $N'/2=N+1$ carries the
 rational frequency $\mu_{N+1}=2$, and Theorem~\ref{thm:qrank} applied to $N'$ gives
 $\dim_\Q\operatorname{span}\{\mu_1,\dots,\mu_N,2\}=\tfrac12\varphi(4(N+1))$.
+A unit velocity impulse at a site $j_0$ with $\gcd(j_0,N+1)=1$ (e.g.\ $j_0=1$), observed at $j_0$, gives
+$u_{j_0}(t)=\sum_{k=1}^Nb_k\sin(\mu_kt)$ with $b_k=\tfrac2{N+1}\sin^2\tfrac{\pi kj_0}{N+1}\big/\mu_k$ (the
+eigenvectors are $\sqrt{2/(N+1)}\,\sin\frac{\pi kj}{N+1}$); every $b_k>0$ because $(N+1)\nmid kj_0$. Write
+$U_N^{\mathrm{Dir}}=\sum_kb_k$ and $A_N^{\mathrm{Dir}}=\sup_tu_{j_0}(t)\le U_N^{\mathrm{Dir}}$. (At a site sharing a
+factor with $N+1$ some $b_k$ vanish, and the criterion below applies to the surviving modes only.)
 
 \begin{theorem}[segment rank and classification]\label{thm:segrank}
 \begin{equation}\label{eq:segrank}
@@ -670,6 +697,11 @@ $\dim_\Q\operatorname{span}\{\mu_1,\dots,\mu_N,2\}=\tfrac12\varphi(4(N+1))$.
 \end{equation}
 and $A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$ if and only if $N+1$ is prime or a power of two.
 \end{theorem}
+
+\noindent The $\mu_k$ are exactly the positive eigenvalues of the path $P_{2N+1}$, so the full-rank case of
+\eqref{eq:segrank} is the $\Q$-independence classified, as $2N+2\in\{2p,2^m\}$, by Godsil, Kirkland, Severini and
+Smith in their study of pretty good state transfer~\cite{GKSS12}; the rank for every $N$ and the $\bmod\,4$
+characterization of the ceiling are what we add.
 
 \begin{proof}
 Each $2\mathrm i\mu_k=\zeta_M^k-\zeta_M^{-k}\in V^-$ ($M=4(N+1)$), so $\dim_\Q\operatorname{span}\{\mu_k\}\le\tfrac12\varphi(M)$;
@@ -685,11 +717,14 @@ $\operatorname{span}\{\mu_1,\dots,\mu_N\}$; the rank is $\tfrac12\varphi(M)$. An
 $\tfrac12\varphi(4(N+1))=2^a\varphi(m)$ for $N+1=2^am$ ($m$ odd), which exceeds $N$ exactly for $m=1$
 ($N+1=2^m$) and is $\le N$ otherwise (with equality iff $N+1$ is prime); so the rank is
 $\min(N,\tfrac12\varphi(4(N+1)))$, full ($=N$) iff $N+1$ is prime or a power of two. Full rank gives
-$A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$ by Bohr; for composite $N+1$ the lattice $\Lambda^{\mathrm{Dir}}$ is
-nontrivial and carries a relation with $\sum_r k_r\not\equiv0\ (\mathrm{mod}\ 4)$, so
-$A_N^{\mathrm{Dir}}<U_N^{\mathrm{Dir}}$ by the segment ceiling criterion
-(Corollary~\ref{cor:segceiling}; verified $N\le40$, \texttt{exact/gap/segment\_mod4.g},
-\texttt{verify\_segment\_classification.py}; the prime case also recovers Proposition~\ref{prop:2p}). \end{proof}
+$A_N^{\mathrm{Dir}}=U_N^{\mathrm{Dir}}$ by Bohr (the prime case also recovers Proposition~\ref{prop:2p}).
+Conversely, if $N+1$ is neither prime nor a power of two, write $N+1=ps$ with $p$ an odd prime and $s\ge2$.
+Then $\sum_{j=0}^{p-1}\zeta_M^{\,1+4sj}=\zeta_M\sum_j\zeta_p^{\,j}=0$. Each exponent is $\equiv1\pmod s$, hence
+$\not\equiv0\pmod{N+1}$, so the imaginary part of each term is $\pm\tfrac12\mu_k$ with $1\le k\le N$. The
+imaginary part of the sum is therefore a relation $k\in\Lambda^{\mathrm{Dir}}$ with
+$\sum_rk_r\equiv p\equiv1\pmod2$, which violates the segment ceiling criterion
+(Corollary~\ref{cor:segceiling}); so $A_N^{\mathrm{Dir}}<U_N^{\mathrm{Dir}}$ (checked to $N\le40$ in
+\texttt{exact/gap/segment\_mod4.g}; rank in \texttt{verify\_segment\_classification.py}). \end{proof}
 
 \begin{corollary}[segment ceiling criterion]\label{cor:segceiling}
 With $\Lambda^{\mathrm{Dir}}=\{k\in\Z^N:\sum_r k_r\mu_r=0\}$ the relation lattice of the segment frequencies,
@@ -705,16 +740,15 @@ $\sum_r b_r\sin\varphi_r$---lies in the orbit closure $\mathbb T_N^{\mathrm{Dir}
 $\varphi_\ast\in\mathbb T_N^{\mathrm{Dir}}$ iff $\langle k,\varphi_\ast\rangle=\tfrac\pi2\sum_r k_r\equiv0\
 (2\pi)$, i.e.\ $\sum_r k_r\equiv0\ (4)$, for every $k\in\Lambda^{\mathrm{Dir}}$. The simple Dirichlet
 spectrum has no $\mu_r=\mu_{N-r}$ degeneracy, so---unlike the ring's even-$N$ branch
-(Theorem~\ref{thm:ceiling})---no antipodal node contributes; the single node-$0$ condition decides. As on
-the ring (Theorem~\ref{thm:ceiling}, Remark~\ref{rem:f92}), full independence makes the criterion vacuous,
-and for composite $N+1$ the lattice carries a violating relation ($\sum_r k_r\not\equiv0$ mod $4$), verified
-to $N\le40$ in \texttt{exact/gap/segment\_mod4.g}.
+(Theorem~\ref{thm:ceiling})---no antipodal node contributes; the single condition at the site $j_0$ decides.
+As on the ring (Theorem~\ref{thm:ceiling}, Remark~\ref{rem:f92}), full independence makes the criterion vacuous;
+for $N+1$ neither prime nor a power of two the proof of Theorem~\ref{thm:segrank} exhibits a violating relation.
 \end{proof}
 
 \noindent This is the exact analogue of the ring classification (Theorem~\ref{thm:classification}), shifted
 by the boundary (the ring uses modulus $2N$, the segment $4(N+1)$). The order Theorem~\ref{thm:order}
 transfers verbatim: Lemma~\ref{lem:prefix} holds with modulus $4(N+1)$ in place of $2N$ (same
-palindromic argument), so the independent prefix has length $\tfrac12\varphi(4(N+1))$ and
+palindromic argument), so the independent prefix has length $\min(N,\tfrac12\varphi(4(N+1)))$ and
 $A_N^{\mathrm{Dir}}\sim\tfrac1\pi\ln N$ for \emph{every} $N$ (\texttt{verify\_segment\_lower\_bound.py}).
 
 \section{Exact \texorpdfstring{$A_N$}{A\_N} for composite \texorpdfstring{$N$}{N}}\label{sec:exact}
@@ -736,8 +770,8 @@ $A_N$ is an algebraic number: writing $x_r=\cos\varphi_r$, $y_r=\sin\varphi_r$ w
 adjoining, for each generator $k$ of the relation lattice $\Lambda$, the constraints
 $\cos\langle k,\varphi\rangle=1$, $\sin\langle k,\varphi\rangle=0$ that cut out the orbit-closure subtorus
 $\mathbb{T}_N$ (polynomials in the $x_r,y_r$ through the Chebyshev/addition formulas), turns
-\eqref{eq:subtorus} into the maximum of a polynomial over a compact semialgebraic set defined over $\Q$,
-whose value is algebraic by the Tarski--Seidenberg theorem (real quantifier elimination). For $N=6$ the relation lattice is one-dimensional and
+\eqref{eq:subtorus} into the maximum of a polynomial with real algebraic coefficients over a compact
+semialgebraic set defined over $\Q$, whose value is algebraic by the Tarski--Seidenberg theorem (real quantifier elimination). For $N=6$ the relation lattice is one-dimensional and
 \[
   A_6=\frac{\sqrt3}{9}+\frac{(3+\sqrt3)\,\sqrt[4]{3}}{12\sqrt2}\approx0.55942 ,
 \]
@@ -856,8 +890,8 @@ $24$ & composite & $12$ & $4$ & $3,3,3,3$ & no\\
 The two proven saturating families, the primes and the powers of two, both have natural density zero.
 An exhaustive criterion scan finds no further saturating $N\le160$, so on this range
 $\{N:A_N=U_N\}=\{N\text{ prime}\}\cup\{2^m\}$. Theorem~\ref{thm:classification} promotes this to all $N$:
-the saturating set is \emph{exactly} the primes and the powers of two, hence of density zero. This set is
-OEIS~A174090~\cite{OEIS}, with the curious equivalent description: the ring saturates exactly when $N$
+the saturating set is \emph{exactly} the primes and the powers of two, hence of density zero. For $N\ge2$ this
+set is OEIS~A174090~\cite{OEIS}, with the curious equivalent description: the ring saturates exactly when $N$
 \emph{cannot} be written as a sum of three or more consecutive positive integers.
 \end{corollary}
 
@@ -901,8 +935,8 @@ revival on paths and cycles is characterized through the same Kronecker lemma~\c
 (Theorem~\ref{thm:classification}). The gap is
 \emph{certified} for $N=6$: the lone relation $2\omega_1=\omega_3$ has coefficient-sum
 $2+0-1\equiv3\ (4)\ne0$, so by Theorem~\ref{thm:ceiling} $A_6<U_6$; quantitatively a Lipschitz-grid
-certificate on the two-dimensional subtorus---the elementary level of the Lasserre moment--SOS
-hierarchy~\cite{Lasserre}---brackets $A_6\in[0.5594,0.5604]$, so $U_6-A_6\ge0.048>0$, while the prime
+(branch-and-bound) certificate on the two-dimensional subtorus, in double precision, brackets
+$A_6\in[0.5594,0.5604]$, so $U_6-A_6\ge0.048>0$, while the prime
 $N=5$ returns $A_5=U_5$ (\texttt{verify\_sos\_certified.py}).
 
 \begin{proposition}[twice a prime: the sharp constant on a composite family]\label{prop:2p}
@@ -978,8 +1012,9 @@ when $\tfrac12\varphi(2N)=\lfloor N/2\rfloor$, i.e.\ for $N$ prime or $N=2^m$ (F
 precisely the scope of Theorems~\ref{thm:prime} and~\ref{thm:two}, now the full-rank case of one
 formula. Hence \eqref{eq:subtorus} is \emph{exactly}
 \[
-  A_N=\max_j\ \max_{\varphi\in\mathbb{T}_N}\frac2N\sum_r\cos\frac{2\pi rj}{N}\,\sin\varphi_r .
+  A_N=\max_j\ \max_{\varphi\in\mathbb{T}_N}\frac2N\sum_r\cos\frac{2\pi rj}{N}\,\omega_r^{-1}\sin\varphi_r
 \]
+(the term $r=N/2$ at half weight for even $N$).
 For any $S$ with
 $\{\omega_r\}_{r\in S}$ $\Q$-independent, the projection of $\mathbb{T}_N$ onto the $S$-coordinates is
 the full torus $\mathbb{T}^{|S|}$, so those phases align and contribute $(2/N)\sum_{r\in S}\omega_r^{-1}$.
@@ -995,12 +1030,13 @@ $2L_{\mathrm{pre}}-U_N=(1-o(1))U_N$ still grows like $\tfrac1\pi\ln N$. \emph{So
 for a structural reason---the time-averaged second moment gives only $\mathrm{RMS}_t\to1/\sqrt{12}$ and the
 slowest single mode only $b_1\to1/\pi$, both $O(1)$---so the $\ln N$ genuinely needed the simultaneous
 alignment of $\Theta(\ln N)$ \emph{arithmetically independent} modes, which Lemma~\ref{lem:prefix} supplies.
-Table~\ref{tab:order} shows the resulting band: the exact $A_N/\ln N$ stays in $[0.28,0.34]$ across all
-classes (including the hardest $N=pq$, $p,q\sim\sqrt N$, where $A_N/U_N\ge0.98$), consistent with
+Table~\ref{tab:order} shows the resulting band: the optimized $A_N/\ln N$ (a numerical lower estimate)
+stays in $[0.28,0.34]$ across all classes (including the hardest $N=pq$, $p,q\sim\sqrt N$, where the
+optimizer gives $A_N/U_N\ge0.98$), consistent with
 Theorem~\ref{thm:order}.
 
 \begin{table}[ht]\centering
-\caption{Illustration of Theorem~\ref{thm:order}. Left: the exact node-$0$ amplitude keeps $A_N/\ln N$
+\caption{Illustration of Theorem~\ref{thm:order}. Left: the optimized node-$0$ amplitude keeps $A_N/\ln N$
 tightly banded. Right: the $\Q$-independent prefix contributes
 $L_{\mathrm{pre}}(N)=\tfrac1N\sum_{r\le M(N)}\csc\tfrac{\pi r}N$, exceeding $0.26\ln N$ even for highly
 composite $N$ (now a \emph{proven} ingredient: $M(N)=\tfrac12\varphi(2N)$ frequencies are independent,
@@ -1038,16 +1074,18 @@ Define the finite-horizon amplitude
 \]
 Reaching
 $(1-\varepsilon)U_N$ requires $\sin(\omega_r t)\approx1$ for all $m=\lfloor N/2\rfloor$ frequencies at
-once---a simultaneous Diophantine approximation of the phases to $\tfrac\pi2$. By Dirichlet, such an
-alignment to tolerance $\delta$ \emph{exists} by time $\sim\delta^{-m}$---a crude exponential
-\emph{upper} bound on the recurrence time
+once---a simultaneous Diophantine approximation of the phases to $\tfrac\pi2$. On the saturating classes
+Kronecker's theorem guarantees that such an alignment to tolerance $\delta$ \emph{exists}; the target
+$\tfrac\pi2$ is inhomogeneous, so Dirichlet's theorem does not apply, and an effective bound on when it first
+occurs (heuristically $\sim\delta^{-m}$) needs an inhomogeneous Diophantine estimate for the algebraic
+$\omega_r$. This is the question of the recurrence time
 \[
   T_\varepsilon(N)=\inf\{T:A_N(T)\ge(1-\varepsilon)U_N\}.
 \]
-(This targets $U_N$, so $T_\varepsilon(N)$ is finite only on the saturating classes $N$ prime and $2^m$;
+(This targets $U_N$, so $T_\varepsilon(N)$ is finite for every $\varepsilon>0$ only on the saturating classes $N$
+prime and $2^m$;
 for non-saturating $N$, where $A_N<U_N$, one replaces $U_N$ by $A_N$.) A matching \emph{lower} bound
-(that one must wait at least exponentially long) does \emph{not} follow
-from Dirichlet, which bounds the wait from above; it would require Diophantine lower bounds on the
+(that one must wait at least exponentially long) would likewise require Diophantine lower bounds on the
 badly-approximable phase vector, and is left open. Numerically the wait does grow exponentially: over primes $11\le N\le47$, $\log T_{0.2}(N)$ has slope
 $\approx0.25$ per unit $N$, and across $\varepsilon$ the recurrence time fits the simultaneous-approximation
 law $T_\varepsilon(N)\sim\varepsilon^{-a m}$ with $a\approx0.32$, $m=\lfloor N/2\rfloor$ ($R^2=0.88$ up to
@@ -1082,10 +1120,11 @@ U_N$, of volume $V_m(2\varepsilon U_N)^{m/2}/\sqrt{\prod_r b_r}$.
 \end{proof}
 
 \noindent So an exponentially small but positive fraction $\asymp\varepsilon^{m/2}$ of time is
-$\varepsilon$-amplified, and the typical gap between amplified epochs is $\asymp\varepsilon^{-m/2}$
+$\varepsilon$-amplified; each amplified epoch lasts $\asymp\varepsilon^{1/2}$, so the typical gap between
+epochs is $\asymp\varepsilon^{-(m-1)/2}$
 (\texttt{verify\_finite\_time\_lower\_bound.py}: $\rho_{\mathrm{emp}}/\rho\to1$ as $\varepsilon\to0$ at
 $N=5,7$). This is the measure-theoretic counterpart of the open worst-case bound---the large wave is reachable
-but \emph{rare}; the exponent $m/2$ governs the \emph{typical} gap, while the deterministic first-hitting lower
+but \emph{rare}; the exponent $m/2$ governs the \emph{density}, while the deterministic first-hitting lower
 bound still needs the Diophantine input above.
 
 \subsection{Disorder}
@@ -1131,7 +1170,8 @@ on the oscillatory subspace $\lambda>0$; the zero mode is structural ($\LN\mathb
 $\mathbf1$) and contributes no oscillation. With $M$-normalized modes one has the closed form
 $x_0^{(\varepsilon)}(t)=m_0^{-1}\,[g_t(B(\varepsilon))]_{00}$. For $\|\xi\|_\infty\le1,\ \varepsilon\le\tfrac12$ the family
 $B(\varepsilon)$ is real-analytic with $\|\partial_\varepsilon B\|\le K_1$, and its nonzero spectrum stays in a fixed
-$[\delta_N,4]$, $\delta_N>0$ (continuity on the compact $\varepsilon$-interval). On $[\delta_N,4]$ the symbol $g_t$ is smooth
+$[\delta_N,8]$, $\delta_N>0$ (masses $m_j\ge\tfrac12$; continuity on the compact $\varepsilon$-interval). On
+$[\delta_N,8]$ the symbol $g_t$ is smooth
 with Lipschitz constant $\le a_N+b_N t$ (from $g_t'(\lambda)=\tfrac{t\cos\sqrt\lambda t}{2\lambda}-\tfrac{\sin\sqrt\lambda t}{2\lambda^{3/2}}$),
 so $\|g_t(B(\varepsilon))-g_t(B(0))\|\le(a_N+b_N t)K_1\varepsilon$. Combined with $|m_0^{-1}-1|\le2\varepsilon$ and the
 $t$-uniform bound $|[g_t(B)]_{00}|\le\delta_N^{-1/2}$, this gives $|x_0^{(\varepsilon)}(t)-x_0^{(0)}(t)|\le C_N(1+t)\varepsilon$.
@@ -1162,26 +1202,31 @@ amplified, in sharp contrast with the bead chain.
 $B_N:=\sup_t\|\eu^{-\mathrm{i}t\LN}\|_{\ell^\infty\to\ell^\infty}=\sup_t\sum_k|K_N(k,t)|\le\sqrt N$
 (each row of the unitary $\eu^{-\mathrm it\LN}$ has unit $\ell^2$ norm, so $\ell^1$ norm $\le\sqrt N$).
 Together with the matching lower bound (Theorem~\ref{thm:schr-lower}), $B_N=\Theta(\sqrt N)$, not $\ln N$.
+The ceiling $\sqrt N$ is reached, as a supremum, for $N$ an odd prime or the square of one, and missed
+for every even $N\ge6$ (Theorem~\ref{thm:bn-saturation}).
 \item (Arithmetic.) The spectrum lies in the real cyclotomic field $\Q(\zeta_N)^+$ via $\cos$ (whereas
-$\{\omega_r\}\subset\Q(\zeta_{2N})$ via $\sin$); the affine identity $\sum_r\lambda_r=2N$ holds always,
-and $\rank_\Q\{\lambda_r\}$ is strictly smaller than $\rank_\Q\{\omega_r\}$ for $N=2^m$
-(e.g. $4$ vs $8$ at $N=16$).
+$\{\mathrm i\,\omega_r\}\subset\Q(\zeta_{2N})$ via $\sin$); the affine identity $\sum_r\lambda_r=2N$ holds always,
+and $\rank_\Q\{\lambda_r\}=\tfrac12\varphi(N)$ for $N\ge3$ (Theorem~\ref{thm:bn-saturation}): equal to
+$\rank_\Q\{\omega_r\}=\tfrac12\varphi(2N)$ (Theorem~\ref{thm:qrank}) for odd $N$ and half of it for even $N$
+(e.g.\ $4$ vs $8$ at $N=16$).
 \end{enumerate}
 \end{theorem}
 
 \begin{lemma}[Bessel $\ell^1$ asymptotics]\label{lem:bessel-l1}
 As $x\to\infty$, $\displaystyle\sum_{n\in\Z}|J_n(x)|=c_0\sqrt x\,(1+o(1))$ with
-$c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)\approx1.217$.
+$c_0=(2/\pi)^{3/2}B(\tfrac12,\tfrac34)=16/\Gamma(\tfrac14)^2\approx1.2172$ (by the reflection formula
+$\Gamma(\tfrac14)\Gamma(\tfrac34)=\pi\sqrt2$).
 \end{lemma}
 
-\noindent This is Corollary~1 of Baishanski and Hlavacek~\cite{BH08}, credited there to G.~Stey, in the
-form $x^{-1/2}\sum_n|J_n(x)|\to16/\Gamma(\tfrac14)^2$; the constants agree, since
-$\Gamma(\tfrac14)\Gamma(\tfrac34)=\pi\sqrt2$ gives $(2/\pi)^{3/2}B(\tfrac12,\tfrac34)=16/\Gamma(\tfrac14)^2$.
-We include a short proof.
+\noindent The constant $16/\Gamma(\tfrac14)^2$ is due to G.~Stey, and the asymptotics is a corollary of a general
+theorem of Baishanski and Hlavacek~\cite[Cor.~1]{BH08}; we include the short Debye proof, whose
+structure the rest of this section reuses.
 
 \begin{proof}
-Split at the light cone $|n|=x$. Beyond it ($|n|\ge x(1+\delta)$) the bound $|J_n(x)|\le(x/2)^{|n|}/|n|!$
-gives super-exponential decay; the turning-point band $|n|=x+O(x^{1/3})$ carries $O(x^{1/3})$ terms of
+Split at the light cone $|n|=x$. Beyond it ($|n|\ge x(1+\delta)$) the bound
+$|J_\nu(\nu z)|\le\eu^{-\nu\eta(z)}$, $\eta(z)=\ln\frac{1+\sqrt{1-z^2}}z-\sqrt{1-z^2}$, which is positive and
+decreasing on $(0,1)$~\cite[10.14.5]{DLMF}, applied with $\nu=|n|$ and $z=x/|n|\le(1+\delta)^{-1}$, gives
+exponential decay; the turning-point band $|n|=x+O(x^{1/3})$ carries $O(x^{1/3})$ terms of
 size $O(x^{-1/3})$, contributing $O(1)$; and the shell $(1-\delta)x\le|n|\le x$ contributes, by the
 integrable amplitude bound below, $O(\delta^{3/4}\sqrt x)$---all $o(\sqrt x)$ after $\delta\to0$. In the
 oscillatory region $|n|\le(1-\delta)x$ the Debye expansion~\cite{Watson} holds uniformly,
@@ -1209,7 +1254,8 @@ Evaluate the $\ell^1$ mass at the aliasing-free time $t=\tfrac N4(1-\delta)$, so
 By the Poisson periodization \eqref{eq:poisson}, $K_N(j,t)=\sum_{\ell}K_\infty(j+\ell N,t)$ with
 $|K_\infty(n,t)|=|J_n(2t)|$. The Bessel front sits at $|n|\approx2t=\tfrac N2(1-\delta)$, and the nearest
 aliased copy ($\ell\ne0$) lies at $|j+\ell N|\ge N-2t=\tfrac N2(1+\delta)>2t$, where the bound
-$|J_n(2t)|\le t^{|n|}/|n|!$ forces super-exponential decay; so
+$|J_\nu(\nu z)|\le\eu^{-\nu\eta(z)}$ of Lemma~\ref{lem:bessel-l1}, now with $z\le\frac{1-\delta}{1+\delta}$, makes the
+aliased copies exponentially small in $N$; so
 $\sum_{j}|K_N(j,t)|=(1+o(1))\sum_{n\in\Z}|J_n(2t)|$. By Lemma~\ref{lem:bessel-l1} this is
 $(1+o(1))\,c_0\sqrt{2t}=(1+o(1))\,c_0\sqrt{N/2}\,\sqrt{1-\delta}$; letting $\delta\to0$,
 $\liminf_N B_N/\sqrt N\ge c_0/\sqrt2$. The upper bound $B_N\le\sqrt N$ is Theorem~\ref{thm:schr}(2)
@@ -1218,95 +1264,181 @@ $\liminf_N B_N/\sqrt N\ge c_0/\sqrt2$. The upper bound $B_N\le\sqrt N$ is Theore
 \noindent The improvement over the cruder $t=N/8$ value $\tfrac12 c_0=0.6086$ is the optimal aliasing-free
 time $t=N/4$, at which the Bessel front exactly fills one half-period.
 
-Over \emph{all} times the upper bound $B_N\le\sqrt N$ is sharp: on a prime ring the flow passes
-arbitrarily close to a perfectly flat kernel.
+The supremum in $B_N$ runs over \emph{all} $t$, and at large times it is decided by arithmetic, not by the
+Bessel front. Write $x(t)=(\eu^{-\mathrm it\lambda_r})_{r\in\Z_N}$, let $H_N\subset\mathbb T^N$ be the closure of
+this orbit, and for $x\in\mathbb T^N$ put $\check x_k=\frac1N\sum_rx_r\zeta_N^{rk}$ ($\zeta_N=\eu^{2\pi\mathrm i/N}$),
+so that $K_N(\cdot,t)=\check x(t)$.
 
-\begin{proposition}[prime rings reach the unitarity bound]\label{prop:bn-prime}
-For every odd prime $p$, $B_p=\sqrt p$. Consequently $\limsup_N B_N/\sqrt N=1$. The supremum is attained
-for $p=3$ (at $t=2\pi/9$) and is not attained for $p\ge5$.
-\end{proposition}
+\begin{theorem}[infinite-time saturation]\label{thm:bn-saturation}
+$B_N=\max_{x\in H_N}\|\check x\|_1$, and $B_N=\sqrt N$ if and only if $H_N$ contains a \emph{flat} point,
+$|\check x_k|=N^{-1/2}$ for every $k$; equivalently, the continuous-time quantum walk on the cycle $C_N$
+admits $\varepsilon$-uniform mixing for every $\varepsilon>0$.
+\begin{enumerate}
+\item $\dim H_N=\rank_\Q\{\lambda_r\}=\tfrac12\varphi(N)$ for every $N\ge3$.
+\item If $N=p$ or $N=p^2$ with $p$ an odd prime, then $B_N=\sqrt N$. Hence $\limsup_NB_N/\sqrt N=1$.
+\item If $N\ge6$ is even, then $B_N<\sqrt N$.
+\item $B_{15}<\sqrt{15}$ (computer-assisted).
+\end{enumerate}
+\end{theorem}
 
 \begin{proof}
-Put $m=\tfrac{p-1}2$ and $\zeta=\eu^{2\pi\mathrm i/p}$, so $\lambda_r=2-\zeta^r-\zeta^{-r}$.
-\emph{(i) Independence.} Suppose $\sum_{r=1}^m c_r\lambda_r=0$ with $c_r\in\Q$, and put $C=\sum_rc_r$.
-Substituting $1=-\sum_{j=1}^{p-1}\zeta^j$ in the constant term $2C$ gives
-$\sum_{j=1}^{p-1}(-2C)\,\zeta^j-\sum_{r=1}^m c_r(\zeta^r+\zeta^{p-r})=0$. The powers $\zeta,\dots,\zeta^{p-1}$ are
-$\zeta$ times the power basis of the degree-$(p-1)$ field $\Q(\zeta)$, hence a basis, so every coefficient
-vanishes: $c_r=-2C$ for each $r$. Summing, $C=-2mC=-(p-1)C$, so $pC=0$; hence $C=0$ and every $c_r=0$.
+On $\mathbb T^N$ Parseval gives $\|\check x\|_2=1$, so $\|\check x\|_1\le\sqrt N$ with equality iff $|\check x_k|$
+is constant. The orbit is dense in the compact $H_N$ and $x\mapsto\|\check x\|_1$ is continuous, so
+$B_N=\max_{H_N}\|\check x\|_1$, and $B_N=\sqrt N$ iff a flat point exists. Since $\LN=2I-A(C_N)$ and
+$|K_N(j-k,t)|$ is the modulus of the $(j,k)$ entry of $\eu^{-\mathrm it\LN}$, a flat point is a limit of times at
+which every transition amplitude of the walk is within $\varepsilon$ of $N^{-1/2}$. By Kronecker--Weyl,
+$H_N=\{x:\prod_rx_r^{m_r}=1\ \forall m\in\Lambda_N\}$ with $\Lambda_N=\{m\in\Z^N:\sum_rm_r\lambda_r=0\}$, a
+subtorus of dimension $\rank_\Q\{\lambda_r\}$ (the same orbit-closure description of a quantum walk is used
+in~\cite{CBGSW}). Every $x\in H_N$ has $x_0=1$ ($\lambda_0=0$) and
+$x_{-r}=x_r$ ($\lambda_{-r}=\lambda_r$).
 
-\emph{(ii) Kronecker.} By (i) and Kronecker's theorem~\cite[Ch.~1]{KN} the flow
-$t\mapsto(t\lambda_r)_{r\le m}$, $t\ge0$, is dense in $\mathbb T^m$. Choose $t_n$ with
-$t_n\lambda_r\to-2\pi r^2/p\pmod{2\pi}$ for $1\le r\le m$. This target respects the spectrum:
-$\lambda_{p-r}=\lambda_r$ and $(p-r)^2\equiv r^2\pmod p$, while $\lambda_0=0$ matches $0^2$. So
-$\eu^{-\mathrm it_n\lambda_r}\to\zeta^{r^2}$ for every $r\in\Z/p$.
+(1) For $N\ge2$, $\sum_r\zeta_N^r=0$ gives $\sum_r\lambda_r=2N$. So $1$ and every
+$\zeta_N^r+\zeta_N^{-r}=2-\lambda_r$ lie in the $\Q$-span of the $\lambda_r$. This span is closed under
+multiplication, $(\zeta^a+\zeta^{-a})(\zeta^b+\zeta^{-b})=(\zeta^{a+b}+\zeta^{-a-b})+(\zeta^{a-b}+\zeta^{b-a})$, so it
+is the field $\Q(\zeta_N+\zeta_N^{-1})$, of degree $\tfrac12\varphi(N)$ for $N\ge3$.
 
-\emph{(iii) Gauss sum.} Hence $K_p(k,t_n)\to\frac1p\sum_{r\bmod p}\zeta^{r^2+rk}$. Completing the square
-($p$ odd), $r^2+rk\equiv(r+\bar2k)^2-\bar4k^2\pmod p$ with $\bar2,\bar4$ the inverses of $2,4$ mod $p$, so the
-sum is a unimodular multiple of the quadratic Gauss sum $\sum_r\zeta^{r^2}$, whose modulus is $\sqrt p$. So
-$|K_p(k,t_n)|\to p^{-1/2}$ for every $k$ and $\sum_k|K_p(k,t_n)|\to\sqrt p$. With $B_p\le\sqrt p$
-(Theorem~\ref{thm:schr}(2)) this gives $B_p=\sqrt p$, and since $B_N\le\sqrt N$ for every $N$,
-$\limsup_NB_N/\sqrt N=1$.
+(2) Let $N=p^a$. The integer vectors $c$ with $\sum_jc_j\zeta_N^j=0$ form a saturated lattice of rank
+$N-\varphi(N)=N/p$. It contains the $N/p$ indicator vectors of the cosets of the subgroup of order $p$, the
+rotated $p$-gons $\zeta_N^j(1+\zeta_p+\dots+\zeta_p^{p-1})=0$. These have disjoint supports, so they span a
+saturated sublattice of the same rank, hence the whole lattice. Through
+$\lambda_r=2-\zeta_N^r-\zeta_N^{-r}$, a relation $\sum_rm_r\lambda_r=0$ is the vanishing sum with
+$c_0=2\sum_rm_r-2m_0$ and $c_j=-m_j-m_{-j}$ ($j\ne0$). The map $m\mapsto c$ kills exactly the relations
+behind $x_0=1$ and $x_{-r}=x_r$, and the coset indicator $v_j$ maps to $2p\,e_0$ minus the indicators of the
+cosets of $j$ and $-j$. So $\Lambda_N$ is generated by those relations and the differences $v_j-v_0$, which gives
+\[
+  H_{p^a}=\Bigl\{x\in\mathbb T^N:\ x_0=1,\ x_{-r}=x_r,\ \textstyle\prod_{l=0}^{p-1}x_{j+lN/p}
+  \ \text{is independent of } j\Bigr\}.
+\]
+For $N=p$ the coset condition is empty, so $H_p$ is the full torus of even sequences with $x_0=1$. The Gauss
+chirp $x_r=\zeta_p^{r^2}$ lies in it and is flat: completing the square, $|\sum_r\zeta_p^{r^2+rk}|=\sqrt p$ for
+every $k$. For $N=p^2$ put $h=\tfrac{p+1}2$ and
+\[
+  x_{pi+j}=\zeta_p^{-ij-hj}\qquad(0\le i,j<p),
+\]
+an even member of the generalized Frank family~\cite{FrankZadoff,KSW}. Then $x_0=1$; $x_{-r}=x_r$ because
+$2h\equiv1\pmod p$; every coset product equals $\prod_i\zeta_p^{-ij-hj}=\zeta_p^{-jp(p-1)/2}=1$; and
+$\sum_rx_r\zeta_{p^2}^{rk}=p\,\zeta_p^{-hj}\zeta_{p^2}^{jk}$ with $j\equiv k\pmod p$, of modulus $p=\sqrt N$. So
+$B_N=\sqrt N$ in both cases, and the primes give $\limsup_NB_N/\sqrt N=1$.
 
-\emph{(iv) Attainment.} $\sum_k|K_p(k,t)|=\sqrt p$ is the equality case of Cauchy--Schwarz,
-$|K_p(k,t)|=p^{-1/2}$ for all $k$. As $\eu^{-\mathrm it\LN}=\eu^{-2\mathrm it}\eu^{\mathrm itA}$ with $A$ the
-adjacency matrix of the cycle, this is instantaneous uniform mixing of the continuous-time quantum walk on
-$C_p$. It occurs for $p=3$: at $t=2\pi/9$, $|1+2\eu^{-3\mathrm it}|=|1-\eu^{-3\mathrm it}|=\sqrt3$. For $p\ge5$
-it does not occur~\cite{GMR17}. The exact inputs (i) and (iii) are checked for $p\le53$, and times with
-$\|K_p(\cdot,t)\|_1/\sqrt p>1-10^{-5}$ are exhibited for $p=5$ and $p=7$ ($t\approx5.8\cdot10^4$ and
-$t\approx2.0\cdot10^6$) (\texttt{verify\_bn\_prime\_flat.py}, \texttt{exact/pari/bn\_prime\_flat.gp}).
+(3) Let $N=2M$. From $\lambda_{r+M}=4-\lambda_r$ and $\lambda_M=4$, every $x\in H_N$ satisfies
+$x_rx_{r+M}=x_M$. Suppose $x\in H_N$ is flat. Write $x_M=\eu^{2\mathrm i\gamma}$ and $u=\eu^{-\mathrm i\gamma}x$, so
+that $u_{r+M}=\bar u_r$ and $u_{-r}=u_r$. Then $\operatorname{Re}u$ is even and $M$-periodic and
+$\operatorname{Im}u$ is even and $M$-antiperiodic. So $\hat u_k=\sum_ru_r\zeta_N^{-rk}$ is real for even $k$ and
+imaginary for odd $k$, and flatness, $|\hat u_k|=\sqrt N$, forces $\hat u_{2k}=\sqrt N\,e_k$ and
+$\hat u_{2k+1}=\mathrm i\sqrt N\,d_k$ with $e_k,d_k\in\{\pm1\}$, $e_{-k}=e_k$, $d_{-1-k}=d_k$ ($k\in\Z_M$).
+Unimodularity of $u_r$ and $u_{r+M}$ reads $|E(r)\pm\mathrm i\zeta_N^rD(r)|^2=N$, with
+$E(r)=\sum_ke_k\zeta_M^{rk}$ and $D(r)=\sum_kd_k\zeta_M^{rk}$. Adding the two, $|E(r)|^2+|D(r)|^2=2M$ for
+every $r$: $(e,d)$ is a periodic complementary (Golay) pair of $\pm1$ sequences of length $M$ with these
+symmetries. For odd $M\ge3$ no such pair exists: every periodic autocorrelation of a $\pm1$ sequence of
+length $M$ is $\equiv M\pmod4$, so $R_e(\tau)+R_d(\tau)\equiv2\pmod4$ cannot vanish. Let $M\ge4$ be even.
+Let $a(z),b(z)\in\Z[\Z_M]$ be the indicator polynomials of $S=\{k:e_k=-1\}$ and $T=\{k:d_k=-1\}$. For
+$r\ne0$, $E(r)=-2a(\zeta_M^r)$ and $D(r)=-2b(\zeta_M^r)$, so
+$a(z)a(z^{-1})+b(z)b(z^{-1})=\tfrac M2+\mu\sum_{g\in\Z_M}z^g$ for some $\mu\in\Z$. The symmetries give
+$a(z^{-1})=a(z)$ and $b(z^{-1})=z\,b(z)$. Modulo $2$, where $a(z)^2\equiv a(z^2)$, this becomes
+$a(z^2)+z\,b(z^2)\equiv\tfrac M2+\mu\sum_gz^g$. The first term lives on the even residues and the second on
+the odd ones. Comparing coefficients, $|T\cap\{k,k+\tfrac M2\}|\equiv\mu$ for every $k$, and
+$|S\cap\{k,k+\tfrac M2\}|\equiv\mu$ for every $k\notin\{0,\tfrac M2\}$. If $\mu$ is even, then
+$d_{k+M/2}=d_k$ and $e_{k+M/2}=e_k$ ($k\ne0,\tfrac M2$), so at odd $r$ we get $D(r)=0$ and
+$E(r)=e_0-e_{M/2}$. If $\mu$ is odd, then at even $r$ we get $D(r)=0$ and $E(r)=e_0+e_{M/2}$. Either
+way, $|E(r)|^2+|D(r)|^2\le4<2M$ for some $r$, a contradiction. So $H_N$ has no flat point, and
+$B_N<\sqrt N$.
+
+(4) Put $\mu_r=2-\lambda_r=2\cos\frac{2\pi r}{15}$. Reducing the Dickson polynomial $D_r(\mu_1)$
+($D_r(2\cos a)=2\cos ra$) modulo the minimal polynomial $t^4-t^3-4t^2+4t+1$ of $\mu_1$ writes $\mu_r$ in the
+$\Q$-basis $1,\mu_1,\mu_2,\mu_3$ of $\Q(\cos\frac{2\pi}{15})$ with integer coordinates $c(r)\in\Z^4$. So
+$x_r(t)=\eu^{-2\mathrm it}X(t)^{c(r)}$ with $X(t)=(\eu^{\mathrm it},\eu^{\mathrm it\mu_1},\eu^{\mathrm it\mu_2},
+\eu^{\mathrm it\mu_3})$, and $X(t)$ is dense in $\mathbb T^4$. Hence every point of $H_{15}$ is a unimodular
+multiple of $(X^{c(r)})_r$ for some $X\in\mathbb T^4$. Such a point is flat iff its periodic autocorrelations
+$R_l(X)=\sum_kX^{c(k+l)-c(k)}$ vanish for $l=1,\dots,7$ ($R_{15-l}=R_l$, as $c(-k)=c(k)$), because on
+$\mathbb T^4$ the conjugate of $X^a$ is $X^{-a}$. Let $f_l$ be $R_l$ times the least monomial that makes it
+a polynomial in $X=(X_1,\dots,X_4)$. An explicit identity $D\,X_2^4=\sum_jN_j\,m_j\,f_{l_j}$ with integers $D\ne0$ and $N_j$ and monomials $m_j$
+($2159$ terms, $D$ of $253$ digits) shows that $X_2=0$ at every common zero of the $f_l$. On $\mathbb T^4$,
+$X_2\ne0$, so $H_{15}$ has no flat point. The identity is found by Dixon's $p$-adic lifting of the linear system
+for multipliers of degree $\le18-\deg f_l$ and checked in exact integer arithmetic, and independently by polynomial
+arithmetic in PARI/GP (\texttt{exact/julia/c15\_flat\_certificate.jl}, \texttt{exact/pari/c15\_flat\_check.gp}).
 \end{proof}
 
-\begin{remark}[prime squares]\label{rem:bn-psq}
-The all-time constant is also $\sqrt N$ at $N=4,9,25,49$, i.e.\ $B_{p^2}=p$ for $p\le7$. Here the
-$\lambda_r$ are $\Q$-dependent (the relation lattice of $\lambda_1,\dots,\lambda_{\lfloor N/2\rfloor}$ has rank
-$1,1,2,3$), so step~(i) of Proposition~\ref{prop:bn-prime} fails. But for each of these $N$ an explicit
-point with phases $\theta_r\in\tfrac{2\pi}p\Z$ ($\tfrac{2\pi}4\Z$ for $N=4$) satisfies every relation, so it
-lies in the orbit closure of $t\mapsto(t\lambda_r)_r$, and there $|K_N(k)|^2=1/N$ exactly for every $k$
-(\texttt{exact/pari/bn\_prime\_square.gp}). Kronecker then gives $B_N=\sqrt N$. In general $B_N=\sqrt N$
-holds exactly when $C_N$ admits $\varepsilon$-uniform mixing: the orbit closure is compact, so a maximizing
-sequence has a limit kernel with $\|K\|_1=\sqrt N$ and $\|K\|_2=1$, the equality case $|K(k)|=N^{-1/2}$ of
-Cauchy--Schwarz, and translation invariance makes every row flat. Cao and Zhu~\cite{CaoZhu26} state that
-$C_{p^2}$ admits $\varepsilon$-uniform mixing for every prime $p$, which would give $B_{p^2}=p$ for every
-$p$; that is an unrefereed preprint, and nothing here relies on it.
+\begin{remark}[what is known, and what the numerics say]\label{rem:bn-saturation}
+Part~(2) is known in the language of quantum walks: $\varepsilon$-uniform mixing on $C_p$ is due to Godsil,
+Mullin and Roy~\cite{GMR17}, and on $C_{p^2}$ to Cao and Zhu~\cite[Thm.~5.4]{CaoZhu26}; the explicit Frank point above
+gives a short proof of the latter, independent of that unrefereed preprint. Part~(3) strengthens the exclusion of exact uniform mixing on the even cycles
+$C_N$, $N\ge6$~\cite{GMR17}: they do not even admit $\varepsilon$-uniform mixing. For $N\equiv2\pmod4$, and for
+$4\mid N$ with $N$ not a perfect square, this also follows from Monterde's necessary conditions for
+$\varepsilon$-uniform mixing on bipartite graphs~\cite[Thm.~9]{Monterde}: $N\equiv0\pmod4$, and $N$ an even square
+when the adjacency matrix is singular, as it is for $4\mid N$. The even squares $N=16,36,64,\dots$ are new. For
+$4\mid N$ a flat point would also give a real circulant Hadamard matrix of order $N$ (with $u$ as in the proof
+of~(3), the sequence $\mathrm i^{-k}\sqrt N\,\check u_k$ is $\pm1$-valued with a unimodular transform), and Ryser's conjecture that none
+exists for $N>4$ is open in the refereed literature.
+\emph{Instantaneous} uniform mixing
+occurs on $C_N$ for $N=2,3,4$ (for $N=3$ at $t=2\pi/9$, where $|1+2\eu^{-3\mathrm it}|=|1-\eu^{-3\mathrm it}|=\sqrt3$)
+and is conjectured to occur for no other $N$~\cite{ABTW}; besides the even $N\ge6$,
+it is excluded for the primes $p\ge5$~\cite{GMR17} and for $N=9,15$~\cite{CaoZhu26,GPY}. So for $N=p\ge5$ and $N=9$
+the value $\sqrt N$ is approached but never attained, and the approach is slow: the times are Kronecker times
+for $\tfrac12\varphi(N)$ independent phases. For example $\|K_5(\cdot,t)\|_1/\sqrt5=0.9999998$ at $t=2006.85$ and
+$\|K_7(\cdot,t)\|_1/\sqrt7=0.99998$ at $t=707.483$. Part~(4) also follows from the proof that $C_{15}$ has no exact uniform
+mixing~\cite[Thm.~3.2]{CaoZhu26}, which gives more than it states: its Gr\"obner basis is computed in the
+coordinates $X$ of the proof of~(4), which range over all of $\mathbb T^4$, and it has no zero with all four
+coordinates nonzero. For the other odd composites that are not prime squares, the question is open. We maximized $\|\check x\|_1$ numerically over an explicit parametrization of $H_N$
+(multi-start quasi-Newton). Every value found is attained on $H_N$, so it is a lower bound for $B_N/\sqrt N$.
+The results are $0.99890$ ($N=15$), $0.99861$ ($21$), $0.99992$ ($27$, the same over $2000$ starts),
+$0.99915$ ($33$) and $0.99965$ ($35$), and values in $[0.996,0.9997]$ for $N=39,45,51,55,57,63,75,81$.
+For the $30$ even values tested in $6\le N\le128$ the values found (again lower bounds) lie in $[0.93,0.99]$,
+consistent with~(3).
+The optimizer finds $B_N/\sqrt N=1$ for $N=9$ and $25$ but only $0.99997$ for $N=49$, where
+$\dim H_{49}=21$; the values are therefore lower bounds only. Among even $N$, by~(3) only $N=2,4$ can saturate, and they
+do, with exact uniform mixing at $t=\pi/8$ and $t=\pi/4$ (\texttt{verify\_bn\_saturation.py}). The rank formula,
+the prime-power relation lattice, the two flat points and the Golay-pair obstruction for $M\le18$ are
+re-checked in exact arithmetic (\texttt{exact/pari/bn\_saturation.gp}; the rank and the lattice also in
+\textsc{Gap}, \texttt{exact/gap/schrodinger\_saturation.g}). A second implementation checks the
+$\Q$-independence of $\lambda_1,\dots,\lambda_{(p-1)/2}$ and the Gauss-sum flatness for $p\le53$
+(\texttt{exact/pari/bn\_prime\_flat.gp}, \texttt{verify\_bn\_prime\_flat.py}), and for $N=4,9,25,49$ exhibits a
+point with phases in $\tfrac{2\pi}p\Z$ ($\tfrac{2\pi}4\Z$ for $N=4$) that satisfies every relation of the
+$\lambda_r$ and has $|\check x_k|^2=1/N$ exactly for every $k$ (\texttt{exact/pari/bn\_prime\_square.gp}).
 \end{remark}
 
-\begin{conjecture}[the all-time constant]\label{conj:bn-psq}
+\begin{conjecture}[the infinite-time constant]\label{conj:bn-psq}
 For $N\ge2$, $B_N=\sqrt N$ if and only if $N$ is a prime or the square of a prime.
 \end{conjecture}
 
-\noindent The ``if'' direction is proved for primes (Proposition~\ref{prop:bn-prime}) and for $N=4,9,25,49$
-(Remark~\ref{rem:bn-psq}); the ``only if'' direction is open.
+\noindent The ``if'' direction is Theorem~\ref{thm:bn-saturation}(2) together with $N=2,4$
+(Remark~\ref{rem:bn-saturation}). The ``only if'' direction holds for even $N$
+(Theorem~\ref{thm:bn-saturation}(3)) and for $N=15$ (Theorem~\ref{thm:bn-saturation}(4)); for the other odd
+composites that are not prime squares it is open.
 
-\noindent Proposition~\ref{prop:bn-prime} is the $\varepsilon$-uniform mixing on $C_p$ observed by Godsil,
-Mullin and Roy~\cite{GMR17}; we include the short proof because it decides the all-time constant. The aligning times
-$t_n$ are Diophantine-long (they align $\tfrac{p-1}2$ independent phases), far outside the ballistic
-windows $t=O(N)$ on which the Debye analysis below operates. The sharp constant that this analysis
-addresses is therefore the one of the \emph{windowed} amplification
+The aligning times behind Theorem~\ref{thm:bn-saturation}(2) are Diophantine-long (they align
+$\tfrac12\varphi(N)$ independent phases), far outside the ballistic windows $t=O(N)$ on which the Debye analysis
+below operates. The rest of this section studies the \emph{windowed} amplification
 \[
-  B_N(S):=\sup_{0\le t\le SN/2}\|K_N(\cdot,t)\|_1\qquad(S>0\ \text{fixed}).
+  B_N(T):=\sup_{0\le t\le T}\|\eu^{-\mathrm it\LN}\|_{\ell^\infty\to\ell^\infty}\ \le\ B_N ,
 \]
+on the dispersive time scale $T=O(N)$, where the kernel is the Poisson-periodized Bessel front
+\eqref{eq:poisson}.
+Theorem~\ref{thm:schr-lower} is a statement about $B_N(N/4)$, and it bounds $B_N$ because $B_N\ge B_N(T)$.
+The parity constants $c_0/\sqrt2$ and $\beta_{\mathrm{odd}}$ of Remark~\ref{rem:bn-parity} and
+Table~\ref{tab:bn} are constants of $B_N(SN/2)$ at fixed $S$, not of $B_N$.
 
 \begin{conjecture}[windowed Schr\"odinger constant]\label{conj:bn-window}
-For every fixed $S\ge1$, $\limsup_N B_N(S)/\sqrt N=\beta_{\mathrm{odd}}$, the constant~\eqref{eq:beta-odd}.
+For every fixed $S\ge1$, $\limsup_N B_N(SN/2)/\sqrt N=\beta_{\mathrm{odd}}$, the constant~\eqref{eq:beta-odd}.
 \end{conjecture}
 
-\noindent For $S=1$ the window is the two-copy range, where Proposition~\ref{prop:bn-profile} gives the
-value $\beta_{\mathrm{odd}}$. For $S>1$ two steps remain open: the $\ge3$-copy expected-modulus inequality
-of \S\ref{sub:multicopy} (validated numerically, not proved), and a version of
-Theorem~\ref{thm:uniform-transfer} that is uniform in $s$ on $[1,S]$ (the theorem holds for each fixed $s$,
-with constants that depend on $s$). Some restriction of the window is necessary, since over all times the
-constant is $1$ (Proposition~\ref{prop:bn-prime}); whether polynomial windows $t\le N^C$ keep the value
+\noindent For $S=1$ the window is the two-copy range: at each fixed $s=2t/N\le1$ the limit is the profile
+$F(s)$ of Proposition~\ref{prop:bn-profile}, whose maximum is $F(1)=\beta_{\mathrm{odd}}$, and the supremum over
+the window needs that convergence uniformly in $s$ (Remark~\ref{rem:bn-parity}). For $S>1$ two steps remain open: the
+$\ge3$-copy expected-modulus inequality of \S\ref{sub:multicopy} (validated numerically, not proved), and a
+version of Theorem~\ref{thm:uniform-transfer} that is uniform in $s$ on $[1,S]$ (the theorem holds for each fixed
+$s$, with constants that depend on $s$). Some restriction of the window is necessary, since over all times the
+constant is $1$ (Theorem~\ref{thm:bn-saturation}); whether polynomial windows $t\le N^C$ keep the value
 $\beta_{\mathrm{odd}}$ is open.
 
 \begin{remark}[the windowed constant splits by parity]\label{rem:bn-parity}
-The windowed constant of Conjecture~\ref{conj:bn-window} is parity-dependent: the aliasing phase
-$\mathrm i^{-N}$ is real for even $N$ and imaginary for odd $N$, so where the two overlapping fronts meet they
-add differently. Numerically (\texttt{verify\_bn\_parity.py}, window $0.2N\le t\le0.6N$) the sup is at
-$t=N/4$ for even $N$, giving $\|K_N(\cdot,N/4)\|_1/\sqrt N\to c_0/\sqrt2$ (the value above), and at $t=N/2$
-for odd $N$, where the two surviving aliasing copies give
+On the dispersive window the constant is parity-dependent: the aliasing phase $\mathrm i^{-N}$ is real for
+even $N$ and imaginary for odd $N$, so where the two overlapping fronts meet they add differently.
+Numerically (\texttt{verify\_bn\_parity.py}, a $t$-scan of $[0.2N,0.6N]$) the window supremum is at $t=N/4$
+for even $N$, giving $B_N(0.6N)/\sqrt N\to c_0/\sqrt2$ (the value above), and at $t=N/2$ for odd $N$, where
+the two surviving aliasing copies give
 $|K_N(k,N/2)|\approx\sqrt{J_k(N)^2+J_{N-k}(N)^2}$ across the front (no cancellation, since $\mathrm i^{-N}$
 is imaginary). The Debye envelope $|J_{Nu}(N)|\sim\sqrt{2/\pi N}\,(1-u^2)^{-1/4}|\cos\Phi|$
-(the uniform large-order asymptotics of~\cite[\S10.19]{DLMF}) then yields the
+(Debye's expansion~\cite[\S10.19(ii)]{DLMF}) then yields the
 limiting value
 \begin{equation}\label{eq:beta-odd}
   \beta_{\mathrm{odd}}=\sqrt{\tfrac2\pi}\int_0^1\mathbb E_{\Phi,\Psi}
@@ -1316,58 +1448,64 @@ an elliptic-integral average ($\Phi,\Psi$ independent uniform). Computed to $25$
 combination of $\pi,\eu^\gamma,\Gamma(\tfrac14),\sqrt2$, Catalan's constant, $\ldots$, and is not a low-degree
 algebraic number (an integer-relation/\textsc{pslq} search returns nothing): no elementary closed form was
 found, and we treat $\beta_{\mathrm{odd}}$ as a new constant defined by \eqref{eq:beta-odd}
-(\texttt{verify\_beta\_odd.py}). The evaluations at $t=N/4$ and $t=N/2$ give the rigorous lower bounds
-$\liminf_N B_N/\sqrt N\ge c_0/\sqrt2$ (Theorem~\ref{thm:schr-lower}) and
-$\liminf_{\text{odd }N}B_N(1)/\sqrt N\ge\beta_{\mathrm{odd}}$. Over all times the $\limsup$ is $1$, reached
-along the primes (Proposition~\ref{prop:bn-prime}). On the window $t\le0.6N$ the even subsequence approaches
-$c_0/\sqrt2$ numerically, but longer times give more (for $N=10,12,14$ the sup over $t\le1500$ exceeds the
-windowed sup by $0.015$--$0.037$, \texttt{verify\_bn\_prime\_flat.py}), so for the all-time $B_N$ only
-$\liminf_N B_N/\sqrt N\ge c_0/\sqrt2$ is known.
-For the upper side, on the whole window $t\le N/2$ the two-copy reduction is rigorous: $2t\le N$, so only
-the two Poisson copies $\ell=0,-1$ survive (the rest are super-exponentially small), $|K_N(k,t)|\le
-|J_k(2t)|+|J_{N-k}(2t)|$, and the Debye envelope turns $\|K_N(\cdot,t)\|_1/\sqrt N$ into the two-copy profile
-$F(2t/N)$. This profile is now explicit and its maximizer is \emph{proved}
-(Proposition~\ref{prop:bn-profile}): $\max F=F(1)=\beta_{\mathrm{odd}}$ at $t=N/2$, analytically on
-$[\tfrac12,0.937]$ and by validated interval arithmetic on $[0.937,1]$. Hence
-$\|K_N(\cdot,t)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ for all
-$t\le N/2$, and with the lower bound $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}+o(1))\sqrt N$
-on the odd subsequence. For $t>N/2$ (three or more overlapping copies) the joint equidistribution of the
-overlapping Debye phases is now \emph{proved}, with an explicit power saving
-(Theorem~\ref{thm:joint-equi}, \S\ref{sub:multicopy}), and it transfers uniformly in $u$ to the $L^1$ limit
-(Theorem~\ref{thm:uniform-transfer}), so the entire multi-copy constant reduces \emph{unconditionally} to the
-toral profile $F(s)$ of Proposition~\ref{prop:multicopy}: $\|K_N(\cdot,sN/2)\|_1=(F(s)+o(1))\sqrt N$ for every
-fixed $s>1$, sharper than the bare unitarity $\|K_N(\cdot,t)\|_1\le\sqrt N$. Numerically the $\ell^1$ mass
-there falls back toward its
-time average $\approx0.79\sqrt N$ and stays below the $t=N/2$ value on the windows checked (out to $t=5N$
-at $N=2^{20}$, where the $t>N/2$ supremum trails the $t=N/2$ value by a stable margin): on windows
-$t=O(N)$ the $\sin^2$ dispersion shows no flat (Gauss-sum) revival, even at structured Talbot times
-$t=\pi p/q$. This is consistent with the dispersive-quantization picture---exact revivals of the periodic
-Schr\"odinger flow at rational times occur for a \emph{quadratic} dispersion (they give Gauss
-sums)~\cite{Olver}, which the discrete $\lambda_r=4\sin^2(\pi r/N)$ is not. It is a statement about windows
-only: at Diophantine-long times the prime-ring flow passes arbitrarily close to the quadratic Gauss chirp
-(Proposition~\ref{prop:bn-prime}), so the all-time supremum is $\sqrt p$. Closing the residual upper bound
-would give the windowed constant of Conjecture~\ref{conj:bn-window}. The residual on $t>N/2$ has a clean form: $K_N(\cdot,t)$ is the inverse DFT
+(\texttt{verify\_beta\_odd.py}). The evaluations at $t=N/4$ and $t=N/2$ give the lower bounds
+$\liminf_NB_N(N/4)/\sqrt N\ge c_0/\sqrt2$ (Theorem~\ref{thm:schr-lower}) and
+$\liminf_{\text{odd }N}B_N(N/2)/\sqrt N\ge\beta_{\mathrm{odd}}$ (Theorem~\ref{thm:uniform-transfer} at $s=1$), and on
+the window the even subsequence attains $c_0/\sqrt2$ numerically. These bound $B_N$ from below as well, but they
+are not its constants: $\limsup_NB_N/\sqrt N=1$ (Theorem~\ref{thm:bn-saturation}), longer times already give more
+(for $N=10,12,14$ the sup over $t\le1500$ exceeds the windowed sup by $0.015$--$0.037$,
+\texttt{verify\_bn\_prime\_flat.py}), and on the full orbit closure the even $N$ tested reach $B_N/\sqrt N\ge0.93$
+(Remark~\ref{rem:bn-saturation}).
+For the upper side, on the window $t\le N/2$ only the two Poisson copies $\ell=0,-1$ are live: every other copy
+has order $|k+\ell N|\ge2t$, so it is exponentially small by the bound of Lemma~\ref{lem:bessel-l1}, apart from an
+Airy edge of total $\ell^1$ mass $O(1)$ at $t=N/2$. For odd $N$ and each fixed $s=2t/N\le1$,
+$\|K_N(\cdot,t)\|_1/\sqrt N$ tends to the explicit two-copy profile $F(s)$ of Proposition~\ref{prop:bn-profile}:
+for $s\le\tfrac12$ by Lemma~\ref{lem:bessel-l1}, and for $s>\tfrac12$ by Theorems~\ref{thm:joint-equi}
+and~\ref{thm:uniform-transfer} with $|L(s)|=2$, the two Debye envelopes adding in quadrature since
+$\mathrm i^{-N}=\pm\mathrm i$. The maximizer of $F$ is \emph{proved} there by validated interval arithmetic,
+$\max F=F(1)=\beta_{\mathrm{odd}}$. Hence $\|K_N(\cdot,sN/2)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$ for each
+fixed $s\le1$, with equality at $s=1$. The same bound for $\sup_{t\le N/2}$ would follow from convergence uniform
+in $s$, which we do not prove. For $t>N/2$ (three or more live copies) the joint equidistribution of the
+overlapping Debye phases is \emph{proved} as well (Theorem~\ref{thm:joint-equi}, \S\ref{sub:multicopy}), and it
+transfers uniformly in $u$ to the $L^1$ limit (Theorem~\ref{thm:uniform-transfer}). So for every fixed $s>1$ the
+multi-copy constant reduces \emph{unconditionally} to the toral profile $F(s)$ of
+Proposition~\ref{prop:multicopy}, $\|K_N(\cdot,sN/2)\|_1=(F(s)+o(1))\sqrt N$, sharper than the bare unitarity
+$\|K_N(\cdot,t)\|_1\le\sqrt N$. Numerically the $\ell^1$ mass there falls back toward its long-time average,
+$\sqrt{2/\pi}\,\sqrt N\approx0.80\sqrt N$ for even $N$ and $\tfrac{\sqrt\pi}2\sqrt N\approx0.89\sqrt N$ for odd
+$N$ (for even $N$ the relation $x_rx_{r+N/2}=x_{N/2}$ on $H_N$ makes every $K_N(k,t)$ real up to a common phase),
+and it stays below the $t=N/2$ value: an exact FFT scan of $t\in(N/2,1.25N]$ at the odd $N=8001,16001,32001$
+never exceeds it (\texttt{verify\_bn\_residual\_profile.py}). On this time scale the
+$\sin^2$ dispersion produces no flat (Gauss-sum) revival, even at structured Talbot times $t=\pi p/q$. This is
+consistent with the dispersive-quantization picture---exact revivals of the periodic Schr\"odinger flow at
+rational times occur only for a \emph{quadratic} dispersion (rational times give Gauss sums)~\cite{Olver},
+which the discrete $\lambda_r=4\sin^2(\pi r/N)$ is not. Flat states do return, but only asymptotically and at
+far larger times: for $N=p$ the orbit closure contains the Gauss chirp itself (Theorem~\ref{thm:bn-saturation}).
+So numerically the supremum over the tested range $t\le1.25N$ sits at $t=N/2$, and closing the residual upper
+bound would give the windowed constant of Conjecture~\ref{conj:bn-window}.
+The residual on $t>N/2$ has a clean form: $K_N(\cdot,t)$ is the inverse DFT
 of the \emph{unimodular} symbol $(\eu^{-\mathrm i t\lambda_r})_r$---a chirp, since $2t\cos(2\pi r/N)$ is
-locally quadratic---so $B_N/\sqrt N$ is the maximal $L^1$-flatness ratio $\|P\|_1/\|P\|_2$ of a unimodular
-trigonometric polynomial. The limiting macroscopic profile of $\|K_N(\cdot,t)\|_1/\sqrt N$ is a
+locally quadratic---so $B_N(T)/\sqrt N$ is the maximal $L^1$-flatness ratio $\|P\|_1/\|P\|_2$ over the
+unimodular symbols reached by time $T$. The limiting macroscopic profile of $\|K_N(\cdot,t)\|_1/\sqrt N$ is a
 \emph{multi-copy} Debye average over the Poisson copies (\texttt{verify\_bn\_residual\_profile.py}: it
 matches the FFT to $0.5\%$ across all $N\bmod4$, peaks at $t=N/2$ with $\beta_{\mathrm{odd}}$, and is
-strictly subdominant for $t>N/2$, stably out to $t=5N$), the profile $F(s)$ of
+strictly subdominant on the computed range $N/2<t\le N$), the profile $F(s)$ of
 Proposition~\ref{prop:multicopy}. The joint equidistribution $\bmod\,2\pi$ of the coherent multi-copy Debye
 phases---the multidimensional Weyl sum on which $F$ rests---is settled in \S\ref{sub:multicopy}
 (Theorem~\ref{thm:joint-equi}) and its uniform-in-$u$ transfer makes $F$ the unconditional $t>N/2$ profile
-(Theorem~\ref{thm:uniform-transfer}) for each fixed $s$; what remains for the windowed constant of
-Conjecture~\ref{conj:bn-window} is the profile-maximizer inequality $\max_{1\le s\le S}F(s)=F(1)$
-(Lemma~\ref{lem:varfloor} and its residual Pearson-walk bound) and the uniformity of that transfer in
-$s\in[1,S]$. That maximizer step aside, the difficulty is
+(Theorem~\ref{thm:uniform-transfer}). What remains for the windowed constant of Conjecture~\ref{conj:bn-window}
+is the profile-maximizer inequality $\max_{1\le s\le S}F(s)=F(1)$ (Lemma~\ref{lem:varfloor} and its residual
+Pearson-walk bound), together with convergence in Theorem~\ref{thm:uniform-transfer} that is uniform in $s$ on
+compact sets: that theorem is proved for each fixed $s$, with constants that depend on $s$, while a supremum over
+$t\le SN/2$ needs the uniform version, which we do not claim. That maximizer step aside, the difficulty is
 intrinsic: Erd\H{o}s asked whether every unimodular polynomial must satisfy
 $\max|P|\ge(1+c)\sqrt{n}$~\cite{Erdos57}; Kahane's ultraflat polynomials answered no~\cite{Kahane80}, with
 the sharpest construction in~\cite{BombieriBourgain}, and the \emph{quadratic} chirp
 (Gauss--Fresnel/Talbot) is even $L^1$-flat with ratio $\to1$. So a windowed constant below $1$ is an
-\emph{anti}-flatness statement on time windows $t=O(N)$, particular to the non-quadratic $\sin^2$
-dispersion---an Erd\H{o}s-type flatness question for one structured family, and no generic argument
-supplies it. Over all times there is no anti-flatness: on prime rings the flow approaches the quadratic
-chirp itself (Proposition~\ref{prop:bn-prime}). (A single-period
+\emph{anti}-flatness statement for the symbols reached by time $O(N)$, particular to the non-quadratic $\sin^2$
+dispersion---an Erd\H{o}s-type flatness question for one structured family, and no generic argument supplies
+it. Over infinite time the family is no longer restricted, and for prime $N$ its closure contains an exactly
+flat chirp (Theorem~\ref{thm:bn-saturation}).
+(A single-period
 saddle van der Corput estimate fails: it predicts $0.61$ against the actual $0.93$, missing the Poisson-copy
 coherence---which is precisely why the correct object is the \emph{joint} multi-copy equidistribution of
 Theorem~\ref{thm:joint-equi}, not a single saddle. A fourth-moment/merit-factor route cannot supply the upper bound either:
@@ -1377,7 +1515,7 @@ from $\|K\|_2$ and $\|K\|_4$ alone.)
 \end{remark}
 
 \begin{proposition}[two-copy profile and its maximizer]\label{prop:bn-profile}
-For $t=sN/2$ with $s\in[0,1]$, the two-copy Debye approximation of Remark~\ref{rem:bn-parity} gives
+Let $N$ be odd. For each fixed $s\in[0,1]$ and $t=sN/2$,
 $\|K_N(\cdot,t)\|_1=\bigl(F(s)+o(1)\bigr)\sqrt N$ with the \emph{explicit scalar profile}
 \[
   F(s)=\begin{cases}
@@ -1404,34 +1542,38 @@ Then $F(\tfrac12)=c_0/\sqrt2$ and $F(1)=\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd
 \end{proposition}
 
 \begin{proof}[Proof]
-The reduction and the closed-form endpoints are the Debye computation of Remark~\ref{rem:bn-parity}: for
-$s\le\tfrac12$ the two Bessel fronts $|n|\approx sN$ are disjoint and each half-line contributes
-$\tfrac12c_0\sqrt{2t}$, giving $c_0\sqrt s$; for $s\ge\tfrac12$ the overlap $u=k/N\in[1-s,s]$ carries both
-Debye envelopes, which for odd $N$ add in quadrature, producing $A,B$ after $u\mapsto w$ maps the two
-windows to $[0,1]$. The substitution makes the endpoint singularities $w^{-1/4},(1-w)^{-1/4}$ integrable
+For $s\le\tfrac12$ the two Bessel fronts $|n|\approx sN$ are disjoint and each half-line contributes
+$\tfrac12c_0\sqrt{2t}$ (Lemma~\ref{lem:bessel-l1}), giving $c_0\sqrt s$. For $s>\tfrac12$ the limit is
+Theorem~\ref{thm:uniform-transfer} with the live set $L(s)=\{0,-1\}$: on the overlap $u=k/N\in[1-s,s]$ the two
+Debye phases are jointly equidistributed (Theorem~\ref{thm:joint-equi}), and since $c_{-1}=\mathrm i^{-N}=\pm\mathrm i$
+for odd $N$ the two envelopes add in quadrature, producing $A,B$ after $u\mapsto w$ maps the two windows to
+$[0,1]$. The substitution makes the endpoint singularities $w^{-1/4},(1-w)^{-1/4}$ integrable
 and the integrands smooth in $s$ on $(\tfrac12,1]$; at $s=1$ one recovers exactly \eqref{eq:beta-odd}.
-For the maximizer, two analytic majorants of $g$ cover the bulk. Jensen's bound $g(a,b)\le\sqrt{(a+b)/2}$
-($\mathbb E\cos^2=\tfrac12$) gives $F<\beta_{\mathrm{odd}}$ on $[\tfrac12,\tfrac45]$; writing
-$g(a,b)=\sqrt{\max}\,h(\min/\max)$ with $h(\rho)=\mathbb E\sqrt{\cos^2\Phi+\rho\cos^2\Psi}$ \emph{concave}
-($h''<0$ on $(0,1]$), the tangent at $\rho=1$, $h(\rho)\le h(1)+h'(1)(\rho-1)$ with $h(1)=0.95809$,
-$h'(1)=0.23952$, sharpens this to $F<\beta_{\mathrm{odd}}$ on all of $[\tfrac12,0.937]$---an \emph{analytic}
-bound on $87\%$ of the window, clearing the interior dip $\min F\approx0.847$ at $s\approx0.56$. On the
-remaining $[0.937,1]$ the profile is strictly increasing, $F'(s)>0$, proved by \emph{validated interval
-arithmetic}: two elementary inequalities eliminate the elliptic $g$---the QM--AM bound $g(a,b)\ge
-\tfrac{\sqrt2}\pi(\sqrt a+\sqrt b)$ (from $\sqrt{x^2+y^2}\ge(x+y)/\sqrt2$) and the derivative bound
-$\partial_ag=\mathbb E[\tfrac{\cos^2\Phi}{2\sqrt{\,\cdot\,}}]\le1/(\pi\sqrt a)$---and reduce $F'$ to a lower
-bound $F_{\mathrm{lo}}(s)$ built from \emph{elementary} ($\sqrt{\ }$-only) integrals; an interval
+For the maximizer write $g(a,b)=\sqrt M\,h(m/M)$ with $M=\max(a,b)$, $m=\min(a,b)$ and
+$h(\rho)=\mathbb E\sqrt{\cos^2\Phi+\rho\cos^2\Psi}$; $h$ is increasing and concave on $[0,1]$ ($h''<0$), $h(0)=2/\pi$,
+and $h'(1)=h(1)/4$ by the symmetry $\Phi\leftrightarrow\Psi$. Four estimates, all evaluated in validated interval
+arithmetic (\texttt{verify\_bn\_profile\_rigorous.py}), cover $[0,1]$. (i)~The comparison value: the chord
+interpolant of the concave $h$ through $\rho=k/8$ lies below $h$; with $h(k/8)$ enclosed (the inner average is
+$\tfrac2\pi\sqrt{x+\rho}\,E(\tfrac{\rho}{x+\rho})$, $x=\cos^2\Phi$, with the complete elliptic integral $E$
+computed by the arithmetic--geometric mean) it gives $\beta_{\mathrm{odd}}\ge0.92735$. (ii)~On $[0,\tfrac12]$,
+$F=c_0\sqrt s\le c_0/\sqrt2=0.8607$; on $[\tfrac12,0.575]$ the bound $\sqrt{x^2+y^2}\le x+y$ gives
+$g(a,b)\le\tfrac2\pi(\sqrt a+\sqrt b)$, hence $F(s)\le c_0\sqrt s\le0.9230$. (iii)~On $[0.575,0.90]$ the tangent at
+$\rho=1$, $h(\rho)\le h(1)(3+\rho)/4$, gives a majorant of $F$ built from square roots only; enclosed on
+$32$ subintervals in $s$, it stays below $0.9263$, clearing the interior dip $\min F\approx0.847$ at $s\approx0.56$.
+(iv)~On $[0.90,1]$ the profile is strictly increasing, $F'(s)>0$: two elementary inequalities eliminate the
+elliptic $g$---the QM--AM bound $g(a,b)\ge\tfrac{\sqrt2}\pi(\sqrt a+\sqrt b)$ (from $\sqrt{x^2+y^2}\ge(x+y)/\sqrt2$)
+and the derivative bound $\partial_ag=\mathbb E[\tfrac{\cos^2\Phi}{2\sqrt{\,\cdot\,}}]\le1/(\pi\sqrt a)$---and reduce
+$F'$ to a lower bound $F_{\mathrm{lo}}(s)$ built from \emph{elementary} ($\sqrt{\ }$-only) integrals; an interval
 rectangle-sum enclosure (the band-edge $w^{-1/4}$ singularities removed by $w=t^4$, $w=1-r^4$, powers
 cancelled by hand), with $s$ itself taken as an interval, certifies $F_{\mathrm{lo}}(s)>0$ on every
-subinterval of $[0.937,1]$ (worst case $0.051$, \texttt{verify\_bn\_profile\_rigorous.py}). Hence $F\le F(1)$
-there, and the maximizer $\max_{[0,1]}F=F(1)=\beta_{\mathrm{odd}}$ is proved.
+subinterval of $[0.90,1]$ (worst case $0.047$). Hence $F<\beta_{\mathrm{odd}}$ on $[0,0.90]$ and $F<F(1)$ on
+$[0.90,1)$, so $\max_{[0,1]}F=F(1)=\beta_{\mathrm{odd}}$, attained only at $s=1$.
 \end{proof}
 
-\noindent This settles the $t\le N/2$ supremum: $\sup_{t\le N/2}\|K_N(\cdot,t)\|_1=(\beta_{\mathrm{odd}}
-+o(1))\sqrt N$, since the maximization of the one explicit elliptic-integral function $F$ is now proved in
-full---analytically on $[\tfrac12,0.937]$ and by validated interval arithmetic on $[0.937,1]$. The only
-remaining piece of the windowed constant (Conjecture~\ref{conj:bn-window}) is the multi-copy region
-$N/2<t\le SN/2$ (Remark~\ref{rem:bn-parity}).
+\noindent So the two-copy profile peaks exactly at $t=N/2$: for odd $N$ and each fixed $s\le1$,
+$\|K_N(\cdot,sN/2)\|_1\le(\beta_{\mathrm{odd}}+o(1))\sqrt N$, with equality at $s=1$. A bound on
+$\sup_{t\le N/2}\|K_N(\cdot,t)\|_1$ would further need the convergence to be uniform in $s$
+(Remark~\ref{rem:bn-parity}); the multi-copy region $t>N/2$ is treated next.
 
 \subsection{The multi-copy region \texorpdfstring{$t>N/2$}{t>N/2}: joint equidistribution of the Debye phases}\label{sub:multicopy}
 
@@ -1445,9 +1587,9 @@ Fix a ratio $s=2t/N>1$ and the rescaled site $u=k/N\in[0,1)$. By the periodizati
 $K_N(k,t)=\sum_\ell \mathrm i^{\,k+\ell N}J_{k+\ell N}(2t)$, and a copy $\ell$ lies in the oscillatory band
 exactly when its scaled order $m_\ell:=u+\ell$ satisfies $|m_\ell|<s$. There are at most $2s+2$ such
 \emph{live} copies---a number bounded independently of $N$---and the band-edge copies $|m_\ell|=s+O(N^{-1})$
-contribute negligibly (Airy front, height $O(N^{-1/3})$; the super-exponential tail handles $|m_\ell|>s$ as
-in Lemma~\ref{lem:bessel-l1}). On the live set the uniform large-order asymptotics~\cite[\S10.19]{DLMF}
-give, with the signed order $n_\ell=k+\ell N$ (so $J_{n_\ell}=(-1)^{|n_\ell|}J_{|n_\ell|}$ for $n_\ell<0$),
+contribute negligibly (Airy front, height $O(N^{-1/3})$; the exponential tail handles $|m_\ell|>s$ as
+in Lemma~\ref{lem:bessel-l1}). On the live set Debye's expansion~\cite[\S10.19(ii)]{DLMF}, uniform on compact
+subsets of the band, gives, with the signed order $n_\ell=k+\ell N$ (so $J_{n_\ell}=(-1)^{|n_\ell|}J_{|n_\ell|}$ for $n_\ell<0$),
 \begin{equation}\label{eq:multicopy-debye}
   \mathrm i^{\,n_\ell}J_{n_\ell}(2t)
   =\mathrm i^{\,n_\ell}\,\sqrt{\tfrac2{\pi N}}\,\bigl(s^2-m_\ell^2\bigr)^{-1/4}\,
@@ -1462,7 +1604,7 @@ its discrete derivative in the site index is exact and elementary.
 \begin{lemma}[Debye phase increments and their curvature]\label{lem:debye-incr}
 For each live copy $\ell$ and $x=sN$, with $g_\ell(u)=\bigl(s^2-m_\ell^2\bigr)^{-1/2}>0$, $m_\ell=u+\ell$,
 \begin{align*}
-  \Phi_\ell(k+1)-\Phi_\ell(k)&=-\operatorname{sgn}(m_\ell)\,\arccos\tfrac{|m_\ell|}{s}\pmod{2\pi},\\
+  \Phi_\ell(k+1)-\Phi_\ell(k)&=-\operatorname{sgn}(m_\ell)\,\arccos\tfrac{|m_\ell|}{s}+O(N^{-1}),\\
   \Phi_\ell(k+1)-2\Phi_\ell(k)+\Phi_\ell(k-1)&=\tfrac1N\,g_\ell(u)+O(N^{-2}).
 \end{align*}
 Consequently, writing
@@ -1473,13 +1615,14 @@ $\theta_\ell'(u)=g_\ell(u)$.
 \begin{proof}
 $\Phi_\ell(k)=\phi(|n_\ell|)$ with $\phi(\nu)=\sqrt{x^2-\nu^2}-\nu\arccos(\nu/x)-\tfrac\pi4$ and
 $\phi'(\nu)=-\arccos(\nu/x)$. Since $n_\ell=k+\ell N$, advancing $k\mapsto k+1$ advances $\nu=|n_\ell|$ by
-$\operatorname{sgn}(n_\ell)$, so the first difference is $\operatorname{sgn}(n_\ell)\,\phi'(|n_\ell|)
-=-\operatorname{sgn}(m_\ell)\arccos(|m_\ell|/s)$ (using $\operatorname{sgn}(n_\ell)=\operatorname{sgn}(m_\ell)$ and
+$\operatorname{sgn}(n_\ell)$, so the first difference is $\operatorname{sgn}(n_\ell)\,\phi'(|n_\ell|)+O(N^{-1})
+=-\operatorname{sgn}(m_\ell)\arccos(|m_\ell|/s)+O(N^{-1})$, since $\phi''(\nu)=(x^2-\nu^2)^{-1/2}=O(N^{-1})$ on the
+live set (using $\operatorname{sgn}(n_\ell)=\operatorname{sgn}(m_\ell)$ and
 $|n_\ell|/x=|m_\ell|/s$). Hence $\theta_\ell(u)=-\operatorname{sgn}(m_\ell)\arccos(|m_\ell|/s)$, and
 differentiating, $\theta_\ell'(u)=\operatorname{sgn}(m_\ell)\cdot\dfrac{\operatorname{sgn}(m_\ell)}{\sqrt{s^2-m_\ell^2}}
 =(s^2-m_\ell^2)^{-1/2}=g_\ell(u)>0$; the second site-difference is $N^{-1}\theta_\ell'(u)+O(N^{-2})$ by Taylor
-expansion. The increment identities are verified to machine precision (\texttt{verify\_debye\_equidistribution.py}:
-ratio $1.0000$ for the second difference against $N^{-1}g_\ell$).
+expansion. Numerically the second difference matches $N^{-1}g_\ell$ to the ratio $1.0000$
+(\texttt{verify\_debye\_equidistribution.py}).
 \end{proof}
 
 The first increment $\theta_\ell(u)$ varies with $u$, so each single phase $\{\Phi_\ell(k)\}_k$
@@ -1487,16 +1630,17 @@ equidistributes mod $2\pi$ (the classical van der Corput statement behind Lemma~
 content is that the live phases equidistribute \emph{jointly}.
 
 \begin{theorem}[joint equidistribution of the live Debye phases]\label{thm:joint-equi}
-Fix $s>1$ and a cell $\mathcal C=(a,b)\subset[0,1)$ on which the live set $L(s)=\{\ell:|u+\ell|<s\}$ is
+Fix $s>\tfrac12$ and a cell $\mathcal C=(a,b)\subset[0,1)$ on which the live set $L(s)=\{\ell:|u+\ell|<s\}$ is
 constant and no $m_\ell$ meets the band edge. As $N\to\infty$ the vector
 $\bigl(\Phi_\ell(k)\bmod2\pi\bigr)_{\ell\in L(s)}$ is equidistributed in the torus $\mathbb T^{|L(s)|}$ as $k$
-ranges over $\{k:k/N\in\mathcal C\}$. Quantitatively, for every nonzero integer vector $(k_\ell)_{\ell\in L(s)}$,
+ranges over $\{k:k/N\in\mathcal C'\}$, for every subinterval $\mathcal C'\subset\mathcal C$: for every nonzero
+integer vector $(k_\ell)_{\ell\in L(s)}$,
 \begin{equation}\label{eq:joint-weyl}
-  \Bigl|\frac1{\#}\sum_{k/N\in\mathcal C}\eu^{\mathrm i\sum_\ell k_\ell\Phi_\ell(k)}\Bigr|
-  \ \ll_{s,\mathcal C,k}\ N^{-1/2},
+  \Bigl|\frac1{\#}\sum_{k/N\in\mathcal C'}\eu^{\mathrm i\sum_\ell k_\ell\Phi_\ell(k)}\Bigr|
+  \ \xrightarrow[N\to\infty]{}\ 0,
 \end{equation}
-the power saving of the second-derivative van der Corput estimate; hence by Weyl's criterion the joint
-distribution is uniform, with Erd\H{o}s--Tur\'an discrepancy $O(N^{-1/2}\log N)$ on the cell.
+at the rate $\ll_{s,\mathcal C',k}N^{-1/2}$ of the second-derivative van der Corput estimate on every
+$\mathcal C'$ on which the curvature function $C_k$ of the proof has no zero.
 \end{theorem}
 
 \begin{proof}
@@ -1508,46 +1652,46 @@ second difference is
   C_k(u)=\sum_{\ell\in L(s)}\frac{k_\ell}{\sqrt{s^2-(u+\ell)^2}} ,
 \]
 so, viewing $\Psi_k$ as a smooth phase $f(j)$ with $f''(j)=N^{-1}C_k(j/N)+O(N^{-2})$, the van der Corput
-second-derivative test (the exponent-pair $(\tfrac12,\tfrac12)$ bound, \cite[\S8]{Montgomery},
+second-derivative test (the exponent-pair $(\tfrac12,\tfrac12)$ bound, \cite[Ch.~3]{Montgomery},
 \cite[Ch.~2]{GrahamKolesnik}) gives, on a block of $L=\Theta(N)$ consecutive sites with
 $|f''|\asymp\lambda=N^{-1}|C_k|$,
 \[
   \Bigl|\sum_{j} \eu^{\mathrm i f(j)}\Bigr|\ \ll\ L\,\lambda^{1/2}+\lambda^{-1/2}
    \ \ll\ N\cdot N^{-1/2}|C_k|^{1/2}+N^{1/2}|C_k|^{-1/2}\ \ll\ N^{1/2},
 \]
-which after dividing by $\#=\Theta(N)$ is \eqref{eq:joint-weyl}. The estimate requires $C_k$ bounded away
-from $0$; here is the only structural point. The functions $u\mapsto g_\ell(u)=(s^2-(u+\ell)^2)^{-1/2}$,
-$\ell\in L(s)$, have \emph{distinct} singularities at $u=\pm s-\ell$, so they are linearly independent over
-$\mathbb R$: any relation $\sum_\ell k_\ell g_\ell\equiv0$ on an interval extends, by real-analyticity, to a
-relation between functions with distinct poles, forcing every $k_\ell=0$. Hence $C_k\not\equiv0$; being
+which after dividing by $\#=\Theta(N)$ gives the rate $N^{-1/2}$ wherever $|C_k|$ has a positive floor. The
+estimate requires $C_k$ bounded away from $0$; here is the only structural point. The functions
+$u\mapsto g_\ell(u)=(s^2-(u+\ell)^2)^{-1/2}$, $\ell\in L(s)$, are linearly independent over $\mathbb R$ on every
+interval. A relation $\sum_\ell k_\ell g_\ell\equiv0$ continues analytically into the complex $u$-plane, where
+$g_\ell$ has its branch points at $u=\pm s-\ell$. The leftmost of them, $-s-\max L$, belongs to $g_{\max L}$
+alone, which blows up there while every other $g_\ell$ stays analytic; so $k_{\max L}=0$, and induction removes
+the other copies. Hence $C_k\not\equiv0$; being
 real-analytic on $\mathcal C$ it has only finitely many zeros there, and on the complement of
 $\varepsilon$-neighbourhoods of those zeros $|C_k|\ge c(s,\mathcal C,k,\varepsilon)>0$ and the bound above
 applies. Each exceptional $\varepsilon$-neighbourhood has length $O(\varepsilon)$ and contributes
-$\le\varepsilon$ to the normalized sum trivially; letting $\varepsilon\to0$ after $N\to\infty$ removes it. The
-discrepancy bound is the Erd\H{o}s--Tur\'an inequality~\cite[Ch.~2]{KN} applied to \eqref{eq:joint-weyl}. The Weyl sums
+$\le\varepsilon$ to the normalized sum trivially; letting $\varepsilon\to0$ after $N\to\infty$ removes it. No discrepancy rate uniform in $k$ follows: for $|L|\ge3$ the zeros of $C_k$ come arbitrarily close to
+double zeros as $\|k\|\to\infty$, since integer vectors approximate the real vectors orthogonal to both
+$(g_\ell(u_0))_\ell$ and $(g_\ell'(u_0))_\ell$. The Weyl sums
 are computed directly: \eqref{eq:joint-weyl} decays with fitted exponent $-0.52$ to $-1.2$ across nonzero
 $(k_\ell)$ with $|k_\ell|\le3$ (the slowest matching the predicted $N^{-1/2}$), the worst over $60$ random
 $(k_\ell)$ at $N=2^{18}$ being $0.013$ (\texttt{verify\_debye\_equidistribution.py}).
 \end{proof}
 
 \noindent Theorem~\ref{thm:joint-equi} is the rigorous core the heuristic profile of
-\texttt{verify\_bn\_residual\_profile.py} assumes. It upgrades the $s\le1$ two-copy statement
-(Proposition~\ref{prop:bn-profile}, where $|L(s)|=2$) to all $s$. The cell-wise statement is not yet the
-$L^1$ \emph{limit}: \eqref{eq:joint-weyl} carries an implied constant depending on the cell, and the limit
-needs the discrepancy $o(1)$ \emph{uniformly} in $u$, including the finitely many band edges and coalescing
-points where the constant degenerates. We supply that uniform control now; it is what turns
-Theorem~\ref{thm:joint-equi} into the unconditional profile of Proposition~\ref{prop:multicopy}.
+\texttt{verify\_bn\_residual\_profile.py} assumes. It covers the two-copy window $s\in(\tfrac12,1]$ of
+Proposition~\ref{prop:bn-profile} ($|L(s)|=2$) as well as the multi-copy region $s>1$. It is not yet the $L^1$
+\emph{limit}, which averages a $u$-dependent function of the phases over all of $[0,1)$, band edges
+included. We supply that step now; it turns Theorem~\ref{thm:joint-equi} into the unconditional profile of
+Proposition~\ref{prop:multicopy}.
 
 \begin{theorem}[uniform-in-$u$ transfer]\label{thm:uniform-transfer}
-Fix $s>1$. With the rescaled kernel of \eqref{eq:multicopy-debye} and the toral integrand
+Fix $s>\tfrac12$. With the rescaled kernel of \eqref{eq:multicopy-debye} and the toral integrand
 $\mathcal E(u):=\mathbb E_{(\Phi_\ell)\sim U}\bigl|\sum_{\ell\in L(s)}c_\ell(s^2-(u+\ell)^2)^{-1/4}\cos\Phi_\ell\bigr|$,
 \[
   \frac1{\sqrt N}\,\bigl\|K_N(\cdot,sN/2)\bigr\|_1\ \xrightarrow[N\to\infty]{}\ \sqrt{\tfrac2\pi}\int_0^1\mathcal E(u)\,du\ =\ F(s).
 \]
-The convergence is at an explicit polynomial rate $O(N^{-\eta})$, $\eta=\tfrac1{9|L(s)|}>0$ (the cubic
-exponent pair $\tfrac19$ at the coalescing points, divided by $|L|$ for the Lipschitz-cone mollification of
-the modulus in Koksma--Hlawka; numerically the cores decay like $N^{-1}$, far faster, so the true rate is
-band-edge-strip-limited at $N^{-1/4+\delta'}$).
+No rate is claimed: the van der Corput constants of Theorem~\ref{thm:joint-equi} are not uniform in the
+Fourier mode $k$.
 \end{theorem}
 
 \begin{proof}
@@ -1559,198 +1703,58 @@ while $\sqrt{2/(\pi s)}$ is off by $\sqrt s$, \texttt{verify\_bandedge\_transfer
 \begin{equation}\label{eq:transfer-target}
   \frac1N\sum_{k=0}^{N-1}W_N(k)\ \longrightarrow\ \int_0^1\mathcal E(u)\,du .
 \end{equation}
-Let $E=\{u\in[0,1):|u+\ell|=s\text{ for some }\ell\}$ be the (finite) set of band edges and
-$Z=\{u^*=-(\ell+\ell')/2:\ell\ne\ell'\in L,\ u^*\in[0,1)\}$ the (finite) set of coalescing points, where a
-\emph{pair} $g_\ell,g_{\ell'}$ collides; these are geometric, fixed points of $[0,1)$, independent of the
-test modes $k$. Fix a small constant $\rho>0$ (independent of $N$, chosen below) and a small exponent
-$0<\delta<\tfrac16$, and put $\varepsilon=N^{-2/3+\delta}$. Partition $[0,1)$ into
-\[
-  \mathcal S=\!\!\bigcup_{u_0\in E}\!(u_0-\varepsilon,u_0+\varepsilon),\qquad
-  \mathcal K=\!\!\bigcup_{u^*\in Z}\!(u^*-\rho,u^*+\rho)\setminus\mathcal S,\qquad
-  \mathcal B=[0,1)\setminus(\mathcal S\cup\mathcal K),
-\]
-the band-edge strips (width $\varepsilon\to0$), the coalescing cores (fixed width $\rho$), and the bulk. We
-bound the contribution of each to \eqref{eq:transfer-target}.
+Let $E=\{u\in[0,1):|u+\ell|=s\text{ for some }\ell\}$ be the finite set of band edges, fix $\varepsilon>0$, and
+let $\mathcal S$ be the union of the strips $(u_0-\varepsilon,u_0+\varepsilon)$, $u_0\in E$.
 
-\emph{(a) Bulk $\mathcal B$.} By construction every $u\in\mathcal B$ is at distance $\ge\rho$ from $Z$ and
-$\ge\varepsilon$ from $E$. On each maximal subinterval $\mathcal C\subset\mathcal B$ the live set $L$ is
-constant, the envelopes $a_\ell(u)=(s^2-(u+\ell)^2)^{-1/4}$ are bounded and $C^1$, so the rescaled kernel is a
-fixed function $W_N(k)=G_u(\Phi(k))$ of the phase vector, $G_u\colon\mathbb T^{|L|}\to\mathbb R$ the modulus of
-a trigonometric polynomial with $u$-uniformly bounded, $C^1$ coefficients, $\widehat G_u(0)=\mathbb
-E_{(\Phi_\ell)\sim U}G_u=\mathcal E(u)$. We do \emph{not} Fourier-expand $G_u$ (a modulus is only Lipschitz, its
-coefficients too slow to sum against the van der Corput bound); instead we bound the \emph{star-discrepancy}
-$D^*_N(\mathcal C)$ of the finite phase-point set $\{(\Phi_\ell(k))_{\ell\in L}:k/N\in\mathcal C\}$ in
-$\mathbb T^{|L|}$ and invoke Koksma--Hlawka. A modulus is only Lipschitz, and for $|L|\ge3$ its Hardy--Krause
-variation is in fact \emph{infinite}: the cone point at $Z=0$ (codimension $2$) makes the top mixed partial
-grow like $|Z|^{-(|L|-1)}$, and $\int|Z|^{-(|L|-1)}\,dX\,dY\asymp\int r^{-(|L|-2)}\,dr$ diverges
-(logarithmically already at $|L|=3$; \texttt{verify\_bandedge\_transfer.py} confirms the $\log N$ growth of the
-Vitali variation on a refining grid). So Koksma--Hlawka cannot be applied to $G_u$ itself. Instead we use only
-that $G_u$ is \emph{Lipschitz}, $\operatorname{Lip}(G_u)\le\sum_\ell a_\ell\le\Lambda(s)$, and mollify at scale
-$\eta$: $G_u^\eta=G_u*\varphi_\eta$ obeys $\|G_u-G_u^\eta\|_\infty\le\Lambda\eta$ and the smooth bound
-$V(G_u^\eta)\le C(s)\,\eta^{-(|L|-1)}$. Applying Koksma--Hlawka \cite[Ch.~2, Thm.~5.5]{KN} to $G_u^\eta$ and
-absorbing the two mollification errors,
-\begin{equation}\label{eq:koksma}
-  \Bigl|\frac1{\#}\sum_{k/N\in\mathcal C}G_u(\Phi(k))-\mathcal E(u)\Bigr|\ \le\
-  2\Lambda(s)\,\eta+C(s)\,\eta^{-(|L|-1)}D^*_N(\mathcal C);
-\end{equation}
-optimizing $\eta=D^*_N(\mathcal C)^{1/|L|}$ yields the Lipschitz form
-$\bigl|\overline{G_u}-\mathcal E(u)\bigr|\le C'(s)\,D^*_N(\mathcal C)^{1/|L|}$, valid despite the unbounded
-variation (the $1/|L|$ power is the price of mollifying a cone).
-The discrepancy is controlled by the Erd\H{o}s--Tur\'an--Koksma inequality \cite[Ch.~2, Thm.~5.6]{KN}:
+\emph{(a) Away from the band edges.} On $[0,1)\setminus\mathcal S$ the uniform Debye expansion
+\eqref{eq:multicopy-debye} gives $W_N(k)=G_{k/N}(\Phi(k))+O_\varepsilon(N^{-1})$ with
+$G_u(\varphi)=\bigl|\sum_{\ell\in L}c_\ell a_\ell(u)\cos\varphi_\ell\bigr|$, $a_\ell(u)=(s^2-(u+\ell)^2)^{-1/4}$, and
+$\mathbb E_{\varphi\sim U}G_u=\mathcal E(u)$. The envelopes are $C^1$ and bounded there, so
+$|G_u(\varphi)-G_v(\varphi)|\le\Lambda_\varepsilon|u-v|$ uniformly in $\varphi$. Fix $\eta>0$ and cut each cell of
+$[0,1)\setminus\mathcal S$ into finitely many panels $P$ of length at most $\eta$, with a point $u_P\in P$. By
+Theorem~\ref{thm:joint-equi} on $P$ the phase points $\Phi(k)$, $k/N\in P$, equidistribute in
+$\mathbb T^{|L|}$, and $G_{u_P}$ is continuous, so $N^{-1}\sum_{k/N\in P}G_{u_P}(\Phi(k))\to|P|\,\mathcal E(u_P)$.
+Hence $N^{-1}\sum_{k/N\in P}W_N(k)=\int_P\mathcal E\,du+O(\Lambda_\varepsilon\eta|P|)+o(1)$, and summing over the
+panels,
 \[
-  D^*_N(\mathcal C)\ \ll_{|L|}\ \frac1M+\sum_{0<\|k\|_\infty\le M}\frac1{r(k)}\,
-   \Bigl|\frac1{\#}\sum_{k'/N\in\mathcal C}\eu^{\mathrm i\langle k,\Phi(k')\rangle}\Bigr|,
-   \qquad r(k)=\prod_\ell\max(1,|k_\ell|),
+  \limsup_{N\to\infty}\Bigl|\frac1N\sum_{k/N\notin\mathcal S}W_N(k)-\int_{[0,1)\setminus\mathcal S}\mathcal E(u)\,du\Bigr|
+  \ \le\ 2\Lambda_\varepsilon\eta ,
 \]
-the weight $1/r(k)$ (not the Fourier coefficients of $G_u$) summing to $\sum_{0<\|k\|_\infty\le M}1/r(k)
-=O(\log^{|L|}M)$. Each Weyl sum is the \emph{integrated} second-derivative van der Corput estimate, uniform in
-$k$ by two structural facts. First, the number of zeros of $C_k=\sum_\ell k_\ell g_\ell$ on $\mathcal C$ is
-bounded \emph{independently of $k$}: clearing the $|L|$ square roots in
-$C_k=\sum_\ell k_\ell(s^2-(u+\ell)^2)^{-1/2}$ over a common factor leaves an algebraic function whose zero
-count is $\le2(|L|-1)$, a degree fixed by the live set, not by $k$ (verified: $\le1$ zero over all
-$\|k\|_\infty\le6$ on a three-copy cell). Second, every such zero \emph{in the bulk} is \emph{simple}: a double
-zero $C_k(u_0)=C_k'(u_0)=0$ would need the integer vector $k$ orthogonal to both $g(u_0)=(g_\ell(u_0))_\ell$ and
-$g'(u_0)$, vectors linearly independent off the discrete coalescing set $Z$; so $|C_k'(u_0)|\gtrsim\|k\|>0$ at
-every bulk zero (checked: $\min|C_k'|/\|k\|=0.15$ over $\|k\|_\infty\le6$). Hence on $\mathcal C$ each $C_k$ has
-$\le2(|L|-1)$ simple zeros and $\int_{\mathcal C}|C_k(u)|^{-1/2}\,du\le A(s)<\infty$ \emph{uniformly in $k$} (the
-$|u-u_0|^{-1/2}$ singularity is integrable). Excising the $N^{-1/3}$-neighbourhoods of those zeros and applying
-Lemma~\ref{lem:vdc-explicit} on each remaining run, with $|f''|=N^{-1}|C_k|+O(N^{-2})$, then Riemann-summing
-the bound $\#\lambda^{1/2}+\lambda^{-1/2}$ in $u$ (the $\lambda^{-1/2}=N^{1/2}|C_k|^{-1/2}$ term against
-$\int|C_k|^{-1/2}du\le A(s)$),
-\[
-  \Bigl|\frac1{\#}\sum_{k'/N\in\mathcal C}\eu^{\mathrm i\langle k,\Phi(k')\rangle}\Bigr|
-  \ \ll_s\ N^{-1/2}A(s)\,\|k\|^{1/2}\ +\ N^{-1/3} .
-\]
-Feeding this into Erd\H{o}s--Tur\'an--Koksma, and using $\sum_{0<\|k\|_\infty\le M}\|k\|^{1/2}/r(k)
-\le M^{1/2}\sum 1/r(k)=O(M^{1/2}\log^{|L|}M)$,
-\[
-  D^*_N(\mathcal C)\ \ll_s\ \frac1M+N^{-1/2}M^{1/2}\log^{|L|}\!M+N^{-1/3}\log^{|L|}\!M ,
-\]
-which at $M=N^{1/3}$ is $D^*_N(\mathcal C)=O_s(N^{-1/3}\log^{|L|}N)$. By the Lipschitz form of
-\eqref{eq:koksma} the cell average then converges to $\mathcal E(u)$ at the mollified rate
-$D^*_N{}^{1/|L|}=O_s(N^{-1/(3|L|)}\log N)$, and a $u$-Riemann sum over the $\Theta(N^{1/3})$ panels of
-$\mathcal C$ (the integrand $\mathcal E$ being $C^1$ on $\mathcal B$) gives
-\[
-  \frac1{N}\sum_{k/N\in\mathcal B}W_N(k)\ =\ \int_{\mathcal B}\mathcal E(u)\,du\ +\ O_s(N^{-1/(3|L|)}\log N),
-\]
-uniformly. This is the uniform replacement for the cell-wise limit \eqref{eq:joint-weyl}: the only inputs are
-the $k$-uniform integral $A(s)$, the Lipschitz constant $\Lambda(s)$, the $k$-uniform zero count and the
-simplicity of bulk zeros (so $|C_k|^{-1/2}$ is integrable).
+which vanishes as $\eta\to0$. The coalescing points $u^*=-(\ell+\ell')/2$, where $g_\ell=g_{\ell'}$, need no
+special treatment: for each fixed $k$ the zeros of $C_k$ on a panel are finitely many, and that is all
+Theorem~\ref{thm:joint-equi} uses.
 
-\emph{(b) Band-edge strips $\mathcal S$.} On a strip $(u_0-\varepsilon,u_0+\varepsilon)$ around an edge
-$u_0=s-\ell$ (a copy entering/leaving), the entering envelope is $a_\ell(u)=(s^2-(u+\ell)^2)^{-1/4}=(2s)^{-1/4}
-(u_0-u)^{-1/4}(1+O(\varepsilon))$ for $u<u_0$; the other live envelopes stay bounded. By the triangle
-inequality $W_N(k)\le\sum_{\ell\in L}a_\ell(k/N)$, so
+\emph{(b) Band-edge strips $\mathcal S$.} On a strip around an edge $u_0=s-\ell$ (a copy entering or
+leaving) the entering envelope is $a_\ell(u)=(2s)^{-1/4}(u_0-u)^{-1/4}(1+O(\varepsilon))$ for $u<u_0$, and the
+other live envelopes stay bounded. By the triangle inequality $W_N(k)\le\sum_{\ell\in L}a_\ell(k/N)$, so
 \[
   \frac1N\sum_{k/N\in\mathcal S}W_N(k)\ \le\ \sum_{\ell\in L}\int_{\mathcal S}a_\ell(u)\,du+O(N^{-1})
-  \ =\ O\!\Bigl(\!\int_0^{\varepsilon}\!(2s)^{-1/4}r^{-1/4}\,dr\Bigr)
   \ =\ O\bigl(\varepsilon^{3/4}\bigr),
 \]
 the integrable envelope singularity giving the exponent $\tfrac34$ (the leading constant is
 $\tfrac43(2s)^{-1/4}$ per edge; \texttt{verify\_bandedge\_transfer.py} confirms the law and the constant to
-$0.4\%$). With $\varepsilon=N^{-2/3+\delta}$ this is $O(N^{-1/2+3\delta/4})\to0$. The same bound caps the
-\emph{toral} side: $\int_{\mathcal S}\mathcal E(u)\,du\le\sum_\ell\int_{\mathcal S}a_\ell=O(\varepsilon^{3/4})$,
-since $\mathcal E(u)\le\mathbb E|\sum_\ell\!\pm a_\ell\cos\Phi_\ell|\le\sum_\ell a_\ell$. So both the empirical
-and the toral mass of the strips are $O(\varepsilon^{3/4})$ and cancel in \eqref{eq:transfer-target} up to that
-order. The width is chosen so that the \emph{retained} cells adjacent to the edge still wind: at distance
-$\varepsilon$ from $u_0$ the single-copy increment is
-$\theta_\ell=\arccos(|m_\ell|/s)=\arccos(1-\varepsilon/s+\cdots)\asymp(2\varepsilon/s)^{1/2}$, so the live phase
-$\Phi_\ell$ advances by $\asymp\varepsilon^{1/2}$ per site over $\asymp\varepsilon N$ sites, a total winding
-$\asymp\varepsilon^{3/2}N=N^{3\delta/2}\to\infty$; thus part (a) applies on $\mathcal B\cap\{$near edge$\}$
-without modification (the curvature floor there is in fact \emph{larger}, $g_\ell\asymp\varepsilon^{-1/2}$). The
-choice $\varepsilon=N^{-2/3+\delta}$ with $0<\delta<\tfrac16$ keeps both: strip mass $o(1)$ and retained
-winding $\to\infty$.
+$0.4\%$). The same bound caps the toral side, $\int_{\mathcal S}\mathcal E(u)\,du\le\sum_\ell\int_{\mathcal S}a_\ell
+=O(\varepsilon^{3/4})$, since $\mathcal E(u)\le\sum_\ell a_\ell$.
 
-\emph{(c) Coalescing cores $\mathcal K$.} At $u^*=-(\ell+\ell')/2$ one has $(u^*+\ell)^2=(u^*+\ell')^2$, so
-$g_\ell(u^*)=g_{\ell'}(u^*)$ and the difference combination $C_{(1,-1)}=g_\ell-g_{\ell'}$ vanishes: the
-second-derivative test \eqref{eq:joint-weyl} degenerates. The third derivative does not. Differentiating
-$g_\ell(u)=(s^2-(u+\ell)^2)^{-1/2}$ gives $g_\ell'(u)=(u+\ell)(s^2-(u+\ell)^2)^{-3/2}$, and at $u^*$, where
-$u^*+\ell=\tfrac{\ell-\ell'}2$ and $u^*+\ell'=-\tfrac{\ell-\ell'}2$ have \emph{equal squares} but opposite
-signs,
-\[
-  \bigl(g_\ell-g_{\ell'}\bigr)'(u^*)
-  =\frac{(\ell-\ell')/2-(-(\ell-\ell')/2)}{\bigl(s^2-(\tfrac{\ell-\ell'}2)^2\bigr)^{3/2}}
-  =\frac{\ell-\ell'}{\bigl(s^2-(\tfrac{\ell-\ell'}2)^2\bigr)^{3/2}}\ \ne0 ,
-\]
-a clean nonzero value (verified to machine precision, \texttt{verify\_bandedge\_transfer.py}). For a general
-$k$ with $C_k(u^*)=0$, $C_k$ is real-analytic and $\not\equiv0$ (distinct poles, Theorem~\ref{thm:joint-equi}),
-so its zero at $u^*$ is isolated and of finite order. We show it is simple. Two of the $g_\ell$ can coincide
-at a point only pairwise: $g_\ell=g_{\ell'}\Leftrightarrow u=-(\ell+\ell')/2$, and three pairwise-equal
-averages $-(\ell+\ell')/2=-(\ell+\ell'')/2$ force $\ell'=\ell''$, so \emph{no triple coincidence} occurs
-(checked over a $10^5$-grid: $0$ hits). Shrink $\rho$ once and for all so that each $(u^*-\rho,u^*+\rho)$
-contains exactly the one pair colliding at $u^*$ and no other point of $Z$; then on the punctured core
-$C_k(u)=C_k'(u^*)(u-u^*)+O((u-u^*)^2)$ with the transverse slope
-$C_k'(u^*)=k_\ell\,g_\ell'(u^*)+k_{\ell'}g_{\ell'}'(u^*)$. If $C_k'(u^*)\ne0$ the zero is simple; the residual
-case $C_k'(u^*)=0$ forces $k_\ell=k_{\ell'}$ (the two slopes are equal and opposite by the displayed identity),
-i.e.\ the colliding modes enter with the \emph{same} weight, which is exactly the $C_{(1,-1)}$-type difference
-whose nonzero third derivative is displayed above---so $C_k$ then has a simple \emph{cubic} inflection rather
-than a simple zero. In both sub-cases $C_k$ grows at least linearly off a vanishing inner core; we use only
-that. Split $\mathcal K$ into the inner cores $\mathcal K_0=\bigcup_{u^*}(u^*-h,u^*+h)$, $h=N^{-1/3}$, and the
-shoulder $\mathcal K_1=\mathcal K\setminus\mathcal K_0$.
-
-We transfer $\mathcal K_1$ by the same Koksma--Hlawka/Erd\H{o}s--Tur\'an--Koksma route as (a). For the
-simple-zero modes ($C_k'(u^*)\ne0$, the generic $k$) $|C_k(u)|\asymp|C_k'(u^*)|\,|u-u^*|$ has the integrable
-$|u-u^*|^{-1/2}$ singularity and the second-derivative bound $N^{-1/2}A(s)\|k\|^{1/2}+N^{-1/3}$ of (a) holds
-unchanged. The \emph{difference} modes ($k_\ell=k_{\ell'}$ on the colliding pair) instead have the cubic
-inflection $|C_k(u)|\asymp\kappa|u-u^*|^2$, $\kappa=|(g_\ell-g_{\ell'})'(u^*)|>0$. Here the curvature is
-governed by the nonvanishing \emph{third} derivative, and the natural tool is the cubic ($r=3$) van der
-Corput / exponent-pair $(\tfrac16,\tfrac46)$ bound \cite[\S2.3]{GrahamKolesnik}: with $|f'''|\asymp N^{-2}\kappa$
-on a run of length $L$, $|\sum_j\eu^{\mathrm if(j)}|\ll L(N^{-2}\kappa)^{1/6}+(N^{-2}\kappa)^{-1/3}$, whose
-normalized value $O(N^{-1/9})$ feeds Erd\H{o}s--Tur\'an--Koksma with the $1/r(k)$ weight (the difference
-directions being finite in number, their integer multiples summable against $1/r$). (Equivalently, because
-$\mathcal K_1$ already excludes the inner core, even the cubic-inflection density is \emph{barely} integrable
-there, $\int_{\mathcal K_1}|C_k|^{-1/2}du\asymp\kappa^{-1/2}\log(\rho/h)=O(\log N)$, so the second-derivative
-bound of (a) also closes the shoulder with one extra $\log$---the cubic test is the sharper of the two and is
-the structurally correct object at the degenerate point.) The resulting shoulder discrepancy is
-$O_s(N^{-1/9}\log^{|L|}N)$. Finally the inner cores $\mathcal K_0=\bigcup_{u^*}(u^*-h,u^*+h)$, $h=N^{-1/3}$,
-are discarded trivially: $W_N\le\sum_\ell a_\ell=O(1)$ there, so the empirical mass is
-$\le\sum_\ell\int_{\mathcal K_0}a_\ell=O(h)=O(N^{-1/3})$ and the same bound caps the toral mass
-$\int_{\mathcal K_0}\mathcal E\le O(h)$; the two cancel up to $O(N^{-1/3})$. (The width $h\asymp N^{-1/3}$ is the
-optimum of the trivial inner bound $2h$ against the shoulder cost $N^{-1/2}\kappa^{-1/2}h^{-1/2}$, combined
-cost $O(N^{-1/3})$, exponent confirmed in \texttt{verify\_bandedge\_transfer.py}.) Hence
-\[
-  \frac1N\sum_{k/N\in\mathcal K}W_N(k)\ =\ \int_{\mathcal K}\mathcal E(u)\,du\ +\ O_s(N^{-1/(9|L|)}\log N),
-\]
-(Numerically a full cell \emph{containing} an interior coalescing point already has its normalized Weyl sum
-decay like $N^{-1}$, faster than $N^{-1/2}$, because the degenerate set has $u$-measure $O(N^{-1/3})$ and the
-shoulder floor dominates: \texttt{verify\_bandedge\_transfer.py}, slope $-1.03$.)
-
-\emph{Assembly.} Summing (a)--(c) over the $O(s)$ live-set cells,
-\[
-  \frac1N\sum_{k=0}^{N-1}W_N(k)=\int_0^1\mathcal E(u)\,du
-   +\underbrace{O(N^{-1/(3|L|)}\log N)}_{\text{bulk}}+\underbrace{O(N^{-1/2+3\delta/4})}_{\text{strips}}
-   +\underbrace{O(N^{-1/(9|L|)}\log N)}_{\text{cubic cores}},
-\]
-the band-edge mass $O(\varepsilon^{3/4})$ on the strips being removed from \emph{both} the empirical and the
-toral sides (part (b)), so only its $O(\varepsilon^{3/4})=O(N^{-1/2+3\delta/4})$ residue survives. With
-$0<\delta<\tfrac16$ every error is a positive power of $1/N$, hence $o(1)$; the binding rate is the mollified
-cubic core $N^{-1/(9|L|)}\log N$---the $1/|L|$ being the Lipschitz-cone mollification price of
-\eqref{eq:koksma}, the cubic $\tfrac19$ the off-the-shelf $(\tfrac16,\tfrac46)$ exponent pair. Multiplying by
-$\sqrt{2/\pi}$ gives \eqref{eq:transfer-target} and the theorem, with any $\eta<\tfrac1{9|L(s)|}$. The
-band-edge strip is the only \emph{structurally} unavoidable loss; the polynomial rate, though far from sharp
-(numerically the cores decay like $N^{-1}$, slope $-1.03$), is a genuine positive power---all the $o(1)$
-transfer needs. The assembled discrepancy is checked to vanish: the rescaled cell-averaged $|K_N|$ tracks
-$\mathcal E$ to under $1\%$ with
-the residual oscillating in sign as $N$ grows from $4\cdot10^3$ to $10^6$, strips excised
-(\texttt{verify\_bandedge\_transfer.py}).
+Combining (a) and (b) and letting $\varepsilon\to0$ gives \eqref{eq:transfer-target}; multiplying by
+$\sqrt{2/\pi}$ gives the theorem. Numerically the convergence is fast: the rescaled cell-averaged $|K_N|$
+tracks $\mathcal E$ to under $1\%$, the residual oscillating in sign as $N$ grows from $4\cdot10^3$ to $10^6$,
+strips excised (\texttt{verify\_bandedge\_transfer.py}).
 \end{proof}
 
 \begin{lemma}[explicit second-derivative van der Corput / Erd\H{o}s--Tur\'an]\label{lem:vdc-explicit}
 Let $f\in C^2[A,B]$ with $\lambda\le|f''|\le h\lambda$ ($h\ge1$, $f''$ of one sign) on $[A,B]$. Then
-$\bigl|\sum_{A\le j\le B}\eu^{2\pi\mathrm i f(j)}\bigr|\le c_1\bigl((B-A)\lambda^{1/2}+\lambda^{-1/2}\bigr)$ with
-an absolute $c_1$ \cite[Thm.~8.20]{Montgomery},\cite[Ch.~2]{GrahamKolesnik}. Consequently, for a sequence
+$\bigl|\sum_{A\le j\le B}\eu^{2\pi\mathrm i f(j)}\bigr|\le c_1\bigl(h(B-A)\lambda^{1/2}+\lambda^{-1/2}\bigr)$ with
+an absolute $c_1$ \cite[Ch.~3]{Montgomery},\cite[Ch.~2]{GrahamKolesnik}. Consequently, for a sequence
 $x_j\in\mathbb T^d$ whose every nonzero Fourier coefficient $\langle k,x_j\rangle$ is such a phase, the
-Erd\H{o}s--Tur\'an inequality \cite[Ch.~2, Thm.~2.5]{KN} bounds the discrepancy by
-$D_{[A,B]}\ll \tfrac1M+\sum_{1\le|k|\le M}\tfrac1{|k|}\bigl|\tfrac1{B-A}\sum_j\eu^{2\pi\mathrm i\langle k,x_j\rangle}\bigr|$,
-and optimizing $M$ over the van der Corput bound gives $D=O(N^{-1/2}\log N)$ on a $\Theta(N)$-block with
-$\lambda\asymp N^{-1}$, the rate quoted in Theorem~\ref{thm:joint-equi}.
+Erd\H{o}s--Tur\'an--Koksma inequality \cite[Ch.~2, Thm.~2.5]{KN} bounds the discrepancy by
+$D_{[A,B]}\ll_d \tfrac1M+\sum_{0<\|k\|_\infty\le M}\tfrac1{r(k)}\bigl|\tfrac1{B-A}\sum_j\eu^{2\pi\mathrm i\langle k,x_j\rangle}\bigr|$,
+$r(k)=\prod_i\max(1,|k_i|)$; if one floor $\lambda\asymp N^{-1}$ and one $h$ serve every mode $\|k\|_\infty\le M$,
+optimizing $M$ gives $D=O(N^{-1/2}(\log N)^d)$ on a $\Theta(N)$-block.
 \end{lemma}
 
-\noindent (Lemma~\ref{lem:vdc-explicit} is the explicit constant behind the cell-wise
-\eqref{eq:joint-weyl}; in the proof of Theorem~\ref{thm:uniform-transfer} it is applied per Fourier mode
-$k$ with the $u$-dependent floor $\lambda(u)=N^{-1}|C_k(u)|$, the bound integrated in $u$ against the
-$k$-uniform $\int|C_k|^{-1/2}du\le A(s)$ rather than against a pointwise floor---the device that makes the
-transfer uniform across the high modes whose curvature vanishes inside the cell.)
+\noindent (In Theorem~\ref{thm:joint-equi} such a $k$-uniform floor is not available, which is why only the
+per-mode rate is stated there.)
 
 \begin{proposition}[multi-copy profile]\label{prop:multicopy}
 Let $s>1$ and let $L(s)$ denote the live set on the cell containing $u$. Define the toral profile
@@ -1763,9 +1767,9 @@ Let $s>1$ and let $L(s)$ denote the live set on the cell containing $u$. Define 
 (only $\mathrm i^{N}=\pm1$ (even $N$) or $\pm\mathrm i$ (odd $N$) enters, so $F$ has two parity branches).
 Then $\|K_N(\cdot,sN/2)\|_1=(F(s)+o(1))\sqrt N$. Numerically $F$ matches the exact FFT $\ell^1$ norm to $0.5\%$
 across all four residues $N\bmod4$ and all $s\in(0,2]$, equals $\beta_{\mathrm{odd}}$ at $s=1$ and
-$c_0/\sqrt2$ at $s=\tfrac12$, and satisfies $F(s)<F(1)=\beta_{\mathrm{odd}}$ for every $s\ne1$ (odd branch)
-and $F(s)<F(\tfrac12)=c_0/\sqrt2$ for $s\ne\tfrac12$ (even branch), stably out to $s=10$
-(\texttt{verify\_bn\_residual\_profile.py}).
+$c_0/\sqrt2$ at $s=\tfrac12$, and on the computed range $s\le2$ satisfies $F(s)<F(1)=\beta_{\mathrm{odd}}$ for
+$s\ne1$ (odd branch; proved for $s\le1$ in Proposition~\ref{prop:bn-profile}) and $F(s)<F(\tfrac12)=c_0/\sqrt2$
+for $s\ne\tfrac12$ (even branch) (\texttt{verify\_bn\_residual\_profile.py}).
 \end{proposition}
 
 \begin{proof}
@@ -1849,17 +1853,16 @@ margin tenfold because $\sum a_\ell^3/\sigma^2$ stays $\Theta(1)$; the crude Bes
 overshoots ($\approx1.7K_\star$, the excess being a \emph{signed} ring sum whose cancellation a modulus bound
 destroys), so the residual genuinely needs the signed tail or a multivariate concavity argument.
 
-\noindent What is now \emph{proved}, for every $s>1$: the live Debye phases are jointly equidistributed with
-an explicit $N^{-1/2}$ power saving (Theorem~\ref{thm:joint-equi}), resting only on the linear independence of
-the curvature kernels $g_\ell$ (distinct poles); and this transfers \emph{uniformly in $u$} to the $L^1$
-limit (Theorem~\ref{thm:uniform-transfer}), so $\|K_N(\cdot,sN/2)\|_1=(F(s)+o(1))\sqrt N$ holds for every fixed
-$s>1$ unconditionally---the former residue (i) (the band-edge strips contributing $O(\varepsilon^{3/4})$ and
-the coalescing points $u=-(\ell+\ell')/2$ handled by the cubic test, $g_\ell'-g_{\ell'}'\ne0$, with no triple
-coincidence) is closed. There also hold the variance-floor inequality $F\le F_K$ and the tail limit
+\noindent What is now \emph{proved}, for every $s>1$: the live Debye phases are jointly equidistributed
+(Theorem~\ref{thm:joint-equi}), resting only on the linear independence of the curvature kernels $g_\ell$
+(distinct branch points); and this transfers \emph{uniformly in $u$} to the $L^1$ limit
+(Theorem~\ref{thm:uniform-transfer}), so $\|K_N(\cdot,sN/2)\|_1=(F(s)+o(1))\sqrt N$ holds for every fixed $s>1$
+unconditionally---the former residue (i) is closed (the band-edge strips contribute $O(\varepsilon^{3/4})$, and
+the coalescing points $u=-(\ell+\ell')/2$ need no special treatment). There also hold the variance-floor inequality $F\le F_K$ and the tail limit
 $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). \emph{A single residual estimate}, validated
-numerically, now separates this from $\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$, and with a transfer
-uniform in $s\in[1,S]$ from the windowed constant of Conjecture~\ref{conj:bn-window} (the all-time
-$\limsup_N B_N/\sqrt N$ is $1$, Proposition~\ref{prop:bn-prime}): the
+numerically, now separates this from $\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$, and, with convergence uniform
+in $s\in[1,S]$ (Remark~\ref{rem:bn-parity}), from the windowed constant of Conjecture~\ref{conj:bn-window} (the
+infinite-time $\limsup_NB_N/\sqrt N$ is $1$, Theorem~\ref{thm:bn-saturation}): the
 $\ge3$-copy case of the balanced Gaussian-excess inequality $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$
 above (the former residue (ii)). Its \emph{two-copy core} $R(1,\rho)\le K_\star$ is \emph{proved}
 (\texttt{verify\_dagger\_extremal2.py}), the sliver $s\in(1,1.005]$ is covered by the proved variance floor
@@ -1898,12 +1901,13 @@ $\sim10^{-7}$; \texttt{verify\_middle\_far.py}). With the split $\mathrm{mid}[1.
 through \texttt{prove\_box($\dots$,\,far\_slices=$\dots$)} the previously-failing boxes certify
 (e.g.\ $(0.70,0.70)\to0.9915$; the campaign's hardest boxes sit at the high-$\lambda$ edge
 $a_3\simeq0.61$, each closed by one refinement, the worst certified leaf reaching $0.9999$). The full singleton-band cover is the adaptive, node-parallel, checkpointed tiling
-\texttt{run\_dagger\_campaign.py}, which certified all $130$ leaf boxes with $0$ failures, so the residual
-inequality is validated across the whole band at the certificate's validated-enclosure standard (not yet a
-closed-form proof, and not a rigorous cover either: the far $t$-collocation remainder and the amplitude
-stencil's third derivatives come from finite differences, the box maximum of the quadratic model is taken on
-a grid, and band membership is read from sampled points); the windowed constant of Conjecture~\ref{conj:bn-window} awaits upgrading that one
-expected-modulus estimate from validated to proved, together with the $s$-uniform transfer. The honest status is that the multi-copy region is
+\texttt{run\_dagger\_campaign.py}, which certified all $136$ leaf boxes with $0$ failures (worst upper
+bound $0.9999$), and its \texttt{--coverage} mode checks, cell by cell on the box lattice with interval bounds on
+$\lambda$, that these boxes cover the whole band. The residual inequality is thereby validated across the band at
+the certificate's validated-enclosure standard, not proved, and the cover is not rigorous either: the far
+$t$-collocation remainder and the amplitude stencil's third derivatives come from finite differences, and the box
+maximum of the quadratic model is taken on a grid. The windowed constant of Conjecture~\ref{conj:bn-window} awaits
+upgrading that one expected-modulus estimate from validated to proved, together with the $s$-uniform transfer. The honest status is that the multi-copy region is
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
 constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
@@ -1921,17 +1925,17 @@ $c_0\sqrt x$ Bessel asymptotics---is reproduced numerically (\texttt{verify\_sch
 Table~\ref{tab:bn}.
 
 \begin{table}[ht]\centering
-\caption{The windowed constant, by parity (Remark~\ref{rem:bn-parity}). A refined scan of the window
-$0.2N\le t\le0.6N$ gives $\sup_t\|K_N(\cdot,t)\|_1/\sqrt N$: even $N$ approach $c_0/\sqrt2=0.8607$ (sup at
-$t=N/4$), odd $N$ approach $\beta_{\mathrm{odd}}\approx0.928$ (sup at $t=N/2$). These are windowed values;
-over all times $B_p=\sqrt p$ on primes (Proposition~\ref{prop:bn-prime}). The proved all-time $\liminf$
-bound is $c_0/\sqrt2$ (\texttt{verify\_bn\_parity.py}).}\label{tab:bn}
+\caption{The windowed constant $B_N(0.6N)/\sqrt N$, by parity (Remark~\ref{rem:bn-parity}), from a refined
+$t$-scan of $[0.2N,0.6N]$: even $N$ approach $c_0/\sqrt2=0.8607$ (sup at $t\approx N/4$), odd $N$ approach
+$\beta_{\mathrm{odd}}\approx0.928$ (sup at $t\approx N/2$). The proved $\liminf$ bound is $c_0/\sqrt2$
+(\texttt{verify\_bn\_parity.py}). The infinite-time $B_N$ is larger: $B_{15}/\sqrt{15}\ge0.9989$,
+$B_{16}/4\ge0.972$, and $B_N=\sqrt N$ for $N=p,p^2$ with $p$ prime (Theorem~\ref{thm:bn-saturation}).}\label{tab:bn}
 \begin{tabular}{lccccc c}
 \toprule
 $N$ & $16,15$ & $64,63$ & $256,255$ & $1024,1023$ & $4096,4095$ & limit\\
 \midrule
-even $N$, windowed & $0.923$ & $0.907$ & $0.888$ & $0.878$ & $0.870$ & $c_0/\sqrt2=0.861$\\
-odd $N$, windowed  & $0.981$ & $0.960$ & $0.950$ & $0.940$ & $0.935$ & $\beta_{\mathrm{odd}}\approx0.928$\\
+even $N$,\ $B_N(0.6N)/\sqrt N$ & $0.923$ & $0.907$ & $0.888$ & $0.878$ & $0.870$ & $c_0/\sqrt2=0.861$\\
+odd $N$,\ $B_N(0.6N)/\sqrt N$  & $0.981$ & $0.960$ & $0.950$ & $0.940$ & $0.935$ & $\beta_{\mathrm{odd}}\approx0.928$\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1978,13 +1982,17 @@ odd $q$ with $\gcd(a,q)=1$,
 yielding an exact fractional revival of uniform amplitude $|U_{jk}|=1/\sqrt q$ (and a full revival
 $U(2\pi)=I$). On the cycle itself exact fractional revival occurs only for $C_4$ and
 $C_6$~\cite{ChanFR19}. The large wave thus inhabits the almost-periodic, Diophantine regime of the lattice, of
-which the discrete Talbot effect and Gauss-sum revivals are the exactly solvable continuum shadow.
+which the discrete Talbot effect and Gauss-sum revivals are the exactly solvable continuum shadow. On the
+lattice itself the Gauss-sum state survives as a limit: for $N=p$ prime the orbit closure is the whole torus of
+even phase vectors with $x_0=1$, so along a sequence of (very large) times $|K_p(k,t)|\to p^{-1/2}$ for every $k$---the
+fractional revival of uniform amplitude, reached asymptotically (Theorem~\ref{thm:bn-saturation}). For $N=p^2$ the
+even Frank sequence of that proof plays the Gauss chirp's role, giving $|K_{p^2}(k,t)|\to p^{-1}$ for every $k$.
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.78\textwidth]{fig_schrodinger.pdf}
-\caption{Discrete Schr\"odinger propagator: the $\ell^\infty\!\to\!\ell^\infty$ amplification
-$B_N$ grows ballistically as $\Theta(\sqrt N)$ (linear fit in $\sqrt N$, $R^2=1.0000$), unlike the
-$\ln N$ growth of the bead chain.}\label{fig:schr}
+\caption{Discrete Schr\"odinger propagator: the $\ell^\infty\!\to\!\ell^\infty$ amplification grows
+ballistically as $\Theta(\sqrt N)$ (linear fit in $\sqrt N$, $R^2=1.0000$), unlike the $\ln N$ growth of the bead
+chain. Plotted is the windowed value $B_N(6N)$ on a $t$-grid, a lower bound for $B_N$.}\label{fig:schr}
 \end{figure}
 
 \subsection{Dirichlet segment: a logarithmic site-amplitude law}\label{sub:filimonov}
@@ -2065,7 +2073,8 @@ $1\in V$ and $\operatorname{rank}=\tfrac12\varphi(2N)$. If $N=2^m$, the involuti
 $\sigma:\zeta_{2N}\mapsto\zeta_{2N}^{N+1}$ fixes the even-$k$ cosines $2\cos(\pi(2j)/2^m)=2\cos(\pi j/2^{m-1})$
 and negates the odd-$k$ ones (as $\zeta_{2N}^{N}=-1$), so $\operatorname{rank}(2^m)=\operatorname{rank}(2^{m-1})+r$,
 $r$ the rank of the odd block; $r=2^{m-2}$ is full because $2\cos(\pi k/2^m)=2\cos(\pi/2^m)\,V_k(\cos^2(\pi/2^m))$
-with $\deg V_k=\tfrac{k-1}2$ (Chebyshev, $\cos kx=\cos x\,V_k(\cos^2x)$) of distinct degrees, whence by
+with $\deg V_k=\tfrac{k-1}2$ (Chebyshev, $\cos kx=\cos x\,V_k(\cos^2x)$) of the distinct degrees
+$0,\dots,2^{m-2}-1$, while $\cos^2(\pi/2^m)=\tfrac12\bigl(1+\cos(\pi/2^{m-1})\bigr)$ has degree $2^{m-2}$ over $\Q$; whence by
 induction (base $\operatorname{rank}(2)=0$) $\operatorname{rank}(2^m)=2^{m-1}-1=\tfrac12\varphi(2N)-1$. Finally
 $\tfrac12\varphi(2N)-[\,N=2^m\,]=\lfloor(N-1)/2\rfloor$ iff $N$ is prime, $2^m$, or $2p$: for odd $N$ this is
 $\varphi(N)=N-1$, i.e.\ $N$ prime; for $N=2^a m$ ($m$ odd $>1$) it is $2^{a-1}\varphi(m)=2^{a-1}m-1$, forcing
@@ -2076,8 +2085,8 @@ $a=1$ and $m$ prime.
 The sine analogue is cleaner: the antisymmetrised powers $\{\zeta_{2N}^r-\zeta_{2N}^{-r}:1\le r<N\}$ span the
 $(-1)$-eigenspace of conjugation outright---the boundary $r=0,N$ contribute $0$, not a rational---so
 $\operatorname{rank}\{2\sin(\pi r/N):1\le r<N\}=\tfrac12\varphi(2N)$ with \emph{no} correction. This attains
-its maximum $\lfloor N/2\rfloor$ iff $N$ is prime or $2^m$, recovering the ring saturation
-Theorem~\ref{thm:classification}. The lone $-1$ in the cosine rank on powers of $2$---the constant $1$, which
+its maximum $\lfloor N/2\rfloor$ iff $N$ is prime or $2^m$, recovering the full-rank (``if'') half of the ring
+saturation Theorem~\ref{thm:classification}. The lone $-1$ in the cosine rank on powers of $2$---the constant $1$, which
 is reachable only when $2N$ has an odd prime factor---is precisely what hands the segment its extra full-rank
 family $2p$, absent from the ring.
 \end{remark}
@@ -2132,9 +2141,9 @@ established (proved here; for $d_j^N$ the constant is the published value of~\ci
 quantity & dynamics / functional & leading asymptotic & sharp class\\
 \midrule
 $U_N$ & ring, velocity ceiling & $\tfrac1\pi\ln N+\tfrac1\pi(\gamma+\ln\tfrac2\pi)$ & all $N$\\
-$A_N$ & ring, $\sup_t\max_j|G_N(j,\cdot)|$ & $\tfrac1\pi\ln N$ & prime, $2^m$, $2p$\\
-$B_N$ & ring, $\ell^\infty\!\to\!\ell^\infty$ Schr\"odinger & $\Theta(\sqrt N)$; $\sqrt N$ on primes, $\liminf\ge c_0/\sqrt2$ & odd prime\\
-$d_j^N$ & segment, $\sup_t|z_j(\cdot)|$ Schr\"odinger & $\tfrac4{\pi^2}\ln j$ & prime, $2^m$ (suff.)\\
+$A_N$ & ring, $\sup_t\max_j|G_N(j,\cdot)|$ & $\tfrac1\pi\ln N$ & all $N$ (Thm.~\ref{thm:order})\\
+$B_N$ & ring, $\ell^\infty\!\to\!\ell^\infty$ Schr\"odinger & $\Theta(\sqrt N)$; $=\sqrt N$ for $N=p,p^2$, $\liminf\ge c_0/\sqrt2$ & $p$, $p^2$ (Thm.~\ref{thm:bn-saturation})\\
+$d_j^N$ & segment, $\sup_t|z_j(\cdot)|$ Schr\"odinger & $\tfrac4{\pi^2}\ln j$ & prime, $2^m$, $2p$ (suff.)\\
 $U_N^{(d)}$ & $d$-torus, velocity ceiling & $\tfrac1\pi\ln N$ ($d{=}1$), $\ O(1)$ ($d{\ge}2$) & $d_s=1$\\
 \bottomrule
 \end{tabular}
@@ -2160,7 +2169,8 @@ yields
   \omega_{\mathrm{Pad\acute{e}}}(\theta)=\frac{\theta}{\sqrt{1+a^2\theta^2}},
 \end{equation}
 which matches the exact dispersion at \emph{both} ends---unit slope at $\theta=0$ and
-$\omega=2$ at $\theta=\pi$ (indeed $\pi/\sqrt{1+a^2\pi^2}=2$)---with error below $3\%$ in between
+$\omega=2$ at $\theta=\pi$ (indeed $\pi/\sqrt{1+a^2\pi^2}=2$)---with relative error at most $6\%$ in between
+(maximal near $\theta\approx2.09$)
 (Figure~\ref{fig:dispersion}). Nonetheless no continuum surrogate reproduces the large wave: as
 Section~\ref{sec:schr} shows through the decaying Bessel kernel, the effect is \emph{absent} in the
 continuum/infinite limit---it is intrinsically a finite-size, discrete phenomenon driven by the exact
@@ -2174,8 +2184,9 @@ $\theta-\theta^3/24$ diverge at the band edge $\theta=\pi$ ($\bullet$, $\omega=2
 \end{figure}
 
 For the step displacement $u_j(0)=1$ ($1\le j\le N-1$), $u_0(0)=0$, $\dot u(0)=0$, the exact supremum
-is, by Bohr's theorem (for $N=2^m$), $\sup_t\max_j u_j(t)=\bar\alpha+\max_j\sum_r|A_{r,j}|\approx2$ for
-all $N$, where $\bar\alpha=(N-1)/N$ and $A_{r,j}$ are the modal amplitudes. Earlier numerical work
+is, by Bohr's theorem (for $N$ prime or $2^m$), $\sup_t\max_j u_j(t)=\bar\alpha+\max_j\sum_r|A_{r,j}|=2(N-1)/N\approx2$,
+where $\bar\alpha=(N-1)/N$ and $A_{r,j}$ are the modal amplitudes; for other $N$ this value is only an upper
+bound. Earlier numerical work
 reported peaks $1.617\to1.397$ for $N=32,\dots,1024$; these are finite-time scan values, and their
 \emph{decrease} with $N$ is the expected worsening of the scan undershoot for an almost-periodic
 supremum (the true maximum is only approached, at near-recurrence times). The present analysis thus
@@ -2193,7 +2204,7 @@ and~\ref{fig:schr} display the two growth laws---$\ln N$ for the wave, $\sqrt N$
 \begin{table}[ht]\centering
 \begin{tabular}{llrrrr}
 \toprule
-family & $N$ & $U_N$ & $A_N$ (wave) & $A_N/U_N$ & $B_N/\sqrt N$ \\
+family & $N$ & $U_N$ & $A_N$ (wave) & $A_N/U_N$ & $B_N(6N)/\sqrt N$ \\
 \midrule
 $2^m$      & 16 & 0.922 & 0.922 & 1.000 & 0.960 \\
            & 32 & 1.143 & 1.143 & 1.000 & 0.931 \\
@@ -2208,8 +2219,9 @@ composite  & 12 & 0.831 & 0.755 & 0.908 & 0.971 \\
 \end{tabular}
 \caption{Both dynamics over the three families. Wave $A_N$ (exact, Section~\ref{sec:exact}) equals the
 Bohr ceiling $U_N\sim\frac1\pi\ln N$ for prime/$2^m$ and is slightly smaller for composite $N$;
-the Schr\"odinger amplification has $B_N/\sqrt N=O(1)$, i.e.\ $B_N=\Theta(\sqrt N)$
-(\texttt{verify\_experiments.py}).}\label{tab:experiments}
+the Schr\"odinger column is the windowed value $B_N(6N)$ on a $t$-grid, a lower bound for $B_N\le\sqrt N$
+(for prime $N$, $B_N=\sqrt N$ exactly, Theorem~\ref{thm:bn-saturation}, approached only at far larger
+times), so $B_N=\Theta(\sqrt N)$ (\texttt{verify\_experiments.py}).}\label{tab:experiments}
 \end{table}
 
 \begin{figure}[ht]\centering
@@ -2237,8 +2249,11 @@ obstruction $k$ of that theorem is itself recertified for all composite $N\le600
 checks the cyclotomic-degree identities $\Phi_{2p}(x)=\Phi_p(-x)$, $\Phi_{2^{m+1}}(x)=x^{2^m}+1$ and
 $\Phi_{4p}(1)=\Phi_p(-1)=1$ that drive Theorems~\ref{thm:prime},~\ref{thm:two} and
 Proposition~\ref{prop:2p} (\texttt{exact/pari/crosscheck.gp}); \textsc{FriCAS} reproduces the $\csc$
-Laurent series and the constants of Appendix~\ref{app:bernoulli} symbolically
-(\texttt{exact/fricas/asymptotics.input}).
+Laurent series and the antiderivative of Appendix~\ref{app:bernoulli} symbolically and evaluates its two
+constants numerically (\texttt{exact/fricas/asymptotics.input}). \textsc{Julia} computes the certificate of
+Theorem~\ref{thm:bn-saturation}(4) and checks it over $\Z$, and \textsc{PARI/GP} rebuilds the flatness
+polynomials independently and re-checks it (\texttt{exact/julia/c15\_flat\_certificate.jl},
+\texttt{exact/pari/c15\_flat\_check.gp}).
 
 \begin{observation}[structure of the composite obstruction]\label{obs:psq}
 For $N=p^2$ with $p$ an odd prime, the minimal mod-$4$ obstruction---the shortest frequency relation with
@@ -2285,8 +2300,9 @@ support comb $\{1\}\cup\{kp\pm1\}$ for $p=3,5,7,11,13$, of size $p$.}\label{fig:
 
 \section{Reproducibility}\label{sec:repro}
 
-Every claim above is reproduced by a standalone script (run via \texttt{uv run --script}); all pass.
-\begin{longtable}{@{}l@{\hspace{0.25em}}l@{}}
+Every claim of the paper, in both parts, is reproduced by a standalone script (run via \texttt{uv run --script}); all
+pass.
+\begin{longtable}{@{}p{0.53\linewidth}@{\hspace{0.6em}}l@{}}
 \hline
 Claim & Script \\
 \hline
@@ -2353,11 +2369,11 @@ Relation lattices $\Lambda_N$ (Table~\ref{tab:lattices}) & \texttt{verify\_relat
 Schr\"odinger lower bound $\Omega(\sqrt N)$ & \texttt{verify\_schrodinger\_lower.py}\\
 Constant $B_N/\sqrt N$ scan (Table~\ref{tab:bn}) & \texttt{verify\_bn\_constant.py}\\
 $B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{verify\_bn\_parity.py}\\
-$B_p=\sqrt p$, $\limsup B_N/\sqrt N=1$ (Prop.~\ref{prop:bn-prime}) & \texttt{verify\_bn\_prime\_flat.py}\\
+$B_p=\sqrt p$, $\limsup B_N/\sqrt N=1$ (Thm.~\ref{thm:bn-saturation}) & \texttt{verify\_bn\_prime\_flat.py}\\
 \quad$\hookrightarrow$ exact independence and Gauss-sum flatness, $p\le53$ (PARI) & \texttt{exact/pari/bn\_prime\_flat.gp}\\
-\quad$\hookrightarrow$ flat closure points, $B_{p^2}=p$ for $p\le7$ (PARI; Rem.~\ref{rem:bn-psq}) & \texttt{exact/pari/bn\_prime\_square.gp}\\
+\quad$\hookrightarrow$ flat closure points, $B_{p^2}=p$ for $p\le7$ (PARI; Rem.~\ref{rem:bn-saturation}) & \texttt{exact/pari/bn\_prime\_square.gp}\\
 Two-copy profile $\max F=\beta_{\mathrm{odd}}$ (Prop.~\ref{prop:bn-profile}) & \texttt{verify\_bn\_profile\_max.py}\\
-$\quad$rigorous $F'>0$ on $[0.937,1]$ (interval arith.) & \texttt{verify\_bn\_profile\_rigorous.py}\\
+$\quad$validated proof of $\max F=F(1)$ (interval arith.) & \texttt{verify\_bn\_profile\_rigorous.py}\\
 Odd-$N$ constant $\beta_{\mathrm{odd}}$ \eqref{eq:beta-odd} & \texttt{verify\_beta\_odd.py}\\
 Joint Debye equidistribution (\S\ref{sub:multicopy}) & \texttt{verify\_debye\_equidistribution.py}\\
 Uniform-in-$u$ band-edge transfer (Thm.~\ref{thm:uniform-transfer}) & \texttt{verify\_bandedge\_transfer.py}\\
@@ -2389,14 +2405,19 @@ Order $A_N\!\sim\!\tfrac1\pi\ln N$, all $N$ (Thm.~\ref{thm:order}, Lem.~\ref{lem
 Classification $A_N{=}U_N\!\Leftrightarrow\!$ prime$/2^m$ (Thm.~\ref{thm:classification}) & \texttt{verify\_classification\_proof.py}\\
 Segment rank \& classification (Thm.~\ref{thm:segrank}) & \texttt{verify\_segment\_classification.py}\\
 Segment mod-4 ceiling criterion (Cor.~\ref{cor:segceiling}) & \texttt{exact/gap/segment\_mod4.g}\\
-Exact GAP/PARI/Rocq layer, cross-check & \texttt{verify\_exact\_layer.py}\\
+Exact GAP/PARI/Julia/Rocq layer, cross-check & \texttt{verify\_exact\_layer.py}\\
 Exact classification $A_N{=}U_N$, $N\le800$ (GAP) & \texttt{exact/gap/scan\_classification.g}\\
 Cyclotomic identities cross-check (PARI) & \texttt{exact/pari/crosscheck.gp}\\
 $N{=}p^2$ obstruction comb (GAP, Fig.~\ref{fig:obstruction}) & \texttt{exact/gap/prime\_square.g}\\
+Support-$3$ relations, $3\mid N\le330$ (Lem.~\ref{lem:cleancomb}, PARI) & \texttt{exact/pari/support3\_relations.gp}\\
+Saturation $B_N{=}\sqrt N$ (Thm.~\ref{thm:bn-saturation}) & \texttt{verify\_bn\_saturation.py}\\
+\quad$\hookrightarrow$ exact rank, $p^a$ lattice, flat points, Golay pairs (PARI) & \texttt{exact/pari/bn\_saturation.gp}\\
+\quad$\hookrightarrow$ rank and $p^a$ lattice, second implementation (GAP) & \texttt{exact/gap/schrodinger\_saturation.g}\\
+\quad$\hookrightarrow$ $B_{15}<\sqrt{15}$: Nullstellensatz certificate (Julia) & \texttt{exact/julia/c15\_flat\_certificate.jl}\\
+\quad$\hookrightarrow$ the same certificate re-checked (PARI) & \texttt{exact/pari/c15\_flat\_check.gp}\\
 Machine-checked mod-4 criterion (Rocq) & \texttt{formal/rocq/Mod4Criterion.v}\\
 Machine-checked classification core, all $N$ (Rocq) & \texttt{formal/rocq/Classification.v}\\
 F92 splash table: segment $4/\pi^2$ vs ring $1/\pi$ & \texttt{verify\_filimonov\_table.py}\\
-$B_N$ multi-copy profile, $t>N/2$ subdominant & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect moment--SOS bounds (floating-point SDP) & \texttt{verify\_defect\_moment\_sos.py}\\
 \end{longtable}
 
@@ -2475,8 +2496,9 @@ If the integrated density of states obeys $N(\lambda)\sim\lambda^{d_s/2}$ near $
 $U_G\sim\int_0\lambda^{-1/2}\rho(\lambda)\,d\lambda\sim\int_0\lambda^{(d_s-3)/2}\,d\lambda$, which
 converges at the origin iff $d_s>1$. Hence the \emph{ceiling} $U_G$ grows logarithmically precisely at
 the critical spectral dimension $d_s=1$, is bounded for $d_s>1$, and is power-law for $d_s<1$; the
-$d$-torus is the case $d_s=d$. For $d_s>1$ this rigorously \emph{forbids} a large wave
-($A_N\le U_G=O(1)$); at $d_s=1$ the ceiling permits one and \emph{is} reached on the ring
+$d$-torus is the case $d_s=d$. For $d_s>1$ this \emph{forbids} a large wave ($A_N\le U_G=O(1)$):
+rigorously on the $d$-torus \eqref{eq:dim}, and for a general family once the low-spectrum bound
+$N(\lambda)\lesssim\lambda^{d_s/2}$ holds uniformly in the size of the graph; at $d_s=1$ the ceiling permits one and \emph{is} reached on the ring
 ($A_N\sim\tfrac1\pi\ln N$, Theorem~\ref{thm:order}), the same question for a general quasi-1D lattice being
 the natural next case. The criterion is geometric rather than metric: any
 \emph{quasi-one-dimensional} lattice---a ladder $C_N\times C_2$ or a tube $C_N\times C_w$ of bounded
@@ -2508,7 +2530,8 @@ length-$\tfrac12\varphi(2N)$ prefix, carrying $(1-o(1))U_N$, so $\delta\to\tfrac
 (A) holds with $c=1/(\pi w)$, while (B)---a long $\Q$-independent prefix---is the per-family analogue of the
 palindromic lemma: e.g.\ the next-nearest-neighbour ring, with
 $\omega_r=2\sin(\tfrac{\pi r}N)\sqrt{2+\cos\tfrac{2\pi r}N}$, is $\Q$-independent at $N=15$ (so it
-\emph{saturates}, $A_N=U_N$) yet carries the degeneracy $\omega_3=\omega_6=2$ at $N=12$
+\emph{saturates}, $A_N=U_N$; proved by the same Kummer certificate over $\Q(\zeta_{60})$,
+\texttt{exact/pari/kjump\_kummer.gp}) yet carries the degeneracy $\omega_3=\omega_6=2$ at $N=12$
 (\texttt{verify\_quasi1d\_order.py}). For this family the \emph{degeneracy layer} of (B) can be settled
 completely.
 
@@ -2645,8 +2668,8 @@ $\omega_r$ are $K$-linearly independent, hence $\Q$-linearly independent. The re
 $\{0\}$, and Theorem~\ref{thm:ceiling}'s argument at node $0$ (Kronecker brings every $\sin(\omega_rt)$
 near $1$) gives $A_p=U_p$. The identities in (i) and (ii) hold exactly in $\Z[x]/\Phi_p$ for every
 prime $7\le p\le211$, and the Legendre symbols of the $\alpha_r$ at primes $q\equiv1\ (\mathrm{mod}\ p)$ certify the
-conclusion of (vi) independently there (\texttt{exact/pari/kjump\_nnn\_primes.gp}); the $2^k$ subset search
-of \texttt{exact/pari/kjump\_kummer.gp} agrees for $p\le31$.
+conclusion of (vi) independently there (\texttt{exact/pari/kjump\_nnn\_primes.gp}); the quadratic-character
+certificate of \texttt{exact/pari/kjump\_kummer.gp} agrees for $7\le p\le97$, and its $2^k$ subset search for $p\le17$.
 \end{proof}
 
 \noindent The remaining genuinely open case is a quasi-1D lattice \emph{without} any embedded ring---e.g.\

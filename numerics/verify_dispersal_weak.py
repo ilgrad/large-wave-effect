@@ -6,16 +6,17 @@
 
 For the focusing ring DNLS (eq:dnls) with single-site data u(0) = sqrt(P) delta_j0, combining
   * Landau's Bessel bound  max_n |J_n(x)| <= c_L x^{-1/3},  c_L = 0.785746...  [Landau, JLMS 61 (2000)],
-  * the ring aliasing estimate (copies super-exponentially small for t <= N/5), and
+  * the ring aliasing estimate (copies exponentially small for t <= N/5), and
   * the Duhamel persistence bound  ||u - u_lin||_inf <= gamma P^{3/2} t  (Proposition dnls-persist)
 gives  max_j |u_j(t)| <= sqrt(P) c_L (2t)^{-1/3} + gamma P^{3/2} t + eps_N.  Minimizing at
 t_* = (c_L / (3 * 2^{1/3} gamma P))^{3/4}  yields
 
     inf_t max_j |u_j(t)|^2  <=  [4 * 3^{-3/4} (c_L 2^{-1/3})^{3/4}]^2 * P sqrt(gamma P) * (1+o(1))
-                             =  1.518... * P sqrt(gamma P) * (1+o(1)),
+                             =  1.5165... * P sqrt(gamma P) * (1+o(1)),
 
-nontrivial (< P) for gamma P < 0.43: the sub-threshold excitation quantitatively disperses, narrowing the
-undecided window of the self-trapping threshold to gamma P in [0.43, 4).
+nontrivial (< P) for gamma P < 0.43, where it is a quantitative dispersal bound.  (inf_t max_j |u_j|^2 < P
+holds for every gamma, since mass leaves the seed at once; the content is the size of the bound.)  With
+Proposition threshold this leaves gamma P in [0.43, 4) covered by neither bound.
 
 This script checks (1) the Landau constant on a wide sample, and (2) the full chain by direct simulation:
 max_j |u_j(t_*)|^2 <= bound for gamma in {0.01, 0.05, 0.2}.
@@ -53,7 +54,9 @@ def main() -> int:
     ok &= worst <= C_L
     print(f"    max over sample = {worst:.4f}  ({'ok' if worst <= C_L else 'FAIL'})")
 
-    print("[2] dispersal chain at t_*: max_j |u(t_*)|^2 <= 1.518 P sqrt(gamma P):")
+    print(
+        "[2] dispersal chain at t_*: max_j |u(t_*)|^2 <= 1.5165 P sqrt(gamma P) (C_L rounded up):"
+    )
     p = 1.0
     cp = C_L * 2 ** (-1 / 3)
     print(f"    {'gamma':>6} {'t_*':>6} {'N':>5} {'bound':>7} {'max|u(t_*)|^2':>14}")
@@ -65,10 +68,17 @@ def main() -> int:
         m2 = float((np.abs(u) ** 2).max())
         good = m2 <= bound + 1e-9
         ok &= good
-        print(f"    {gamma:>6.2f} {t_star:>6.2f} {n:>5} {bound:>7.4f} {m2:>14.4f}  {'ok' if good else 'FAIL'}")
+        print(
+            f"    {gamma:>6.2f} {t_star:>6.2f} {n:>5} {bound:>7.4f} {m2:>14.4f}  {'ok' if good else 'FAIL'}"
+        )
 
     print("=" * 64)
-    print("RESULT:", "PASS -- weak-coupling dispersal bound verified (window now [0.43, 4))" if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- weak-coupling dispersal bound verified (nontrivial for gamma P < 0.43)"
+        if ok
+        else "FAIL",
+    )
     return 0 if ok else 1
 
 

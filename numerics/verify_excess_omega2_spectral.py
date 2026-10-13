@@ -8,7 +8,7 @@ least-eigenvalue (or relation-lattice Gram) quantity track the obstruction `depe
 This is a TRANSFER TEST, not a proof attempt.  Bedert (arXiv:2509.05260) and
 Jin-Milojevic-Tomon-Zhang (arXiv:2509.03490) both bound the NEGATIVITY
     K(n) = - min_x f_A(x),     f_A(x) = sum_{a in A} cos(a x),
-of a cosine sum from below (>= n^{1/7-o(1)} resp. n^{1/10-o(1)}).  The JMTZ route is spectral:
+of a cosine sum from below (>= n^{1/5-o(1)} in Bedert's v3 resp. n^{1/10-o(1)}).  The JMTZ route is spectral:
 for the Cayley graph G = Cay(Z/n, A u -A) the eigenvalues are  hat 1_{AuA-}(xi) = 2 f_A(2 pi xi/n),
 so lambda_min(G) = 2 min_x f_A = -2 K(n).  A small |lambda_min| forces a large clique (an AP / Sidon
 obstruction), which forces K large.
@@ -223,18 +223,32 @@ OMEGA2_NS = [15, 21, 33, 35, 55, 45, 30, 60, 42, 66, 70, 90]
 
 def main() -> int:
     print("=" * 110)
-    print("SPECTRAL TRANSFER PROBE  (Bedert/JMTZ Chowla negativity  vs  excess-lemma dependent_net)")
+    print(
+        "SPECTRAL TRANSFER PROBE  (Bedert/JMTZ Chowla negativity  vs  excess-lemma dependent_net)"
+    )
     print("=" * 110)
-    print("\nDictionary under test:  Bedert lower-bounds K=-min_x f_A; JMTZ via lambda_min(Cay)= 2 min_x f_A.")
-    print("Target = dependent_net = sum_{r>M} b_r sin(phi_r) at the A_N optimizer (the obstruction term).\n")
+    print(
+        "\nDictionary under test:  Bedert lower-bounds K=-min_x f_A; JMTZ via lambda_min(Cay)= 2 min_x f_A."
+    )
+    print(
+        "Target = dependent_net = sum_{r>M} b_r sin(phi_r) at the A_N optimizer (the obstruction term).\n"
+    )
 
-    hdr = (f"  {'N':>4} {'fac':>8} {'M':>3} {'#dep':>4} "
-           f"{'dep_net':>9} {'minChowla':>10} {'lamMin_dep':>11} {'lamMinGram':>11} "
-           f"{'lamMinWGram':>12} {'sigMin_Cdep':>12}")
+    hdr = (
+        f"  {'N':>4} {'fac':>8} {'M':>3} {'#dep':>4} "
+        f"{'dep_net':>9} {'minChowla':>10} {'lamMin_dep':>11} {'lamMinGram':>11} "
+        f"{'lamMinWGram':>12} {'sigMin_Cdep':>12}"
+    )
     print(hdr)
 
     target = []
-    cand = {"minChowla": [], "lamMin_dep": [], "lamMinGram": [], "lamMinWGram": [], "sigMin_Cdep": []}
+    cand = {
+        "minChowla": [],
+        "lamMin_dep": [],
+        "lamMinGram": [],
+        "lamMinWGram": [],
+        "sigMin_Cdep": [],
+    }
 
     for n in OMEGA2_NS:
         m = n // 2
@@ -242,7 +256,9 @@ def main() -> int:
         _a, sinvals, b = optimize_AN(n, seed=RNG_SEED, starts=200)
         dep_net = float((b[big_m:] * sinvals[big_m:]).sum())
 
-        dep_idx = list(range(big_m + 1, m + 1))  # 1-based ring frequency indices of the dependent band
+        dep_idx = list(
+            range(big_m + 1, m + 1)
+        )  # 1-based ring frequency indices of the dependent band
 
         # (S1) literal Chowla object + Cayley least eigenvalue on the dependent index set
         min_chowla = chowla_min_over_set(n, dep_idx)
@@ -250,7 +266,9 @@ def main() -> int:
 
         # (S2) relation-lattice Gram spectra
         bvec = relation_basis(n)  # (relrank x m)
-        assert bvec.shape[0] == m - big_m, f"relation rank mismatch at N={n}: {bvec.shape[0]} != {m - big_m}"
+        assert bvec.shape[0] == m - big_m, (
+            f"relation rank mismatch at N={n}: {bvec.shape[0]} != {m - big_m}"
+        )
         if bvec.shape[0] > 0:
             gram = bvec @ bvec.T
             lam_gram = float(np.linalg.eigvalsh(gram).min())
@@ -274,9 +292,11 @@ def main() -> int:
         cand["lamMinWGram"].append(lam_wgram)
         cand["sigMin_Cdep"].append(sig_min)
 
-        print(f"  {n:>4} {prime_factors(n)!s:>8} {big_m:>3} {len(dep_idx):>4} "
-              f"{dep_net:>9.4f} {min_chowla:>10.4f} {lam_dep:>11.4f} {lam_gram:>11.4f} "
-              f"{lam_wgram:>12.5f} {sig_min:>12.5f}")
+        print(
+            f"  {n:>4} {prime_factors(n)!s:>8} {big_m:>3} {len(dep_idx):>4} "
+            f"{dep_net:>9.4f} {min_chowla:>10.4f} {lam_dep:>11.4f} {lam_gram:>11.4f} "
+            f"{lam_wgram:>12.5f} {sig_min:>12.5f}"
+        )
 
     t = np.array(target)
     print("\n" + "-" * 110)
@@ -292,18 +312,32 @@ def main() -> int:
         sp = spearman(v, t)
         tracks = abs(rho) > 0.9 and abs(sp) > 0.9
         any_track |= tracks
-        print(f"  {name:>14} {rho:>+12.4f} {sp:>+10.4f}   {'TRACKS' if tracks else 'does NOT track'}")
+        print(
+            f"  {name:>14} {rho:>+12.4f} {sp:>+10.4f}   {'TRACKS' if tracks else 'does NOT track'}"
+        )
 
     print("\n" + "=" * 110)
     if any_track:
-        print("RESULT: at least one spectral candidate tracks dependent_net (|rho|>0.9). See table; this is")
+        print(
+            "RESULT: at least one spectral candidate tracks dependent_net (|rho|>0.9). See table; this is"
+        )
         print("NUMERICAL evidence of a controlling quantity, NOT a proof of the excess lemma.")
     else:
-        print("RESULT: NO tested spectral quantity tracks dependent_net across N=15..90.  The Bedert/JMTZ")
-        print("least-eigenvalue object does not linearly control the excess-lemma obstruction in this range.")
-        print("This is the honest negative the transfer analysis predicts (see report): Bedert bounds the")
-        print("NEGATIVITY (min) of an UNCONSTRAINED cosine sum from BELOW; the excess lemma needs an UPPER")
-        print("bound on a relation-CONSTRAINED weighted SUP.  Different functional, different direction.")
+        print(
+            "RESULT: NO tested spectral quantity tracks dependent_net across N=15..90.  The Bedert/JMTZ"
+        )
+        print(
+            "least-eigenvalue object does not linearly control the excess-lemma obstruction in this range."
+        )
+        print(
+            "This is the honest negative the transfer analysis predicts (see report): Bedert bounds the"
+        )
+        print(
+            "NEGATIVITY (min) of an UNCONSTRAINED cosine sum from BELOW; the excess lemma needs an UPPER"
+        )
+        print(
+            "bound on a relation-CONSTRAINED weighted SUP.  Different functional, different direction."
+        )
     print("=" * 110)
     return 0
 
