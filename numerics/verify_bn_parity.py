@@ -24,18 +24,23 @@ is real for even N, imaginary for odd N):
 
 These are constants of the window, not of the infinite-time B_N: over all t, B_p = sqrt(p) for p prime
 (the orbit closure contains the Gauss chirp; verify_bn_prime_flat.py), so limsup B_N/sqrt(N) = 1, and
-B_N < sqrt(N) for even N >= 6 (verify_bn_saturation.py).  This script certifies the t = N/4 lower bound and
-exhibits the parity split of the window sup.
+B_N < sqrt(N) for even N >= 6 (verify_bn_saturation.py).  This script certifies the t = N/4 lower bound,
+exhibits the parity split of the window sup, and recomputes Table tab:bn, the sup over 0 <= t <= 0.6N (for
+small even N it can sit below 0.2N: t = 0.188N at N = 16).
 """
 
 from __future__ import annotations
 
 import numpy as np
 from numpy import pi, sqrt
+from scipy.optimize import minimize_scalar
 from scipy.special import beta
 
 C0 = (2 / pi) ** 1.5 * beta(0.5, 0.75)
 TARGET = C0 / sqrt(2)
+# paper, Table tab:bn: B_N(0.6N)/sqrt(N) rounded to three decimals
+TABLE_BN = {16: 0.923, 64: 0.907, 256: 0.889, 1024: 0.878, 4096: 0.870}
+TABLE_BN |= {15: 0.981, 63: 0.960, 255: 0.950, 1023: 0.940, 4095: 0.935}
 
 
 def l1(n: int, t: float) -> float:
@@ -47,6 +52,27 @@ def sup_over_t(n: int) -> float:
     lam = 4 * np.sin(pi * np.arange(n) / n) ** 2
     ts = np.linspace(0.2 * n, 0.6 * n, 4000)
     return max(float(np.abs(np.fft.ifft(np.exp(-1j * t * lam))).sum()) for t in ts) / sqrt(n)
+
+
+def window_sup(n: int, t_hi: float, m: int = 40000) -> tuple[float, float]:
+    """(sup over 0 <= t <= t_hi of ||K_N(.,t)||_1 / sqrt(N), argmax / N): FFT grid, then a local maximization."""
+    lam = 4 * np.sin(pi * np.arange(n) / n) ** 2
+    ts = np.linspace(0.0, t_hi, m)
+    best, at = -1.0, 0.0
+    for c in range(0, m, 1000):
+        chunk = ts[c : c + 1000]
+        v = np.abs(np.fft.ifft(np.exp(-1j * np.outer(chunk, lam)), axis=1)).sum(axis=1)
+        i = int(np.argmax(v))
+        if v[i] > best:
+            best, at = float(v[i]), float(chunk[i])
+    h = t_hi / (m - 1)
+    bounds = (max(at - h, 0.0), min(at + h, t_hi))
+    r = minimize_scalar(
+        lambda t: -l1(n, t), bounds=bounds, method="bounded", options={"xatol": 1e-12}
+    )
+    if -r.fun > best:
+        best, at = float(-r.fun), float(r.x)
+    return best / sqrt(n), at / n
 
 
 def main() -> int:
@@ -77,6 +103,16 @@ def main() -> int:
     )
     if not (np.mean(odd) - np.mean(even) > 0.04):  # parity gap is real
         ok = False
+
+    # (3) Table tab:bn over the whole window [0, 0.6N]
+    print("\n[3] Table tab:bn, B_N(0.6N)/sqrt(N) = sup over 0 <= t <= 0.6N:")
+    for n, ref in TABLE_BN.items():
+        v, at = window_sup(n, 0.6 * n)
+        match = round(v, 3) == ref
+        ok &= match
+        print(
+            f"    N={n:>5}: {v:.5f} at t = {at:.4f} N   (paper {ref:.3f}: {'ok' if match else 'MISMATCH'})"
+        )
 
     print("=" * 64)
     print(

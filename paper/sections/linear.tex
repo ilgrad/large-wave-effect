@@ -1926,15 +1926,15 @@ Table~\ref{tab:bn}.
 
 \begin{table}[ht]\centering
 \caption{The windowed constant $B_N(0.6N)/\sqrt N$, by parity (Remark~\ref{rem:bn-parity}), from a refined
-$t$-scan of $[0.2N,0.6N]$: even $N$ approach $c_0/\sqrt2=0.8607$ (sup at $t\approx N/4$), odd $N$ approach
-$\beta_{\mathrm{odd}}\approx0.928$ (sup at $t\approx N/2$). The proved $\liminf$ bound is $c_0/\sqrt2$
-(\texttt{verify\_bn\_parity.py}). The infinite-time $B_N$ is larger: $B_{15}/\sqrt{15}\ge0.9989$,
+$t$-scan of $[0,0.6N]$: even $N$ approach $c_0/\sqrt2=0.8607$ (sup at $t$ tending to $N/4$ from below; $t=0.19N$
+at $N=16$), odd $N$ approach $\beta_{\mathrm{odd}}\approx0.928$ (sup at $t$ tending to $N/2$). The proved
+$\liminf$ bound is $c_0/\sqrt2$ (\texttt{verify\_bn\_parity.py}, which recomputes the table). The infinite-time $B_N$ is larger: $B_{15}/\sqrt{15}\ge0.9989$,
 $B_{16}/4\ge0.972$, and $B_N=\sqrt N$ for $N=p,p^2$ with $p$ prime (Theorem~\ref{thm:bn-saturation}).}\label{tab:bn}
 \begin{tabular}{lccccc c}
 \toprule
 $N$ & $16,15$ & $64,63$ & $256,255$ & $1024,1023$ & $4096,4095$ & limit\\
 \midrule
-even $N$,\ $B_N(0.6N)/\sqrt N$ & $0.923$ & $0.907$ & $0.888$ & $0.878$ & $0.870$ & $c_0/\sqrt2=0.861$\\
+even $N$,\ $B_N(0.6N)/\sqrt N$ & $0.923$ & $0.907$ & $0.889$ & $0.878$ & $0.870$ & $c_0/\sqrt2=0.861$\\
 odd $N$,\ $B_N(0.6N)/\sqrt N$  & $0.981$ & $0.960$ & $0.950$ & $0.940$ & $0.935$ & $\beta_{\mathrm{odd}}\approx0.928$\\
 \bottomrule
 \end{tabular}
@@ -2367,8 +2367,8 @@ Lightning (dielectric breakdown growth) & \texttt{verify\_laplacian\_lightning.p
 Ceiling criterion (mod $4$) & \texttt{verify\_ceiling\_criterion.py}\\
 Relation lattices $\Lambda_N$ (Table~\ref{tab:lattices}) & \texttt{verify\_relation\_lattices.py}\\
 Schr\"odinger lower bound $\Omega(\sqrt N)$ & \texttt{verify\_schrodinger\_lower.py}\\
-Constant $B_N/\sqrt N$ scan (Table~\ref{tab:bn}) & \texttt{verify\_bn\_constant.py}\\
-$B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}) & \texttt{verify\_bn\_parity.py}\\
+Constant $B_N/\sqrt N$ scan over $t\le2N$ & \texttt{verify\_bn\_constant.py}\\
+$B_N$ liminf $c_0/\sqrt2$, parity split (Rem.~\ref{rem:bn-parity}), Table~\ref{tab:bn} & \texttt{verify\_bn\_parity.py}\\
 $B_p=\sqrt p$, $\limsup B_N/\sqrt N=1$ (Thm.~\ref{thm:bn-saturation}) & \texttt{verify\_bn\_prime\_flat.py}\\
 \quad$\hookrightarrow$ exact independence and Gauss-sum flatness, $p\le53$ (PARI) & \texttt{exact/pari/bn\_prime\_flat.gp}\\
 \quad$\hookrightarrow$ flat closure points, $B_{p^2}=p$ for $p\le7$ (PARI; Rem.~\ref{rem:bn-saturation}) & \texttt{exact/pari/bn\_prime\_square.gp}\\

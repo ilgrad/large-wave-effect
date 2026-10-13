@@ -1,4 +1,4 @@
-\\ Exact (Kummer/Besicovitch) proof of saturation A_N = U_N for the next-nearest-neighbour circulant
+\\ Exact (Kummer-theory) proof of saturation A_N = U_N for the next-nearest-neighbour circulant
 \\ C_p({1,2}) at collision-free primes p, and for the NNN ring (g = 1/2) at N = 15.
 \\ Run:  gp -q -f exact/pari/kjump_kummer.gp </dev/null
 \\
@@ -7,7 +7,7 @@
 \\             = 4 - (z^r + z^-r) - (z^2r + z^-2r),   z = zeta_p,
 \\ a totally positive algebraic integer of Q(zeta_p).  Saturation A_N = U_N holds if all (distinct)
 \\ frequencies are Q-linearly independent (then Kronecker aligns every sin(omega_r t) -> 1 simultaneously).
-\\ By the Besicovitch criterion, sqrt(alpha_1),...,sqrt(alpha_k) are linearly independent over K = Q(zeta_p)
+\\ By Kummer theory, sqrt(alpha_1),...,sqrt(alpha_k) are linearly independent over K = Q(zeta_p)
 \\ -- hence over Q -- if NO nonempty subset product prod_{r in T} alpha_r is a square in K.
 \\
 \\ Certificate (quadratic characters).  Let q = 1 (mod m) be prime and w an element of order m in F_q; each
