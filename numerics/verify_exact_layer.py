@@ -41,6 +41,11 @@ machine-checked criterion certificate, then verifies they agree with src/large_w
           with python-flint: H_15 and H_21 have no flat point.
   * PARI  (exact/pari/c3q_flat_check.gp)     -- rebuilds the y-parametrization and the autocorrelations
           from their definitions and re-checks both certificates exactly in Z[L].
+  * Python (numerics/verify_b27_psatz.py)    -- the degree-3 Positivstellensatz certificate for N = 27
+          (exact/pari/b27_psatz_cert.gp.gz), checked in exact integer arithmetic with python-flint, the
+          Gram bound by an exact Cholesky residual: H_27 has no flat point.
+  * PARI  (exact/pari/b27_psatz_check.gp)    -- rebuilds the mu-coordinates and the autocorrelations from
+          their definitions and re-checks the identity part of that certificate.
   * Rocq  (formal/rocq/Mod4Criterion.v)      -- machine-checks (vm_compute) that the mod-4
           criterion on the GAP lattices reproduces the prime/2^m verdict; Classification.v and
           StaggeredCurrent.v are compiled as well.
@@ -220,6 +225,21 @@ def main() -> int:
                     ok &= chk_ok
     else:
         print("[flint]  SKIP (uv not on PATH)")
+
+    # --- B_27: the committed Positivstellensatz certificate, checked by python-flint and by PARI ---
+    if shutil.which("uv"):
+        rc, out = run(["uv", "run", "--script", "numerics/verify_b27_psatz.py"], timeout=1200)
+        b27_ok = rc == 0 and "RESULT: PASS" in out
+        print(f"[flint]  N=27 Psatz certificate, exact check: {'PASS' if b27_ok else 'FAIL'}")
+        ok &= b27_ok
+    else:
+        print("[flint]  SKIP (uv not on PATH)")
+    if shutil.which("gp"):
+        gp = ["gp", "-q", "-f", "exact/pari/b27_psatz_check.gp"]
+        rc, out = run(gp, stdin_file=Path("/dev/null"), timeout=900)
+        b27p_ok = rc == 0 and "RESULT: PASS" in out and "***" not in out
+        print(f"[pari]   N=27 certificate re-checked        : {'PASS' if b27p_ok else 'FAIL'}")
+        ok &= b27p_ok
 
     # --- Rocq: machine-checked certificates ---
     if shutil.which("rocq"):

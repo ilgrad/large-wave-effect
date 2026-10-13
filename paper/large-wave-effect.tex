@@ -98,7 +98,7 @@ $\ell^\infty\!\to\!\ell^\infty$ amplification satisfies $B_N=\Theta(\sqrt N)$ wi
 c_0/\sqrt2$. The unitarity ceiling $\sqrt N$ is reached, as a supremum, exactly when the orbit closure---a
 subtorus of dimension $\tfrac12\varphi(N)$---contains a flat phase vector. This holds for $N$ an odd prime
 (a Gauss sum) and for $N=p^2$ (an even Frank sequence), as known from $\varepsilon$-uniform mixing of quantum walks
-on cycles, so $\limsup B_N/\sqrt N=1$; we show that it fails for every even $N\ge6$ (a Golay-pair obstruction) and, by exact certificates, for $N=15$ and $N=21$, so the cycle $C_{21}$ admits no uniform mixing, exact or $\varepsilon$-approximate. On the dispersive time scale $t=O(N)$ the constant is smaller and splits
+on cycles, so $\limsup B_N/\sqrt N=1$; we show that it fails for every even $N\ge6$ (a Golay-pair obstruction) and, by exact certificates, for $N=15,21,27$, so the cycles $C_{21}$ and $C_{27}$ admit no uniform mixing, exact or $\varepsilon$-approximate. On the dispersive time scale $t=O(N)$ the constant is smaller and splits
 by parity: numerically $c_0/\sqrt2$ for even $N$ and $\beta_{\mathrm{odd}}=0.928\ldots$ for odd $N$ (a
 Bessel-envelope integral for which no elementary closed form was found). For the focusing discrete NLS the
 linear large wave persists under weak nonlinearity, the modulational-instability band is read off the
@@ -153,7 +153,7 @@ amplitude and show both the finite-horizon recurrence time and the effect of mas
 (Section~\ref{sec:reach}). (iv) For the discrete Schr\"odinger equation a localized state is never
 amplified (unitarity, rigorous), and the $\ell^\infty\!\to\!\ell^\infty$ norm satisfies
 $B_N=\Theta(\sqrt N)$, both bounds rigorous (Theorems~\ref{thm:schr},~\ref{thm:schr-lower}); the ceiling
-$B_N=\sqrt N$ is reached for $N=p,p^2$~\cite{GMR17,CaoZhu26} and missed for every even $N\ge6$ and for $N=15,21$, on an
+$B_N=\sqrt N$ is reached for $N=p,p^2$~\cite{GMR17,CaoZhu26} and missed for every even $N\ge6$ and for $N=15,21,27$, on an
 orbit closure of dimension $\tfrac12\varphi(N)$ (Theorem~\ref{thm:bn-saturation}). (v)~As a
 nonlinear outlook we connect $\LN$
 to the rogue-wave problem (Section~\ref{sec:rogue}): the discrete NLS
@@ -200,8 +200,8 @@ sharp $B_N=\Theta(\sqrt N)$ growth of the discrete Schr\"odinger propagator
 (Theorem~\ref{thm:schr-lower}) and the exclusion $B_N<\sqrt N$ for every even $N\ge6$, i.e.\ no
 $\varepsilon$-uniform mixing on even cycles (Theorem~\ref{thm:bn-saturation}; for $N$ not an even square it
 also follows from the bipartite conditions of~\cite{Monterde}, and its saturating cases $N=p,p^2$ are the
-$\varepsilon$-uniform mixing of~\cite{GMR17,CaoZhu26}), and for $N=15,21$ by exact certificates (for $C_{21}$ this is new even for
-exact uniform mixing, named the next open case in~\cite{GPY}); the segment rank for every $N$ and its $\bmod\,4$
+$\varepsilon$-uniform mixing of~\cite{GMR17,CaoZhu26}), and for $N=15,21,27$ by exact certificates (for $C_{21}$ and $C_{27}$ this is new
+even for exact uniform mixing; $C_{21}$ is named the next open case in~\cite{GPY}, and $C_{27}$ is left open in~\cite{CaoZhu26}); the segment rank for every $N$ and its $\bmod\,4$
 classification (Theorem~\ref{thm:segrank}; the full-rank case is in~\cite{GKSS12}); and the
 order criterion with its ring-product corollary (Proposition~\ref{prop:order-criterion},
 Corollary~\ref{cor:product}). We claim as new neither the large-wave phenomenon, nor its appearance on the
@@ -228,7 +228,7 @@ $\{N:A_N=U_N\}=\{\text{prime}\}\cup\{2^m\}$ (Thm.~\ref{thm:classification}, via 
 root-of-unity obstruction for every composite $N$).
 \item[\textbf{T4}] Discrete Schr\"odinger: localized states never amplify (unitarity), yet
 $B_N=\Theta(\sqrt N)$ in $\ell^\infty$ (Thms.~\ref{thm:schr},~\ref{thm:schr-lower}); $B_N=\sqrt N$ for $N=p,p^2$
-\cite{GMR17,CaoZhu26}, so $\limsup B_N/\sqrt N=1$, and $B_N<\sqrt N$ for even $N\ge6$ and $N=15,21$ (Thm.~\ref{thm:bn-saturation}).
+\cite{GMR17,CaoZhu26}, so $\limsup B_N/\sqrt N=1$, and $B_N<\sqrt N$ for even $N\ge6$ and $N=15,21,27$ (Thm.~\ref{thm:bn-saturation}).
 \item[\textbf{T5}] \emph{Order, all $N$}: $A_N\sim\tfrac1\pi\ln N$ for \emph{every} $N$
 (Thm.~\ref{thm:order})---the lower bound from an alignable independent prefix of length
 $\tfrac12\varphi(2N)$ (Lemma~\ref{lem:prefix}, by a palindromic argument).
@@ -316,8 +316,8 @@ exact value is algebraic per $N$ with no apparent closed form
 saturates (Theorem~\ref{thm:classification})---and $A_N$ for individual composite $N$ is algebraic
 (Proposition~\ref{prop:closed}) but computed per $N$, not given in closed form. (iii)~For the Schr\"odinger
 $B_N=\Theta(\sqrt N)$ the infinite-time constant is arithmetic: $\limsup_NB_N/\sqrt N=1$ along the primes,
-$B_N<\sqrt N$ for even $N\ge6$ and for $N=15,21$ (exact certificates); the other odd composites
-that are not prime squares, from $N=27$ on, are open
+$B_N<\sqrt N$ for even $N\ge6$ and for $N=15,21,27$ (exact certificates); the other odd composites
+that are not prime squares, from $N=33$ on, are open
 (Theorem~\ref{thm:bn-saturation}, Conjecture~\ref{conj:bn-psq}). The proved
 $\liminf_NB_N/\sqrt N\ge c_0/\sqrt2\approx0.861$ is probably far from sharp: every $N$ tested has
 $B_N/\sqrt N\ge0.93$. On the dispersive window $t=O(N)$ the constant splits by parity
@@ -377,11 +377,13 @@ obstruction as the multi-copy residual~(2) (\texttt{verify\_excess\_omega2.py}).
 \item The Schr\"odinger constant $B_N/\sqrt N$ (Conjectures~\ref{conj:bn-psq} and~\ref{conj:bn-window}). The
 order $B_N=\Theta(\sqrt N)$ is settled. Over infinite time
 the constant is arithmetic: $B_N=\sqrt N$ iff the orbit closure contains a flat phase vector, which holds for
-$N=p,p^2$ and fails for even $N\ge6$ and for $N=15,21$ (Theorem~\ref{thm:bn-saturation}). Two questions remain. Is
-$B_N<\sqrt N$ for every odd composite $N$ that is not a prime square? For those tested in $27\le N\le81$ the best values found (lower bounds for $B_N/\sqrt N$) lie between $0.996$ and $0.99992$, the closest being
-$N=27$ with $1-0.99992\approx8\times10^{-5}$, so an exact certificate (an ideal-membership identity, as at $N=15,21$, or a rational sum-of-squares bound on the
-orbit closure) is the natural tool. For $N=3q$ the coordinates of Theorem~\ref{thm:bn-saturation}(4) leave $q-1$
-phases, but the invariant linear system grows fast: it has $303$ equations at $q=5$ and $6707$ at $q=7$. And is $\liminf_NB_N/\sqrt N$, proved $\ge c_0/\sqrt2\approx0.861$ (Theorem~\ref{thm:schr-lower}), in fact
+$N=p,p^2$ and fails for even $N\ge6$ and for $N=15,21,27$ (Theorem~\ref{thm:bn-saturation}). Two questions remain. Is
+$B_N<\sqrt N$ for every odd composite $N$ that is not a prime square? For those tested in $33\le N\le81$ the best values found (lower bounds for $B_N/\sqrt N$) lie between $0.996$ and $0.9997$.
+At $N=27$ the best value found is $0.99992$, and a Positivstellensatz on $\mathbb T^9$ still certifies the gap, so
+exact certificates (ideal-membership identities, as at $N=15,21$, or sum-of-squares bounds on the orbit closure, as
+at $N=27$) are the natural tool. Their size is the obstacle: for $N=3q$ the coordinates of
+Theorem~\ref{thm:bn-saturation}(4) leave $q-1$ phases, but the invariant linear system has $303$ equations at $q=5$
+and $6707$ at $q=7$, and the $N=27$ program has $19993$ orbit equations. And is $\liminf_NB_N/\sqrt N$, proved $\ge c_0/\sqrt2\approx0.861$ (Theorem~\ref{thm:schr-lower}), in fact
 $1$? On the dispersive window $t\le SN/2$ the constant splits by the parity of $N$ (Remark~\ref{rem:bn-parity}):
 $c_0/\sqrt2$ for even $N$ (numerically) and, for odd $N$, the elliptic-integral average
 $\beta_{\mathrm{odd}}=0.9280193048\ldots$ \eqref{eq:beta-odd} (a $25$-digit \textsc{pslq} search finds no

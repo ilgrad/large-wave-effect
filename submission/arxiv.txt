@@ -27,7 +27,7 @@ MSC 2020
   39A12, 42A75, 11R18, 47B35, 35Q55, 11L07, 33C10
 
 COMMENTS
-  81 pages, figures. Reproducibility layer: standalone PEP 723 verification
+  82 pages, figures. Reproducibility layer: standalone PEP 723 verification
   scripts (one per quantitative claim) plus an exact-arithmetic / proof layer in
   GAP, PARI/GP, Julia, FriCAS and Rocq. Code and paper: https://github.com/ilgrad/large-wave-effect
 
@@ -49,7 +49,7 @@ state, while the $\ell^\infty\to\ell^\infty$ amplification is $B_N=\Theta(\sqrt 
 with $\liminf B_N/\sqrt N\ge c_0/\sqrt2$. The ceiling $\sqrt N$ is reached, as a
 supremum, exactly when the orbit closure contains a flat phase vector: this holds for
 $N=p$ and $N=p^2$, so $\limsup B_N/\sqrt N=1$, and fails for every even $N\ge6$ (a
-Golay-pair obstruction) and, by exact certificates, for $N=15,21$. On the dispersive
+Golay-pair obstruction) and, by exact certificates, for $N=15,21,27$. On the dispersive
 time scale $t=O(N)$ the constant splits by parity (numerically $c_0/\sqrt2$ for even
 $N$, $\beta_{odd}=0.928\ldots$ for odd $N$). For the focusing discrete NLS the linear
 large wave persists under weak nonlinearity, the modulational-instability band is read

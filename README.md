@@ -65,9 +65,15 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   coefficients, 614-digit denominator) shows they have no common zero (`numerics/bn_flat_certificate_3q.py`,
   re-checked from the definitions in `exact/pari/c3q_flat_check.gp`; the same code reproves `N = 15`). So `C_21`
   admits no uniform mixing, exact or ε-approximate — the case Gray–Patel–Young (arXiv:2607.28345) name as the
-  next open one. That `B_N = √N` iff `N` is a prime or a prime square is a conjecture: the other odd composites
-  that are not prime squares (from `N = 27` on) are open; numerically `B_N/√N < 1` there, closest at `N = 27`
-  (`0.99992`)
+  next open one. It fails for `N = 27` (computer-assisted, new), the first prime cube, which Cao–Zhu leave open:
+  in the coordinates of `μ_r = 2cos(2πr/27)` in the basis `1, μ_1, …, μ_8` the orbit closure is the 9-torus, and a
+  degree-3 Positivstellensatz `ρ = m*Qm + Σ g_l R_l + κ` with `λ_min(Q) ≥ 5.4999` on the 3139 monomials of word
+  length ≤ 3 and `‖ρ‖₁ < 150` shows that the autocorrelations `R_1, …, R_13` have no common zero there (the SDP is
+  solved by Douglas–Rachford splitting, `numerics/b27_psatz_certificate.py`; the certificate
+  `exact/pari/b27_psatz_cert.gp.gz` is checked exactly by `numerics/verify_b27_psatz.py`, the identity also from
+  the definitions by `exact/pari/b27_psatz_check.gp`). The best value found there is `0.99992`, so the gap is
+  below `10⁻⁴`. That `B_N = √N` iff `N` is a prime or a prime square is a conjecture: the other odd composites
+  that are not prime squares (from `N = 33` on) are open; numerically `B_N/√N < 1` there
   (`verify_bn_saturation.py`, `exact/pari/bn_saturation.gp`; a second implementation of the prime and
   prime-square cases in `verify_bn_prime_flat.py`, `exact/pari/bn_prime_flat.gp`,
   `exact/pari/bn_prime_square.gp`). **Windowed constant.** On the
@@ -125,7 +131,7 @@ for `γP < 0.43`, and numerically the seed disperses up to `γP ≈ 3.4` and kee
 route to chaos remain computational/exploratory.
 
 **Open problems** (each reduced to a clean statement, with the proven part marked). (1) The Schrödinger
-constant. Over infinite time: is `B_N < √N` for every odd composite `N` that is not a prime square (known for `N = 15, 21`), and is
+constant. Over infinite time: is `B_N < √N` for every odd composite `N` that is not a prime square (known for `N = 15, 21, 27`), and is
 `liminf B_N/√N = 1`? On the dispersive window: the windowed constant
 `limsup_N sup_{t ≤ SN/2} ‖K_N(·,t)‖_1/√N = β_odd` for each fixed `S`. For each fixed `s ≤ 1` (odd `N`) the
 profile maximizer is **proved** (`max F = β_odd`, validated interval arithmetic), and for `t > N/2` the entire
@@ -213,7 +219,8 @@ tiled by the adaptive, checkpointed campaign:
 **Exact-arithmetic + formal layer** (Fedora: `dnf install gap pari-gp fricas rocq-prover`; Julia from juliaup). The
 linear-theory arithmetic is reproduced floating-point-free in **GAP** and **PARI/GP**, symbolically in
 **FriCAS**, the `N = 15` exclusion `B_15 < √15` is certified in **Julia** and re-checked in PARI/GP, the
-`N = 21` exclusion `B_21 < √21` is certified with python-flint and re-checked in PARI/GP, and the
+`N = 21` exclusion `B_21 < √21` is certified with python-flint and re-checked in PARI/GP, the `N = 27`
+exclusion `B_27 < √27` is a Positivstellensatz checked exactly with python-flint and in PARI/GP, and the
 mod-4 criterion is machine-checked in **Rocq** — see [`exact/`](exact/) and
 [`formal/rocq/`](formal/rocq/). One driver runs the lot and cross-checks against the Python core (missing
 tools are skipped, not failed):

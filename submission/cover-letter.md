@@ -29,9 +29,10 @@ the paper:
    in the ℓ∞ operator norm, with liminf B_N/√N ≥ c₀/√2 proved; B_N = √N exactly when the orbit closure (of
    dimension φ(N)/2) contains a flat phase vector, which holds for N = p and N = p² (the ε-uniform mixing
    of Godsil–Mullin–Roy and Cao–Zhu) and fails for every even N ≥ 6 (new for the even squares; for the
-   other even N it also follows from Monterde's bipartite conditions) and for N = 15 and N = 21 (exact
-   Nullstellensatz certificates, computer-assisted; for C_21 this is new even for exact uniform mixing, the
-   case Gray–Patel–Young name as the next open one), so limsup B_N/√N = 1. On the
+   other even N it also follows from Monterde's bipartite conditions) and for N = 15, 21 and 27 (exact
+   certificates, computer-assisted: Nullstellensatz identities for 15 and 21, a Positivstellensatz on the
+   9-torus for 27; for C_21 and C_27 this is new even for exact uniform mixing: Gray–Patel–Young name C_21 as
+   the next open case, and Cao–Zhu leave C_27 open), so limsup B_N/√N = 1. On the
    dispersive time scale t = O(N) the constant splits by parity; the odd-N value β_odd = 0.928… is an elliptic-integral constant with no elementary closed form, and its
    windowed sharp upper bound is reduced to one residual inequality (proved by computer-assisted Arb
    certificates for every configuration with at most three copies, validated beyond) and an s-uniform transfer.

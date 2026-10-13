@@ -27,6 +27,7 @@ the Python core (`src/large_wave_effect`) and the paper's Section on exact arith
 | | `pari/support3_relations.gp` | Lemma `cleancomb`: all support-3 relations `omega_a + omega_b = omega_c` for `3 | N <= 330` (the standard triplets plus `(N/10, N/6, 3N/10)` when `30 | N`), each decided modulo `Phi_2N` |
 | | `pari/c15_flat_check.gp` | rebuilds the `N = 15` flatness polynomials `f_1..f_7` and re-checks the Julia certificate `D y^4 = sum N_j m_j f_j` by exact polynomial arithmetic (input: `C15_CERT=<file>`) |
 | | `pari/c3q_flat_check.gp` | Theorem `bn-saturation` (4) for `N = 3q`: rebuilds the `Z_3 x Z_q` parametrization of `H_N` (exact DFT in `Q(zeta_N)`, dimension of `V`) and the autocorrelations from their definitions, then re-checks the certificate `1 = sum (orbit multiplier) * A(shift)` exactly in `Z[L]`, with a negative control (input: `C3Q_CERT=<file>` written by `../numerics/bn_flat_certificate_3q.py --out`; `N = 21` in about 7 s) |
+| | `pari/b27_psatz_check.gp` | Theorem `bn-saturation` (4) for `N = 27`: checks the `mu`-coordinates `c(r)` exactly in `Q(zeta_27)` (and the `Q`-independence of `1, mu_1, ..., mu_8`), rebuilds the autocorrelations `R_1..R_13` on the 9-torus from them, expands the Gram matrix from its pair-orbit values and recomputes the residual `rho = m*Qm + sum g_l R_l + kappa` exactly; `lambda |B_3| + kappa > ||rho||_1` for the claimed `lambda`, two mutations rejected. The bound `lambda_min(Q) >= lambda` itself is checked by `../numerics/verify_b27_psatz.py` (exact Cholesky residual, FLINT). Data: `pari/b27_psatz_cert.gp.gz`, written by `../numerics/b27_psatz_certificate.py` |
 | **Julia** | `julia/c15_flat_certificate.jl` | Theorem `bn-saturation` (4): no flat point on `H_15`, so `B_15 < sqrt 15`. Finds the Nullstellensatz certificate `D y^4 = sum N_j m_j f_j` (2159 terms, `D` of 253 digits) by `P`-adic lifting of the degree-18 Macaulay system and checks it over `Z`; Base Julia only, about 30 s |
 | **FriCAS** | `fricas/asymptotics.input` | `csc` Laurent series, the Appendix-B antiderivative, the constants `(2/pi)log(2/pi)` and `-pi/72` |
 
@@ -53,6 +54,8 @@ julia --startup-file=no exact/julia/c15_flat_certificate.jl /tmp/c15_certificate
 C15_CERT=/tmp/c15_certificate.gp gp -q -f exact/pari/c15_flat_check.gp </dev/null
 uv run --script numerics/bn_flat_certificate_3q.py 7 --out /tmp/c21_certificate.txt   # about 3 min; 5 for N = 15
 C3Q_CERT=/tmp/c21_certificate.txt gp -q -f exact/pari/c3q_flat_check.gp </dev/null
+gp   -q -f exact/pari/b27_psatz_check.gp </dev/null   # identity part of the N = 27 certificate
+uv run --script numerics/verify_b27_psatz.py           # PSD bound and identity, exact (FLINT)
 fricas -nosman < exact/fricas/asymptotics.input
 
 # one-shot driver + cross-check against the Python core (skips missing tools):

@@ -129,8 +129,12 @@ from the definitions in `exact/pari/c3q_flat_check.gp`; `q = 5` (radius 6) repro
 (arXiv:2607.28345) named `C_21` the next open case for exact uniform mixing. `N = 33` (`q = 11`) is out of reach
 this way so far: msolve F4 mod p reached degree 7 at 8.7 GB and was stopped before exhausting RAM, and the
 invariant system at radius 8 would be ~63k x 25k (the radius actually needed is unknown).
-Open (paper `conj:bn-psq`): the other odd composite non-prime-square `N`, from `N = 27` on (numerics `< 1`,
-closest `N = 27`, `0.99992`). `thm:joint-equi` and `thm:uniform-transfer` hold for each FIXED `s = 2t/N`. The statement the
+`N = 27` is **DONE**: a degree-3 Positivstellensatz on the 9-torus (Gram matrix on the 3139 monomials of word
+length <= 3, `lambda_min(Q) >= 5.4999`, residual `||rho||_1 < 150`), solved by Douglas-Rachford splitting on the
+G-character blocks (`numerics/b27_psatz_certificate.py`, GPU via CuPy) and checked exactly
+(`numerics/verify_b27_psatz.py`, `exact/pari/b27_psatz_check.gp`). Nullstellensatz searches mod p up to radius 6,
+the degree-2 Psatz, SCS and msolve all failed there. Open (paper `conj:bn-psq`): the other odd composite
+non-prime-square `N`, from `N = 33` on (numerics `< 1`). `thm:joint-equi` and `thm:uniform-transfer` hold for each FIXED `s = 2t/N`. The statement the
 analysis supports is the windowed one (paper `conj:bn-window`): for each fixed `S`, it needs (i) the ≥3-copy
 dagger inequality and (ii) the transfer uniform in `s` on `[1, S]` (and on `t <= N/2` as well). Polynomial
 windows `t <= N^C`: open.
