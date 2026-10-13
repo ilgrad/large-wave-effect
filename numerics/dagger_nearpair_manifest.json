@@ -52,7 +52,7 @@
   "schema": "beta-odd-dagger-nearpair-cover-v1",
   "source_sha256": {
     "dagger_nearpair.py": "695f928f2da23e1c42fd0e2dc3e4186fcfc3d201330d600ec6e70b94350e0f73",
-    "dagger_rigorous.py": "14c81c358d13b51e50b7d234fdf540bb528b5e2eacfff197a69d4f1e10b3a044",
+    "dagger_rigorous.py": "08255b6278e5e3491369fa8ada1b41fdd552a828c5ddb4050dfa3b4b6517a670",
     "verify_dagger_nearpair.py": "1204795154df944ee4ab9ee612220af437847b7db8abee2b2dff4899a32f7c24"
   },
   "status": "pass",

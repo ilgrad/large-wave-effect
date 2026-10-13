@@ -671,7 +671,9 @@ def poly_sup(c: dict[tuple[int, int], arb], Hx: arb, Hy: arb, depth: int) -> tup
 def ball(x: arb, digits: int = 25) -> dict[str, str]:
     """Rigorous decimal record of a ball: arb(f'[{mid} +/- {rad}]') contains x."""
     s = x.str(digits, radius=True)
-    if s.startswith("["):
+    if s.startswith("[+/- "):  # a ball about 0 with no certified digit
+        mid, rad = "0", s[5:-1]
+    elif s.startswith("["):
         mid, rad = s[1:-1].split(" +/- ")
     else:
         mid, rad = s, "0"

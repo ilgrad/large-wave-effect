@@ -10,7 +10,7 @@
     }
   ],
   "data": "dagger_campaign_rigorous.jsonl",
-  "data_sha256": "400e65e45ad2f4349178d75ab70df49aaa780aab68e8a43f4a411055be0e5a9e",
+  "data_sha256": "f4cd6cc721f6a691ec23bf0b8cae9fdcbc6ac821de3bf908e7f703d900aaee59",
   "leaves": 111,
   "params": {
     "degree": 10,
@@ -66,7 +66,7 @@
   "rows": 111,
   "schema": "beta-odd-dagger-rigorous-cover-v1",
   "source_sha256": {
-    "dagger_rigorous.py": "14c81c358d13b51e50b7d234fdf540bb528b5e2eacfff197a69d4f1e10b3a044",
+    "dagger_rigorous.py": "08255b6278e5e3491369fa8ada1b41fdd552a828c5ddb4050dfa3b4b6517a670",
     "run_dagger_campaign.py": "36fa49de4ba0e8ea2423bd4cb5ecdd6f9fb4bdcc4fba4b2ca55f31204cf94f2b",
     "verify_dagger_rigorous.py": "ee62be1da5f25ef7bd1fb1e45c6a643f55101d1eef8a0d12802ebaa43f0e3c58"
   },
