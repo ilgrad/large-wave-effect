@@ -63,7 +63,7 @@ def ceiling_and_node0_amplitude(n: int, starts: int = 80) -> tuple[float, float]
     if n % 2 == 0:
         b[-1] = 1.0 / (n * omega[-1])  # the r = N/2 mode carries half weight
     ceiling = float(b.sum())
-    c_mat = np.array(sin_coords(2 * n, list(r)), dtype=float)
+    c_mat = np.array(sin_coords(2 * n, r.tolist()), dtype=float)
 
     def negf(psi: np.ndarray) -> tuple[float, np.ndarray]:
         ph = c_mat @ psi
@@ -96,7 +96,9 @@ def main() -> int:
     ok = within_bound and grows
     print("=" * 60)
     print(f"  defect(omega=3, N=105) - defect(omega=2, N=30) = {d105 - d30:.4f}  (> 0 => grows)")
-    print("RESULT:", "PASS -- defect grows with omega(m); unbounded, O(ln ln ln N)" if ok else "FAIL")
+    print(
+        "RESULT:", "PASS -- defect grows with omega(m); unbounded, O(ln ln ln N)" if ok else "FAIL"
+    )
     return 0 if ok else 1
 
 

@@ -10,6 +10,10 @@ TITLE
 AUTHORS
   Ilia Gradina
 
+ORCID
+  https://orcid.org/0009-0008-0911-8765
+  (not a form field: arXiv takes the iD from the account; link it in the account settings first)
+
 PRIMARY CATEGORY
   math.SP   (Spectral Theory)
 
@@ -31,26 +35,25 @@ COMMENTS
 ABSTRACT
 --------------------------------------------------------------------------------
 We study the large-wave effect on the ring of $N$ beads and for the discrete
-Schrodinger equation on the same ring. For the unit-impulse Green's function
+Schrodinger equation on it. For the impulse Green's function
 $A_N=\sup_t\max_j|u_j(t)|$ we prove $A_N=(1/\pi)\ln N+O(\ln\ln\ln N)$ for every $N$. A
 palindromic argument shows that the first $\varphi(2N)/2$ frequencies $2\sin(\pi r/N)$
 are $\mathbb{Q}$-independent, so by Bohr and Kronecker a $(1-o(1))$ fraction of the
-ceiling $U_N=(1/2N)\sum\csc(\pi r/N)$ can be aligned. We prove that $A_N=U_N$ if and
-only if $N$ is prime or a power of two -- equivalently, every integer frequency
-relation has coefficient-sum divisible by four -- via an explicit root-of-unity
-obstruction; the orbit closure has dimension $\varphi(2N)/2$. The order law extends to
-the Dirichlet segment and to every Cartesian product $C_N\,\square\,H$. For the
-discrete Schrodinger propagator $e^{-itL_N}$, unitarity forbids amplification of a
-localized state, while the $\ell^\infty\to\ell^\infty$ amplification is
-$B_N=\Theta(\sqrt N)$ with $\liminf B_N/\sqrt N\ge c_0/\sqrt2$. The ceiling $\sqrt N$
-is reached, as a supremum, exactly when the orbit closure contains a flat phase
-vector: this holds for $N=p$ and $N=p^2$, so $\limsup B_N/\sqrt N=1$, and fails for
-every even $N\ge6$ (a Golay-pair obstruction) and, by exact certificates, for
-$N=15$ and $N=21$. On the dispersive time scale $t=O(N)$ the constant splits by parity
-(numerically $c_0/\sqrt2$ for even $N$, $\beta_{odd}=0.928\ldots$ for odd $N$). For
-the focusing discrete NLS the linear large wave persists under weak nonlinearity, the
-modulational-instability band is read off the $L_N$ spectrum, a single-site excitation
-cannot disperse above $\gamma P=4$, and localized breathers exist, the site-centred
-one orbitally stable in the anti-continuum regime. Proofs are separated from numerical
-evidence; all claims are reproduced by scripts and an exact GAP/PARI/Julia/FriCAS/Rocq
-layer.
+ceiling $U_N=(1/2N)\sum\csc(\pi r/N)$ can be aligned. We prove $A_N=U_N$ if and only
+if $N$ is prime or a power of two -- equivalently, every integer frequency relation
+has coefficient-sum divisible by four -- via an explicit root-of-unity obstruction;
+the orbit closure has dimension $\varphi(2N)/2$. The order law extends to the
+Dirichlet segment and to every Cartesian product $C_N\,\square\,H$. For the discrete
+Schrodinger propagator $e^{-itL_N}$, unitarity forbids amplification of a localized
+state, while the $\ell^\infty\to\ell^\infty$ amplification is $B_N=\Theta(\sqrt N)$
+with $\liminf B_N/\sqrt N\ge c_0/\sqrt2$. The ceiling $\sqrt N$ is reached, as a
+supremum, exactly when the orbit closure contains a flat phase vector: this holds for
+$N=p$ and $N=p^2$, so $\limsup B_N/\sqrt N=1$, and fails for every even $N\ge6$ (a
+Golay-pair obstruction) and, by exact certificates, for $N=15,21$. On the dispersive
+time scale $t=O(N)$ the constant splits by parity (numerically $c_0/\sqrt2$ for even
+$N$, $\beta_{odd}=0.928\ldots$ for odd $N$). For the focusing discrete NLS the linear
+large wave persists under weak nonlinearity, the modulational-instability band is read
+off the $L_N$ spectrum, a single-site excitation cannot disperse above $\gamma P=4$,
+and localized breathers exist, the site-centred one orbitally stable in the
+anti-continuum regime. Proofs are kept apart from numerical evidence; scripts and an
+exact GAP/PARI/Julia/FriCAS/Rocq layer reproduce all claims.

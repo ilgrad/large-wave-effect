@@ -49,7 +49,9 @@ def main() -> int:
         print(f"    {t:>6.0f} {p:>10.5f} {p * t ** (1 / 3):>13.5f}")
     a_ok = abs(slope + 1 / 3) < 0.02
     ok &= a_ok
-    print(f"    log-log slope = {slope:.4f}  (Airy fold = -1/3 = {-1 / 3:.4f}): {'OK' if a_ok else 'FAIL'}")
+    print(
+        f"    log-log slope = {slope:.4f}  (Airy fold = -1/3 = {-1 / 3:.4f}): {'OK' if a_ok else 'FAIL'}"
+    )
     print(f"    peak*t^(1/3) -> {peaks[-1] * ts[-1] ** (1 / 3):.4f}  (Airy max |Ai| = 0.5357)")
 
     # (B) Airy collapse: t^{1/3} J_n(2t) -> Ai(s)
@@ -66,7 +68,9 @@ def main() -> int:
         print(f"    {t:>6.0f} {err:>20.4f}")
     b_ok = errs[-1] < 0.02 and errs[-1] < errs[0]
     ok &= b_ok
-    print(f"    -> rescaled front converges to the Airy function (err -> 0): {'OK' if b_ok else 'FAIL'}")
+    print(
+        f"    -> rescaled front converges to the Airy function (err -> 0): {'OK' if b_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 70)
     print("RESULT:", "AIRY CAUSTIC VERIFIED" if ok else "CHECK FAILED")

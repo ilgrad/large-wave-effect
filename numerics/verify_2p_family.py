@@ -77,8 +77,13 @@ def prefix_rank(p: int) -> int:
     m, q = 4 * p, (1 << 61) - 1
     cache: dict[int, list[int]] = {}
     phi = cyclotomic(m, cache)
-    rows = [[(h - lv) % q for h, lv in zip(power_mod(r % m, phi), power_mod((m - r) % m, phi),
-                                          strict=True)] for r in range(1, p)]
+    rows = [
+        [
+            (h - lv) % q
+            for h, lv in zip(power_mod(r % m, phi), power_mod((m - r) % m, phi), strict=True)
+        ]
+        for r in range(1, p)
+    ]
     pr, nc = 0, len(rows[0])
     for col in range(nc):
         piv = next((rr for rr in range(pr, len(rows)) if rows[rr][col] % q), None)
@@ -129,7 +134,7 @@ def node0_sup(p: int, starts: int = 40) -> float:
     n = 2 * p
     r = np.arange(1, n)
     omega = 2.0 * np.sin(np.pi * r / n)
-    c_mat = sin_coords(2 * n, list(r))
+    c_mat = sin_coords(2 * n, r.tolist())
     coeff = (1.0 / n) / omega  # node 0: all cos(2 pi r*0/N) = 1
 
     def negf(psi: np.ndarray) -> tuple[float, np.ndarray]:
@@ -138,7 +143,9 @@ def node0_sup(p: int, starts: int = 40) -> float:
 
     best = 0.0
     for _ in range(starts):
-        res = minimize(negf, RNG.uniform(0, 2 * np.pi, size=c_mat.shape[1]), jac=True, method="L-BFGS-B")
+        res = minimize(
+            negf, RNG.uniform(0, 2 * np.pi, size=c_mat.shape[1]), jac=True, method="L-BFGS-B"
+        )
         best = max(best, -float(res.fun))
     return best
 
@@ -154,7 +161,9 @@ def main() -> int:
     for p in (3, 5, 7, 11, 13, 17, 19, 23, 29):
         rk = prefix_rank(p)
         a_ok &= rk == p - 1
-        print(f"    p={p:>3} (N={2 * p:>3}): rank = {rk:>3} (want {p - 1:>3})  {'OK' if rk == p - 1 else 'FAIL'}")
+        print(
+            f"    p={p:>3} (N={2 * p:>3}): rank = {rk:>3} (want {p - 1:>3})  {'OK' if rk == p - 1 else 'FAIL'}"
+        )
     ok &= a_ok
 
     print("\n(B) Aligned-prefix identity: (2/N) sum_{r<p} 1/omega_r = U_N - 1/(2N) (exact)")
@@ -162,8 +171,10 @@ def main() -> int:
     for p in (5, 11, 19):
         dom, target = dominant_identity(p)
         b_ok &= abs(dom - target) < 1e-12
-        print(f"    p={p:>3} (N={2 * p:>3}): dominant={dom:.6f}  U_N-1/(2N)={target:.6f}  "
-              f"{'OK' if abs(dom - target) < 1e-12 else 'FAIL'}")
+        print(
+            f"    p={p:>3} (N={2 * p:>3}): dominant={dom:.6f}  U_N-1/(2N)={target:.6f}  "
+            f"{'OK' if abs(dom - target) < 1e-12 else 'FAIL'}"
+        )
     ok &= b_ok
 
     print("\n(C) Exact node-0 sup bracketed: U_N - 1/N <= A_{2p} <= U_N, (U_N - A)*N = O(1)")
@@ -175,8 +186,10 @@ def main() -> int:
         a = node0_sup(p)
         within = (a <= u + 1e-6) and (a >= u - 1.0 / n - 1e-3) and ((u - a) * n < 2.0)
         c_ok &= within
-        print(f"    {n:>5} {u:>9.4f} {a:>9.4f} {u - 1.0 / n:>9.4f} {(u - a) * n:>8.4f} {a / u:>7.4f}  "
-              f"{'OK' if within else 'FAIL'}")
+        print(
+            f"    {n:>5} {u:>9.4f} {a:>9.4f} {u - 1.0 / n:>9.4f} {(u - a) * n:>8.4f} {a / u:>7.4f}  "
+            f"{'OK' if within else 'FAIL'}"
+        )
     ok &= c_ok
     print("    -> A_{2p} in [U_N - 1/N, U_N]; defect (U-A)*N stays O(1) => A_{2p}/U_N -> 1.")
 

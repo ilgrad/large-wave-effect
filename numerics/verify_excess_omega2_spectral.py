@@ -169,12 +169,11 @@ def optimize_AN(n: int, *, seed: int, starts: int) -> tuple[float, np.ndarray, n
         ph = cf @ psi
         return -float(b @ np.sin(ph)), -(cf.T @ (b * np.cos(ph)))
 
-    best, bpsi = -np.inf, None
-    for _ in range(starts):
-        res = minimize(negf, rng.uniform(0, 2 * pi, big_m), jac=True, method="L-BFGS-B")
-        if -res.fun > best:
-            best, bpsi = -res.fun, res.x
-    psi = bpsi.copy()
+    runs = [
+        minimize(negf, rng.uniform(0, 2 * pi, big_m), jac=True, method="L-BFGS-B")
+        for _ in range(starts)
+    ]
+    psi = min(runs, key=lambda res: res.fun).x.copy()
     for _ in range(80):
         ph = cf @ psi
         g = cf.T @ (b * np.cos(ph))

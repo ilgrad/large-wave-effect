@@ -58,12 +58,15 @@ def lap_int(n: int) -> Mat:
 
 
 def matvec(a: Mat, x: Vec) -> Vec:
-    return [sum(a[i][k] * x[k] for k in range(len(x))) for i in range(len(a))]
+    return [sum((a[i][k] * x[k] for k in range(len(x))), Fraction(0)) for i in range(len(a))]
 
 
 def matmul(a: Mat, b: Mat) -> Mat:
     p, q, r = len(a), len(b[0]), len(b)
-    return [[sum(a[i][k] * b[k][j] for k in range(r)) for j in range(q)] for i in range(p)]
+    return [
+        [sum((a[i][k] * b[k][j] for k in range(r)), Fraction(0)) for j in range(q)]
+        for i in range(p)
+    ]
 
 
 def transpose(a: Mat) -> Mat:
@@ -112,11 +115,11 @@ def inverse(a: Mat) -> Mat:
 
 
 def norm1(a: Mat) -> Fraction:  # max abs column sum
-    return max(sum(abs(a[i][j]) for i in range(len(a))) for j in range(len(a[0])))
+    return max(sum((abs(a[i][j]) for i in range(len(a))), Fraction(0)) for j in range(len(a[0])))
 
 
 def norminf(a: Mat) -> Fraction:  # max abs row sum
-    return max(sum(abs(v) for v in row) for row in a)
+    return max(sum((abs(v) for v in row), Fraction(0)) for row in a)
 
 
 def upper_sqrt(x: Fraction) -> Fraction:
@@ -168,7 +171,7 @@ def certify(label: str, n: int, omega: int, seed: np.ndarray, expected_n: int) -
     # (1) Newton-Kantorovich existence
     lp_v = matvec(lap, phit)
     r = [lp_v[j] + omega * phit[j] - GAMMA * phit[j] ** 3 for j in range(n)]
-    norm_r = upper_sqrt(sum(v * v for v in r))
+    norm_r = upper_sqrt(sum((v * v for v in r), Fraction(0)))
     jinv = inverse(lplus())  # J = F'(phi~) = L_N + Omega - 3 gamma diag(phi~^2) = L_+
     bnd = upper_sqrt(norm1(jinv) * norminf(jinv))
     maxabs = max(abs(p) for p in phit)

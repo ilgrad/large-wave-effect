@@ -32,10 +32,19 @@ This certificate confirms:
 
 from __future__ import annotations
 
+from typing import TypedDict
+
 import numpy as np
 
 
-def evolve(n: int, gamma: float, t_final: float, steps: int) -> dict[str, float | np.ndarray]:
+class Evolution(TypedDict):
+    d2: np.ndarray
+    cosk: float
+    v2: float
+    peak_min: float
+
+
+def evolve(n: int, gamma: float, t_final: float, steps: int) -> Evolution:
     lam = 2 - 2 * np.cos(2 * np.pi * np.arange(n) / n)
     k = 2 * np.pi * np.arange(n) / n
     j = ((np.arange(n) + n // 2) % n) - n // 2  # centered position on the line approximation
@@ -87,7 +96,9 @@ def identity_residual(n: int, gamma: float, t_final: float, steps: int) -> float
 
     def rhs(a: np.ndarray) -> float:
         dens = np.abs(a) ** 2
-        two_l2 = 2 * (2 * float(dens.sum()) - 2 * float(np.real(np.sum(np.conj(a) * np.roll(a, -2)))))
+        two_l2 = 2 * (
+            2 * float(dens.sum()) - 2 * float(np.real(np.sum(np.conj(a) * np.roll(a, -2))))
+        )
         bond = np.real(np.conj(a) * np.roll(a, -1))
         term_c = -2 * gamma * float(np.sum((2 * jc + 1) * (dens - np.roll(dens, -1)) * bond))
         return two_l2 + term_c
@@ -128,21 +139,31 @@ def main() -> int:
         energy_ok = abs(cosk - g / 4) < 1e-2
         ok &= convex_ok and energy_ok
         flag = "" if convex_ok and energy_ok else "  FAIL"
-        print(f"    {g:>4.1f} {plateau:>8.3f} {cosk:>7.4f} {g / 4:>6.3f} {float(r['v2']):>7.4f} "
-              f"{float(r['peak_min']):>9.4f}{flag}")
+        print(
+            f"    {g:>4.1f} {plateau:>8.3f} {cosk:>7.4f} {g / 4:>6.3f} {float(r['v2']):>7.4f} "
+            f"{float(r['peak_min']):>9.4f}{flag}"
+        )
 
-    print("[4] EXACT virial identity  d^2V/dt^2 = 2<L2 a,a> - 2g sum(2n+1)(|a_n|^2-|a_{n+1}|^2)Re(a_n* a_{n+1}):")
+    print(
+        "[4] EXACT virial identity  d^2V/dt^2 = 2<L2 a,a> - 2g sum(2n+1)(|a_n|^2-|a_{n+1}|^2)Re(a_n* a_{n+1}):"
+    )
     for g in (2.0, 3.5):
         resid = identity_residual(512, g, 60.0, 12000)
         good = resid < 1e-9  # ODE-level: machine precision iff the identity is exact
         ok &= good
-        print(f"    gamma*P={g}: max|d2V_ode - (2<L2>+TermC)| = {resid:.2e}  (machine precision)  "
-              f"{'ok' if good else 'FAIL'}")
+        print(
+            f"    gamma*P={g}: max|d2V_ode - (2<L2>+TermC)| = {resid:.2e}  (machine precision)  "
+            f"{'ok' if good else 'FAIL'}"
+        )
 
     print("=" * 72)
-    print("RESULT:", "PASS -- exact virial identity d2V = 2<L2 a,a> + TermC verified; 2<L2 a,a> >= 0 is the "
-          "dispersive term, the position-weighted TermC is the precise (uncontrolled) obstruction"
-          if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- exact virial identity d2V = 2<L2 a,a> + TermC verified; 2<L2 a,a> >= 0 is the "
+        "dispersive term, the position-weighted TermC is the precise (uncontrolled) obstruction"
+        if ok
+        else "FAIL",
+    )
     return 0 if ok else 1
 
 

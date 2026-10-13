@@ -81,7 +81,7 @@ def node_defect(n: int, j: int, starts: int = 60) -> tuple[float, float]:
     omega = 2 * np.sin(np.pi * r / n)
     coeff = (1 / n) * np.cos(2 * np.pi * r * j / n) / omega
     u = float(np.sum(1 / np.sin(np.pi * r / n)) / (2 * n))
-    return u, u - max_over_subtorus(coeff, sin_coords(2 * n, list(r)), starts)
+    return u, u - max_over_subtorus(coeff, sin_coords(2 * n, r.tolist()), starts)
 
 
 def main() -> int:

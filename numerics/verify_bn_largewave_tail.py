@@ -81,9 +81,13 @@ verify_bn_residual_profile.py (the FFT calibration of the same multi-copy profil
 
 from __future__ import annotations
 
+import functools
+
 import numpy as np
 from numpy import cos, pi, sqrt
 from scipy.special import ellipe, j0
+
+print = functools.partial(print, flush=True)  # progress visible under pipes
 
 BETA_ODD = 0.92801930480793112  # eq:beta-odd; the s=1 peak (verify_beta_odd.py)
 ROOT = sqrt(2 / pi)
@@ -118,7 +122,9 @@ def _channel_density(amplitudes: np.ndarray, x: np.ndarray, k: np.ndarray, dx: f
     return np.fft.fftshift(np.real(np.fft.ifft(phi))) / dx
 
 
-def G_true(ev: np.ndarray, od: np.ndarray, floor2: float = 0.0, L: float = 12.0, N: int = 1024) -> float:
+def G_true(
+    ev: np.ndarray, od: np.ndarray, floor2: float = 0.0, L: float = 12.0, N: int = 1024
+) -> float:
     """E sqrt(X^2 + Y^2 + floor2) via the two channel densities; floor2>=0 is the variance-floor c^2 of (*)."""
     x = np.linspace(-L, L, N, endpoint=False)
     dx = x[1] - x[0]
@@ -169,9 +175,7 @@ def F_K_upper(s: float, K: int, nu: int = 480, L: float = 12.0, N: int = 1024) -
         ev, od = amps(float(u), s)
         if len(ev) + len(od) == 0:
             continue
-        merged = sorted(
-            [(a, 0) for a in ev] + [(a, 1) for a in od], key=lambda z: -z[0]
-        )
+        merged = sorted([(a, 0) for a in ev] + [(a, 1) for a in od], key=lambda z: -z[0])
         core, rest = merged[:K], merged[K:]
         c2 = 0.5 * sum(a * a for a, _ in rest)
         ce = np.array([a for a, p in core if p == 0])
@@ -196,7 +200,9 @@ def jensen_upper(s: float, nu: int = 480) -> float:
 # -> the variance-floor bound F_K of (*).  MC samples the phases of (*) directly, so unlike the FFT density
 # it has NO grid bias at the band edges (where one amplitude diverges) -- the robust profile/tail estimator.
 # --------------------------------------------------------------------------------------------------------
-def F_montecarlo(s: float, K: int | None = None, nu: int = 400, M: int = 200_000, seed: int = 0) -> tuple[float, float]:
+def F_montecarlo(
+    s: float, K: int | None = None, nu: int = 400, M: int = 200_000, seed: int = 0
+) -> tuple[float, float]:
     rng = np.random.default_rng(seed)
     us, jac = _u_grid(nu)
     acc = 0.0
@@ -215,8 +221,16 @@ def F_montecarlo(s: float, K: int | None = None, nu: int = 400, M: int = 200_000
             c2 = 0.5 * sum(a * a for a, _ in merged[K:])
         ce = np.array([a for a, p in core if p == 0])
         co = np.array([a for a, p in core if p == 1])
-        X = (ce[None, :] * cos(rng.uniform(0, 2 * pi, (M, len(ce))))).sum(1) if len(ce) else np.zeros(M)
-        Yc = (co[None, :] * cos(rng.uniform(0, 2 * pi, (M, len(co))))).sum(1) if len(co) else np.zeros(M)
+        X = (
+            (ce[None, :] * cos(rng.uniform(0, 2 * pi, (M, len(ce))))).sum(1)
+            if len(ce)
+            else np.zeros(M)
+        )
+        Yc = (
+            (co[None, :] * cos(rng.uniform(0, 2 * pi, (M, len(co))))).sum(1)
+            if len(co)
+            else np.zeros(M)
+        )
         r = np.sqrt(X * X + Yc * Yc + c2)
         acc += r.mean() * jw
         var += (r.var(ddof=1) / M) * jw * jw
@@ -236,10 +250,6 @@ def g_two_copy(a: float, b: float, n: int = 6000) -> float:
 
 # --------------------------------------------------------------------------------------------------------
 def main() -> int:
-    import functools
-
-    global print
-    print = functools.partial(print, flush=True)  # progress visible under pipes
     ok = True
     print("=" * 90)
     print("max_{s>=1} F(s) = F(1) = beta_odd  for the large-wave (t>N/2) multi-copy profile")
@@ -248,7 +258,10 @@ def main() -> int:
 
     # (0) engine validation: the density G reproduces the closed-form 2-copy g and the s=1 value beta_odd.
     print("\n[0] engine validation (density G  vs  closed forms):")
-    e0_g = max(abs(G_true(np.array([a]), np.array([b])) - g_two_copy(a, b)) for a, b in [(1.5, 0.7), (1.0, 1.0), (2.0, 0.3)])
+    e0_g = max(
+        abs(G_true(np.array([a]), np.array([b])) - g_two_copy(a, b))
+        for a, b in [(1.5, 0.7), (1.0, 1.0), (2.0, 0.3)]
+    )
     f1 = F_true(1.0)
     e0 = e0_g < 1e-6 and abs(f1 - BETA_ODD) < 2e-3
     ok &= e0
@@ -260,7 +273,9 @@ def main() -> int:
     jen = [(s, jensen_upper(s)) for s in (1.05, 1.2, 1.5, 2.0, 3.0)]
     for s, v in jen:
         print(f"     s={s:4.2f}:  Jensen F+ = {v:.4f}   (> beta_odd = {BETA_ODD:.4f})")
-    print("     => Jensen overshoots by ~0.03-0.06; only K>=2 (keeping the dominant phases) can close it.")
+    print(
+        "     => Jensen overshoots by ~0.03-0.06; only K>=2 (keeping the dominant phases) can close it."
+    )
 
     # (ii) the true profile F(s) via seeded Monte-Carlo (+- s.e.; no band-edge grid bias): peaks at s=1,
     #      strictly below for every s>1.  (The FFT density agrees but its u-quadrature wobbles ~3e-3 at the
@@ -273,18 +288,26 @@ def main() -> int:
         if s > 1.0001 and v > max_over_1:
             max_over_1, se_at_max = v, se
         tag = "  <- s=1 peak" if s == 1.0 else ""
-        print(f"     s={s:6.3f}:  F = {v:.5f} +- {se:.5f}   (beta_odd - F = {BETA_ODD - v:+.4f}){tag}")
+        print(
+            f"     s={s:6.3f}:  F = {v:.5f} +- {se:.5f}   (beta_odd - F = {BETA_ODD - v:+.4f}){tag}"
+        )
     e2 = max_over_1 + 3 * se_at_max < BETA_ODD
     ok &= e2
-    print(f"     => sup_{{s>1}} F = {max_over_1:.5f} (+-{se_at_max:.5f}) < beta_odd by >3 s.e. "
-          f"(head-room {BETA_ODD - max_over_1:.4f})   {'ok' if e2 else 'FAIL'}")
+    print(
+        f"     => sup_{{s>1}} F = {max_over_1:.5f} (+-{se_at_max:.5f}) < beta_odd by >3 s.e. "
+        f"(head-room {BETA_ODD - max_over_1:.4f})   {'ok' if e2 else 'FAIL'}"
+    )
 
     # (iii) the RIGOROUS variance-floor bound F_K(s) >= F(s) is certified < beta_odd on the window (1, 6].
     #       K = 2*ceil(s)+4 keeps every non-negligible amplitude.  F_K is estimated by SEEDED MONTE-CARLO of
     #       (*) -- unbiased at the band edges -- and certified by the upper confidence bound F_K^MC + 3 s.e.
     #       < beta_odd; the FFT-density value is printed alongside as an independent (deterministic) read-out.
-    print("\n[iii] PROVED upper bound F_K(s) >= F(s) certified < beta_odd on s in (1, 6]  (K = 2*ceil(s)+4):")
-    print(f"     {'s':>5} {'K':>4} {'F_K (MC, upper)':>18} {'F_K+3se':>10} {'< beta?':>9} {'F_K (FFT)':>11}")
+    print(
+        "\n[iii] PROVED upper bound F_K(s) >= F(s) certified < beta_odd on s in (1, 6]  (K = 2*ceil(s)+4):"
+    )
+    print(
+        f"     {'s':>5} {'K':>4} {'F_K (MC, upper)':>18} {'F_K+3se':>10} {'< beta?':>9} {'F_K (FFT)':>11}"
+    )
     worst = -1.0
     for s in (1.05, 1.1, 1.2, 1.4, 1.7, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0):
         K = 2 * int(np.ceil(s)) + 4
@@ -294,9 +317,13 @@ def main() -> int:
         worst = max(worst, ucb)
         below = ucb < BETA_ODD
         ok &= below
-        print(f"     {s:5.2f} {K:4d} {mc:12.5f}+-{se:.4f} {ucb:10.5f} {'yes' if below else 'NO ':>9} {fk_fft:11.5f}")
-    print(f"     => max_{{(1,6]}} (F_K + 3 s.e.) = {worst:.5f} < beta_odd = {BETA_ODD:.5f}  "
-          f"(the upper bound itself clears the peak)")
+        print(
+            f"     {s:5.2f} {K:4d} {mc:12.5f}+-{se:.4f} {ucb:10.5f} {'yes' if below else 'NO ':>9} {fk_fft:11.5f}"
+        )
+    print(
+        f"     => max_{{(1,6]}} (F_K + 3 s.e.) = {worst:.5f} < beta_odd = {BETA_ODD:.5f}  "
+        f"(the upper bound itself clears the peak)"
+    )
 
     # (iv) the tail s -> infinity: F decreases to sqrt(pi)/2, staying well below beta_odd (MC, +- s.e.).
     print(f"\n[iv] tail  s -> infinity:  F(s) decreases to sqrt(pi)/2 = {TAIL:.5f} < beta_odd.")
@@ -308,17 +335,26 @@ def main() -> int:
         print(f"     {s:6.1f} {v:9.5f}+-{se:.4f} {v - TAIL:16.5f}")
     tail_ok = TAIL < BETA_ODD and far_max < BETA_ODD
     ok &= tail_ok
-    print(f"     => F(s) < {far_max:.4f} for all s>=3 (+>3 s.e.), trending to sqrt(pi)/2 < beta_odd "
-          f"(margin {BETA_ODD - TAIL:.4f})   {'ok' if tail_ok else 'FAIL'}")
+    print(
+        f"     => F(s) < {far_max:.4f} for all s>=3 (+>3 s.e.), trending to sqrt(pi)/2 < beta_odd "
+        f"(margin {BETA_ODD - TAIL:.4f})   {'ok' if tail_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 90)
-    print("RESULT:", (
-        "PASS -- the variance-floor upper bound F_K >= F clears beta_odd on (1,6], F decays to sqrt(pi)/2\n"
-        "         in the tail, and F(1)=beta_odd is the two-copy peak: max_{s>=1} F(s) = F(1) = beta_odd."
-    ) if ok else "FAIL")
-    print("Rigor: the bound (*) and the tail limit sqrt(pi)/2 are PROVED; the finite F_K < beta_odd on the\n"
-          "window is VALIDATED by seeded Monte-Carlo (upper conf. bound) + a deterministic FFT cross-check.\n"
-          "See the header ledger for the residual (interval-arithmetic enclosure of F_K).")
+    print(
+        "RESULT:",
+        (
+            "PASS -- the variance-floor upper bound F_K >= F clears beta_odd on (1,6], F decays to sqrt(pi)/2\n"
+            "         in the tail, and F(1)=beta_odd is the two-copy peak: max_{s>=1} F(s) = F(1) = beta_odd."
+        )
+        if ok
+        else "FAIL",
+    )
+    print(
+        "Rigor: the bound (*) and the tail limit sqrt(pi)/2 are PROVED; the finite F_K < beta_odd on the\n"
+        "window is VALIDATED by seeded Monte-Carlo (upper conf. bound) + a deterministic FFT cross-check.\n"
+        "See the header ledger for the residual (interval-arithmetic enclosure of F_K)."
+    )
     return 0 if ok else 1
 
 

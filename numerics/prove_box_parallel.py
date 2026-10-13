@@ -25,6 +25,7 @@ threaded; there is no certified GPU arithmetic, so process-level parallelism is 
 from __future__ import annotations
 
 import argparse
+import functools
 import importlib.util
 import sys
 import time
@@ -34,8 +35,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CERT_PATH = ROOT / "numerics" / "verify_dagger_continuum.py"
 RUNNER_PATH = ROOT / "numerics" / "run_dagger_continuum_tiling.py"
-
-_CERT = None
 
 
 def _load_module(name: str, path: Path):
@@ -56,9 +55,13 @@ def _load_cert():
     return cert
 
 
+@functools.cache
+def _worker_cert():
+    return _load_cert()
+
+
 def _init() -> None:
-    global _CERT
-    _CERT = _load_cert()
+    _worker_cert()
 
 
 def eval_node(
@@ -66,7 +69,7 @@ def eval_node(
 ) -> tuple[float, float, float, float, float, float]:
     """Head and middle region contributions at one amplitude node, as (mid, rad) floats."""
     a1, a3, head_res, mid_slices = args
-    cert = _CERT
+    cert = _worker_cert()
     b = cert.b_of(a1, a3)
     nb, nt, ordr = head_res
     hv = cert.head_majorant_point(a1, a3, b, cert.T1, nb, nt, ordr)
@@ -81,8 +84,11 @@ def prove_box_parallel(a1c: float, a3c: float, h: float, preset: str, jobs: int)
 
     res = runner.PRESETS[preset]
     kspan, delta = res.kspan, h
-    coords = [(a1c + p * delta, a3c + q * delta) for p in range(-kspan, kspan + 1)
-              for q in range(-kspan, kspan + 1)]
+    coords = [
+        (a1c + p * delta, a3c + q * delta)
+        for p in range(-kspan, kspan + 1)
+        for q in range(-kspan, kspan + 1)
+    ]
     payload = [(a1, a3, res.head_res, res.mid_slices) for (a1, a3) in coords]
 
     t0 = time.time()
@@ -103,8 +109,15 @@ def prove_box_parallel(a1c: float, a3c: float, h: float, preset: str, jobs: int)
     mid_sup = cert.build_stencil(mid_lookup, a1c, a3c, h, delta, kspan=kspan).sup()
 
     a1min, a3min = a1c - h, a3c - h
-    bmin = min((bb for d1 in (-h, 0, h) for d3 in (-h, 0, h)
-                if (bb := cert.b_of(a1c + d1, a3c + d3)) is not None), default=cert.b_of(a1c - h, a3c - h))
+    bmin = min(
+        (
+            bb
+            for d1 in (-h, 0, h)
+            for d3 in (-h, 0, h)
+            if (bb := cert.b_of(a1c + d1, a3c + d3)) is not None
+        ),
+        default=cert.b_of(a1c - h, a3c - h),
+    )
     minD, qmin = cert._box_minD_and_qmin(a1c, a3c, h)
     tail = cert.tail_modulus_box(a1min, a3min, bmin, cert.T2, res.tail_segs, res.tail_far)
     mgt = cert.mg_tail_box(qmin, cert.T2)
@@ -112,12 +125,22 @@ def prove_box_parallel(a1c: float, a3c: float, h: float, preset: str, jobs: int)
 
     kd = cert.K_STAR * minD
     upper = (head_sup + mid_sup + tail_sup) / kd
-    lam = [cert.lam_conc(a1c + d1, a3c + d3, bb) for d1 in (-h, 0, h) for d3 in (-h, 0, h)
-           if (bb := cert.b_of(a1c + d1, a3c + d3)) is not None]
+    lam = [
+        cert.lam_conc(a1c + d1, a3c + d3, bb)
+        for d1 in (-h, 0, h)
+        for d3 in (-h, 0, h)
+        if (bb := cert.b_of(a1c + d1, a3c + d3)) is not None
+    ]
 
-    print(f"box ({a1c},{a3c},h={h}) preset={preset} jobs={jobs} lambda=[{min(lam):.4f},{max(lam):.4f}]")
-    print(f"  {len(coords)} stencil nodes in {eval_dt:.0f}s  (vs serial ~{len(coords)} x single-node)")
-    print(f"  head/K*D = {head_sup / kd:+.5f}   mid/K*D = {mid_sup / kd:+.5f}   tail/K*D = {tail_sup / kd:+.5f}")
+    print(
+        f"box ({a1c},{a3c},h={h}) preset={preset} jobs={jobs} lambda=[{min(lam):.4f},{max(lam):.4f}]"
+    )
+    print(
+        f"  {len(coords)} stencil nodes in {eval_dt:.0f}s  (vs serial ~{len(coords)} x single-node)"
+    )
+    print(
+        f"  head/K*D = {head_sup / kd:+.5f}   mid/K*D = {mid_sup / kd:+.5f}   tail/K*D = {tail_sup / kd:+.5f}"
+    )
     print(f"  minD = {minD:.5f}   UPPER = {upper:.5f}   PROVES (<1) = {upper < 1.0}")
 
 

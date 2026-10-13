@@ -85,7 +85,7 @@ def sin_coords(n: int) -> list[list[int]]:
 def integer_left_kernel(c: list[list[int]]) -> list[list[int]]:
     """Z-basis of {k in Z^m : sum_r k_r C[r] = 0} by Euclidean column reduction (unimodular, exact)."""
     m, d = len(c), len(c[0])
-    a = [[c[r][col] for r in range(m)] for col in range(d)]   # C^T : d x m
+    a = [[c[r][col] for r in range(m)] for col in range(d)]  # C^T : d x m
     v = [[1 if i == j else 0 for j in range(m)] for i in range(m)]
     col = 0
     for prow in range(d):
@@ -155,7 +155,7 @@ def a_over_u(n: int, starts: int = 15) -> float:
     m = 2 * n
     phi = cyclotomic(m, _CYC)
     rows = []
-    for rr in r:
+    for rr in range(1, n):
         hi = power_mod(rr % m, phi)
         lo = power_mod((m - rr) % m, phi)
         rows.append([h - lv for h, lv in zip(hi, lo, strict=True)])
@@ -199,14 +199,18 @@ def main() -> int:
             print(f"    {n:>4} {crit!s:>10} {ratio:>8.4f} {agree!s:>6} {cls:>10}")
     print(f"    -> criterion matches optimization for all N in 3..40: {'OK' if ok else 'FAIL'}")
 
-    print("\n(B) N=6 worked example: relation 2 omega_1 - omega_3 = 0, sum = 1 (not 0 mod 4) => A_6 < U_6")
+    print(
+        "\n(B) N=6 worked example: relation 2 omega_1 - omega_3 = 0, sum = 1 (not 0 mod 4) => A_6 < U_6"
+    )
     ker6 = integer_left_kernel(sin_coords(6))
     print(f"    Lambda_6 basis = {ker6}, coeff sums mod 4 = {[sum(k) % 4 for k in ker6]}")
     b_ok = any(sum(k) % 4 != 0 for k in ker6)
     ok &= b_ok
     print(f"    -> a relation with sum != 0 mod 4 exists, so A_6 < U_6: {'OK' if b_ok else 'FAIL'}")
 
-    print(f"\n(C) Composite N reaching the ceiling despite dependent frequencies: {extra if extra else 'none in 3..40'}")
+    print(
+        f"\n(C) Composite N reaching the ceiling despite dependent frequencies: {extra if extra else 'none in 3..40'}"
+    )
     print("    (the criterion is strictly weaker than full independence in principle; the separate")
     print("    rotated-root obstruction proves no composite non-2^m N satisfies it.)")
 
@@ -218,20 +222,34 @@ def main() -> int:
             if not (is_prime(n) or (n & (n - 1)) == 0):
                 comp_reach.append(n)
     pure = all(is_prime(n) or (n & (n - 1)) == 0 for n in reach)
-    print(f"    ceiling reached for {len(reach)} values; composites among them: {comp_reach if comp_reach else 'NONE'}")
-    print(f"    -> finite scan cross-checks the theorem: prime/2^m only on N<=160: {'OK' if pure else 'COMPOSITE FOUND'}")
-    print("    The mod-4 criterion plus the rotated-root obstruction explain why only prime / 2^m saturate.")
+    print(
+        f"    ceiling reached for {len(reach)} values; composites among them: {comp_reach if comp_reach else 'NONE'}"
+    )
+    print(
+        f"    -> finite scan cross-checks the theorem: prime/2^m only on N<=160: {'OK' if pure else 'COMPOSITE FOUND'}"
+    )
+    print(
+        "    The mod-4 criterion plus the rotated-root obstruction explain why only prime / 2^m saturate."
+    )
 
-    print("\n(E) Even N: the antipodal node j=N/2 (target phi_r=pi/2+pi r) never enlarges the locus")
+    print(
+        "\n(E) Even N: the antipodal node j=N/2 (target phi_r=pi/2+pi r) never enlarges the locus"
+    )
     enlarge = [n for n in range(4, 161, 2) if antipodal_reached(n) and not ceiling_reached(n)]
     e_ok = not enlarge
     ok &= e_ok
-    print(f"    antipodal-only saturators (nodeN2 but not node0), N<=160: {enlarge if enlarge else 'NONE'}")
-    print(f"    -> for even N both conditions coincide, so A_N=U_N locus is unchanged: {'OK' if e_ok else 'FAIL'}")
+    print(
+        f"    antipodal-only saturators (nodeN2 but not node0), N<=160: {enlarge if enlarge else 'NONE'}"
+    )
+    print(
+        f"    -> for even N both conditions coincide, so A_N=U_N locus is unchanged: {'OK' if e_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 74)
     print("RESULT:", "CEILING CRITERION VERIFIED" if ok else "CHECK FAILED")
-    print("A_N = U_N iff every integer spectral relation has coefficient-sum divisible by 4 -- a sharp,")
+    print(
+        "A_N = U_N iff every integer spectral relation has coefficient-sum divisible by 4 -- a sharp,"
+    )
     print("arithmetic criterion refining the independence test.")
     print("=" * 74)
     return 0 if ok else 1

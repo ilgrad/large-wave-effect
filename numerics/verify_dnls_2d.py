@@ -81,21 +81,29 @@ def main() -> int:
         print(f"    {g:>6.1f} {pf[g]:>9.1f} {regime:>10}")
     b_ok = pf[2.0] > 60 and pf[16.0] < 8 and pf[16.0] < pf[2.0]
     ok &= b_ok
-    print(f"    -> transition near the 2D band top gamma~8: dispersed (P~{pf[2.0]:.0f}) -> trapped "
-          f"(P~{pf[16.0]:.1f}): {'OK' if b_ok else 'FAIL'}")
+    print(
+        f"    -> transition near the 2D band top gamma~8: dispersed (P~{pf[2.0]:.0f}) -> trapped "
+        f"(P~{pf[16.0]:.1f}): {'OK' if b_ok else 'FAIL'}"
+    )
 
     r2 = evolve(n, gamma=16.0, amp=1.0, dt=dt, steps=steps)
     profs = np.array(r2["profiles"])
     var = float(np.max(np.std(profs, axis=0)))
     c_ok = var < 0.05
     ok &= c_ok
-    print(f"\n(C) 2D discrete breather (gamma=16): max temporal std of |psi| = {var:.4f} "
-          f"(stationary if <0.05) {'OK' if c_ok else 'FAIL'}")
+    print(
+        f"\n(C) 2D discrete breather (gamma=16): max temporal std of |psi| = {var:.4f} "
+        f"(stationary if <0.05) {'OK' if c_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 70)
     print("RESULT:", "2D DNLS BREATHER VERIFIED" if ok else "CHECK FAILED")
-    print("Nonlinearity self-traps a 2D discrete breather above the 2D band top (gamma~8); the linear")
-    print("large wave, by contrast, is bounded for d>=2 (Part I). Nonlinearity restores 2D localization.")
+    print(
+        "Nonlinearity self-traps a 2D discrete breather above the 2D band top (gamma~8); the linear"
+    )
+    print(
+        "large wave, by contrast, is bounded for d>=2 (Part I). Nonlinearity restores 2D localization."
+    )
     print("=" * 70)
     return 0 if ok else 1
 

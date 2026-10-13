@@ -40,17 +40,25 @@ def main() -> int:
     ring_slope = float(np.polyfit(log(ns), rc, 1)[0])
 
     c_seg, c_ring = 4 / pi**2, 1 / pi
-    print(f"[F92/AAD21 Table 10.1]  splash P_N slope d/d(lnN) = {seg_slope:.4f}   (4/pi^2 = {c_seg:.4f})")
-    print(f"[our ring]   U_N slope d/d(lnN)              = {ring_slope:.4f}   (1/pi   = {c_ring:.4f})")
-    print(f"  segment/ring constant ratio = {seg_slope / ring_slope:.3f}  (4/pi^2 : 1/pi = {c_seg / c_ring:.3f})")
+    print(
+        f"[F92/AAD21 Table 10.1]  splash P_N slope d/d(lnN) = {seg_slope:.4f}   (4/pi^2 = {c_seg:.4f})"
+    )
+    print(
+        f"[our ring]   U_N slope d/d(lnN)              = {ring_slope:.4f}   (1/pi   = {c_ring:.4f})"
+    )
+    print(
+        f"  segment/ring constant ratio = {seg_slope / ring_slope:.3f}  (4/pi^2 : 1/pi = {c_seg / c_ring:.3f})"
+    )
 
-    seg_ok = abs(seg_slope - c_seg) < 0.02            # table grows at the segment constant
-    ring_ok = abs(ring_slope - c_ring) < 0.01         # ring ceiling grows at 1/pi
-    distinct = seg_slope - ring_slope > 0.05          # the two regimes are genuinely different
+    seg_ok = abs(seg_slope - c_seg) < 0.02  # table grows at the segment constant
+    ring_ok = abs(ring_slope - c_ring) < 0.01  # ring ceiling grows at 1/pi
+    distinct = seg_slope - ring_slope > 0.05  # the two regimes are genuinely different
     ok = seg_ok and ring_ok and distinct
 
     print("=" * 70)
-    print("RESULT:", "PASS -- F92 table is the segment 4/pi^2 regime; ring is 1/pi" if ok else "FAIL")
+    print(
+        "RESULT:", "PASS -- F92 table is the segment 4/pi^2 regime; ring is 1/pi" if ok else "FAIL"
+    )
     return 0 if ok else 1
 
 

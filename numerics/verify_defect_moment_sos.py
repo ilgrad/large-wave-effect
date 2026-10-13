@@ -109,6 +109,7 @@ def build_basis(spec: str, c: np.ndarray) -> np.ndarray:
                     seen.setdefault(d, None)
     elif spec.startswith("ball:"):
         d = int(spec.split(":")[1])
+
         # enumerate Z^M lattice points with L1 norm <= d by recursion on remaining budget
         def rec(idx: int, budget: int, acc: list[int]) -> None:
             if idx == big_m:
@@ -159,7 +160,9 @@ def solve_moment_sos(
         return diff_index[key], (s < 0)
 
     rows_a = basis.tolist()
-    diffs = [[tuple(ai - bi for ai, bi in zip(a, b_, strict=True)) for b_ in rows_a] for a in rows_a]
+    diffs = [
+        [tuple(ai - bi for ai, bi in zip(a, b_, strict=True)) for b_ in rows_a] for a in rows_a
+    ]
     for row in diffs:
         for d in row:
             get(d)
@@ -310,7 +313,9 @@ def n_odd_prime_factors(n: int) -> int:
 
 def main() -> int:
     print("=" * 104)
-    print("Trigonometric moment-SOS (Lasserre) certified UPPER bounds on A_N  ->  defect lower bound U_N-A_N")
+    print(
+        "Trigonometric moment-SOS (Lasserre) certified UPPER bounds on A_N  ->  defect lower bound U_N-A_N"
+    )
     print("=" * 104)
 
     # (1) Validation: N=5 (prime, expect A_5 = U_5, defect ~ 0) and N=6 (expect A_6 ~ 0.559 < U_6).
@@ -321,7 +326,9 @@ def main() -> int:
     # (2) Push.  The "obj" basis keeps |B| ~ m+1 and reaches every target including N=105 (M=24, omega=3);
     # "obj+" / "obj+:R" tighten where the matrix stays a few hundred wide.  Grid certificate gave defect >=
     # 0.057(N=9), 0.030(N=12), 0.082(N=15); we compare.
-    print("\n[push]  best certified defect per N (larger basis = tighter upper bound = larger defect LB)")
+    print(
+        "\n[push]  best certified defect per N (larger basis = tighter upper bound = larger defect LB)"
+    )
     runs = [
         (9, "obj+"),
         (12, "obj+"),
@@ -355,14 +362,20 @@ def main() -> int:
     if 3 in best and 2 in best:
         d3, d2 = best[3]["defect_lb"], best[2]["defect_lb"]
         if d3 > d2:
-            print(f"  => omega=3 ({d3:+.4f}) > omega=2 ({d2:+.4f}): defect GROWTH certified rigorously.")
+            print(
+                f"  => omega=3 ({d3:+.4f}) > omega=2 ({d2:+.4f}): defect GROWTH certified rigorously."
+            )
         else:
             print(
                 f"  => omega=3 ({d3:+.4f}) does NOT exceed omega=2 ({d2:+.4f}): the omega=3 relaxation is not "
                 f"tight enough at feasible basis size; growth NOT certified (see report)."
             )
-    print("\nBounds: SCS at eps=1e-8.  A_N <= (SDP value) is a valid upper bound at solver tolerance (min_eig")
-    print("reports primal-feasibility violation).  A fully rigorous bound needs rational rounding of the dual")
+    print(
+        "\nBounds: SCS at eps=1e-8.  A_N <= (SDP value) is a valid upper bound at solver tolerance (min_eig"
+    )
+    print(
+        "reports primal-feasibility violation).  A fully rigorous bound needs rational rounding of the dual"
+    )
     print("SOS multipliers -- not done here; this is a numerically-certified SDP.")
     print("=" * 104)
     print("RESULT: MOMENT-SOS BOUNDS COMPUTED (numerically certified; omega-growth not certified)")

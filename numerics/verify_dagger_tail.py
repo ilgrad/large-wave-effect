@@ -86,10 +86,14 @@ from numpy import cos, pi, sin, sqrt
 from scipy.integrate import quad
 from scipy.special import ellipk, j0, jn_zeros
 
+print = functools.partial(print, flush=True)
+
 J01 = float(jn_zeros(0, 1)[0])  # 2.404826..., first positive zero of J0
 ROOT = sqrt(2 / pi)
 A1_CLOSED = 2.0**2.5 / pi**1.5  # = (4/pi) sqrt(2/pi) = 1.0158982; endpoint ring (omega = 1)
-A2_CLOSED = 2.0**1.75 / pi**1.5  # = (2/pi)(sqrt2/pi) sqrt(2 pi/sqrt2) = 0.6040567; bulk ring (omega = sqrt2)
+A2_CLOSED = (
+    2.0**1.75 / pi**1.5
+)  # = (2/pi)(sqrt2/pi) sqrt(2 pi/sqrt2) = 0.6040567; bulk ring (omega = sqrt2)
 
 
 def _h1() -> float:
@@ -97,7 +101,9 @@ def _h1() -> float:
     half = pi / 2
     from scipy.special import ellipe
 
-    return quad(lambda p: sqrt(1 + cos(p) ** 2) * ellipe(1 / (1 + cos(p) ** 2)), 0, half)[0] / half**2
+    return (
+        quad(lambda p: sqrt(1 + cos(p) ** 2) * ellipe(1 / (1 + cos(p) ** 2)), 0, half)[0] / half**2
+    )
 
 
 H1 = _h1()
@@ -150,14 +156,18 @@ def excess_split(ev: np.ndarray, od: np.ndarray, n_theta: int = 4000, t_max: flo
 
 # --------------------------------------------------------------------------------------------------------
 def main() -> int:
-    global print
-    print = functools.partial(print, flush=True)
     ok = True
     print("=" * 100)
-    print("(dagger) the SIGNED Bessel-ring TAIL of the Kluyver excess: structure, Abel bound, #copies decay")
-    print(f"  K_star = (h(1)-sqrt(pi)/2)/2 = {K_STAR:.10f}    h(1) = {H1:.10f}    j_(0,1) = {J01:.7f}")
-    print(f"  ring amplitudes (closed form):  A1 = 2^(5/2)/pi^(3/2) = {A1_CLOSED:.7f}   "
-          f"A2 = 2^(7/4)/pi^(3/2) = {A2_CLOSED:.7f}")
+    print(
+        "(dagger) the SIGNED Bessel-ring TAIL of the Kluyver excess: structure, Abel bound, #copies decay"
+    )
+    print(
+        f"  K_star = (h(1)-sqrt(pi)/2)/2 = {K_STAR:.10f}    h(1) = {H1:.10f}    j_(0,1) = {J01:.7f}"
+    )
+    print(
+        f"  ring amplitudes (closed form):  A1 = 2^(5/2)/pi^(3/2) = {A1_CLOSED:.7f}   "
+        f"A2 = 2^(7/4)/pi^(3/2) = {A2_CLOSED:.7f}"
+    )
     print("=" * 100)
 
     # ----------------------------------------------------------------------------------------------------
@@ -171,11 +181,12 @@ def main() -> int:
     def M_hp(t):
         return (2 / mp.pi) * mp.quad(
             lambda th: mp.besselj(0, t * mp.cos(th)) * mp.besselj(0, t * mp.sin(th)),
-            [0, half_hp], maxdegree=6,
+            [0, half_hp],
+            maxdegree=6,
         )
 
     def integ_hp(t):
-        return (mp.e ** (-t**2 / 4) - M_hp(t)) / t**2
+        return (mp.e ** (-(t**2) / 4) - M_hp(t)) / t**2
 
     # coarse panel breakpoints suffice: at maxdegree 4 this matches the 18-breakpoint maxdeg-5 value to 1e-14
     tail_hp = mp.quad(integ_hp, [float(j01_hp), 6, 12, 20, 30, 50, 100], maxdegree=4)
@@ -183,11 +194,16 @@ def main() -> int:
     R_head = head_hp / 2 / mp.mpf(K_STAR)
     R_tail = tail_hp / 2 / mp.mpf(K_STAR)
     R_tot = (head_hp + tail_hp) / 2 / mp.mpf(K_STAR)
-    print(f"     R_head/K* = {mp.nstr(R_head, 8)}   R_tail/K* = {mp.nstr(R_tail, 8)}   "
-          f"sum = {mp.nstr(R_tot, 10)}")
+    print(
+        f"     R_head/K* = {mp.nstr(R_head, 8)}   R_tail/K* = {mp.nstr(R_tail, 8)}   "
+        f"sum = {mp.nstr(R_tot, 10)}"
+    )
     above = R_tail > mp.mpf("0.55")
-    verdict = (f"ABOVE 0.5500 (round target literally FALSE by {mp.nstr(R_tail - mp.mpf('0.55'), 2)})"
-               if above else "below 0.5500")
+    verdict = (
+        f"ABOVE 0.5500 (round target literally FALSE by {mp.nstr(R_tail - mp.mpf('0.55'), 2)})"
+        if above
+        else "below 0.5500"
+    )
     print(f"     => the EXACT tail is {mp.nstr(R_tail, 6)} K_star, which is {verdict}.")
     t0_ok = abs(float(R_tot) - 1.0) < 1e-4 and abs(float(R_tail) - 0.55006) < 1e-3 and above
     ok &= t0_ok
@@ -196,41 +212,60 @@ def main() -> int:
     # ----------------------------------------------------------------------------------------------------
     # (T1) the two-frequency ring asymptotic, certified to rms ~7e-7.
     # ----------------------------------------------------------------------------------------------------
-    print("\n(T1) two-frequency ring asymptotic  M(t)=t^(-3/2)[A1 cos(t-pi/4)+A2 cos(sqrt2 t-pi/4)]+O(t^(-5/2)):")
+    print(
+        "\n(T1) two-frequency ring asymptotic  M(t)=t^(-3/2)[A1 cos(t-pi/4)+A2 cos(sqrt2 t-pi/4)]+O(t^(-5/2)):"
+    )
     n_theta = 16000
-    c, s = _trig(n_theta // 4)  # 0..2pi; equal pair below uses [0,2pi] mean (same as pi/2 by symmetry)
+    c, s = _trig(
+        n_theta // 4
+    )  # 0..2pi; equal pair below uses [0,2pi] mean (same as pi/2 by symmetry)
     M = make_M(np.array([1.0]), np.array([1.0]), c, s)
     ts = np.linspace(20, 120, 18000)
     Mv = np.array([M(t) for t in ts])
     s2 = sqrt(2)
-    X = np.column_stack([ts**-1.5 * cos(ts), ts**-1.5 * sin(ts),
-                         ts**-1.5 * cos(s2 * ts), ts**-1.5 * sin(s2 * ts)])
+    X = np.column_stack(
+        [ts**-1.5 * cos(ts), ts**-1.5 * sin(ts), ts**-1.5 * cos(s2 * ts), ts**-1.5 * sin(s2 * ts)]
+    )
     (a1, b1, a2, b2), *_ = np.linalg.lstsq(X, Mv, rcond=None)
     amp1, amp2 = sqrt(a1**2 + b1**2), sqrt(a2**2 + b2**2)
     rms = float(np.sqrt(np.mean((Mv - X @ np.array([a1, b1, a2, b2])) ** 2)))
-    print(f"     fit on [20,120]: A1 = {amp1:.5f} (closed {A1_CLOSED:.5f}), A2 = {amp2:.5f} "
-          f"(closed {A2_CLOSED:.5f}); residual rms = {rms:.1e}")
+    print(
+        f"     fit on [20,120]: A1 = {amp1:.5f} (closed {A1_CLOSED:.5f}), A2 = {amp2:.5f} "
+        f"(closed {A2_CLOSED:.5f}); residual rms = {rms:.1e}"
+    )
     # the two-term model omits the O(t^{-5/2}) ring corrections (amps ~0.38, 0.68), so the honest residual
     # over [20,120] is ~2e-5, not machine zero; the leading amplitudes still match the closed forms to 4e-4.
     t1_ok = abs(amp1 - A1_CLOSED) < 1e-3 and abs(amp2 - A2_CLOSED) < 1e-3 and rms < 5e-5
     ok &= t1_ok
     # the envelope (sup |M| t^3/2) is below A1+A2 but the modulus bound A1+A2 already overshoots the signed value
     env = float(np.max(np.abs(Mv) * ts**1.5))
-    print(f"     measured envelope sup|M|t^(3/2) = {env:.4f} (< A1+A2 = {A1_CLOSED + A2_CLOSED:.4f}); the two")
-    print(f"     frequencies omega=1 and omega=sqrt2 are the ENDPOINT and BULK rings.   {'ok' if t1_ok else 'FAIL'}")
+    print(
+        f"     measured envelope sup|M|t^(3/2) = {env:.4f} (< A1+A2 = {A1_CLOSED + A2_CLOSED:.4f}); the two"
+    )
+    print(
+        f"     frequencies omega=1 and omega=sqrt2 are the ENDPOINT and BULK rings.   {'ok' if t1_ok else 'FAIL'}"
+    )
 
     # ----------------------------------------------------------------------------------------------------
     # (T1b) Weber-Schafheitlin s=0 closed form (the only Bessel-product integral with an elementary form).
     # ----------------------------------------------------------------------------------------------------
-    print("\n(T1b) Weber-Schafheitlin s=0:  int_0^inf J0(a t)J0(b t) dt = (2/(pi a)) K(b/a), a>=b>0:")
+    print(
+        "\n(T1b) Weber-Schafheitlin s=0:  int_0^inf J0(a t)J0(b t) dt = (2/(pi a)) K(b/a), a>=b>0:"
+    )
     ws_ok = True
     for a, b in [(1.0, 0.5), (1.3, 0.8), (2.0, 0.2)]:
         lhs = quad(lambda t, a=a, b=b: j0(a * t) * j0(b * t), 0, 600, limit=3000)[0]
         rhs = (2 / (pi * a)) * ellipk((b / a) ** 2)  # scipy ellipk takes m=k^2
-        ws_ok &= abs(lhs - rhs) < 3e-3  # the integrand decays like t^-1; the truncation leaves ~1e-3
-        print(f"     a={a}, b={b}: numeric int = {lhs:.6f}   (2/pi a)K(b/a) = {rhs:.6f}   |diff| = {abs(lhs - rhs):.1e}")
+        ws_ok &= (
+            abs(lhs - rhs) < 3e-3
+        )  # the integrand decays like t^-1; the truncation leaves ~1e-3
+        print(
+            f"     a={a}, b={b}: numeric int = {lhs:.6f}   (2/pi a)K(b/a) = {rhs:.6f}   |diff| = {abs(lhs - rhs):.1e}"
+        )
     ok &= ws_ok
-    print(f"     => the s=0 form holds (residual is slow t^(-1) tail truncation).   {'ok' if ws_ok else 'FAIL'}")
+    print(
+        f"     => the s=0 form holds (residual is slow t^(-1) tail truncation).   {'ok' if ws_ok else 'FAIL'}"
+    )
 
     # ----------------------------------------------------------------------------------------------------
     # (T2) the SIGNED ring-by-ring (Abel) bound -- keeps the sign, far below the modulus bound.
@@ -239,37 +274,64 @@ def main() -> int:
     # tail = int_{j01}^inf Mg/t^2 - int_{j01}^inf M/t^2;  the M-integral split at t* with the head EXACT and
     # the ring tail [t*,inf) bounded by Abel.  As t* -> inf the Abel term -> 0 and the bound -> the EXACT tail:
     # the signed bound is ASYMPTOTICALLY EXACT (unlike the modulus bound, frozen at ~1.27 K*).
-    Mg_tail = quad(lambda t: np.exp(-t**2 / 4) / t**2, J01, np.inf)[0]
-    true_tail = quad(lambda t: (np.exp(-t**2 / 4) - M(t)) / t**2, J01, 200, limit=600)[0] / 2 / K_STAR
-    print(f"     Mg-remnant int_(j01)^inf Mg/t^2 = {Mg_tail:.6f} (= {Mg_tail / 2 / K_STAR:.4f} K*);  "
-          f"true tail = {true_tail:.5f} K*")
-    print("     Abel bound on the ring tail: |int_{t*}^inf A_i t^(-7/2) cos(omega_i t-pi/4) dt| <= A_i t*^(-5/2)/omega_i")
+    Mg_tail = quad(lambda t: np.exp(-(t**2) / 4) / t**2, J01, np.inf)[0]
+    true_tail = (
+        quad(lambda t: (np.exp(-(t**2) / 4) - M(t)) / t**2, J01, 200, limit=600)[0] / 2 / K_STAR
+    )
+    print(
+        f"     Mg-remnant int_(j01)^inf Mg/t^2 = {Mg_tail:.6f} (= {Mg_tail / 2 / K_STAR:.4f} K*);  "
+        f"true tail = {true_tail:.5f} K*"
+    )
+    print(
+        "     Abel bound on the ring tail: |int_{t*}^inf A_i t^(-7/2) cos(omega_i t-pi/4) dt| <= A_i t*^(-5/2)/omega_i"
+    )
     print(f"     {'t*':>5} {'tail <=':>10} {'Abel term':>11}")
     bounds = []
     for tstar in (8.0, 12.0, 18.0, 26.0, 40.0, 60.0):
         I_head = quad(lambda t: M(t) / t**2, J01, tstar, limit=400)[0]
-        abel = A1_CLOSED * tstar**-3.5 / 1.0 + A2_CLOSED * tstar**-3.5 / s2  # g_i(t*)/omega_i, g_i=A_i t^{-7/2}
+        abel = (
+            A1_CLOSED * tstar**-3.5 / 1.0 + A2_CLOSED * tstar**-3.5 / s2
+        )  # g_i(t*)/omega_i, g_i=A_i t^{-7/2}
         ub = (Mg_tail + abs(I_head) + abel) / 2 / K_STAR
         bounds.append(ub)
         print(f"     {tstar:>5.0f} {ub:>10.5f} {abel / 2 / K_STAR:>11.5f}")
     # modulus bound for contrast (the route PROVED insufficient):
-    mod_tail = (Mg_tail + (A1_CLOSED + A2_CLOSED) * quad(lambda t: t**-1.5 / t**2, J01, np.inf)[0]) / 2 / K_STAR
-    print(f"     => signed bound DECREASES to the exact {true_tail:.5f} K* as t*->inf (Abel term -> 0):"
-          f" ASYMPTOTICALLY EXACT.")
-    print(f"     [contrast] MODULUS bound |M|<=(A1+A2)t^(-3/2): tail <= {mod_tail:.4f} K* -- frozen, overshoots"
-          f" by {mod_tail / true_tail:.1f}x (discards both rings' sign).")
-    converges = all(bounds[i] > bounds[i + 1] for i in range(len(bounds) - 1)) and abs(bounds[-1] - true_tail) < 1e-3
+    mod_tail = (
+        (Mg_tail + (A1_CLOSED + A2_CLOSED) * quad(lambda t: t**-1.5 / t**2, J01, np.inf)[0])
+        / 2
+        / K_STAR
+    )
+    print(
+        f"     => signed bound DECREASES to the exact {true_tail:.5f} K* as t*->inf (Abel term -> 0):"
+        f" ASYMPTOTICALLY EXACT."
+    )
+    print(
+        f"     [contrast] MODULUS bound |M|<=(A1+A2)t^(-3/2): tail <= {mod_tail:.4f} K* -- frozen, overshoots"
+        f" by {mod_tail / true_tail:.1f}x (discards both rings' sign)."
+    )
+    converges = (
+        all(bounds[i] > bounds[i + 1] for i in range(len(bounds) - 1))
+        and abs(bounds[-1] - true_tail) < 1e-3
+    )
     t2_ok = converges and mod_tail > 0.9
     ok &= t2_ok
-    print(f"     => signed bound -> true tail (monotone), modulus bound frozen at {mod_tail:.2f} K*: "
-          f"{'ok' if t2_ok else 'FAIL'}")
-    print("     HONEST: the signed bound certifies tail <= 0.551 (e.g. 0.55027 at t*=26), NOT the round <= 0.550")
-    print("             -- the tail genuinely EXCEEDS 0.5500 (see T0).  The modulus route is PROVED insufficient.")
+    print(
+        f"     => signed bound -> true tail (monotone), modulus bound frozen at {mod_tail:.2f} K*: "
+        f"{'ok' if t2_ok else 'FAIL'}"
+    )
+    print(
+        "     HONEST: the signed bound certifies tail <= 0.551 (e.g. 0.55027 at t*=26), NOT the round <= 0.550"
+    )
+    print(
+        "             -- the tail genuinely EXCEEDS 0.5500 (see T0).  The modulus route is PROVED insufficient."
+    )
 
     # ----------------------------------------------------------------------------------------------------
     # (T3) the MONOTONE-IN-#COPIES magnitude decay (the structural payoff).
     # ----------------------------------------------------------------------------------------------------
-    print("\n(T3) tail vs #copies (balanced k-even + k-odd, equal amplitude): alternating, magnitude-decreasing:")
+    print(
+        "\n(T3) tail vs #copies (balanced k-even + k-odd, equal amplitude): alternating, magnitude-decreasing:"
+    )
     print(f"     {'k':>3} {'R_head/K*':>10} {'R_tail/K*':>10} {'|R_tail/K*|':>12}")
     mags = []
     seq = []
@@ -281,8 +343,10 @@ def main() -> int:
     mono = all(mags[i] > mags[i + 1] for i in range(len(mags) - 1))
     below = all(m <= 0.5501 for m in mags)
     alternating = all(seq[i] * seq[i + 1] < 0 for i in range(len(seq) - 1))
-    print(f"     |R_tail/K*| strictly decreasing in k? {mono};  all <= 0.5501? {below};  "
-          f"sign alternates? {alternating}")
+    print(
+        f"     |R_tail/K*| strictly decreasing in k? {mono};  all <= 0.5501? {below};  "
+        f"sign alternates? {alternating}"
+    )
     # envelope-exponent increment ~1/2 per added pair (the mechanism)
     c_big, s_big = _trig(8000)
 
@@ -291,38 +355,49 @@ def main() -> int:
         tg = np.linspace(25, 70, 3000)
         Mabs = np.abs([Mk(t) for t in tg])
         W = int(2 * pi / (tg[1] - tg[0]))
-        envv = np.array([Mabs[i:i + W].max() for i in range(0, len(Mabs) - W, W // 2)])
+        envv = np.array([Mabs[i : i + W].max() for i in range(0, len(Mabs) - W, W // 2)])
         tc = tg[: len(envv) * (W // 2) : W // 2][: len(envv)]
         return float(-np.polyfit(np.log(tc), np.log(envv), 1)[0])
 
     exps = [env_exponent(k) for k in (2, 3, 4, 5)]
     incs = [exps[i + 1] - exps[i] for i in range(len(exps) - 1)]
-    print(f"     envelope exponent a(k) for k=2..5: {[f'{e:.2f}' for e in exps]};  "
-          f"increments {[f'{d:.2f}' for d in incs]} (-> 1/2 per copy)")
+    print(
+        f"     envelope exponent a(k) for k=2..5: {[f'{e:.2f}' for e in exps]};  "
+        f"increments {[f'{d:.2f}' for d in incs]} (-> 1/2 per copy)"
+    )
     t3_ok = mono and below and alternating and all(0.4 < d < 0.62 for d in incs)
     ok &= t3_ok
-    print("     => the 2-copy pair is the worst case; adding balanced pairs SHRINKS |tail| (a(k) steepens by")
+    print(
+        "     => the 2-copy pair is the worst case; adding balanced pairs SHRINKS |tail| (a(k) steepens by"
+    )
     print(f"        ~1/2 per copy; endpoint th=0 carries J0(t)^k).   {'ok' if t3_ok else 'FAIL'}")
 
     # ----------------------------------------------------------------------------------------------------
     print("\n" + "=" * 100)
-    print("RESULT:", (
-        "PASS -- (T0) the EXACT geometric split is R_head=0.44994 K*, R_tail=0.55006 K* (sum 1.0000); the\n"
-        "        tail EXCEEDS 0.5500 (round target false by 6e-5).  (T1) M(t) is a SIGNED two-frequency ring\n"
-        "        sum with closed amplitudes A1=2^(5/2)/pi^(3/2)=1.0159 (endpoint, omega=1) and A2=2^(7/4)/\n"
-        "        pi^(3/2)=0.6041 (bulk, omega=sqrt2); the 2-term model fits M to rms 2e-5 (machine zero after\n"
-        "        adding the O(t^(-5/2)) ring corrections).  (T2) the Abel/2nd-mean-value\n"
-        "        SIGNED bound reproduces ~0.55 K* and is far below the modulus bound (~1.3 K*, the route\n"
-        "        PROVED insufficient) -- it certifies tail<=0.551, not the round 0.550.  (T3) over balanced\n"
-        "        k+k configs the tail is ALTERNATING and MAGNITUDE-DECREASING (0.55,-0.11,+0.054,-0.016,...),\n"
-        "        |tail|<=0.5501 for all k, exponent steepening ~1/2 per copy -- the 2-copy pair is the worst case."
-    ) if ok else "FAIL -- a checked invariant did not hold; see the failing block above.")
-    print("Rigor: PROVED = the closed-form ring amplitudes (Maxima dagger_tail_asymptotics.mac) and the Abel\n"
-          "       inequality.  CERTIFIED (high-precision numerics) = the 0.44994/0.55006 split, the two-\n"
-          "       frequency asymptotic, the alternating magnitude-decreasing #copies sequence.  RESIDUAL = the\n"
-          "       signed bound reproduces 0.55006 K* but does NOT certify the ROUND 0.55 (the tail genuinely\n"
-          "       exceeds it); a rigorous tail<=0.5501 needs an mpmath.iv enclosure of the finite head\n"
-          "       int_(j01)^(t*) M/t^2 + the Abel tail.  Monotonicity in #copies is VALIDATED, not proved.")
+    print(
+        "RESULT:",
+        (
+            "PASS -- (T0) the EXACT geometric split is R_head=0.44994 K*, R_tail=0.55006 K* (sum 1.0000); the\n"
+            "        tail EXCEEDS 0.5500 (round target false by 6e-5).  (T1) M(t) is a SIGNED two-frequency ring\n"
+            "        sum with closed amplitudes A1=2^(5/2)/pi^(3/2)=1.0159 (endpoint, omega=1) and A2=2^(7/4)/\n"
+            "        pi^(3/2)=0.6041 (bulk, omega=sqrt2); the 2-term model fits M to rms 2e-5 (machine zero after\n"
+            "        adding the O(t^(-5/2)) ring corrections).  (T2) the Abel/2nd-mean-value\n"
+            "        SIGNED bound reproduces ~0.55 K* and is far below the modulus bound (~1.3 K*, the route\n"
+            "        PROVED insufficient) -- it certifies tail<=0.551, not the round 0.550.  (T3) over balanced\n"
+            "        k+k configs the tail is ALTERNATING and MAGNITUDE-DECREASING (0.55,-0.11,+0.054,-0.016,...),\n"
+            "        |tail|<=0.5501 for all k, exponent steepening ~1/2 per copy -- the 2-copy pair is the worst case."
+        )
+        if ok
+        else "FAIL -- a checked invariant did not hold; see the failing block above.",
+    )
+    print(
+        "Rigor: PROVED = the closed-form ring amplitudes (Maxima dagger_tail_asymptotics.mac) and the Abel\n"
+        "       inequality.  CERTIFIED (high-precision numerics) = the 0.44994/0.55006 split, the two-\n"
+        "       frequency asymptotic, the alternating magnitude-decreasing #copies sequence.  RESIDUAL = the\n"
+        "       signed bound reproduces 0.55006 K* but does NOT certify the ROUND 0.55 (the tail genuinely\n"
+        "       exceeds it); a rigorous tail<=0.5501 needs an mpmath.iv enclosure of the finite head\n"
+        "       int_(j01)^(t*) M/t^2 + the Abel tail.  Monotonicity in #copies is VALIDATED, not proved."
+    )
     return 0 if ok else 1
 
 

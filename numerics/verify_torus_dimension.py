@@ -71,17 +71,23 @@ def main() -> int:
     sat_ok &= abs(incr2[-1]) < abs(incr2[0]) and abs(incr2[-1]) < 0.05
     sat_ok &= abs(incr3[-1]) < abs(incr3[0]) and abs(incr3[-1]) < 0.03
     ok &= sat_ok
-    print(f"    -> d=1 grows by (ln2)/pi each doubling; d=2,3 increments -> 0: "
-          f"{'OK' if sat_ok else 'FAIL'}")
+    print(
+        f"    -> d=1 grows by (ln2)/pi each doubling; d=2,3 increments -> 0: "
+        f"{'OK' if sat_ok else 'FAIL'}"
+    )
 
     print("\n(3) Bounded ceilings in d>=2 (A_N^{(d)} <= U_N^{(d)} by triangle ineq, unconditional)")
     u2 = ceiling(128, 2)
     u3 = ceiling(64, 3)
-    print(f"    d=2: U_128 = {u2:.4f}   d=3: U_64 = {u3:.4f}   (both O(1), vs d=1 U_128={ceiling(128, 1):.4f})")
+    print(
+        f"    d=2: U_128 = {u2:.4f}   d=3: U_64 = {u3:.4f}   (both O(1), vs d=1 U_128={ceiling(128, 1):.4f})"
+    )
 
     print("\n" + "=" * 66)
     print("RESULT:", "TORUS DIMENSION VERIFIED" if ok else "CHECK FAILED")
-    print("Ceiling order: ln N (d=1), O(1) (d>=2). The large-wave amplification is intrinsically 1D;")
+    print(
+        "Ceiling order: ln N (d=1), O(1) (d>=2). The large-wave amplification is intrinsically 1D;"
+    )
     print("on the 2-/3-torus the velocity Green's function is uniformly bounded (no large wave).")
     print("=" * 66)
     return 0 if ok else 1

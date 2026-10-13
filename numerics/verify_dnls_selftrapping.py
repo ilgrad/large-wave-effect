@@ -36,7 +36,9 @@ def participation(psi: np.ndarray) -> float:
 
 
 def hamiltonian(psi: np.ndarray, gamma: float) -> float:
-    return float(-np.sum(np.abs(np.roll(psi, -1) - psi) ** 2) + 0.5 * gamma * np.sum(np.abs(psi) ** 4))
+    return float(
+        -np.sum(np.abs(np.roll(psi, -1) - psi) ** 2) + 0.5 * gamma * np.sum(np.abs(psi) ** 4)
+    )
 
 
 def evolve(n: int, gamma: float, amp: float, dt: float, steps: int) -> dict:
@@ -54,8 +56,13 @@ def evolve(n: int, gamma: float, amp: float, dt: float, steps: int) -> dict:
             hdrift = max(hdrift, abs(hamiltonian(psi, gamma) - h0) / max(abs(h0), 1.0))
         if s >= steps - 5 * (steps // 20) and s % (steps // 20) == 0:
             profiles.append(np.abs(psi).copy())
-    return {"P": participation(psi), "ndrift": ndrift, "hdrift": hdrift,
-            "profiles": profiles, "final": np.abs(psi)}
+    return {
+        "P": participation(psi),
+        "ndrift": ndrift,
+        "hdrift": hdrift,
+        "profiles": profiles,
+        "final": np.abs(psi),
+    }
 
 
 def main() -> int:
@@ -83,8 +90,10 @@ def main() -> int:
     # weak gamma disperses (P large), strong gamma traps (P ~ O(1)); threshold near band top gamma~4
     b_ok = pf[1.0] > 20 and pf[12.0] < 2 and pf[12.0] < pf[1.0]
     ok &= b_ok
-    print(f"    -> transition near gamma~4 (band top): dispersed (P~{pf[1.0]:.0f}) -> trapped "
-          f"(P~{pf[12.0]:.1f}): {'OK' if b_ok else 'FAIL'}")
+    print(
+        f"    -> transition near gamma~4 (band top): dispersed (P~{pf[1.0]:.0f}) -> trapped "
+        f"(P~{pf[12.0]:.1f}): {'OK' if b_ok else 'FAIL'}"
+    )
 
     # (C) the trapped profile is stationary (discrete breather)
     r2 = evolve(n, gamma=8.0, amp=1.0, dt=dt, steps=steps)
@@ -92,12 +101,16 @@ def main() -> int:
     var = float(np.max(np.std(profs, axis=0)))  # max over sites of temporal std of |psi_j|
     c_ok = var < 0.05  # the localized hump is stationary in time
     ok &= c_ok
-    print(f"\n(C) Discrete breather (gamma=8): max temporal std of |psi_j| = {var:.4f} "
-          f"(stationary if <0.05) {'OK' if c_ok else 'FAIL'}")
+    print(
+        f"\n(C) Discrete breather (gamma=8): max temporal std of |psi_j| = {var:.4f} "
+        f"(stationary if <0.05) {'OK' if c_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 70)
     print("RESULT:", "DNLS SELF-TRAPPING VERIFIED" if ok else "CHECK FAILED")
-    print("Nonlinearity LOCALIZES: above threshold a single site self-traps into a stationary discrete")
+    print(
+        "Nonlinearity LOCALIZES: above threshold a single site self-traps into a stationary discrete"
+    )
     print("breather (P~O(1)), the dynamical opposite of the delocalized linear large wave (P~N).")
     print("=" * 70)
     return 0 if ok else 1

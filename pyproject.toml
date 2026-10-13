@@ -13,6 +13,15 @@ pythonpath = ["src"]
 testpaths = ["tests"]
 addopts = "-q"
 
+[tool.ty.src]
+# numerics/ are PEP 723 scripts that each declare their own dependencies, so they are
+# type-checked one by one against their own environments (`just types-scripts`).
+exclude = ["numerics/"]
+
+[tool.ty.analysis]
+# mpmath builds its number classes and their operators at run time, so its static types are wrong
+replace-imports-with-any = ["mpmath", "mpmath.**"]
+
 [tool.ruff]
 line-length = 100
 src = ["src", "tests"]

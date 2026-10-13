@@ -70,8 +70,10 @@ def power_mod(e: int, phi: list[int]) -> list[int]:
 def sin_rows(n: int) -> list[list[int]]:
     m = 2 * n
     phi = cyclotomic(m)
-    return [[h - lv for h, lv in zip(power_mod(r % m, phi), power_mod((m - r) % m, phi), strict=True)]
-            for r in range(1, n)]
+    return [
+        [h - lv for h, lv in zip(power_mod(r % m, phi), power_mod((m - r) % m, phi), strict=True)]
+        for r in range(1, n)
+    ]
 
 
 def rank_modp(rows: list[list[int]]) -> int:
@@ -160,10 +162,14 @@ def main() -> int:
         print(f"    {n:>4} {cls(n):>10} {u_ceiling(n):>7.4f} {au:>8.4f} {rr:>8.4f}")
     band = min(ratios) > 0.27 and max(ratios) / min(ratios) < 1.3
     ok &= band
-    print(f"    -> A_N/ln N in [{min(ratios):.3f}, {max(ratios):.3f}], ratio {max(ratios) / min(ratios):.2f}<1.3 "
-          f"(tight band away from 0 => Theta(ln N)): {'OK' if band else 'FAIL'}")
+    print(
+        f"    -> A_N/ln N in [{min(ratios):.3f}, {max(ratios):.3f}], ratio {max(ratios) / min(ratios):.2f}<1.3 "
+        f"(tight band away from 0 => Theta(ln N)): {'OK' if band else 'FAIL'}"
+    )
 
-    print("\n(B) Prefix budget L_pre(N) (heuristic, not a proven bound); L_pre/ln N bounded below for all N")
+    print(
+        "\n(B) Prefix budget L_pre(N) (heuristic, not a proven bound); L_pre/ln N bounded below for all N"
+    )
     print(f"    {'N':>4} {'class':>10} {'M(N)':>5} {'L_pre/lnN':>10}")
     worst = 1e9
     for n in (30, 60, 105, 120, 180, 210, 240, 252, 256, 300):
@@ -173,8 +179,10 @@ def main() -> int:
         print(f"    {n:>4} {cls(n):>10} {m:>5} {lp:>10.4f}")
     prefix_ok = worst > 0.2
     ok &= prefix_ok
-    print(f"    -> min L_pre/ln N = {worst:.3f} > 0.2 (incl. highly composite 210,240,2520-smooth): "
-          f"{'OK' if prefix_ok else 'FAIL'}")
+    print(
+        f"    -> min L_pre/ln N = {worst:.3f} > 0.2 (incl. highly composite 210,240,2520-smooth): "
+        f"{'OK' if prefix_ok else 'FAIL'}"
+    )
 
     print("\n(C) Ceiling constant U_N/ln N -> 1/pi = 0.3183")
     print(f"    {'N':>6} {'U_N/lnN':>9}")
@@ -187,7 +195,9 @@ def main() -> int:
     print("\n" + "=" * 78)
     print("RESULT:", "ORDER MAP VERIFIED" if ok else "CHECK FAILED")
     print("A_N/ln N is tightly banded and the prefix bound alone grows like c ln N: corroboration")
-    print("for the order theorem. The uniform lower bound gap is closed in verify_order_theorem.py.")
+    print(
+        "for the order theorem. The uniform lower bound gap is closed in verify_order_theorem.py."
+    )
     print("=" * 78)
     return 0 if ok else 1
 

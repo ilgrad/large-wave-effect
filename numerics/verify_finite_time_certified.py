@@ -31,7 +31,9 @@ import numpy as np
 from mpmath import iv
 
 FRAC = Fraction(4, 5)  # certify A_N(t*) >= 0.8 U_N  (eps = 0.2)
-SEARCH_MARGIN = 0.82  # locate the witness where u first exceeds this (cushion absorbs interval width)
+SEARCH_MARGIN = (
+    0.82  # locate the witness where u first exceeds this (cushion absorbs interval width)
+)
 TDENOM = 1 << 34  # rationalization grid for the witness time
 
 
@@ -52,7 +54,9 @@ def certify(n: int, t_star: float, dps: int = 60) -> tuple[bool, Fraction]:
     """Interval proof that u(t~) >= FRAC * U_N for a rational t~ near t_star (the verdict is the bool)."""
     iv.dps = dps
     tt_q = Fraction(round(t_star * TDENOM), TDENOM)
-    tt = iv.mpf(tt_q.numerator) / iv.mpf(tt_q.denominator)  # exact rational point as a thin interval
+    tt = iv.mpf(tt_q.numerator) / iv.mpf(
+        tt_q.denominator
+    )  # exact rational point as a thin interval
     pi = iv.pi
     u_iv = iv.mpf(0)
     cap_iv = iv.mpf(0)
@@ -80,7 +84,9 @@ def main() -> int:
     print("=" * 88)
     # generous horizons (recurrence time grows ~ exp(0.63 N)); keep N small so the witness stays modest
     horizons = {5: 40.0, 7: 120.0, 11: 1500.0, 13: 6000.0}
-    print(f"\n{'N':>3} {'U_N':>9} {'witness t~ (<= bound)':>22} {'cert. u(t~)/U_N':>17} {'verdict':>10}")
+    print(
+        f"\n{'N':>3} {'U_N':>9} {'witness t~ (<= bound)':>22} {'cert. u(t~)/U_N':>17} {'verdict':>10}"
+    )
     ok_all = True
     for n, tmax in horizons.items():
         cap, t_star = find_witness(n, tmax)
@@ -91,11 +97,19 @@ def main() -> int:
         ok, tt_q = certify(n, t_star)
         ok_all &= ok
         ratio, cap_disp = u_over_cap(n, float(tt_q))
-        print(f"{n:>3} {cap_disp:>9.4f} {float(tt_q):>22.5f} {ratio:>17.4f} "
-              f"{('PROVED' if ok else 'FAIL'):>10}")
-    print("\n  Reading: at the listed t~ the amplitude is rigorously >= 0.8 U_N, so the recurrence time")
-    print("  T_{0.2}(N) is at most that t~ -- an explicit finite reaching time, proved in interval arithmetic.")
-    print("  (The family rate T_eps ~ delta^{-m} stays open: the inhomogeneous target needs a Baker-type")
+        print(
+            f"{n:>3} {cap_disp:>9.4f} {float(tt_q):>22.5f} {ratio:>17.4f} "
+            f"{('PROVED' if ok else 'FAIL'):>10}"
+        )
+    print(
+        "\n  Reading: at the listed t~ the amplitude is rigorously >= 0.8 U_N, so the recurrence time"
+    )
+    print(
+        "  T_{0.2}(N) is at most that t~ -- an explicit finite reaching time, proved in interval arithmetic."
+    )
+    print(
+        "  (The family rate T_eps ~ delta^{-m} stays open: the inhomogeneous target needs a Baker-type"
+    )
     print("   Diophantine bound, not the homogeneous Dirichlet pigeonhole.)")
     print("\n" + "=" * 88)
     print("RESULT:", "FINITE-TIME UPPER BOUNDS CERTIFIED" if ok_all else "CHECK FAILED")

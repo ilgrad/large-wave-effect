@@ -13,6 +13,7 @@ distance-2 current -- the RHS of the staggered-momentum identity (paper, eq:stag
 formal/rocq/StaggeredCurrent.v, Rocq.)  This confirms it on the actual discrete ring flow (equalities hold
 up to aliasing ~ machine eps for t <~ N/5), and contrasts with the O(1) distance-1 current.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -38,7 +39,9 @@ def main() -> int:
     print("Staggered-current lemma:  Im(conj(a_n) a_{n+2}) = 0 along the linear DNLS flow")
     print("=" * 78)
     print(f"N={n_ring}; line approximation valid for t <~ N/5 = {n_ring // 5}")
-    print(f"{'t':>5} {'|a-closed|':>12} {'max|Im(a_n a_{n+2})|':>20} {'max|Im(a_n a_{n+1})|':>20} {'|F[a_lin]|':>11}")
+    print(
+        f"{'t':>5} {'|a-closed|':>12} {'max|Im(a_n a_{n+2})|':>20} {'max|Im(a_n a_{n+1})|':>20} {'|F[a_lin]|':>11}"
+    )
     ok = True
     for s in (1.0, 5.0, 20.0, 50.0, 100.0):
         a = linear_flow(lam, s)

@@ -95,8 +95,12 @@ def main() -> int:
         print("  " + line)
 
     print("=" * 70)
-    print("RESULT:", "PASS -- excess lemma holds with explicit O(1/N) constant for prime-power odd part"
-          if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- excess lemma holds with explicit O(1/N) constant for prime-power odd part"
+        if ok
+        else "FAIL",
+    )
     return 0 if ok else 1
 
 

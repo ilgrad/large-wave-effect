@@ -28,7 +28,7 @@ from scipy.special import gamma
 
 def pearcey(xx: float, yy: float, s_max: float = 8.0, ds: float = 0.0025) -> complex:
     s = np.arange(-s_max, s_max, ds)
-    window = np.exp(-(s / (0.92 * s_max)) ** 12)  # smooth taper to suppress the truncation tail
+    window = np.exp(-((s / (0.92 * s_max)) ** 12))  # smooth taper to suppress the truncation tail
     return complex(np.trapezoid(np.exp(1j * (s**4 + xx * s**2 + yy * s)) * window, dx=ds))
 
 
@@ -43,22 +43,28 @@ def main() -> int:
     exact = 0.5 * gamma(0.25)
     a_ok = abs(p00 - exact) < 0.02
     ok &= a_ok
-    print(f"\n(A) |Pe(0,0)| = {p00:.4f}  vs (1/2)Gamma(1/4) = {exact:.4f}  {'OK' if a_ok else 'FAIL'}")
+    print(
+        f"\n(A) |Pe(0,0)| = {p00:.4f}  vs (1/2)Gamma(1/4) = {exact:.4f}  {'OK' if a_ok else 'FAIL'}"
+    )
 
     # (B) intensity on the cusp caustic vs in the shadow
     tt = np.array([0.6, 1.0, 1.6, 2.2])
     on_caustic = np.mean([abs(pearcey(-t, np.sqrt(8 * t**3 / 27))) ** 2 for t in tt])
-    inside = np.mean([abs(pearcey(-t, 0.0)) ** 2 for t in tt])          # between the two branches
-    shadow = np.mean([abs(pearcey(+t, 0.0)) ** 2 for t in tt])          # geometric shadow X>0
+    inside = np.mean([abs(pearcey(-t, 0.0)) ** 2 for t in tt])  # between the two branches
+    shadow = np.mean([abs(pearcey(+t, 0.0)) ** 2 for t in tt])  # geometric shadow X>0
     b_ok = inside > 2.5 * shadow and on_caustic > 1.4 * shadow
     ok &= b_ok
-    print(f"\n(B) mean |Pe|^2:  inside cusp = {inside:.2f},  on caustic = {on_caustic:.2f},  "
-          f"shadow (X>0) = {shadow:.2f}")
-    print(f"    -> bright inside the cusp ({inside / shadow:.1f}x the shadow), the caustic separating "
-          f"lit from shadow: {'OK' if b_ok else 'FAIL'}")
+    print(
+        f"\n(B) mean |Pe|^2:  inside cusp = {inside:.2f},  on caustic = {on_caustic:.2f},  "
+        f"shadow (X>0) = {shadow:.2f}"
+    )
+    print(
+        f"    -> bright inside the cusp ({inside / shadow:.1f}x the shadow), the caustic separating "
+        f"lit from shadow: {'OK' if b_ok else 'FAIL'}"
+    )
 
     # (C) teacup: parallel rays reflected in the unit circle -> nephroid envelope (cusps at 1/2)
-    th = np.linspace(0.05, np.pi - 0.05, 4000)        # hit points (cos th, sin th), rays travel +x
+    th = np.linspace(0.05, np.pi - 0.05, 4000)  # hit points (cos th, sin th), rays travel +x
     hitx, hity = np.cos(th), np.sin(th)
     # incoming direction +x; normal = (cos th, sin th); reflected dir d = inc - 2(inc.n)n
     nx, ny = np.cos(th), np.sin(th)
@@ -79,13 +85,19 @@ def main() -> int:
     tangent_err = float(np.max(np.abs(cross)))
     c_ok = tangent_err < 1e-9
     ok &= c_ok
-    print(f"\n(C) Teacup nephroid: reflected rays tangent to the nephroid envelope "
-          f"(max off-tangency {tangent_err:.1e}): {'OK' if c_ok else 'FAIL'}")
+    print(
+        f"\n(C) Teacup nephroid: reflected rays tangent to the nephroid envelope "
+        f"(max off-tangency {tangent_err:.1e}): {'OK' if c_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 70)
     print("RESULT:", "CUSP CAUSTIC VERIFIED" if ok else "CHECK FAILED")
-    print("The cusp -- Pearcey diffraction and the teacup nephroid -- is the next generic caustic after")
-    print("the Airy fold: energy concentrates on the cusp, the everyday geometry of a rogue hot spot.")
+    print(
+        "The cusp -- Pearcey diffraction and the teacup nephroid -- is the next generic caustic after"
+    )
+    print(
+        "the Airy fold: energy concentrates on the cusp, the everyday geometry of a rogue hot spot."
+    )
     print("=" * 70)
     return 0 if ok else 1
 

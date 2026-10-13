@@ -74,8 +74,10 @@ def power_mod(e: int, phi: list[int]) -> list[int]:
 def sin_rows(n: int) -> list[list[int]]:
     m = 2 * n
     phi = cyclotomic(m)
-    return [[h - lv for h, lv in zip(power_mod(r % m, phi), power_mod((m - r) % m, phi), strict=True)]
-            for r in range(1, n)]
+    return [
+        [h - lv for h, lv in zip(power_mod(r % m, phi), power_mod((m - r) % m, phi), strict=True)]
+        for r in range(1, n)
+    ]
 
 
 def rank_modp(rows: list[list[int]]) -> int:
@@ -179,11 +181,15 @@ def cls(n: int) -> str:
 
 def main() -> int:
     print("=" * 84)
-    print("Extended order run: C_p target + exact A_N for N=pq (p,q~sqrtN) + prefix + independence locus")
+    print(
+        "Extended order run: C_p target + exact A_N for N=pq (p,q~sqrtN) + prefix + independence locus"
+    )
     print("=" * 84)
     ok = True
 
-    print("\n(A) C_p target (P(N)/N) U_{P(N)} sits below A_N empirically (NOT a proof -- interference)")
+    print(
+        "\n(A) C_p target (P(N)/N) U_{P(N)} sits below A_N empirically (NOT a proof -- interference)"
+    )
     print(f"    {'N':>5} {'P(N)':>5} {'tgt/lnN':>8} {'A_N/lnN':>8} {'U_N/lnN':>8} {'tgt<=A<=U':>9}")
     for n in (6, 15, 21, 22, 33, 34, 46, 55, 58, 62, 69, 82, 86, 94):
         tgt = subchain_target(n)
@@ -192,8 +198,10 @@ def main() -> int:
         good = tgt <= an + 1e-9 <= un + 1e-9
         ok &= good
         ln = np.log(n)
-        print(f"    {n:>5} {largest_prime_factor(n):>5} {tgt / ln:>8.4f} {an / ln:>8.4f} {un / ln:>8.4f} "
-              f"{good!s:>9}")
+        print(
+            f"    {n:>5} {largest_prime_factor(n):>5} {tgt / ln:>8.4f} {an / ln:>8.4f} {un / ln:>8.4f} "
+            f"{good!s:>9}"
+        )
     print("    -> the C_p target stays below the exact A_N <= U_N on all tested N (empirical): OK")
 
     print("\n(B) Hardest cases N = p*q with p,q ~ sqrt(N): exact A_N/ln N stays in the band")
@@ -205,14 +213,20 @@ def main() -> int:
         ln = np.log(n)
         band.append(an / ln)
         fac = [d for d in range(2, n) if n % d == 0 and is_prime(d) and is_prime(n // d)]
-        print(f"    {n:>5} {f'{fac[0]}x{n // fac[0]}':>9} {an / un:>8.4f} {an / ln:>8.4f} "
-              f"{subchain_target(n) / ln:>8.4f}")
+        print(
+            f"    {n:>5} {f'{fac[0]}x{n // fac[0]}':>9} {an / un:>8.4f} {an / ln:>8.4f} "
+            f"{subchain_target(n) / ln:>8.4f}"
+        )
     in_band = all(0.27 < b < 0.34 for b in band)
     ok &= in_band
-    print(f"    -> even for two near-equal large primes, A_N/ln N in [{min(band):.3f},{max(band):.3f}]: "
-          f"{'OK' if in_band else 'FAIL'}")
+    print(
+        f"    -> even for two near-equal large primes, A_N/ln N in [{min(band):.3f},{max(band):.3f}]: "
+        f"{'OK' if in_band else 'FAIL'}"
+    )
 
-    print("\n(C) Prefix length M(N)/N (Q-independent low modes) for highly composite N: bounded below")
+    print(
+        "\n(C) Prefix length M(N)/N (Q-independent low modes) for highly composite N: bounded below"
+    )
     print(f"    {'N':>5} {'class':>10} {'M(N)':>5} {'M/N':>6} {'Lpre/lnN':>9}")
     worst = 1e9
     for n in (210, 330, 420, 510):
@@ -222,19 +236,27 @@ def main() -> int:
         print(f"    {n:>5} {cls(n):>10} {m:>5} {m / n:>6.3f} {lp:>9.4f}")
     pref_ok = worst > 0.2
     ok &= pref_ok
-    print(f"    -> min L_pre/ln N = {worst:.3f} > 0.2 (incl. smooth, highly composite N): "
-          f"{'OK' if pref_ok else 'FAIL'}")
+    print(
+        f"    -> min L_pre/ln N = {worst:.3f} > 0.2 (incl. smooth, highly composite N): "
+        f"{'OK' if pref_ok else 'FAIL'}"
+    )
 
-    print("\n(D) Independence/saturation locus to N<=500 via the rank formula (Thm: rank = phi(2N)/2)")
+    print(
+        "\n(D) Independence/saturation locus to N<=500 via the rank formula (Thm: rank = phi(2N)/2)"
+    )
     # A_N=U_N by full independence iff phi(2N)/2 = floor(N/2) iff N prime or 2^m (Theorem qrank, proved).
     # Closed-form check (no linear algebra); spot-check the formula against exact mod-p rank.
     sat = [n for n in range(3, 501) if euler_phi(2 * n) // 2 == n // 2]
     pure = all(is_prime(n) or (n & (n - 1)) == 0 for n in sat)
     spot = all(rank_modp(sin_rows(n)[: n // 2]) == euler_phi(2 * n) // 2 for n in (60, 105, 210))
     ok &= pure and spot
-    print(f"    full-independence locus on [3,500] = prime union 2^m ({len(sat)} values), no composite: "
-          f"{'OK' if pure else 'FAIL'}; rank-formula spot-check {'OK' if spot else 'FAIL'}")
-    print("    (the strictly weaker mod-4 ceiling criterion is scanned directly in verify_ceiling_criterion.py)")
+    print(
+        f"    full-independence locus on [3,500] = prime union 2^m ({len(sat)} values), no composite: "
+        f"{'OK' if pure else 'FAIL'}; rank-formula spot-check {'OK' if spot else 'FAIL'}"
+    )
+    print(
+        "    (the strictly weaker mod-4 ceiling criterion is scanned directly in verify_ceiling_criterion.py)"
+    )
 
     print("\n" + "=" * 84)
     print("RESULT:", "EXTENDED ORDER RUN VERIFIED" if ok else "CHECK FAILED")

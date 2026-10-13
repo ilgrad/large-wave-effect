@@ -42,7 +42,9 @@ def hamiltonian(u: np.ndarray, p: np.ndarray, beta: float) -> float:
     return float(np.sum(p**2) / 2 + np.sum(dr**2) / 2 + beta * np.sum(dr**4) / 4)
 
 
-def lyapunov(n: int, beta: float, amp: float, dt: float, t_steps: int) -> tuple[float, float, float]:
+def lyapunov(
+    n: int, beta: float, amp: float, dt: float, t_steps: int
+) -> tuple[float, float, float]:
     j = np.arange(n)
     u = amp * np.sin(2 * np.pi * j / n)
     p = np.zeros(n)
@@ -89,7 +91,7 @@ def main() -> int:
         rows.append((amp, h0, lam, hdrift))
         print(f"    {amp:>5.1f} {h0:>10.2f} {lam:>11.4f} {hdrift:>9.1e} {regime:>10}")
 
-    lam_lo = rows[0][2]   # amp=1 (low energy)
+    lam_lo = rows[0][2]  # amp=1 (low energy)
     lam_hi = rows[-1][2]  # amp=10 (high energy)
     hdrift_max = max(r[3] for r in rows)
     a_ok = lam_lo < 0.01
@@ -97,13 +99,17 @@ def main() -> int:
     c_ok = hdrift_max < 1e-2
     ok = a_ok and b_ok and c_ok
     print(f"\n  (A) low energy lambda_max={lam_lo:.4f} ~ 0 (regular): {'OK' if a_ok else 'FAIL'}")
-    print(f"  (B) high energy lambda_max={lam_hi:.4f} > 0 (chaos), grows with E: {'OK' if b_ok else 'FAIL'}")
+    print(
+        f"  (B) high energy lambda_max={lam_hi:.4f} > 0 (chaos), grows with E: {'OK' if b_ok else 'FAIL'}"
+    )
     print(f"  (C) trajectory H conserved (max drift {hdrift_max:.1e}): {'OK' if c_ok else 'FAIL'}")
 
     print("\n" + "=" * 70)
     print("RESULT:", "LYAPUNOV TRANSITION VERIFIED" if ok else "CHECK FAILED")
     print("The same lattice (linear core L_N) is integrable-like at low energy (lambda~0, FPUT")
-    print("recurrence) and genuinely chaotic at high energy (lambda>0) -- the regular-to-chaotic route.")
+    print(
+        "recurrence) and genuinely chaotic at high energy (lambda>0) -- the regular-to-chaotic route."
+    )
     print("=" * 70)
     return 0 if ok else 1
 

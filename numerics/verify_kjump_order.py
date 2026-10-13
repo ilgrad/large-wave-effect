@@ -86,7 +86,9 @@ def mobius_adj(n: int) -> np.ndarray:
 
 
 def mobius_eigs_formula(n: int) -> np.ndarray:
-    return np.sort(np.array([2 * (1 - np.cos(np.pi * r / n)) + (1 - (-1) ** r) for r in range(2 * n)]))
+    return np.sort(
+        np.array([2 * (1 - np.cos(np.pi * r / n)) + (1 - (-1) ** r) for r in range(2 * n)])
+    )
 
 
 # ----------------------------------------------------------------------------- k-jump collision law (exact)
@@ -124,7 +126,9 @@ def lam_collisions(n: int, jumps: list[int]) -> list[tuple[int, int]]:
     for a in range(m):
         for b in range(a + 1, m):
             diff = [x - y for x, y in zip(reps[a], reps[b], strict=True)]
-            if not any(poly_rem(diff, phi)):  # zero remainder: equal in Q(zeta_N) (any(), not truthiness)
+            if not any(
+                poly_rem(diff, phi)
+            ):  # zero remainder: equal in Q(zeta_N) (any(), not truthiness)
                 out.append((a + 1, b + 1))
     return out
 
@@ -132,7 +136,10 @@ def lam_collisions(n: int, jumps: list[int]) -> list[tuple[int, int]]:
 # ----------------------------------------------------------------------------- ceilings / weights
 def kjump_ceiling(n: int, jumps: list[int]) -> float:
     m = n // 2
-    om = [np.sqrt(sum(2 * (1 - np.cos(2 * np.pi * s * r / n)) for s in jumps)) for r in range(1, m + 1)]
+    om = [
+        np.sqrt(sum(2 * (1 - np.cos(2 * np.pi * s * r / n)) for s in jumps))
+        for r in range(1, m + 1)
+    ]
     b = [2 / (n * w) for w in om]
     if n % 2 == 0:
         b[-1] /= 2
@@ -140,7 +147,10 @@ def kjump_ceiling(n: int, jumps: list[int]) -> float:
 
 
 def mobius_ceiling(n: int) -> float:
-    return float(sum(1 / np.sqrt(2 * (1 - np.cos(np.pi * r / n)) + (1 - (-1) ** r)) for r in range(1, 2 * n)) / (2 * n))
+    return float(
+        sum(1 / np.sqrt(2 * (1 - np.cos(np.pi * r / n)) + (1 - (-1) ** r)) for r in range(1, 2 * n))
+        / (2 * n)
+    )
 
 
 def mobius_prefix_weight(n: int) -> float:
@@ -154,7 +164,10 @@ def check_structure() -> bool:
     print("[1] STRUCTURE (exact Laplacian spectra): which families reduce to existing results")
     ok = True
     for n in range(4, 13):
-        pr = np.allclose(lap_eigs(prism_adj(n)), np.sort((circ_eigs(n, [1])[:, None] + np.array([0.0, 2.0])).ravel()))
+        pr = np.allclose(
+            lap_eigs(prism_adj(n)),
+            np.sort((circ_eigs(n, [1])[:, None] + np.array([0.0, 2.0])).ravel()),
+        )
         ap = np.allclose(lap_eigs(antiprism_adj(n)), circ_eigs(2 * n, [1, 2]))
         mo = np.allclose(lap_eigs(mobius_adj(n)), mobius_eigs_formula(n))
         ok &= pr and ap and mo
@@ -173,12 +186,14 @@ def check_structure() -> bool:
         if mm % 5 == 0:
             exp.add((mm // 5, 2 * mm // 5))
         if mm % 12 == 0:
-            exp.add(tuple(sorted((mm // 4, mm // 3))))
+            exp.add((mm // 4, mm // 3))
         if c != exp:
             bad_ap.append(nn)
     ok &= not bad_ap
-    print(f"    antiprism collisions = g=1 NNN law on M=2N, exact 3<=N<=80: "
-          f"{'CONFIRMED' if not bad_ap else f'FAIL {bad_ap[:5]}'}")
+    print(
+        f"    antiprism collisions = g=1 NNN law on M=2N, exact 3<=N<=80: "
+        f"{'CONFIRMED' if not bad_ap else f'FAIL {bad_ap[:5]}'}"
+    )
     # Mobius even branch = ring C_N
     even_eq = True
     for n in range(4, 13):
@@ -197,7 +212,9 @@ def check_mobius_order() -> bool:
     slope = (us[-1][1] - us[-2][1]) / np.log(2)
     print(f"        incremental slope (U_4096 - U_2048)/ln2 = {slope:.5f}")
     a_ok = abs(slope - c_pred) < 5e-4
-    print("    (B) embedded ring prefix Q-independent (palindromic lemma) -> 2 L_pre - U > 0, growing:")
+    print(
+        "    (B) embedded ring prefix Q-independent (palindromic lemma) -> 2 L_pre - U > 0, growing:"
+    )
     print(f"        {'N':>6} {'U':>9} {'L_pre':>9} {'2Lpre-U':>9}")
     vals = []
     for n in (256, 512, 1024, 2048):
@@ -223,27 +240,44 @@ def check_kjump() -> bool:
         slope = (kjump_ceiling(4096, jumps) - kjump_ceiling(2048, jumps)) / np.log(2)
         good = abs(slope - c) < 5e-4
         ok &= good
-        print(f"        S={jumps}: c={c:.5f}  incremental slope={slope:.5f}  ({'OK' if good else 'FAIL'})")
+        print(
+            f"        S={jumps}: c={c:.5f}  incremental slope={slope:.5f}  ({'OK' if good else 'FAIL'})"
+        )
 
     # (B-law) exact collision congruence laws (Conway-Jones + residue completeness), mod Phi_N.
     # The "p | N" term (p = max jump-span prime) is the residue-completeness collision: when S together
     # with -S covers all nonzero residues mod p, every lambda_r with p nmid r equals a constant.
     print("    (B) collision law (EXACT, integer arithmetic mod Phi_N, 5<=N<=160):")
-    bad123 = [n for n in range(5, 161) if bool(lam_collisions(n, [1, 2, 3])) != (n % 4 == 0 or n % 6 == 0 or n % 7 == 0)]
-    bad13 = [n for n in range(5, 161) if bool(lam_collisions(n, [1, 3])) != (n % 8 == 0 or n % 5 == 0)]
+    bad123 = [
+        n
+        for n in range(5, 161)
+        if bool(lam_collisions(n, [1, 2, 3])) != (n % 4 == 0 or n % 6 == 0 or n % 7 == 0)
+    ]
+    bad13 = [
+        n for n in range(5, 161) if bool(lam_collisions(n, [1, 3])) != (n % 8 == 0 or n % 5 == 0)
+    ]
     ok &= not bad123 and not bad13
-    print(f"        S={{1,2,3}}: collision <=> 4|N or 6|N or 7|N : {'CONFIRMED' if not bad123 else f'FAIL {bad123[:5]}'}")
-    print(f"        S={{1,3}}  : collision <=> 8|N or 5|N        : {'CONFIRMED' if not bad13 else f'FAIL {bad13[:5]}'}")
+    print(
+        f"        S={{1,2,3}}: collision <=> 4|N or 6|N or 7|N : {'CONFIRMED' if not bad123 else f'FAIL {bad123[:5]}'}"
+    )
+    print(
+        f"        S={{1,3}}  : collision <=> 8|N or 5|N        : {'CONFIRMED' if not bad13 else f'FAIL {bad13[:5]}'}"
+    )
 
     # (B-rank) distinct frequencies Q-independent => rank = #distinct (PSLQ 200 digits)
-    print("    (B) Q-rank = #distinct frequencies (PSLQ 200 digits; genuine relations are O(1)-coeff):")
+    print(
+        "    (B) Q-rank = #distinct frequencies (PSLQ 200 digits; genuine relations are O(1)-coeff):"
+    )
     mp.mp.dps = 200
     jumps = [1, 2, 3]
     rank_eq_distinct = True
     sample = []
     for n in range(5, 41):
         m = n // 2
-        om = [mp.sqrt(sum(2 - 2 * mp.cos(2 * mp.pi * s * r / n) for s in jumps)) for r in range(1, m + 1)]
+        om = [
+            mp.sqrt(sum(2 - 2 * mp.cos(2 * mp.pi * s * r / n) for s in jumps))
+            for r in range(1, m + 1)
+        ]
         # dedup distinct
         dist: list[mp.mpf] = []
         for w in om:
@@ -260,16 +294,24 @@ def check_kjump() -> bool:
     ok &= rank_eq_distinct
     for n, m, nd, st in sample:
         print(f"        N={n:>2}: m={m:>2} #distinct={nd:>2} -> {st}")
-    print(f"        all distinct-sets Q-independent (no relation beyond collisions), S={{1,2,3}}, N<=40: "
-          f"{'CONFIRMED' if rank_eq_distinct else 'FAIL'}")
-    print("        => distinct freqs carry the FULL U_N; where collision-free (S={1,2,3}: 4,6,7 nmid N)")
-    print("           the frequencies are all-distinct and Q-independent, so A_N = U_N (saturation).")
+    print(
+        f"        all distinct-sets Q-independent (no relation beyond collisions), S={{1,2,3}}, N<=40: "
+        f"{'CONFIRMED' if rank_eq_distinct else 'FAIL'}"
+    )
+    print(
+        "        => distinct freqs carry the FULL U_N; where collision-free (S={1,2,3}: 4,6,7 nmid N)"
+    )
+    print(
+        "           the frequencies are all-distinct and Q-independent, so A_N = U_N (saturation)."
+    )
     return ok
 
 
 def main() -> int:
     print("=" * 80)
-    print("Order criterion for new quasi-1D families (prism / antiprism / Mobius / k-jump circulant)")
+    print(
+        "Order criterion for new quasi-1D families (prism / antiprism / Mobius / k-jump circulant)"
+    )
     print("=" * 80)
     ok = True
     ok &= check_structure()
@@ -279,8 +321,12 @@ def main() -> int:
     print("RESULT:", "PASS" if ok else "FAIL")
     print("  prism = product (Cor. product); antiprism = NNN ring (Prop. nnn);")
     print("  Mobius ladder = NEW (embedded-ring gapless branch gives A=Theta(ln N), rigorous);")
-    print("  k-jump C_N(S): condition (A) c=1/(pi sqrt(sum s^2)); collisions obey exact Conway-Jones")
-    print("  congruence laws; S={1,2,3}: rank = #distinct (PSLQ, N<=40), so A_N=U_N there (thm:ceiling).")
+    print(
+        "  k-jump C_N(S): condition (A) c=1/(pi sqrt(sum s^2)); collisions obey exact Conway-Jones"
+    )
+    print(
+        "  congruence laws; S={1,2,3}: rank = #distinct (PSLQ, N<=40), so A_N=U_N there (thm:ceiling)."
+    )
     print("=" * 80)
     return 0 if ok else 1
 

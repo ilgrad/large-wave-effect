@@ -62,7 +62,9 @@ def main() -> int:
     bond[0] = bond[1] = 1.0
 
     oms = np.array([2.0, 4.0, 6.0, 8.0, 12.0, 16.0, 20.0])
-    powers = np.array([breather(o, onsite * np.sqrt(o + 2)) @ breather(o, onsite * np.sqrt(o + 2)) for o in oms])
+    powers = np.array(
+        [breather(o, onsite * np.sqrt(o + 2)) @ breather(o, onsite * np.sqrt(o + 2)) for o in oms]
+    )
     dP = np.gradient(powers, oms)
 
     print("SITE-centred breather (VK slope dP/dOmega and linearization spectrum):")

@@ -72,17 +72,27 @@ def main() -> int:
     lo6, hi6 = grid_certify(g6, b1 + 2 * b3, b2)  # L_x = b1 + 2 b3, L_y = b2
     u6 = ceiling(6)
     trivial = b1 + b2 + b3  # = U_6 contribution at node 0
-    print("\nN=6 (composite, Q-rank 2): g_6 = a1 sin x + a3 sin 2x + a2 sin y  (omega_3 = 2 omega_1)")
-    print(f"    certified A_6 in [{lo6:.5f}, {hi6:.5f}];  U_6 = {u6:.5f};  trivial sum = {trivial:.5f}")
-    print(f"    certified gap  U_6 - A_6 >= {u6 - hi6:.5f}  (> 0: composite value strictly below ceiling)")
+    print(
+        "\nN=6 (composite, Q-rank 2): g_6 = a1 sin x + a3 sin 2x + a2 sin y  (omega_3 = 2 omega_1)"
+    )
+    print(
+        f"    certified A_6 in [{lo6:.5f}, {hi6:.5f}];  U_6 = {u6:.5f};  trivial sum = {trivial:.5f}"
+    )
+    print(
+        f"    certified gap  U_6 - A_6 >= {u6 - hi6:.5f}  (> 0: composite value strictly below ceiling)"
+    )
     n6_ok = (u6 - hi6) > 0.02 and (hi6 - lo6) < 5e-3 and abs(lo6 - 0.5594) < 5e-3
     ok &= n6_ok
-    print(f"    -> certified strict gap below U_6, bracket width {hi6 - lo6:.1e}: "
-          f"{'OK' if n6_ok else 'FAIL'}")
+    print(
+        f"    -> certified strict gap below U_6, bracket width {hi6 - lo6:.1e}: "
+        f"{'OK' if n6_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 70)
     print("RESULT:", "CERTIFIED BOUNDS VERIFIED" if ok else "CHECK FAILED")
-    print("Prime N=5: A_5=U_5 (no gap). Composite N=6: A_6 certified strictly below U_6 (Lipschitz grid,")
+    print(
+        "Prime N=5: A_5=U_5 (no gap). Composite N=6: A_6 certified strictly below U_6 (Lipschitz grid,"
+    )
     print("rigorous). The Lasserre moment-SOS hierarchy scales this to higher dimension and order.")
     print("=" * 70)
     return 0 if ok else 1

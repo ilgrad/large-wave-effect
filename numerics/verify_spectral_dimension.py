@@ -41,7 +41,7 @@ def product_eigs(sizes: tuple[int, ...]) -> np.ndarray:
 
 def ceiling(eigs: np.ndarray) -> float:
     pos = eigs[eigs > 1e-9]
-    return float(np.sum(pos ** -0.5) / eigs.size)
+    return float(np.sum(pos**-0.5) / eigs.size)
 
 
 def fit_spectral_dimension(eigs: np.ndarray) -> float:
@@ -60,7 +60,9 @@ def main() -> int:
     ok = True
 
     print("\n(A) Critical d_s = 1 structures grow logarithmically (ring, ladder, tube)")
-    print("    Quasi-1D keeps the log; only 1 of w transverse channels carries it, so slope = 1/(pi w).")
+    print(
+        "    Quasi-1D keeps the log; only 1 of w transverse channels carries it, so slope = 1/(pi w)."
+    )
     print(f"    {'family':>14} {'width':>6} {'U_G':>8} {'slope':>8} {'1/(pi w)':>9}")
     for name, width, mk in (
         ("ring C_N", 1, lambda n: cycle_eigs(n)),
@@ -74,8 +76,10 @@ def main() -> int:
         slope = np.polyfit(lns, us, 1)[0]
         target = 1.0 / (np.pi * width)
         ok &= abs(slope - target) < 0.01
-        print(f"    {name:>14} {width:>6} {us[-1]:>8.4f} {slope:>8.4f} {target:>9.4f}  "
-              f"({'OK' if abs(slope - target) < 0.01 else 'FAIL'})")
+        print(
+            f"    {name:>14} {width:>6} {us[-1]:>8.4f} {slope:>8.4f} {target:>9.4f}  "
+            f"({'OK' if abs(slope - target) < 0.01 else 'FAIL'})"
+        )
 
     print("\n(B) Super-critical d_s >= 2 structures stay bounded (square / cubic torus)")
     print(f"    {'family':>14} {'sizes':>12} {'U_G':>8} {'bounded?':>9}")
@@ -100,14 +104,18 @@ def main() -> int:
     ]
     for name, eigs, exp in cases:
         ds = fit_spectral_dimension(eigs)
-        good = abs(ds - exp) < 0.35  # 3D IDOS slope is coarser; d_s>1 vs =1 is the binary that matters
+        good = (
+            abs(ds - exp) < 0.35
+        )  # 3D IDOS slope is coarser; d_s>1 vs =1 is the binary that matters
         ok &= good
         lw = "YES (log)" if exp <= 1.0 else "no"
         print(f"    {name:>16} {ds:>11.3f} {exp:>9.1f} {lw:>12}  ({'OK' if good else 'FAIL'})")
 
     print("\n" + "=" * 78)
     print("RESULT:", "SPECTRAL-DIMENSION THRESHOLD VERIFIED" if ok else "CHECK FAILED")
-    print("Large wave <=> d_s = 1. Quasi-1D (ladder, tube) keeps the log growth; d_s >= 2 kills it.")
+    print(
+        "Large wave <=> d_s = 1. Quasi-1D (ladder, tube) keeps the log growth; d_s >= 2 kills it."
+    )
     print("=" * 78)
     return 0 if ok else 1
 

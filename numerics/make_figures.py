@@ -25,21 +25,23 @@ from scipy.sparse.linalg import spsolve
 from scipy.special import airy, gamma, jv
 
 # Match the paper's serif body: STIX gives a complete serif text + math face that pairs with Libertinus.
-plt.rcParams.update({
-    "font.family": "serif",
-    "font.serif": ["STIXGeneral", "DejaVu Serif"],
-    "mathtext.fontset": "stix",
-    "axes.titlesize": 12,
-    "axes.labelsize": 11,
-    "xtick.labelsize": 9,
-    "ytick.labelsize": 9,
-    "legend.fontsize": 9,
-    "figure.titlesize": 13,
-    "axes.linewidth": 0.8,
-    "lines.linewidth": 1.6,
-    "grid.alpha": 0.35,
-    "legend.framealpha": 0.9,
-})
+plt.rcParams.update(
+    {
+        "font.family": "serif",
+        "font.serif": ["STIXGeneral", "DejaVu Serif"],
+        "mathtext.fontset": "stix",
+        "axes.titlesize": 12,
+        "axes.labelsize": 11,
+        "xtick.labelsize": 9,
+        "ytick.labelsize": 9,
+        "legend.fontsize": 9,
+        "figure.titlesize": 13,
+        "axes.linewidth": 0.8,
+        "lines.linewidth": 1.6,
+        "grid.alpha": 0.35,
+        "legend.framealpha": 0.9,
+    }
+)
 
 OUT = __file__.rsplit("/", 2)[0] + "/paper/figures"
 
@@ -73,12 +75,29 @@ def fig_ring() -> None:
 
     fig, ax = plt.subplots(figsize=(6.0, 4.2))
     ax.plot(np.log(ns), u, color="0.4", lw=1.4, label=r"ceiling $U_N$")
-    ax.plot(np.log(ns), np.log(ns) / np.pi + (np.euler_gamma + np.log(2 / np.pi)) / np.pi,
-            "k--", lw=1.0, label=r"$\frac{1}{\pi}\ln N + 0.040$")
-    ax.scatter([np.log(n) for n in primes2m], list(primes2m.values()),
-               marker="o", color="C0", zorder=5, label=r"prime / $2^m$  ($A_N=U_N$)")
-    ax.scatter([np.log(n) for n in composite], list(composite.values()),
-               marker="x", color="C3", zorder=5, label=r"composite (exact $A_N$, subtorus)")
+    ax.plot(
+        np.log(ns),
+        np.log(ns) / np.pi + (np.euler_gamma + np.log(2 / np.pi)) / np.pi,
+        "k--",
+        lw=1.0,
+        label=r"$\frac{1}{\pi}\ln N + 0.040$",
+    )
+    ax.scatter(
+        [np.log(n) for n in primes2m],
+        list(primes2m.values()),
+        marker="o",
+        color="C0",
+        zorder=5,
+        label=r"prime / $2^m$  ($A_N=U_N$)",
+    )
+    ax.scatter(
+        [np.log(n) for n in composite],
+        list(composite.values()),
+        marker="x",
+        color="C3",
+        zorder=5,
+        label=r"composite (exact $A_N$, subtorus)",
+    )
     ax.set_xlabel(r"$\ln N$")
     ax.set_ylabel(r"$A_N$")
     ax.set_title(r"Ring large wave: $A_N=\Theta(\ln N)$ for all $N$")
@@ -97,7 +116,9 @@ def fig_schrodinger() -> None:
     ax.plot(xs, a * xs + c, "k--", lw=1.0, label=rf"fit $B_N\approx{a:.3f}\sqrt{{N}}{c:+.2f}$")
     ax.scatter(np.sqrt(ns), b, marker="s", color="C2", zorder=5, label=r"$B_N$ (operator norm)")
     for n, bb in zip(ns, b, strict=True):
-        ax.annotate(f"N={n}", (np.sqrt(n), bb), textcoords="offset points", xytext=(4, -9), fontsize=7)
+        ax.annotate(
+            f"N={n}", (np.sqrt(n), bb), textcoords="offset points", xytext=(4, -9), fontsize=7
+        )
     ax.set_xlabel(r"$\sqrt{N}$")
     ax.set_ylabel(r"$B_N$")
     ax.set_title(r"Schrodinger ring: $B_N=\Theta(\sqrt{N})$ (ballistic)")
@@ -110,7 +131,9 @@ def fig_bessel() -> None:
     fig, ax = plt.subplots(figsize=(6.0, 4.2))
     for t, c in [(20, "C0"), (80, "C1"), (320, "C3")]:
         n = np.arange(int(2 * t * 1.45))
-        ax.plot(n, np.abs(jv(n, 2 * t)), color=c, lw=1.0, label=rf"$t={t}$ (front $n\approx{2 * t}$)")
+        ax.plot(
+            n, np.abs(jv(n, 2 * t)), color=c, lw=1.0, label=rf"$t={t}$ (front $n\approx{2 * t}$)"
+        )
         ax.axvline(2 * t, color=c, ls=":", lw=0.8)
     ax.set_xlabel(r"site $n$")
     ax.set_ylabel(r"$|K_\infty(n,t)|=|J_n(2t)|$")
@@ -147,16 +170,26 @@ def fig_zeta() -> None:
     s = np.linspace(0.02, 0.49, 240)
     i_s = 4.0 ** (-s) * gamma(0.5 - s) / (np.sqrt(np.pi) * gamma(1.0 - s))
     fig, ax = plt.subplots(figsize=(6.0, 4.2))
-    ax.plot(s, i_s, "k", lw=1.6, label=r"density $I(s)=4^{-s}\Gamma(\frac{1}{2}-s)/(\sqrt{\pi}\,\Gamma(1-s))$")
+    ax.plot(
+        s,
+        i_s,
+        "k",
+        lw=1.6,
+        label=r"density $I(s)=4^{-s}\Gamma(\frac{1}{2}-s)/(\sqrt{\pi}\,\Gamma(1-s))$",
+    )
     for nn, c in [(32, "C0"), (256, "C3")]:
         r = np.arange(1, nn)
         lam = 4 * np.sin(np.pi * r / nn) ** 2
         zn = np.array([np.sum(lam ** (-si)) / nn for si in s])
         ax.plot(s, zn, c + "--", lw=0.9, label=rf"$(1/N)\zeta_{{L_N}}(s),\ N={nn}$")
     ax.axvline(0.5, ls=":", color="gray")
-    ax.annotate(r"$s=\frac{1}{2}$: $U_N=\zeta(\frac{1}{2})/N\sim\frac{1}{\pi}\ln N$",
-                xy=(0.5, 3.2), xytext=(0.27, 3.4), fontsize=8,
-                arrowprops={"arrowstyle": "->", "color": "gray"})
+    ax.annotate(
+        r"$s=\frac{1}{2}$: $U_N=\zeta(\frac{1}{2})/N\sim\frac{1}{\pi}\ln N$",
+        xy=(0.5, 3.2),
+        xytext=(0.27, 3.4),
+        fontsize=8,
+        arrowprops={"arrowstyle": "->", "color": "gray"},
+    )
     ax.set_xlabel(r"$s$")
     ax.set_ylabel(r"$(1/N)\,\zeta_{L_N}(s)$")
     ax.set_title(r"Spectral zeta density: pole at $s=\frac{1}{2}$ drives the log ceiling")
@@ -194,8 +227,13 @@ def fig_dos() -> None:
     x = np.linspace(0.02, 3.98, 500)
     fig, ax = plt.subplots(figsize=(6.0, 4.2))
     ax.hist(lam, bins=70, density=True, color="C0", alpha=0.55, label=r"empirical $\lambda_r$")
-    ax.plot(x, 1.0 / (np.pi * np.sqrt(x * (4 - x))), "k", lw=1.6,
-            label=r"arcsine $1/(\pi\sqrt{\lambda(4-\lambda)})$")
+    ax.plot(
+        x,
+        1.0 / (np.pi * np.sqrt(x * (4 - x))),
+        "k",
+        lw=1.6,
+        label=r"arcsine $1/(\pi\sqrt{\lambda(4-\lambda)})$",
+    )
     ax.set_xlabel(r"$\lambda$")
     ax.set_ylabel("density of states")
     ax.set_title(r"Spectral density of states: arcsine law ($N=4000$)")
@@ -214,8 +252,13 @@ def fig_value_dist() -> None:
     x = np.linspace(vals.min(), vals.max(), 400)
     fig, ax = plt.subplots(figsize=(6.0, 4.2))
     ax.hist(vals, bins=90, density=True, color="C3", alpha=0.55, label=r"values of $u_0(t)$")
-    ax.plot(x, np.exp(-x * x / (2 * sd * sd)) / (sd * np.sqrt(2 * np.pi)), "k--", lw=1.2,
-            label="Gaussian (same variance)")
+    ax.plot(
+        x,
+        np.exp(-x * x / (2 * sd * sd)) / (sd * np.sqrt(2 * np.pi)),
+        "k--",
+        lw=1.2,
+        label="Gaussian (same variance)",
+    )
     ax.set_xlabel(r"$u_0(t)$")
     ax.set_ylabel("probability density")
     ax.set_title(r"Bohr-Jessen value law: var $=1/12$, platykurtic (kurt $\approx2.4$)")
@@ -323,14 +366,29 @@ def fig_mi() -> None:
     fig, ax = plt.subplots(figsize=(6.0, 4.2))
     ax.plot(kappa, sigma, "k", lw=1.8, label=r"lattice $\sqrt{\lambda_\kappa(2-\lambda_\kappa)}$")
     ax.plot(kappa, cont, "C0:", lw=1.1, label=r"continuum $\kappa\sqrt{2-\kappa^2}$")
-    ax.scatter([2 * np.pi * k / 512 for k in sim], list(sim.values()),
-               marker="s", color="C3", zorder=5, label="DNLS simulation")
+    ax.scatter(
+        [2 * np.pi * k / 512 for k in sim],
+        list(sim.values()),
+        marker="s",
+        color="C3",
+        zorder=5,
+        label="DNLS simulation",
+    )
     ax.axvline(np.pi / 2, color="0.6", ls="--", lw=0.8)
-    ax.annotate(r"band edge $\kappa=\pi/2$", xy=(np.pi / 2, 0.1), xytext=(np.pi / 2 + 0.1, 0.25),
-                fontsize=8, color="0.4")
+    ax.annotate(
+        r"band edge $\kappa=\pi/2$",
+        xy=(np.pi / 2, 0.1),
+        xytext=(np.pi / 2 + 0.1, 0.25),
+        fontsize=8,
+        color="0.4",
+    )
     ax.scatter([np.pi / 3], [1.0], color="k", zorder=6)
-    ax.annotate(r"$\sigma_{\max}=\gamma A^2$", xy=(np.pi / 3, 1.0), xytext=(np.pi / 3 + 0.15, 0.85),
-                fontsize=8)
+    ax.annotate(
+        r"$\sigma_{\max}=\gamma A^2$",
+        xy=(np.pi / 3, 1.0),
+        xytext=(np.pi / 3 + 0.15, 0.85),
+        fontsize=8,
+    )
     ax.set_xlabel(r"$\kappa$")
     ax.set_ylabel(r"growth rate $\sigma(\kappa)$")
     ax.set_title("Modulational (Benjamin-Feir) instability gain")
@@ -407,9 +465,16 @@ def fig_dimension() -> None:
     u2 = np.array([_ceiling_d(int(n), 2) for n in ns])
     u3 = np.array([_ceiling_d(int(n), 3) for n in ns])
     fig, ax = plt.subplots(figsize=(6.2, 4.2))
-    ax.plot(np.log(ns1), u1, "o-", color="C3", lw=1.3, label=r"$d=1$ (grows $\sim\frac{1}{\pi}\ln N$)")
-    ax.plot(np.log(ns1), np.log(ns1) / np.pi + (np.euler_gamma + np.log(2 / np.pi)) / np.pi,
-            "k--", lw=0.9, label=r"$\frac{1}{\pi}\ln N+C_0$")
+    ax.plot(
+        np.log(ns1), u1, "o-", color="C3", lw=1.3, label=r"$d=1$ (grows $\sim\frac{1}{\pi}\ln N$)"
+    )
+    ax.plot(
+        np.log(ns1),
+        np.log(ns1) / np.pi + (np.euler_gamma + np.log(2 / np.pi)) / np.pi,
+        "k--",
+        lw=0.9,
+        label=r"$\frac{1}{\pi}\ln N+C_0$",
+    )
     ax.plot(np.log(ns), u2, "s-", color="C0", lw=1.3, label=r"$d=2$ (bounded)")
     ax.plot(np.log(ns), u3, "^-", color="C2", lw=1.3, label=r"$d=3$ (bounded)")
     ax.set_xlabel(r"$\ln N$")
@@ -494,7 +559,9 @@ def fig_selftrapping() -> None:
     axl.set_ylabel(r"participation ratio $P$")
     axl.set_title("Self-trapping transition")
     axl.grid(alpha=0.3)
-    im = axr.pcolormesh(np.arange(n) - n // 2, tt, field, shading="auto", cmap="viridis", rasterized=True)
+    im = axr.pcolormesh(
+        np.arange(n) - n // 2, tt, field, shading="auto", cmap="viridis", rasterized=True
+    )
     fig.colorbar(im, ax=axr, label=r"$|\psi_j|$")
     axr.set_xlabel(r"site $j$")
     axr.set_ylabel(r"time $t$")
@@ -568,7 +635,7 @@ def fig_breather2d() -> None:
         psi = _dnls2d_step(psi, dt, gamma, lam)
     amp = np.roll(np.roll(np.abs(psi), n // 2, 0), n // 2, 1)  # center the breather
     w, c = 12, n // 2
-    sub = amp[c - w:c + w + 1, c - w:c + w + 1]
+    sub = amp[c - w : c + w + 1, c - w : c + w + 1]
     xx, yy = np.meshgrid(np.arange(-w, w + 1), np.arange(-w, w + 1))
     fig = plt.figure(figsize=(6.4, 4.7))
     ax = fig.add_subplot(projection="3d")
@@ -603,7 +670,7 @@ def fig_phase3d() -> None:
                 em.append([me[1] + me[n - 1], me[3] + me[n - 3], me[5] + me[n - 5]])
         return np.array(em)
 
-    e_lo = run(4.0, 200000)   # regular (quasi-periodic torus)
+    e_lo = run(4.0, 200000)  # regular (quasi-periodic torus)
     e_hi = run(10.0, 200000)  # chaotic (space-filling)
     fig = plt.figure(figsize=(8.8, 4.2))
     for idx, (em, title, c) in enumerate(
@@ -625,7 +692,9 @@ def fig_dispersion3d() -> None:
     omega = 2.0 * np.sqrt(np.sin(tx / 2) ** 2 + np.sin(ty / 2) ** 2)
     fig = plt.figure(figsize=(6.6, 5.0))
     ax = fig.add_subplot(projection="3d")
-    ax.plot_surface(tx, ty, omega, cmap="plasma", linewidth=0, antialiased=True, rcount=90, ccount=90)
+    ax.plot_surface(
+        tx, ty, omega, cmap="plasma", linewidth=0, antialiased=True, rcount=90, ccount=90
+    )
     ax.set_xlabel(r"$\theta_x$")
     ax.set_ylabel(r"$\theta_y$")
     ax.set_zlabel(r"$\omega$")
@@ -647,7 +716,9 @@ def fig_caustic() -> None:
     axl.legend(fontsize=8)
     axl.grid(alpha=0.3)
     ts = np.array([30, 60, 120, 240, 480, 960], dtype=float)
-    peaks = np.array([np.abs(jv(np.arange(int(2 * t) - 55, int(2 * t) + 15), 2 * t)).max() for t in ts])
+    peaks = np.array(
+        [np.abs(jv(np.arange(int(2 * t) - 55, int(2 * t) + 15), 2 * t)).max() for t in ts]
+    )
     axr.loglog(ts, peaks, "o", color="C3", label="front peak")
     axr.loglog(ts, 0.5357 * ts ** (-1 / 3), "k--", lw=1.0, label=r"$0.536\,t^{-1/3}$")
     axr.set_xlabel(r"$t$")
@@ -679,8 +750,16 @@ def fig_branched() -> None:
             zs.append(s * dz)
     field, zs, sci = np.array(fields), np.array(zs), np.array(sci)
     fig, (axl, axr) = plt.subplots(1, 2, figsize=(9.0, 4.0), width_ratios=[1.3, 1])
-    im = axl.pcolormesh(np.arange(n), zs, np.log10(field + 1e-3), shading="auto",
-                        cmap="inferno", vmin=-1, vmax=1.2, rasterized=True)
+    im = axl.pcolormesh(
+        np.arange(n),
+        zs,
+        np.log10(field + 1e-3),
+        shading="auto",
+        cmap="inferno",
+        vmin=-1,
+        vmax=1.2,
+        rasterized=True,
+    )
     fig.colorbar(im, ax=axl, label=r"$\log_{10}|\psi|^2$")
     axl.set_xlabel(r"transverse $x$")
     axl.set_ylabel(r"propagation $z$")
@@ -717,14 +796,16 @@ def fig_cusp() -> None:
     xs = np.linspace(-4.5, 2.5, 90)
     ys = np.linspace(-4.0, 4.0, 110)
     s = np.arange(-7.0, 7.0, 0.004)
-    win = np.exp(-(s / 6.4) ** 12)
+    win = np.exp(-((s / 6.4) ** 12))
     pe = np.empty((len(ys), len(xs)))
     for i, xv in enumerate(xs):
         integ = np.exp(1j * (s**4 + xv * s**2 + np.outer(ys, s))) * win
         pe[:, i] = np.abs(integ.sum(axis=1) * (s[1] - s[0])) ** 2
     axr = fig.add_subplot(1, 2, 2, projection="3d")
     xx, yy = np.meshgrid(xs, ys)
-    axr.plot_surface(xx, yy, pe, cmap="inferno", linewidth=0, antialiased=True, rcount=90, ccount=80)
+    axr.plot_surface(
+        xx, yy, pe, cmap="inferno", linewidth=0, antialiased=True, rcount=90, ccount=80
+    )
     axr.set_xlabel(r"$X$")
     axr.set_ylabel(r"$Y$")
     axr.set_zlabel(r"$|\mathrm{Pe}|^2$")
@@ -737,12 +818,12 @@ def fig_raycaustic() -> None:
     x0 = np.linspace(-30, 30, 41)
     x = x0.copy()
     v = np.zeros_like(x0)
-    acc = -k * x * np.exp(-x**2 / (2 * sigma**2))
+    acc = -k * x * np.exp(-(x**2) / (2 * sigma**2))
     traj = [x.copy()]
     for _ in range(zsteps):
         v += 0.5 * dz * acc
         x = x + dz * v
-        acc = -k * x * np.exp(-x**2 / (2 * sigma**2))
+        acc = -k * x * np.exp(-(x**2) / (2 * sigma**2))
         v += 0.5 * dz * acc
         traj.append(x.copy())
     traj = np.array(traj)
@@ -779,7 +860,7 @@ def fig_caustic_mi() -> None:
                 best = np.abs(psi).copy()
         return np.array(peaks), best
 
-    lens = amp * np.exp(-xg**2 / (2 * w**2)) * np.exp(-1j * b * xg**2 / 2)
+    lens = amp * np.exp(-(xg**2) / (2 * w**2)) * np.exp(-1j * b * xg**2 / 2)
     plane = amp * np.ones(n, dtype=complex)
     p_lin, prof_lin = run(lens, 0.0)
     p_nl, prof_nl = run(lens, 1.0)
@@ -892,7 +973,11 @@ def fig_reachability() -> None:
     axL.set_title("Recurrence time grows exponentially in $N$")
     axL.grid(alpha=0.3, which="both")
 
-    horizons = [(300.0, "C3", r"$T=300$"), (2000.0, "C1", r"$T=2000$"), (20000.0, "C2", r"$T=2\cdot10^4$")]
+    horizons = [
+        (300.0, "C3", r"$T=300$"),
+        (2000.0, "C1", r"$T=2000$"),
+        (20000.0, "C2", r"$T=2\cdot10^4$"),
+    ]
     ns = [5, 11, 17, 23, 29]
     for tmax, c, lab in horizons:
         g = np.arange(0.0, tmax, 0.05)
@@ -919,7 +1004,7 @@ def fig_spectral_dim() -> None:
 
     def ug(e: np.ndarray) -> float:
         pos = e[e > 1e-9]
-        return float(np.sum(pos ** -0.5) / e.size)
+        return float(np.sum(pos**-0.5) / e.size)
 
     sizes = [50, 100, 200, 400, 800, 1600]
     fig, ax = plt.subplots(figsize=(6.4, 4.4))
@@ -943,6 +1028,7 @@ def fig_spectral_dim() -> None:
 
 def fig_filimonov() -> None:
     """Filimonov's discrete-Schrodinger large wave on the Dirichlet segment (alpha_j=1)."""
+
     def d_jN(n: int) -> np.ndarray:
         k = np.arange(1, n)
         a = (2.0 / n) * np.sin(np.outer(k, np.arange(1, n)) * np.pi / n).sum(axis=1)
@@ -958,8 +1044,13 @@ def fig_filimonov() -> None:
     c = 4.0 / np.pi**2
     intc = np.polyfit(np.log(j), d[j - 1], 1)[1]
     axL.plot(np.log(j), d[j - 1], color="C0", lw=1.3, label=r"$d_j^N$ ($N=2^{12}$)")
-    axL.plot(np.log(j), c * np.log(j) + intc, "k--", lw=1.0,
-             label=rf"$\frac{{4}}{{\pi^2}}\ln j + {intc:.2f}$")
+    axL.plot(
+        np.log(j),
+        c * np.log(j) + intc,
+        "k--",
+        lw=1.0,
+        label=rf"$\frac{{4}}{{\pi^2}}\ln j + {intc:.2f}$",
+    )
     axL.set_xlabel(r"$\ln j$")
     axL.set_ylabel(r"site ceiling $d_j^N=\sum_k|a_k\sin\frac{\pi k j}{N}|$")
     axL.set_title(r"Theorem 2: $d_j^N\sim\frac{4}{\pi^2}\ln j$")
@@ -976,7 +1067,7 @@ def fig_filimonov() -> None:
     sinjk = np.sin(np.outer(js, k) * np.pi / n)
     ts = np.linspace(0, 6000.0, 6000)
     best_t, best_amp = 0.0, 0.0
-    for t in ts:                                   # pick a time with a large far-site amplitude
+    for t in ts:  # pick a time with a large far-site amplitude
         amp = np.abs(sinjk[n // 2 - 1] @ (a * np.exp(-2j * w * t)))
         if amp > best_amp:
             best_amp, best_t = amp, t
@@ -1006,7 +1097,7 @@ def fig_largewave() -> None:
 
     fig, (axL, axR) = plt.subplots(1, 2, figsize=(9.6, 4.0))
     # left: a long stretch with the rare spike; sub-sample for plotting
-    sl = slice(0, 200000)                                   # first 20000 time units
+    sl = slice(0, 200000)  # first 20000 time units
     axL.plot(ts[sl], g[sl], color="0.55", lw=0.4)
     axL.axhline(Uc, color="C3", ls="--", lw=1.0, label=rf"$U_{{{n}}}={Uc:.3f}$")
     axL.axhline(rms, color="C0", ls=":", lw=0.8, label=r"$\pm\,$RMS$=\pm0.29$")
@@ -1023,8 +1114,13 @@ def fig_largewave() -> None:
     axR.axhline(rms, color="C0", ls=":", lw=0.8)
     axR.axhline(-rms, color="C0", ls=":", lw=0.8)
     axR.scatter([tpk], [g[ipk]], color="k", zorder=5, s=18)
-    axR.annotate(rf"$\approx{g[ipk] / Uc:.2f}\,U_{{{n}}}$", (tpk, g[ipk]), textcoords="offset points",
-                 xytext=(6, -4), fontsize=8)
+    axR.annotate(
+        rf"$\approx{g[ipk] / Uc:.2f}\,U_{{{n}}}$",
+        (tpk, g[ipk]),
+        textcoords="offset points",
+        xytext=(6, -4),
+        fontsize=8,
+    )
     axR.set_xlabel(r"$t$")
     axR.set_ylabel(r"$G_N(0,t)$")
     axR.set_title(r"Zoom: the large wave at a near-alignment time")
@@ -1037,15 +1133,38 @@ def main() -> int:
     import os
 
     os.makedirs(OUT, exist_ok=True)
-    for f in (fig_ring, fig_schrodinger, fig_bessel, fig_dispersion, fig_zeta,
-              fig_dos, fig_value_dist, fig_heatmap, fig_qrank,
-              fig_peregrine, fig_mi, fig_rogue_dnls, fig_dimension,
-              fig_fput, fig_selftrapping, fig_lyapunov,
-              fig_breather2d, fig_phase3d, fig_dispersion3d,
-              fig_caustic, fig_branched,
-              fig_cusp, fig_raycaustic, fig_caustic_mi, fig_lightning,
-              fig_reachability, fig_spectral_dim, fig_filimonov, fig_largewave,
-              fig_obstruction):
+    for f in (
+        fig_ring,
+        fig_schrodinger,
+        fig_bessel,
+        fig_dispersion,
+        fig_zeta,
+        fig_dos,
+        fig_value_dist,
+        fig_heatmap,
+        fig_qrank,
+        fig_peregrine,
+        fig_mi,
+        fig_rogue_dnls,
+        fig_dimension,
+        fig_fput,
+        fig_selftrapping,
+        fig_lyapunov,
+        fig_breather2d,
+        fig_phase3d,
+        fig_dispersion3d,
+        fig_caustic,
+        fig_branched,
+        fig_cusp,
+        fig_raycaustic,
+        fig_caustic_mi,
+        fig_lightning,
+        fig_reachability,
+        fig_spectral_dim,
+        fig_filimonov,
+        fig_largewave,
+        fig_obstruction,
+    ):
         f()
     print("wrote 30 figures to", OUT)
     return 0

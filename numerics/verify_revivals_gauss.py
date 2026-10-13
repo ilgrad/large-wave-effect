@@ -59,7 +59,9 @@ def main() -> int:
                 continue
             val = abs(gauss_sum(a, q))
             g_ok &= abs(val - np.sqrt(q)) < 1e-9
-    print(f"  checked q in {{5,7,9,11,25,49}}, a coprime: all |G|=sqrt(q) -> {'PASS' if g_ok else 'FAIL'}")
+    print(
+        f"  checked q in {{5,7,9,11,25,49}}, a coprime: all |G|=sqrt(q) -> {'PASS' if g_ok else 'FAIL'}"
+    )
     ok &= g_ok
 
     # (B) free-particle fractional revival: at t=2pi/q the kernel has uniform |U|=1/sqrt(q)
@@ -71,7 +73,9 @@ def main() -> int:
         uniform = abs(u.min() - 1 / np.sqrt(q)) < 1e-9 and abs(u.max() - 1 / np.sqrt(q)) < 1e-9
         unit = abs(float(np.sum(u**2)) - 1.0) < 1e-12
         rev_ok &= uniform and unit
-        print(f"  {q:>4} {u.min():>9.5f} {u.max():>9.5f} {1 / np.sqrt(q):>10.5f} {float(np.sum(u**2)):>9.5f}")
+        print(
+            f"  {q:>4} {u.min():>9.5f} {u.max():>9.5f} {1 / np.sqrt(q):>10.5f} {float(np.sum(u**2)):>9.5f}"
+        )
     print(f"  -> uniform 1/sqrt(q) revival (Gauss): {'PASS' if rev_ok else 'FAIL'}")
     ok &= rev_ok
 
@@ -95,15 +99,21 @@ def main() -> int:
         print(f"  {tmax:>10.0f} {vals[i]:>14.5f} {ts[i]:>10.1f}")
         grow &= vals[i] >= prev - 1e-9
         prev = vals[i]
-    print("  -> approaches 1 with wandering time (no finite period, Niven): "
-          f"{'PASS' if grow else 'FAIL'}")
+    print(
+        "  -> approaches 1 with wandering time (no finite period, Niven): "
+        f"{'PASS' if grow else 'FAIL'}"
+    )
     ok &= grow
 
     print("\n" + "=" * 74)
     print("RESULT:", "REVIVALS/GAUSS VERIFIED" if ok else "CHECK FAILED")
     print("Exact Talbot revivals (Gauss sums, |U|=1/sqrt q) belong to the QUADRATIC dispersion")
-    print("(continuum/free-particle limit); the tight-binding ring is almost-periodic (Bohr) with no")
-    print("exact revival. The large wave lives in this almost-periodic, Diophantine recurrence regime.")
+    print(
+        "(continuum/free-particle limit); the tight-binding ring is almost-periodic (Bohr) with no"
+    )
+    print(
+        "exact revival. The large wave lives in this almost-periodic, Diophantine recurrence regime."
+    )
     print("=" * 74)
     return 0 if ok else 1
 

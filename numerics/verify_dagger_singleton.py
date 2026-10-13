@@ -117,6 +117,8 @@ try:
 except ImportError:  # pragma: no cover - python-flint is required for the rigorous bound
     HAVE_FLINT = False
 
+print = functools.partial(print, flush=True)
+
 # ---- constants (consistent with the sibling dagger scripts; HP values from verify_dagger_window.py) ----
 H1 = 0.9580913986828501  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi)
 K_STAR = (H1 - sqrt(pi) / 2) / 2  # = 0.035932236615...; the SHARP (dagger) constant
@@ -190,21 +192,21 @@ def lam_conc(a1: float, a3: float, b: float) -> float:
 # ==========================================================================================================
 # RIGOROUS Arb three-region bound (the proof)
 # ==========================================================================================================
-def _J0_series(amp_trig: object, t0: object, order: int) -> object:
+def _J0_series(amp_trig: arb | acb, t0: acb, order: int) -> acb_series:
     """Rigorous acb Taylor model of J0(amp_trig * (t0 + x)) in x, via J0 = 0F1(; 1; -z^2/4).  python-flint's
     hypgeom computes a rigorous enclosure with a certified truncation error bound."""
     z = acb_series([amp_trig * t0, amp_trig], order + 1)  # z = amp_trig*(t0 + x)
     return acb_series.hypgeom([], [acb(1)], -(z * z) / 4, n=-1)
 
 
-def _P_term(amp_trig: object, t0: object, order: int) -> object:
+def _P_term(amp_trig: arb | acb, t0: acb, order: int) -> acb_series:
     """Rigorous acb Taylor model of  -log J0(amp_trig (t0+x)) - (amp_trig (t0+x))^2/4  (>= 0 on [0,j01))."""
     J = _J0_series(amp_trig, t0, order)
     z = acb_series([amp_trig * t0, amp_trig], order + 1)
     return -J.log() - (z * z) / 4
 
 
-def _box_integral(series: object, trad_mid: object) -> object:
+def _box_integral(series: acb_series, trad_mid: float | arb) -> arb:
     """Integrate the degree-`order` Taylor POLYNOMIAL (the series' coeffs 0..order) over x in [-trad, trad]:
     sum c_k (trad^{k+1}-(-trad)^{k+1})/(k+1).  NOTE: this is the polynomial; the dropped x^{>order} tail is
     bounded separately and added by the caller via `_cauchy_tail` -- see that function for the rigor."""
@@ -216,7 +218,7 @@ def _box_integral(series: object, trad_mid: object) -> object:
     return val.real
 
 
-def _cauchy_tail(max_mod_R: float, R: float, trad: float, order: int) -> object:
+def _cauchy_tail(max_mod_R: float, R: float, trad: float, order: int) -> arb:
     """RIGOROUS bound on the dropped Taylor tail | int_{-trad}^{trad} sum_{k>order} c_k x^k dx |.
     The per-theta integrand h(x) is ENTIRE in x (J0, exp are entire; on the head, -log J0 - z^2/4 is analytic
     while the Bessel argument stays below j_{0,1}).  By Cauchy's estimate on the complex circle |x|=R,
@@ -229,7 +231,9 @@ def _cauchy_tail(max_mod_R: float, R: float, trad: float, order: int) -> object:
     that R >= 2*trad (ratio <= 1/2), which both guarantees convergence and keeps the remainder tiny."""
     ratio = trad / R
     if ratio >= 0.999:
-        raise ValueError(f"_cauchy_tail needs trad < R (got trad/R={ratio:.3f}); caller must enlarge R")
+        raise ValueError(
+            f"_cauchy_tail needs trad < R (got trad/R={ratio:.3f}); caller must enlarge R"
+        )
     s = 0.0
     for k in range(order + 1, order + 400):
         term = ratio**k * 2 * trad / (k + 1)
@@ -242,7 +246,7 @@ def _cauchy_tail(max_mod_R: float, R: float, trad: float, order: int) -> object:
 
 def head_majorant_arb(
     a1: float, a3: float, b: float, t1: float, nbox: int, nth: int, order: int, t_lo: float = 0.05
-) -> object:
+) -> arb:
     """Rigorous UPPER bound on int_0^{t1} (Mg-M)/t^2 dt via the cumulant majorant
     Mg-M <= (2/pi) int e^{-Q t^2/2} P dth, P = sum(-log J0 - z^2/4) >= 0.  Returns an arb (use .upper()).
     The [0,t_lo] piece is added analytically (the integrand is O(t^2) near 0; t_lo=0.05 makes it < 1e-9).
@@ -254,9 +258,8 @@ def head_majorant_arb(
     amax = max(a1, a3, b)
     if amax * t1 >= J01:
         raise ValueError(f"head precondition violated: a_max*t1={amax * t1:.3f} >= j01={J01:.3f}")
-    af1, af3, bf = a1, a3, b
-    a1, a3, b = arb(str(a1)), arb(str(a3)), arb(str(b))
-    sx2, sy2 = (a1 * a1 + a3 * a3) / 2, (b * b) / 2
+    A1, A3, B = arb(str(a1)), arb(str(a3)), arb(str(b))
+    sx2, sy2 = (A1 * A1 + A3 * A3) / 2, (B * B) / 2
     PI = arb.pi()
     bw = (arb(t1) - arb(t_lo)) / nbox
     bw_mid = float((bw / 2).mid())
@@ -271,7 +274,7 @@ def head_majorant_arb(
         for ith in range(nth):
             thb = acb(arb(float(((dth * ith) + dth / 2).mid()), float((dth / 2).mid())))
             c, s = thb.cos(), thb.sin()
-            P = _P_term(a1 * c, t0, order) + _P_term(a3 * c, t0, order) + _P_term(b * s, t0, order)
+            P = _P_term(A1 * c, t0, order) + _P_term(A3 * c, t0, order) + _P_term(B * s, t0, order)
             q = sx2 * c * c + sy2 * s * s
             g = (-q * (tt * tt) / 2).exp()
             term = (g * P) * dth
@@ -283,28 +286,30 @@ def head_majorant_arb(
         # with maxP_R = sum_i [-log J0(rho_i) - rho_i^2/4], rho_i = amp_i (t0c+R) < j01 (max modulus of the
         # all-nonnegative-coeff series is at the real point).
         R = min(0.15, 0.9 * t0c, 0.45 * (J01 / amax - t1))
-        rho = [a * (t0c + R) for a in (af1, af3, bf)]
+        rho = [a * (t0c + R) for a in (a1, a3, b)]
         maxP = sum(float(-np.log(j0(r)) - r**2 / 4) for r in rho)
         max_mod = maxP / (t0c - R) ** 2  # |g|<=1 since t0c >= R (0.9*t0c < t0c)
-        tot = tot + _cauchy_tail(max_mod, R, bw_mid, order)  # raises if R <= 2*bw_mid (caller must refine)
-        tot = tot + _box_integral(acc, bw_mid)
+        tot = tot + _cauchy_tail(
+            max_mod, R, bw_mid, order
+        )  # raises if R <= 2*bw_mid (caller must refine)
+        tot = tot + _box_integral(acc, bw_mid)  # ty: ignore[invalid-argument-type]  # astral-sh/ty#3967
     # [0, t_lo]: integrand = mean_th(e^{-Q t^2/2} P)/t^2 <= mean_th(P)/t^2; P <= sum (a c t)^4 * sup_k d_k,
     # with d(z)=(-log J0 - z^2/4)/z^4 -> 1/64, increasing.  On [0, t_lo] (args tiny) d <= 1/40 (very loose);
     # mean(P)/t^2 <= (t^2/40) sum a^4 (c^4<=1, s^4<=1), so int_0^{t_lo} <= (t_lo^3/120) sum a^4.  Represent
     # this [0, B] interval as the arb with midpoint B/2 and radius B/2 (so .upper() = B = the rigorous bound).
-    c4 = float(a1) ** 4 + float(a3) ** 4 + float(b) ** 4
+    c4 = float(A1) ** 4 + float(A3) ** 4 + float(B) ** 4
     half = (t_lo**3 / 240.0) * c4
     return tot + arb(half, half)
 
 
 def middle_taylor_arb(
     a1: float, a3: float, b: float, slices: list[tuple[float, float, int, int]], order: int = 4
-) -> object:
+) -> arb:
     """Rigorous (signed) enclosure of int_{t1}^{t2} (Mg-M)/t^2 dt by an acb Taylor model in t over narrow
     sub-boxes (cancellation preserved within each box).  `slices` = [(tlo,thi,nbox,nth), ...].  Returns arb."""
     af1, af3, bf = float(a1), float(a3), float(b)
-    a1, a3, b = arb(str(a1)), arb(str(a3)), arb(str(b))
-    sx2, sy2 = (a1 * a1 + a3 * a3) / 2, (b * b) / 2
+    A1, A3, B = arb(str(a1)), arb(str(a3)), arb(str(b))
+    sx2, sy2 = (A1 * A1 + A3 * A3) / 2, (B * B) / 2
     PI = arb.pi()
     total = arb(0)
     for tlo, thi, nbox, nth in slices:
@@ -325,17 +330,21 @@ def middle_taylor_arb(
             for ith in range(nth):
                 thb = acb(arb(float(((dth * ith) + dth / 2).mid()), float((dth / 2).mid())))
                 c, s = thb.cos(), thb.sin()
-                p = _J0_series(a1 * c, t0, order) * _J0_series(a3 * c, t0, order) * _J0_series(b * s, t0, order)
+                p = (
+                    _J0_series(A1 * c, t0, order)
+                    * _J0_series(A3 * c, t0, order)
+                    * _J0_series(B * s, t0, order)
+                )
                 q = sx2 * c * c + sy2 * s * s
                 g = (-q * (tt * tt) / 2).exp()
                 term = (g - p) * dth
                 acc = term if acc is None else acc + term
             acc = (acb(2) / PI) * acc * ttinv
-            total = total + _box_integral(acc, trad) + rem_box
+            total = total + _box_integral(acc, trad) + rem_box  # ty: ignore[invalid-argument-type]  # astral-sh/ty#3967
     return total
 
 
-def _cap1(v: object) -> object:
+def _cap1(v: arb) -> arb:
     """min(1, v) for an arb interval v >= 0, NaN/inf-safe (a singular box, e.g. cos containing 0, caps to 1)."""
     lo, hi = float(v.lower()), float(v.upper())
     hi = 1.0 if (not math.isfinite(hi) or hi != hi) else min(hi, 1.0)
@@ -345,7 +354,7 @@ def _cap1(v: object) -> object:
     return arb((lo + hi) / 2.0, (hi - lo) / 2.0)
 
 
-def _envelope_point(a1: object, a3: object, b: object, K2: object, PI: object, tval: object, nth: int) -> object:
+def _envelope_point(a1: arb, a3: arb, b: arb, K2: arb, PI: arb, tval: arb, nth: int) -> arb:
     """E(tval) = (2/pi) int_0^{pi/2} min(1, K2/(t cos)) min(1, sqrt(2/(pi b t sin))) dth, at a POINT t (tight)."""
     dth = (PI / 2) / nth
     body = arb(0)
@@ -359,31 +368,38 @@ def _envelope_point(a1: object, a3: object, b: object, K2: object, PI: object, t
 
 
 def tail_modulus_arb(
-    a1: float, a3: float, b: float, t2: float, segs: list[tuple[float, float, int, int]], T_far: float
-) -> object:
+    a1: float,
+    a3: float,
+    b: float,
+    t2: float,
+    segs: list[tuple[float, float, int, int]],
+    T_far: float,
+) -> arb:
     """Rigorous UPPER bound on int_{t2}^inf |M|/t^2 dt by the monotone capped Bessel envelope E(t), enclosed
     on [t2, T_far] (E at the left endpoint of each t-box, * the closed t^{-2} integral, since E decreases) plus
     a closed-form far bound on [T_far, inf):  E(t) <= (2/pi) sqrt(2/(pi b t)) B0, B0 < 2.63.  Returns arb.
     NOTE: this is the |M| MODULUS bound; the Mg remnant int_{t2}^inf Mg/t^2 is added separately (negligible)."""
-    a1, a3, b = arb(str(a1)), arb(str(a3)), arb(str(b))
+    A1, A3, B = arb(str(a1)), arb(str(a3)), arb(str(b))
     PI = arb.pi()
-    K2 = arb(2) / (PI * (a1 * a3).sqrt())
+    K2 = arb(2) / (PI * (A1 * A3).sqrt())
     tot = arb(0)
     for tlo, thi, nt, nth in segs:
         dt = (arb(thi) - arb(tlo)) / nt
         for i in range(nt):
             a = arb(tlo) + dt * i
             bb = arb(tlo) + dt * (i + 1)
-            Elo = _envelope_point(a1, a3, b, K2, PI, a, nth)  # E decreasing => E<=E(left)
+            Elo = _envelope_point(A1, A3, B, K2, PI, a, nth)  # E decreasing => E<=E(left)
             tot = tot + Elo * (1 / a - 1 / bb)
     # far [T_far, inf): E(t) <= (2/pi) sqrt(2/(pi b t)) B0 => E/t^2 <= C t^{-5/2}, int = C (2/3) T_far^{-3/2}.
-    B0 = arb("2.63")  # int_0^{pi/2} dth/sqrt(sin) = sqrt(pi) Gamma(1/4)/(2 Gamma(3/4)) = 2.6220... < 2.63
-    C = (arb(2) / PI) * (arb(2) / (PI * b)).sqrt() * B0
+    B0 = arb(
+        "2.63"
+    )  # int_0^{pi/2} dth/sqrt(sin) = sqrt(pi) Gamma(1/4)/(2 Gamma(3/4)) = 2.6220... < 2.63
+    C = (arb(2) / PI) * (arb(2) / (PI * B)).sqrt() * B0
     far = C * (arb(2) / 3) * (arb(T_far) ** arb("-1.5"))
     return tot + far
 
 
-def Mg_tail_arb(a1: float, a3: float, b: float, t2: float) -> object:
+def Mg_tail_arb(a1: float, a3: float, b: float, t2: float) -> arb:
     """Rigorous UPPER bound on int_{t2}^inf Mg/t^2 dt.  Mg(t) <= exp(-sy2 t2^2/2) for t>=t2 (sy2=min variance,
     but here sy2=b^2/2 may exceed sx2; use the true theta-min variance Q_min = min(sx2,sy2)).  Tiny."""
     sx2, sy2 = 0.5 * (a1**2 + a3**2), 0.5 * b**2
@@ -429,7 +445,7 @@ def prove_singleton_point(
     tail = tail_modulus_arb(a1, a3, b, T2, tail_segs, tail_far)
     mgt = Mg_tail_arb(a1, a3, b, T2)
 
-    def Ru(x: object) -> float:
+    def Ru(x: arb) -> float:
         return float(x.upper()) / D / K_STAR
 
     head_u, mid_u, tail_u, mgt_u = Ru(head), Ru(mid), Ru(tail), Ru(mgt)
@@ -450,20 +466,24 @@ def prove_singleton_point(
 
 # ==========================================================================================================
 def main() -> int:
-    global print
-    print = functools.partial(print, flush=True)
     warnings.simplefilter("ignore", category=IntegrationWarning)
     ok = True
     print("=" * 100)
-    print("(dagger) SINGLETON-CHANNEL residual  even={a1,a3} odd={b}:  E|Z|-E|G| <= K_star (a1^4+a3^4+b^4)/Sigma2^{3/2}")
+    print(
+        "(dagger) SINGLETON-CHANNEL residual  even={a1,a3} odd={b}:  E|Z|-E|G| <= K_star (a1^4+a3^4+b^4)/Sigma2^{3/2}"
+    )
     print(f"  K_star = {K_STAR:.10f}    j_(0,1) = {J01:.6f}    split t1={T1}, t2={T2}")
-    print(f"  python-flint (rigorous Arb): {'available' if HAVE_FLINT else 'MISSING -- rigorous bound skipped'}")
+    print(
+        f"  python-flint (rigorous Arb): {'available' if HAVE_FLINT else 'MISSING -- rigorous bound skipped'}"
+    )
     print("=" * 100)
 
     # ------------------------------------------------------------------------------------------------------
     # (E) engine cross-check: Kluyver excess (K) vs FFT density, on singleton configs.
     # ------------------------------------------------------------------------------------------------------
-    print("\n(E) ENGINE: Kluyver excess (K) vs FFT density E|Z| (target <= 1e-6), singleton configs:")
+    print(
+        "\n(E) ENGINE: Kluyver excess (K) vs FFT density E|Z| (target <= 1e-6), singleton configs:"
+    )
     worst_id = 0.0
     for a1, a3, b, tag in [
         (0.852, 0.591, 0.961, "worst ~{1,.7}|{1.13}"),
@@ -489,28 +509,42 @@ def main() -> int:
     viol = float(np.max(np.abs(j0(xs)) * sqrt(pi * xs / 2)))
     p0_ok = viol <= 1.0 + 1e-4
     ok &= p0_ok
-    print(f"    sup_{{x in (0,200]}} |J0(x)| sqrt(pi x/2) = {viol:.6f}  (<= 1 => the envelope holds)  "
-          f"{'ok' if p0_ok else 'FAIL'}")
+    print(
+        f"    sup_{{x in (0,200]}} |J0(x)| sqrt(pi x/2) = {viol:.6f}  (<= 1 => the envelope holds)  "
+        f"{'ok' if p0_ok else 'FAIL'}"
+    )
     B0_num = quad(lambda th: 1 / sqrt(sin(th)), 1e-12, pi / 2)[0]
-    print(f"    B0 = int_0^{{pi/2}} dth/sqrt(sin th) = {B0_num:.5f}  (< 2.63, used in the closed far-tail bound)")
+    print(
+        f"    B0 = int_0^{{pi/2}} dth/sqrt(sin th) = {B0_num:.5f}  (< 2.63, used in the closed far-tail bound)"
+    )
 
     # ------------------------------------------------------------------------------------------------------
     # (W) the WORST singleton config: full three-region rigorous bound at high resolution.
     # ------------------------------------------------------------------------------------------------------
-    print("\n(W) WORST singleton config a=(0.852,0.591,0.961) [= {1,.7}|{1.13} rescaled, lam=0.825]:")
+    print(
+        "\n(W) WORST singleton config a=(0.852,0.591,0.961) [= {1,.7}|{1.13} rescaled, lam=0.825]:"
+    )
     a1w, a3w, bw = 0.852, 0.591, 0.961
-    print(f"    reference R/K_star (scipy Kluyver) = {R_over_kstar_ref(a1w, a3w, bw):.5f}  (the true ratio)")
+    print(
+        f"    reference R/K_star (scipy Kluyver) = {R_over_kstar_ref(a1w, a3w, bw):.5f}  (the true ratio)"
+    )
     if HAVE_FLINT:
         t0 = time.time()
         res = prove_singleton_point(a1w, a3w, bw)
         dt = time.time() - t0
         print(f"    RIGOROUS Arb three-region UPPER bound (Sigma2=1, /K_star), {dt:.0f}s:")
         print(f"      head [0,{T1}]   (cumulant majorant) <= {res['head']:.4f} K_star")
-        print(f"      middle [{T1},{T2}] (signed Taylor-model) = {res['mid_mid']:.4f} +/- {res['mid_rad']:.4f}"
-              f" => <= {res['mid']:.4f} K_star")
-        print(f"      tail [{T2},inf) (capped modulus + Mg remnant) <= {res['tail'] + res['mgt']:.4f} K_star")
-        print(f"      TOTAL upper bound = {res['total_upper']:.4f} K_star   "
-              f"{'< K_star => (dagger) PROVED here' if res['proves'] else '>= K_star: FAIL'}")
+        print(
+            f"      middle [{T1},{T2}] (signed Taylor-model) = {res['mid_mid']:.4f} +/- {res['mid_rad']:.4f}"
+            f" => <= {res['mid']:.4f} K_star"
+        )
+        print(
+            f"      tail [{T2},inf) (capped modulus + Mg remnant) <= {res['tail'] + res['mgt']:.4f} K_star"
+        )
+        print(
+            f"      TOTAL upper bound = {res['total_upper']:.4f} K_star   "
+            f"{'< K_star => (dagger) PROVED here' if res['proves'] else '>= K_star: FAIL'}"
+        )
         ok &= res["proves"]
     else:
         print("    [python-flint missing: cannot run the rigorous bound]")
@@ -519,10 +553,18 @@ def main() -> int:
     # ------------------------------------------------------------------------------------------------------
     # (G) the GRID over the singleton family (covering lambda in [0.65,0.82)) -- rigorous per-point upper bound.
     # ------------------------------------------------------------------------------------------------------
-    print("\n(G) GRID over the singleton family even={a1,a3}|odd={b}, Sigma2=1, covering lambda in [0.65,0.82):")
-    print("    Each node: rigorous Arb three-region upper bound (full resolution) < K_star.  The margin is thin")
-    print("    (the capped-modulus tail loses the ~0.04 K_star signed cancellation), so the binding band")
-    print("    R/K*~0.88-0.91 is the hardest; full resolution is used at every node (no light tier).")
+    print(
+        "\n(G) GRID over the singleton family even={a1,a3}|odd={b}, Sigma2=1, covering lambda in [0.65,0.82):"
+    )
+    print(
+        "    Each node: rigorous Arb three-region upper bound (full resolution) < K_star.  The margin is thin"
+    )
+    print(
+        "    (the capped-modulus tail loses the ~0.04 K_star signed cancellation), so the binding band"
+    )
+    print(
+        "    R/K*~0.88-0.91 is the hardest; full resolution is used at every node (no light tier)."
+    )
     # curated nodes spanning lambda in [0.65,0.82); the highest-R nodes (~0.9) are the binding ones, and the
     # worst config (W) above is the lambda=0.825 endpoint witness.
     grid_cfgs = [
@@ -544,11 +586,15 @@ def main() -> int:
             grid_worst_ref = max(grid_worst_ref, rref)
             grid_worst_upper = max(grid_worst_upper, res["total_upper"])
             grid_ok &= res["proves"]
-            print(f"    ({a1:.2f},{a3:.2f},{b:.3f}){'':5} {res['lam']:>7.3f} {rref:>9.4f} "
-                  f"{res['total_upper']:>13.4f} {'YES' if res['proves'] else 'NO':>8}")
+            print(
+                f"    ({a1:.2f},{a3:.2f},{b:.3f}){'':5} {res['lam']:>7.3f} {rref:>9.4f} "
+                f"{res['total_upper']:>13.4f} {'YES' if res['proves'] else 'NO':>8}"
+            )
         ok &= grid_ok
-        print(f"    => grid worst: R_ref/K* = {grid_worst_ref:.4f}, rigorous Arb upper = {grid_worst_upper:.4f}; "
-              f"all nodes prove (dagger): {'ok' if grid_ok else 'FAIL'}")
+        print(
+            f"    => grid worst: R_ref/K* = {grid_worst_ref:.4f}, rigorous Arb upper = {grid_worst_upper:.4f}; "
+            f"all nodes prove (dagger): {'ok' if grid_ok else 'FAIL'}"
+        )
     else:
         print("    [python-flint missing: grid skipped]")
         ok = False
@@ -556,7 +602,9 @@ def main() -> int:
     # ------------------------------------------------------------------------------------------------------
     # (S) parameter sensitivity -- WHY a single interval-amplitude box does NOT certify a cell (honest finding).
     # ------------------------------------------------------------------------------------------------------
-    print("\n(S) HONEST NEGATIVE: interval amplitudes blow up the cumulant majorant (no single-box continuum cover):")
+    print(
+        "\n(S) HONEST NEGATIVE: interval amplitudes blow up the cumulant majorant (no single-box continuum cover):"
+    )
     if HAVE_FLINT:
         for eps in (0.0, 0.005, 0.01):
             a1, a3, b = arb("0.852", eps), arb("0.591", eps), arb("0.961", eps)
@@ -579,42 +627,72 @@ def main() -> int:
                     term = (g * P) * dth
                     acc = term if acc is None else acc + term
                 acc = (acb(2) / PI) * acc * ttinv
-                tot = tot + _box_integral(acc, (bwd / 2).mid())
+                tot = tot + _box_integral(acc, (bwd / 2).mid())  # ty: ignore[invalid-argument-type]  # astral-sh/ty#3967
             D = (float(a1.mid()) ** 4 + float(a3.mid()) ** 4 + float(b.mid()) ** 4) / (
                 0.5 * (float(a1.mid()) ** 2 + float(a3.mid()) ** 2 + float(b.mid()) ** 2)
             ) ** 1.5
-            print(f"    amplitude box halfwidth eps={eps}: head majorant upper = {float(tot.upper()) / D / K_STAR:.4f}"
-                  f" K_star  ({'tight' if eps == 0 else 'INFLATED'})")
-        print("    => a 0.01-wide amplitude box inflates the head ~4x; the family is GRID-certified")
-        print("       (point-rigorous nodes + measured Lipschitz spacing), NOT single-box-interval-proved.")
+            print(
+                f"    amplitude box halfwidth eps={eps}: head majorant upper = {float(tot.upper()) / D / K_STAR:.4f}"
+                f" K_star  ({'tight' if eps == 0 else 'INFLATED'})"
+            )
+        print(
+            "    => a 0.01-wide amplitude box inflates the head ~4x; the family is GRID-certified"
+        )
+        print(
+            "       (point-rigorous nodes + measured Lipschitz spacing), NOT single-box-interval-proved."
+        )
 
     # ------------------------------------------------------------------------------------------------------
     # (L) the SHARP signed tail (documented, not used): ring amplitudes + incomplete-gamma closed form.
     # ------------------------------------------------------------------------------------------------------
-    print("\n(L) the SHARP signed tail (dagger_singleton_rings.mac; documented, certificate uses the modulus tail):")
+    print(
+        "\n(L) the SHARP signed tail (dagger_singleton_rings.mac; documented, certificate uses the modulus tail):"
+    )
     a1, a3, b = 0.852, 0.591, 0.961
-    A_end = (4 / pi**2) * (ellipk((a3 / a1) ** 2) / a1) * sqrt(2 / (pi * b))  # endpoint Weber-Schafheitlin amp
+    A_end = (
+        (4 / pi**2) * (ellipk((a3 / a1) ** 2) / a1) * sqrt(2 / (pi * b))
+    )  # endpoint Weber-Schafheitlin amp
     # fit the leading ring amplitude of M(t) t^{3/2} at omega=b
     c, s = _trig(30000)
     ts = np.linspace(30, 90, 12000)
-    Mv = np.array([float((j0(a1 * t * c) * j0(a3 * t * c) * j0(b * t * s)).mean()) for t in ts]) * ts**1.5
+    Mv = (
+        np.array([float((j0(a1 * t * c) * j0(a3 * t * c) * j0(b * t * s)).mean()) for t in ts])
+        * ts**1.5
+    )
     oms = [b, sqrt((a1 - a3) ** 2 + b**2), sqrt((a1 + a3) ** 2 + b**2)]
     X = np.column_stack([f(om * ts) for om in oms for f in (cos, sin)])
     coef, *_ = np.linalg.lstsq(X, Mv, rcond=None)
     amp_b = sqrt(coef[0] ** 2 + coef[1] ** 2)
-    print(f"    endpoint (omega=b) amplitude: predicted A_end = {A_end:.4f}, fit of M(t)t^(3/2) = {amp_b:.4f}")
-    print(f"    near-degenerate interior omega_- = sqrt((a1-a3)^2+b^2) = {sqrt((a1 - a3) ** 2 + b**2):.4f}"
-          f" (close to b={b}); => signed bound delicate; modulus tail used instead.")
-    signed_ref = quad(lambda t: (math.exp(-0.5 * (a1**2 + a3**2 + b**2) / 2 * t**2)
-                                  - float((j0(a1 * t * c) * j0(a3 * t * c) * j0(b * t * s)).mean())) / t**2,
-                      12, 200, limit=600)[0]
+    print(
+        f"    endpoint (omega=b) amplitude: predicted A_end = {A_end:.4f}, fit of M(t)t^(3/2) = {amp_b:.4f}"
+    )
+    print(
+        f"    near-degenerate interior omega_- = sqrt((a1-a3)^2+b^2) = {sqrt((a1 - a3) ** 2 + b**2):.4f}"
+        f" (close to b={b}); => signed bound delicate; modulus tail used instead."
+    )
+    signed_ref = quad(
+        lambda t: (
+            (
+                math.exp(-0.5 * (a1**2 + a3**2 + b**2) / 2 * t**2)
+                - float((j0(a1 * t * c) * j0(a3 * t * c) * j0(b * t * s)).mean())
+            )
+            / t**2
+        ),
+        12,
+        200,
+        limit=600,
+    )[0]
     Dw = (a1**4 + a3**4 + b**4) / (0.5 * (a1**2 + a3**2 + b**2)) ** 1.5
-    print(f"    true signed tail int_12^inf (Mg-M)/t^2 = {signed_ref:+.6f} = {signed_ref / Dw / K_STAR:+.4f} K_star"
-          f"  (vs the crude modulus bound ~0.045 K_star used in the certificate)")
+    print(
+        f"    true signed tail int_12^inf (Mg-M)/t^2 = {signed_ref:+.6f} = {signed_ref / Dw / K_STAR:+.4f} K_star"
+        f"  (vs the crude modulus bound ~0.045 K_star used in the certificate)"
+    )
     l_ok = abs(amp_b - A_end) < 0.05
     ok &= l_ok
-    print(f"    => ring amplitude matches the fit ({'ok' if l_ok else 'FAIL'}); the sharper route is available"
-          f" but not needed.")
+    print(
+        f"    => ring amplitude matches the fit ({'ok' if l_ok else 'FAIL'}); the sharper route is available"
+        f" but not needed."
+    )
 
     # ------------------------------------------------------------------------------------------------------
     print("\n" + "=" * 100)

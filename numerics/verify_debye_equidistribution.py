@@ -79,7 +79,9 @@ def weyl_cell(s: float, n: int, kv: dict[int, int], u_lo: float, u_hi: float) ->
     for ell, k in kv.items():
         if k:
             a = np.abs(js + ell * n)
-            phi = np.sqrt(x * x - a * a) - a * np.arccos(a / x) - np.pi / 4  # magnitude phase of |J|
+            phi = (
+                np.sqrt(x * x - a * a) - a * np.arccos(a / x) - np.pi / 4
+            )  # magnitude phase of |J|
             tot = tot + k * phi
     return float(np.abs(np.mean(np.exp(1j * tot))))
 
@@ -102,8 +104,10 @@ def check_increments(s: float, n: int) -> bool:
         ok1 = abs(((d1 - pred1 + np.pi) % (2 * np.pi)) - np.pi) < 2e-3
         ok2 = abs(d2 / pred2 - 1.0) < 1e-2
         ok &= ok1 and ok2
-        print(f"    l={ell:+d} m={m:+.3f}: d1={d1:+.5f} (pred {pred1:+.5f}); "
-              f"d2/[(1/N)g_l]={d2 / pred2:.4f}  {'ok' if ok1 and ok2 else 'FAIL'}")
+        print(
+            f"    l={ell:+d} m={m:+.3f}: d1={d1:+.5f} (pred {pred1:+.5f}); "
+            f"d2/[(1/N)g_l]={d2 / pred2:.4f}  {'ok' if ok1 and ok2 else 'FAIL'}"
+        )
     return ok
 
 
@@ -119,8 +123,11 @@ def check_weyl(s: float) -> bool:
         kvs = ",".join(f"{ll}:{k}" for ll, k in kv.items())
         decays = vals[-1] < vals[0] and vals[-1] < 0.05
         ok &= decays
-        print(f"    k=({kvs:>14}): " + " ".join(f"{v:.5f}" for v in vals)
-              + f"  slope={slope:+.2f}  {'ok' if decays else 'FAIL'}")
+        print(
+            f"    k=({kvs:>14}): "
+            + " ".join(f"{v:.5f}" for v in vals)
+            + f"  slope={slope:+.2f}  {'ok' if decays else 'FAIL'}"
+        )
     rng = np.random.default_rng(0)
     worst = 0.0
     for _ in range(60):
@@ -143,8 +150,10 @@ def check_curvature(s: float) -> bool:
         not_zero = np.max(np.abs(c)) > 1e-3
         ok &= not_zero and sign_changes <= 4  # isolated zeros only
         kvs = ",".join(f"{ll}:{k}" for ll, k in kv.items())
-        print(f"    k=({kvs:>13}): max|C|={np.max(np.abs(c)):.3f} isolated-zeros={sign_changes}  "
-              f"{'ok' if not_zero and sign_changes <= 4 else 'FAIL'}")
+        print(
+            f"    k=({kvs:>13}): max|C|={np.max(np.abs(c)):.3f} isolated-zeros={sign_changes}  "
+            f"{'ok' if not_zero and sign_changes <= 4 else 'FAIL'}"
+        )
     return ok
 
 
@@ -166,13 +175,18 @@ def check_transfer(s: float) -> bool:
         j_lo, j_hi = int(cell[0] * n), int(cell[1] * n)
         step = max(1, (j_hi - j_lo) // 6000)
         js = np.arange(j_lo, j_hi, step)
-        vals = [abs(sum((1j) ** (j + ell * n) * jv(j + ell * n, x) for ell in range(-6, 7)))
-                * np.sqrt(np.pi * n / 2) for j in js]
+        vals = [
+            abs(sum((1j) ** (j + ell * n) * jv(j + ell * n, x) for ell in range(-6, 7)))
+            * np.sqrt(np.pi * n / 2)
+            for j in js
+        ]
         m = float(np.mean(vals))
         good = abs(m - t_e) < 0.015
         ok &= good
-        print(f"    N={n:>7}: <|K|>={m:.4f}  diff={m - t_e:+.4f} ({(m - t_e) / t_e * 100:+.2f}%)  "
-              f"{'ok' if good else 'FAIL'}")
+        print(
+            f"    N={n:>7}: <|K|>={m:.4f}  diff={m - t_e:+.4f} ({(m - t_e) / t_e * 100:+.2f}%)  "
+            f"{'ok' if good else 'FAIL'}"
+        )
     # band-edge strip L1 mass ~ eps^{3/4}
     full = quad(lambda u: (s * s - u * u) ** -0.25, -s, s, points=[-s, s], limit=200)[0]
     print("    band-edge strip fraction vs eps^{3/4} (integrable envelope => -> 0):")
@@ -185,8 +199,10 @@ def check_transfer(s: float) -> bool:
     ratios = [f / e**0.75 for f, e in zip(fractions, (0.1, 0.03, 0.01, 0.003), strict=True)]
     edge_ok = fractions[-1] < 0.02 and max(ratios) / min(ratios) < 1.3
     ok &= edge_ok
-    print(f"      -> strip -> 0 with fraction/eps^0.75 in [{min(ratios):.3f},{max(ratios):.3f}]: "
-          f"{'ok' if edge_ok else 'FAIL'}")
+    print(
+        f"      -> strip -> 0 with fraction/eps^0.75 in [{min(ratios):.3f},{max(ratios):.3f}]: "
+        f"{'ok' if edge_ok else 'FAIL'}"
+    )
     return ok
 
 
@@ -206,14 +222,22 @@ def main() -> int:
     print(f"\n(C) curvature C_k(u)=sum k_l g_l(u): isolated zeros only (s={s}):")
     ok &= check_curvature(s)
 
-    print(f"\n(D) transfer: cell-avg exact |K_N| -> toral E; band-edge strip ~ eps^{{3/4}} (s={s}):")
+    print(
+        f"\n(D) transfer: cell-avg exact |K_N| -> toral E; band-edge strip ~ eps^{{3/4}} (s={s}):"
+    )
     ok &= check_transfer(s)
 
     print("\n" + "=" * 78)
     print("RESULT:", "JOINT EQUIDISTRIBUTION VERIFIED" if ok else "CHECK FAILED")
-    print("Proved: the live Debye phases are jointly equidistributed with an explicit N^{-1/2} power")
-    print("saving per frequency combination, on the linear independence of the curvature kernels g_l")
-    print("(distinct poles).  Open residue: the uniform-in-u band-edge discrepancy bound that would turn")
+    print(
+        "Proved: the live Debye phases are jointly equidistributed with an explicit N^{-1/2} power"
+    )
+    print(
+        "saving per frequency combination, on the linear independence of the curvature kernels g_l"
+    )
+    print(
+        "(distinct poles).  Open residue: the uniform-in-u band-edge discrepancy bound that would turn"
+    )
     print("the cell-wise transfer into the unconditional t>N/2 profile F(s).")
     print("=" * 78)
     return 0 if ok else 1

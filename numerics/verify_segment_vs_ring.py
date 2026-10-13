@@ -51,7 +51,7 @@ def ring_sup_scan(n: int, t_max: float, dt: float, block: int = 16384) -> float:
     ts = np.arange(0.0, t_max, dt)
     best = 0.0
     for s in range(0, len(ts), block):
-        tb = ts[s:s + block]
+        tb = ts[s : s + block]
         c = np.zeros((len(tb), n))
         c[:, nz] = np.sin(np.outer(tb, om[nz])) / om[nz]
         u = np.fft.ifft(c, axis=1).real
@@ -78,13 +78,13 @@ def segment_g_at_node_coeffs(n: int, j0: int) -> tuple[np.ndarray, np.ndarray]:
 
 def segment_sup_scan(n: int, j0: int, t_max: float, dt: float, block: int = 8192) -> float:
     omega, v = segment_modes(n)
-    src = v[j0 - 1, :] / omega          # v_k(j0)/omega_k
+    src = v[j0 - 1, :] / omega  # v_k(j0)/omega_k
     ts = np.arange(0.0, t_max, dt)
     best = 0.0
     for s in range(0, len(ts), block):
-        tb = ts[s:s + block]
-        coeff_t = np.sin(np.outer(tb, omega)) * src      # (B, n)
-        u = coeff_t @ v.T                                # (B, n) field over all nodes
+        tb = ts[s : s + block]
+        coeff_t = np.sin(np.outer(tb, omega)) * src  # (B, n)
+        u = coeff_t @ v.T  # (B, n) field over all nodes
         best = max(best, float(np.abs(u).max()))
     return best
 
@@ -94,7 +94,7 @@ def time_mean_square(omega: np.ndarray, coeff: np.ndarray, t_max: float, dt: flo
     ts = np.arange(0.0, t_max, dt)
     acc, cnt = 0.0, 0
     for s in range(0, len(ts), 16384):
-        tb = ts[s:s + 16384]
+        tb = ts[s : s + 16384]
         g = np.sin(np.outer(tb, omega)) @ coeff
         acc += float(np.sum(g * g))
         cnt += len(tb)
@@ -116,8 +116,10 @@ def main() -> int:
         exp_ring = n // 2
         print(f"  {n:>5} {rd:>14} {exp_ring:>6} {sd:>14} {n:>5}")
         ok &= (rd == exp_ring) and (sd == n)
-    print(f"  -> ring has ~N/2 distinct freqs (twofold degeneracy), segment has N: "
-          f"{'PASS' if ok else 'FAIL'}")
+    print(
+        f"  -> ring has ~N/2 distinct freqs (twofold degeneracy), segment has N: "
+        f"{'PASS' if ok else 'FAIL'}"
+    )
 
     # (B) degeneracy factor in the (convergent) time-mean square
     print("\n(B) Degeneracy factor = mean_t|G(node,t)|^2 / (naive 1/2 sum coeff^2)")
@@ -125,13 +127,13 @@ def main() -> int:
     ring_ok = seg_ok = True
     for n in NS:
         om_r, co_r = ring_g_at_node0_coeffs(n)
-        naive_r = 0.5 * float(np.sum(co_r ** 2))
+        naive_r = 0.5 * float(np.sum(co_r**2))
         mean_r = time_mean_square(om_r, co_r, RMS_TMAX_MULT * n, RMS_DT)
         fac_r = mean_r / naive_r
 
         j0 = max(1, n // 3)
         om_s, co_s = segment_g_at_node_coeffs(n, j0)
-        naive_s = 0.5 * float(np.sum(co_s ** 2))
+        naive_s = 0.5 * float(np.sum(co_s**2))
         mean_s = time_mean_square(om_s, co_s, RMS_TMAX_MULT * n, RMS_DT)
         fac_s = mean_s / naive_s
 
@@ -148,9 +150,13 @@ def main() -> int:
     for n in NS:
         a_ring = ring_sup_scan(n, SUP_TMAX_MULT * n, SUP_DT)
         a_seg = segment_sup_scan(n, max(1, n // 3), SUP_TMAX_MULT * n, SUP_DT)
-        print(f"  {n:>5} {a_ring:>9.4f} {a_ring / np.log(n):>11.4f} "
-              f"{a_seg:>9.4f} {a_seg / np.log(n):>11.4f}")
-    print("  (interpretation only: both are truncated lower bounds; see verify_largewave_growth.py)")
+        print(
+            f"  {n:>5} {a_ring:>9.4f} {a_ring / np.log(n):>11.4f} "
+            f"{a_seg:>9.4f} {a_seg / np.log(n):>11.4f}"
+        )
+    print(
+        "  (interpretation only: both are truncated lower bounds; see verify_largewave_growth.py)"
+    )
 
     print("\n" + "=" * 76)
     print("RESULT:", "ALL CHECKS PASSED" if ok else "SOME CHECKS FAILED")

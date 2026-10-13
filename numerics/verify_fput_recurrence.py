@@ -62,8 +62,11 @@ def run(n: int, beta: float, amp: float, dt: float, steps: int) -> dict:
             t_series.append(s * dt)
             hmax = max(hmax, abs(hamiltonian(u, p, beta) - h0) / abs(h0))
     return {
-        "h0": h0, "e1_0": e1_0, "hdrift": hmax,
-        "t": np.array(t_series), "e1": np.array(e1_series),
+        "h0": h0,
+        "e1_0": e1_0,
+        "hdrift": hmax,
+        "t": np.array(t_series),
+        "e1": np.array(e1_series),
     }
 
 
@@ -75,7 +78,9 @@ def main() -> int:
     n, beta, amp, dt, steps = 32, 0.25, 4.0, 0.05, 600000
     r = run(n, beta, amp, dt, steps)
 
-    print(f"\n(A) Energy conservation: max |H(t)-H_0|/|H_0| = {r['hdrift']:.2e} over T={steps * dt:.0f}")
+    print(
+        f"\n(A) Energy conservation: max |H(t)-H_0|/|H_0| = {r['hdrift']:.2e} over T={steps * dt:.0f}"
+    )
     a_ok = r["hdrift"] < 1e-3
     ok &= a_ok
     print(f"    symplectic, no secular drift: {'OK' if a_ok else 'FAIL'}")
@@ -86,12 +91,16 @@ def main() -> int:
     dropped = np.where(e1 < 0.6)[0]
     recur = 0.0
     if len(dropped):
-        after = e1[dropped[0]:]
+        after = e1[dropped[0] :]
         recur = float(after.max())
-    print(f"\n(B) Mode-1 energy E_1(t)/E_1(0): min={e1_min:.3f}, recurs to {recur:.3f} after dropping")
+    print(
+        f"\n(B) Mode-1 energy E_1(t)/E_1(0): min={e1_min:.3f}, recurs to {recur:.3f} after dropping"
+    )
     b_ok = e1_min < 0.6 and recur > 0.85
     ok &= b_ok
-    print(f"    genuine recurrence (drops below 0.6, returns above 0.85): {'OK' if b_ok else 'FAIL'}")
+    print(
+        f"    genuine recurrence (drops below 0.6, returns above 0.85): {'OK' if b_ok else 'FAIL'}"
+    )
 
     # (C) only a few low modes ever carry appreciable energy (quasi-periodic, not thermalized)
     j = np.arange(n)
@@ -108,15 +117,19 @@ def main() -> int:
             me = mode_energies(u, p, n)
             peak_share = np.maximum(peak_share, me / me.sum())
     active = int(np.sum(peak_share[: n // 2] > 0.02))  # modes ever above 2% of energy
-    print(f"\n(C) Active low modes (ever >2% of energy) = {active} of {n // 2} "
-          f"(quasi-periodic, not thermalized)")
+    print(
+        f"\n(C) Active low modes (ever >2% of energy) = {active} of {n // 2} "
+        f"(quasi-periodic, not thermalized)"
+    )
     c_ok = active <= 8
     ok &= c_ok
     print(f"    energy confined to a few modes: {'OK' if c_ok else 'FAIL'}")
 
     print("\n" + "=" * 70)
     print("RESULT:", "FPUT RECURRENCE VERIFIED" if ok else "CHECK FAILED")
-    print("The nonlinear lattice (linear core L_N) is near-integrable at this energy: energy returns")
+    print(
+        "The nonlinear lattice (linear core L_N) is near-integrable at this energy: energy returns"
+    )
     print("to the seeded mode (FPUT recurrence) instead of thermalizing -- the regular regime.")
     print("=" * 70)
     return 0 if ok else 1

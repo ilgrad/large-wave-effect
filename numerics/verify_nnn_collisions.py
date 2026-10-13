@@ -64,7 +64,10 @@ def collision_pairs(n: int, phi_n: list[int], num: int = -1, den: int = 1) -> li
 
 
 def nnn_frequencies(n: int) -> list[mp.mpf]:
-    return [2 * mp.sin(mp.pi * r / n) * mp.sqrt(2 + mp.cos(2 * mp.pi * r / n)) for r in range(1, n // 2 + 1)]
+    return [
+        2 * mp.sin(mp.pi * r / n) * mp.sqrt(2 + mp.cos(2 * mp.pi * r / n))
+        for r in range(1, n // 2 + 1)
+    ]
 
 
 def main() -> int:
@@ -77,7 +80,10 @@ def main() -> int:
         if collision_pairs(n, cyclotomic(n)) != expect:
             bad.append(n)
     ok &= not bad
-    print("    collisions = {(N/4, N/2) : 4 | N} exactly:", "CONFIRMED" if not bad else f"FAIL at {bad[:5]}")
+    print(
+        "    collisions = {(N/4, N/2) : 4 | N} exactly:",
+        "CONFIRMED" if not bad else f"FAIL at {bad[:5]}",
+    )
 
     print("[2] PSLQ (100 digits, maxcoeff 1000): no further relations, 5 <= N <= 40:")
     mp.mp.dps = 100
@@ -89,9 +95,14 @@ def main() -> int:
         if mp.pslq(om, maxcoeff=1000, maxsteps=10**6) is not None:
             extra.append(n)
     ok &= not extra
-    print("    full rank apart from the classified collision:", "CONFIRMED" if not extra else f"FAIL at {extra}")
+    print(
+        "    full rank apart from the classified collision:",
+        "CONFIRMED" if not extra else f"FAIL at {extra}",
+    )
 
-    print("[3] general coupling g (collision <=> cos(2pi a/N)+cos(2pi b/N) = -1/(2g)), exact, N <= 120:")
+    print(
+        "[3] general coupling g (collision <=> cos(2pi a/N)+cos(2pi b/N) = -1/(2g)), exact, N <= 120:"
+    )
     # g = 1: the Conway-Jones solutions of cos A + cos B = -1/2 are {pi/3,pi}, {2pi/5,4pi/5}, {pi/2,2pi/3}
     bad_g1 = []
     for n in range(3, 121):
@@ -105,16 +116,25 @@ def main() -> int:
         if set(collision_pairs(n, cyclotomic(n), num=-1, den=2)) != expect:
             bad_g1.append(n)
     ok &= not bad_g1
-    print("    g=1: families (N/6,N/2), (N/5,2N/5), (N/4,N/3) exactly:",
-          "CONFIRMED" if not bad_g1 else f"FAIL at {bad_g1[:5]}")
+    print(
+        "    g=1: families (N/6,N/2), (N/5,2N/5), (N/4,N/3) exactly:",
+        "CONFIRMED" if not bad_g1 else f"FAIL at {bad_g1[:5]}",
+    )
     # g = 1/4: cos A + cos B = -2 forces A = B = pi -- no distinct-pair collisions at all
     bad_g14 = [n for n in range(3, 121) if collision_pairs(n, cyclotomic(n), num=-2, den=1)]
     ok &= not bad_g14
-    print("    g=1/4: no collisions for any N:", "CONFIRMED" if not bad_g14 else f"FAIL at {bad_g14[:5]}")
+    print(
+        "    g=1/4: no collisions for any N:",
+        "CONFIRMED" if not bad_g14 else f"FAIL at {bad_g14[:5]}",
+    )
 
     print("=" * 64)
-    print("RESULT:", "PASS -- NNN degeneracy law (a,b)=(N/4,N/2) iff 4|N; no other relations found"
-          if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- NNN degeneracy law (a,b)=(N/4,N/2) iff 4|N; no other relations found"
+        if ok
+        else "FAIL",
+    )
     return 0 if ok else 1
 
 

@@ -34,8 +34,13 @@ def breather(n: int, omega: float) -> tuple[float, float, float]:
     p0 = np.zeros(n)
     p0[0], p0[1], p0[-1] = 1.0, 0.3, 0.3
     p0 /= np.sum(p0**4) ** 0.25
-    res = minimize(lambda p: p @ m(p), p0, constraints=cons, method="SLSQP",
-                   options={"maxiter": 800, "ftol": 1e-13})
+    res = minimize(
+        lambda p: p @ m(p),
+        p0,
+        constraints=cons,
+        method="SLSQP",
+        options={"maxiter": 800, "ftol": 1e-13},
+    )
     p = res.x
     gamma = float(res.fun)  # ||p||_4^4 = 1 => <Mp,p> = 2 mu => gamma = 2 mu = <Mp,p>
     resid = float(np.linalg.norm(m(p) - gamma * p**3))
@@ -45,7 +50,9 @@ def breather(n: int, omega: float) -> tuple[float, float, float]:
 
 def main() -> int:
     n = 64
-    print(f"Discrete breather on the ring DNLS (N={n}): variational minimizer solves the breather eqn.")
+    print(
+        f"Discrete breather on the ring DNLS (N={n}): variational minimizer solves the breather eqn."
+    )
     print(f"  {'Omega':>6} {'gamma':>8} {'eqn residual':>13} {'IPR':>7}")
     ok = True
     for omega in [1.0, 3.0, 8.0, 20.0, 50.0]:
@@ -57,7 +64,10 @@ def main() -> int:
     if not (breather(n, 50.0)[2] > breather(n, 1.0)[2] + 0.3):
         ok = False
     print("=" * 52)
-    print("RESULT:", "PASS -- breather exists (variational); localizes as Omega grows" if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- breather exists (variational); localizes as Omega grows" if ok else "FAIL",
+    )
     return 0 if ok else 1
 
 

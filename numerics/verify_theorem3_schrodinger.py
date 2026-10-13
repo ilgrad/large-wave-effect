@@ -133,7 +133,9 @@ def main() -> int:
         peak = max(float(np.max(np.abs(kernel(n, t)))) for t in ts)
         print(f"  {n:>5} {peak:>14.4f}")
         a_ok &= peak <= 1.0 + 1e-9
-    print(f"  -> bounded by 1: {'PASS' if a_ok else 'FAIL'}  (bead-chain impulse instead grows ~ln N)")
+    print(
+        f"  -> bounded by 1: {'PASS' if a_ok else 'FAIL'}  (bead-chain impulse instead grows ~ln N)"
+    )
     ok &= a_ok
 
     # (B) ell^inf -> ell^inf operator norm B_N = sup_t sum_k |K_N(k,t)|
@@ -154,13 +156,17 @@ def main() -> int:
     predl = a_log * np.log(ns) + b_log
     r2_log = 1 - float(np.sum((bvals - predl) ** 2)) / float(np.sum((bvals - bvals.mean()) ** 2))
     print(f"  fit vs sqrt(N): R^2={r2_sqrt:.4f}   fit vs ln N: R^2={r2_log:.4f}")
-    print(f"  -> B_N grows like sqrt(N) (ballistic), R^2_sqrt > R^2_log: "
-          f"{'PASS' if r2_sqrt > r2_log else 'UNCLEAR'}")
+    print(
+        f"  -> B_N grows like sqrt(N) (ballistic), R^2_sqrt > R^2_log: "
+        f"{'PASS' if r2_sqrt > r2_log else 'UNCLEAR'}"
+    )
     ok &= r2_sqrt > r2_log
 
     # (C) spectral arithmetic: lambda always Q-degenerate; sqrt-lambda independent for prime/2^m
     print("\n(C) Q-rank of frequencies: Schrodinger {lambda_r} vs wave {sqrt lambda_r}")
-    print(f"  {'N':>5} {'rank lambda':>12} {'rank sqrt':>10} {'floor(N/2)':>11} {'sum lambda=2N?':>14}")
+    print(
+        f"  {'N':>5} {'rank lambda':>12} {'rank sqrt':>10} {'floor(N/2)':>11} {'sum lambda=2N?':>14}"
+    )
     for n in (7, 11, 12, 16, 15):
         rl = rank_lambda(n)
         rs = rank_sqrt_lambda(n)
@@ -169,7 +175,9 @@ def main() -> int:
         print(f"  {n:>5} {rl:>12} {rs:>10} {n // 2:>11} {sumcheck!s:>14}")
         ok &= sumcheck
     print("  -> {lambda_r} in Q(zeta_N)^+ (cos), {sqrt} in Q(zeta_2N) (sin): different arithmetic;")
-    print("     ranks equal for primes, lambda more degenerate for 2^m (16: 4 vs 8); sum=2N is affine")
+    print(
+        "     ranks equal for primes, lambda more degenerate for 2^m (16: 4 vs 8); sum=2N is affine"
+    )
 
     print("\n" + "=" * 74)
     print("RESULT:", "THEOREM 3 CONFIRMED" if ok else "CHECK FAILED")
@@ -178,7 +186,9 @@ def main() -> int:
     print(" - the large wave is an ell^inf amplification, B_N ~ sqrt(N) (ballistic), not ln N;")
     print(" - the spectrum lives in the REAL field Q(zeta_N)^+ (cos), not Q(zeta_2N) (sin): the")
     print("   affine identity sum=2N holds always, and Q-ranks differ -- equal for primes but")
-    print("   lambda more degenerate for 2^m (N=16: 4 vs 8). Different arithmetic, different effect.")
+    print(
+        "   lambda more degenerate for 2^m (N=16: 4 vs 8). Different arithmetic, different effect."
+    )
     print("=" * 74)
     return 0 if ok else 1
 

@@ -84,7 +84,9 @@ def main() -> int:
         per = ring_bohr_sup_per_node(n)
         at0 = int(np.argmax(per)) == 0
         close = abs(per[0] - ring_U(n)) / ring_U(n) < 1e-12
-        print(f"  N={n:>4}: argmax_j = {int(np.argmax(per)):>3}  per[0]={per[0]:.4f}  U_N={ring_U(n):.4f}")
+        print(
+            f"  N={n:>4}: argmax_j = {int(np.argmax(per)):>3}  per[0]={per[0]:.4f}  U_N={ring_U(n):.4f}"
+        )
         argmax_ok &= at0 and close
     print(f"  -> peak at j=0 and equals U_N: {'PASS' if argmax_ok else 'FAIL'}")
     ok &= argmax_ok
@@ -100,7 +102,9 @@ def main() -> int:
         print(f"  {j:>5} {bta:>10.4f} {bta / np.log(j):>9.4f}")
     slope_s, r2_s = loglog_slope(js.astype(float), betas)
     print(f"  fit sup_t S_j ~ a ln j: a={slope_s:.4f} (8/pi^2={seg_const:.4f}), R^2={r2_s:.4f}")
-    print("  (8/pi^2 = 2x MF half-amplitude 4/pi^2; fit approaches it slowly from below, O(1/ln j))")
+    print(
+        "  (8/pi^2 = 2x MF half-amplitude 4/pi^2; fit approaches it slowly from below, O(1/ln j))"
+    )
     print(f"  -> slope matches 8/pi^2: {'PASS' if abs(slope_s - seg_const) < 0.04 else 'FAIL'}")
     ok &= abs(slope_s - seg_const) < 0.04
 

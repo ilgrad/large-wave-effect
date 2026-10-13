@@ -105,7 +105,7 @@ def ring_AN(n: int, starts: int = 40) -> tuple[float, float]:
     """A_N = max_j sup_t |u_j(t)| for the periodic chain, and the Bohr ceiling U_N."""
     r = np.arange(1, n)
     omega = 2.0 * np.sin(np.pi * r / n)
-    c_mat = sin_coords(2 * n, list(r))
+    c_mat = sin_coords(2 * n, r.tolist())
     u_n = float(np.sum(1.0 / np.sin(np.pi * r / n)) / (2 * n))
     best = 0.0
     for j in range(0, n // 2 + 1):  # u_j = u_{N-j}, so half the nodes suffice
@@ -119,7 +119,7 @@ def segment_AN(n: int, j0: int | None = None, starts: int = 40) -> tuple[float, 
     m = n + 1
     k = np.arange(1, n + 1)
     omega = 2.0 * np.sin(np.pi * k / (2 * m))
-    c_mat = sin_coords(4 * m, list(k))
+    c_mat = sin_coords(4 * m, k.tolist())
     j0 = j0 if j0 is not None else max(1, m // 3)
     vj0 = np.sqrt(2.0 / m) * np.sin(np.pi * k * j0 / m)
     best, ceil = 0.0, 0.0

@@ -31,7 +31,9 @@ def integrate(u0: np.ndarray, lam: np.ndarray, gamma: float, t: float, steps: in
     u = u0.copy()
     for _ in range(steps):
         u = lin_step(u, lam, dt / 2)
-        u = np.exp(-1j * gamma * np.abs(u) ** 2 * dt) * u  # nonlinear phase (exact, mass-preserving)
+        u = (
+            np.exp(-1j * gamma * np.abs(u) ** 2 * dt) * u
+        )  # nonlinear phase (exact, mass-preserving)
         u = lin_step(u, lam, dt / 2)
     return u
 
@@ -41,7 +43,9 @@ def main() -> int:
     n = 64
     lam = 4 * np.sin(np.pi * np.arange(n) / n) ** 2
     ok = True
-    print(f"{'gamma':>8} {'t':>6} {'||u||2 drift':>13} {'||u-u_lin||2':>13} {'bound |g|t||u0||2^3':>19}")
+    print(
+        f"{'gamma':>8} {'t':>6} {'||u||2 drift':>13} {'||u-u_lin||2':>13} {'bound |g|t||u0||2^3':>19}"
+    )
     for gamma in [0.01, 0.05, 0.2]:
         u0 = rng.standard_normal(n) + 1j * rng.standard_normal(n)
         m0 = np.linalg.norm(u0)
@@ -53,7 +57,9 @@ def main() -> int:
         mass_drift = abs(np.linalg.norm(u) - m0)
         held = dev <= bound + 1e-9 and mass_drift < 1e-9
         ok &= held
-        print(f"{gamma:>8.2f} {t:>6.1f} {mass_drift:>13.2e} {dev:>13.4f} {bound:>19.4f}  {'ok' if held else 'FAIL'}")
+        print(
+            f"{gamma:>8.2f} {t:>6.1f} {mass_drift:>13.2e} {dev:>13.4f} {bound:>19.4f}  {'ok' if held else 'FAIL'}"
+        )
     print("=" * 64)
     print("RESULT:", "PASS -- Duhamel bound holds, mass conserved (persistence)" if ok else "FAIL")
     return 0 if ok else 1

@@ -49,6 +49,8 @@ SOURCES = ("dagger_rigorous.py", "run_dagger_campaign.py", "verify_dagger_rigoro
 
 def _load(name: str, path: Path):
     spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load {path}")
     m = importlib.util.module_from_spec(spec)
     sys.modules[name] = m
     spec.loader.exec_module(m)

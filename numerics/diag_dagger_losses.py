@@ -28,7 +28,11 @@ from scipy.integrate import quad
 from scipy.special import j0
 
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location("cert", ROOT / "numerics" / "verify_dagger_continuum.py")
+spec = importlib.util.spec_from_file_location(
+    "cert", ROOT / "numerics" / "verify_dagger_continuum.py"
+)
+if spec is None or spec.loader is None:
+    raise RuntimeError("cannot load numerics/verify_dagger_continuum.py")
 cert = importlib.util.module_from_spec(spec)
 sys.modules["cert"] = cert
 spec.loader.exec_module(cert)
@@ -39,7 +43,9 @@ a3 = float(sys.argv[2]) if len(sys.argv) > 2 else 0.73
 b = cert.b_of(a1, a3)
 D = a1**4 + a3**4 + b**4
 KD = cert.K_STAR * D
-print(f"point a1={a1} a3={a3} b={b:.5f} lambda={cert.lam_conc(a1, a3, b):.4f}  K*={cert.K_STAR:.8f}")
+print(
+    f"point a1={a1} a3={a3} b={b:.5f} lambda={cert.lam_conc(a1, a3, b):.4f}  K*={cert.K_STAR:.8f}"
+)
 
 nth = 8000
 th = (np.arange(nth) + 0.5) / nth * (np.pi / 2)
@@ -51,20 +57,32 @@ f = lambda t: (Mg(t) - M(t)) / t**2  # noqa: E731
 th_true = quad(f, 1e-7, 1.5, limit=400)[0] / KD
 md_true = quad(f, 1.5, 12.0, limit=800)[0] / KD
 tl_true = quad(f, 12.0, 200.0, limit=800)[0] / KD
-print(f"\nTRUE (scipy)  head[0,1.5]={th_true:+.4f}  mid[1.5,12]={md_true:+.4f}  tail[12,inf]={tl_true:+.4f}"
-      f"   total R/K*={th_true + md_true + tl_true:.4f}   (margin to 1 = {1 - (th_true + md_true + tl_true):.4f})")
+print(
+    f"\nTRUE (scipy)  head[0,1.5]={th_true:+.4f}  mid[1.5,12]={md_true:+.4f}  tail[12,inf]={tl_true:+.4f}"
+    f"   total R/K*={th_true + md_true + tl_true:.4f}   (margin to 1 = {1 - (th_true + md_true + tl_true):.4f})"
+)
 
-full_mid = [(1.5, 2.4048, 8, 700), (2.4048, 4.0, 12, 1100), (4.0, 6.0, 12, 1900),
-            (6.0, 8.0, 12, 3000), (8.0, 10.0, 14, 5500), (10.0, 12.0, 16, 11000)]
+full_mid = [
+    (1.5, 2.4048, 8, 700),
+    (2.4048, 4.0, 12, 1100),
+    (4.0, 6.0, 12, 1900),
+    (6.0, 8.0, 12, 3000),
+    (8.0, 10.0, 14, 5500),
+    (10.0, 12.0, 16, 11000),
+]
 for mult in (1, 2):
     sl = [(lo, hi, nb, nt * mult) for (lo, hi, nb, nt) in full_mid]
     t0 = time.time()
     rig = float(cert.middle_point(a1, a3, b, sl).upper()) / KD
-    print(f"RIGOROUS mid[1.5,12] nth x{mult}: {rig:+.4f}   theta-loss vs true = {rig - md_true:+.4f}  "
-          f"({time.time() - t0:.0f}s)")
+    print(
+        f"RIGOROUS mid[1.5,12] nth x{mult}: {rig:+.4f}   theta-loss vs true = {rig - md_true:+.4f}  "
+        f"({time.time() - t0:.0f}s)"
+    )
 
 full_tail = [(12.0, 24.0, 20, 1200), (24.0, 60.0, 16, 2400), (60.0, 200.0, 12, 6000)]
 tail = cert.tail_modulus_box(a1, a3, b, 12.0, full_tail, 200.0)
 mgt = cert.mg_tail_box(min(sx2, sy2), 12.0)
 rig_tail = float((tail + mgt).upper()) / KD
-print(f"RIGOROUS tail[12,inf] capped-|M|: {rig_tail:+.4f}   loss vs true signed tail = {rig_tail - tl_true:+.4f}")
+print(
+    f"RIGOROUS tail[12,inf] capped-|M|: {rig_tail:+.4f}   loss vs true signed tail = {rig_tail - tl_true:+.4f}"
+)

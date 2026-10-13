@@ -62,7 +62,9 @@ from scipy.integrate import quad
 from scipy.optimize import minimize
 from scipy.special import ellipe, j0
 
-H1 = 0.9580913983830018  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi)
+print = functools.partial(print, flush=True)
+
+H1 = 0.9580913986828501  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi)
 TAIL = sqrt(pi) / 2
 K_STAR = (H1 - TAIL) / 2  # 0.0359322...
 
@@ -78,7 +80,9 @@ def EG(sx2: float, sy2: float) -> float:
     return sqrt(a2) * sqrt(2 / pi) * ellipe(1 - b2 / a2)
 
 
-def excess_kluyver(ev: np.ndarray, od: np.ndarray, n_theta: int = 1200, t_max: float = 160.0) -> float:
+def excess_kluyver(
+    ev: np.ndarray, od: np.ndarray, n_theta: int = 1200, t_max: float = 160.0
+) -> float:
     """E|Z| - E|G| = int_0^inf (Mg(t) - M(t))/t^2 dt (theta-averaged), the exact excess identity (K)."""
     ev = np.asarray(ev, float)
     od = np.asarray(od, float)
@@ -168,7 +172,9 @@ def tangent_basis(n: int) -> np.ndarray:
     return B
 
 
-def tangent_hessian(v0: np.ndarray, ne: int, h: float = 1e-2, **kw) -> tuple[float, np.ndarray, np.ndarray]:
+def tangent_hessian(
+    v0: np.ndarray, ne: int, h: float = 1e-2, **kw
+) -> tuple[float, np.ndarray, np.ndarray]:
     v0 = np.asarray(v0, float)
     n = len(v0)
     B = tangent_basis(n)
@@ -198,38 +204,55 @@ def tangent_hessian(v0: np.ndarray, ne: int, h: float = 1e-2, **kw) -> tuple[flo
 
 # ----------------------------------------------------------------------------------------------------------
 def main() -> int:
-    global print
-    print = functools.partial(print, flush=True)
     ok = True
     print("=" * 100)
-    print(">=3-copy BALANCED (dagger):  R(a) <= K_star via multivariate critical-point + concavity (Python)")
+    print(
+        ">=3-copy BALANCED (dagger):  R(a) <= K_star via multivariate critical-point + concavity (Python)"
+    )
     print(f"  K_star = (h(1)-sqrt(pi)/2)/2 = {K_STAR:.10f}    (Sigma2 fixed = 1, sum x = 2)")
     print("=" * 100)
 
     # (A) ENGINE cross-check: Kluyver excess vs FFT density vs the Julia headline values.
-    print("\n(A) ENGINE: Kluyver excess vs FFT density (|diff|<=1e-6) and vs verify_dagger_concavity.jl values:")
-    jl_ref = {"equal pair": 0.0718645, "2+1": 0.0470150, "2+2": 0.0636728, "imbal 1+5(.6)": 0.0388012}
+    print(
+        "\n(A) ENGINE: Kluyver excess vs FFT density (|diff|<=1e-6) and vs verify_dagger_concavity.jl values:"
+    )
+    jl_ref = {
+        "equal pair": 0.0718645,
+        "2+1": 0.0470150,
+        "2+2": 0.0636728,
+        "imbal 1+5(.6)": 0.0388012,
+    }
     worst_id = 0.0
-    for tag, ev, od in [("equal pair", [1.0], [1.0]), ("2+1", [1.0, 0.6], [0.8]),
-                        ("2+2", [1.3, 0.4], [0.9, 0.5]), ("imbal 1+5(.6)", [1.0], [0.6] * 5)]:
+    for tag, ev, od in [
+        ("equal pair", [1.0], [1.0]),
+        ("2+1", [1.0, 0.6], [0.8]),
+        ("2+2", [1.3, 0.4], [0.9, 0.5]),
+        ("imbal 1+5(.6)", [1.0], [0.6] * 5),
+    ]:
         ev = np.array(ev)
         od = np.array(od)
         sx2, sy2 = 0.5 * float(np.sum(ev**2)), 0.5 * float(np.sum(od**2))
         ek = excess_kluyver(ev, od, n_theta=2400)
         ed = EZ_density(ev, od) - EG(sx2, sy2)
         worst_id = max(worst_id, abs(ek - ed))
-        print(f"    {tag:14}: kluyver={ek:+.7f}  density={ed:+.7f}  jl={jl_ref[tag]:+.7f}  "
-              f"|k-d|={abs(ek - ed):.1e}  |k-jl|={abs(ek - jl_ref[tag]):.1e}")
+        print(
+            f"    {tag:14}: kluyver={ek:+.7f}  density={ed:+.7f}  jl={jl_ref[tag]:+.7f}  "
+            f"|k-d|={abs(ek - ed):.1e}  |k-jl|={abs(ek - jl_ref[tag]):.1e}"
+        )
     ok &= worst_id < 1e-6
     print(f"    max |kluyver - density| = {worst_id:.1e}   {'ok' if worst_id < 1e-6 else 'FAIL'}")
 
     # (B) CRITICAL POINTS / class maxima (SLSQP + multistart on { sum x = 2 }).  Two regimes per class:
     #     (a) BALANCED interior (floor keeps every copy live); (b) free (copies may vanish -> escape?).
     print("\n(B) CLASS MAXIMA on each balanced simplex { sum x = 2 } (SLSQP + multistart).")
-    print("    (a) balanced interior (all copies live);  (b) free (copies may hit 0 -> may escape balance).")
+    print(
+        "    (a) balanced interior (all copies live);  (b) free (copies may hit 0 -> may escape balance)."
+    )
     rng = np.random.default_rng(20260613)
     classes = [(1, 1), (2, 1), (2, 2), (3, 2), (3, 3)]
-    print(f"    {'class':7} {'k':>2} | {'(a) bal R/K*':>12}  {'argmax x':>22} | {'(b) free R/K*':>13}  free->(ne,no)≠0")
+    print(
+        f"    {'class':7} {'k':>2} | {'(a) bal R/K*':>12}  {'argmax x':>22} | {'(b) free R/K*':>13}  free->(ne,no)≠0"
+    )
     best_bal = 0.0
     best_bal_tag = ""
 
@@ -242,40 +265,57 @@ def main() -> int:
             else:
                 w = rng.uniform(xlo + 0.05, 1.0, n)
                 v0 = w * 2 / w.sum()
-            res = minimize(lambda v: -Rx(v, ne, n_theta=600, t_max=85.0), v0, method="SLSQP",
-                           bounds=[(xlo, 2.0)] * n, constraints=[cons],
-                           options={"maxiter": 35, "ftol": 1e-7})
+            res = minimize(
+                lambda v: -Rx(v, ne, n_theta=600, t_max=85.0),
+                v0,
+                method="SLSQP",
+                bounds=[(xlo, 2.0)] * n,
+                constraints=[cons],
+                options={"maxiter": 35, "ftol": 1e-7},
+            )
             if -res.fun > bR:
                 bR, bv = -res.fun, res.x
         return bR, bv
 
     for ne, no in classes:
         n = ne + no
-        Ra, va = solve_class(n, ne, 6 if n <= 4 else 7, 0.12)   # interior floor 0.12 -> balanced
-        Rb, vb = solve_class(n, ne, 6 if n <= 4 else 7, 1e-3)   # free
+        Ra, va = solve_class(n, ne, 6 if n <= 4 else 7, 0.12)  # interior floor 0.12 -> balanced
+        Rb, vb = solve_class(n, ne, 6 if n <= 4 else 7, 1e-3)  # free
         ne_nz = int(np.sum(vb[:ne] > 1e-2))
         no_nz = int(np.sum(vb[ne:] > 1e-2))
         if Ra / K_STAR > best_bal:
             best_bal, best_bal_tag = Ra / K_STAR, f"{ne}+{no}"
         xs = np.round(np.sort(va)[::-1], 3)
         bal = "bal" if abs(ne_nz - no_nz) <= 1 else "IMBAL"
-        print(f"    {f'{ne}+{no}':7} {n:>2} | {Ra / K_STAR:>12.5f}  {xs!s:>22} | "
-              f"{Rb / K_STAR:>13.5f}  ({ne_nz},{no_nz}) {bal}")
-    print(f"    => best BALANCED (interior) R/K* = {best_bal:.5f} at {best_bal_tag} (pair = 1.00000, none above)")
-    print("       The FREE max of some classes EXCEEDS K_star by escaping to an IMBALANCED face -> the")
+        print(
+            f"    {f'{ne}+{no}':7} {n:>2} | {Ra / K_STAR:>12.5f}  {xs!s:>22} | "
+            f"{Rb / K_STAR:>13.5f}  ({ne_nz},{no_nz}) {bal}"
+        )
+    print(
+        f"    => best BALANCED (interior) R/K* = {best_bal:.5f} at {best_bal_tag} (pair = 1.00000, none above)"
+    )
+    print(
+        "       The FREE max of some classes EXCEEDS K_star by escaping to an IMBALANCED face -> the"
+    )
     print("       closed-simplex max is NOT the pair; the bound lives on the OPEN balanced region.")
     ok &= best_bal <= 1.0008
 
     # (C) HESSIAN / CONCAVITY on the simplex tangent -- the route's central test.
-    print("\n(C) HESSIAN / CONCAVITY: tangent Hessian of R on { sum x = 2 } (anchor: pair -> -0.757 K* along (1,-1)).")
-    print("    If R were concave on the face, its unique interior critical point would be the global max.")
+    print(
+        "\n(C) HESSIAN / CONCAVITY: tangent Hessian of R on { sum x = 2 } (anchor: pair -> -0.757 K* along (1,-1))."
+    )
+    print(
+        "    If R were concave on the face, its unique interior critical point would be the global max."
+    )
     print(f"    {'config':22} {'R/K*':>9}  {'eig(Hess_tan)/K* [min,max]':>27}  verdict")
 
     def show(tag, v0, ne, h=1e-2, **kw):
         f0, _grad, H = tangent_hessian(np.asarray(v0, float), ne, h=h, **kw)
         ev = np.linalg.eigvalsh(H) / K_STAR
         verdict = "concave (local max)" if ev.max() <= 1e-2 else "SADDLE (max eig > 0)"
-        print(f"    {tag:22} {f0 / K_STAR:9.5f}  [{ev.min():+.4f}, {ev.max():+.4f}]{'':>9}  {verdict}")
+        print(
+            f"    {tag:22} {f0 / K_STAR:9.5f}  [{ev.min():+.4f}, {ev.max():+.4f}]{'':>9}  {verdict}"
+        )
         return ev.max()
 
     show("pair (1|1) [the max]", [1.0, 1.0], 1, h=1e-2, n_theta=900, t_max=110.0)
@@ -294,14 +334,22 @@ def main() -> int:
             nsad += me > 1e-2
             nconc += me <= 1e-2
     print(f"    => sweep: {nconc} concave-looking, {nsad} SADDLE/indefinite.")
-    print("    >>> VERDICT: R is NOT concave on the balanced simplex -- the multi-copy SYMMETRIC configs are")
-    print("        SADDLES (a positive tangent eigenvalue toward larger-R configs); ONLY the equal pair is a")
-    print("        strict concave max.  The 'global concavity => pair is the max' route FAILS (non-convex).")
+    print(
+        "    >>> VERDICT: R is NOT concave on the balanced simplex -- the multi-copy SYMMETRIC configs are"
+    )
+    print(
+        "        SADDLES (a positive tangent eigenvalue toward larger-R configs); ONLY the equal pair is a"
+    )
+    print(
+        "        strict concave max.  The 'global concavity => pair is the max' route FAILS (non-convex)."
+    )
     ok &= True  # the negative finding is the result; not a pass/fail gate
 
     # (D) SCAN (k<=4): grid scan of Phi = K_star*D - excess over each balanced face; core vs corners.
     print("\n(D) SCAN (k<=4): Phi = K_star*D - excess on each balanced simplex (Phi>=0 <=> R<=K*).")
-    print("    min Phi over ALL nodes vs over the BALANCED CORE (amplitudes^2 within a factor `band`).")
+    print(
+        "    min Phi over ALL nodes vs over the BALANCED CORE (amplitudes^2 within a factor `band`)."
+    )
 
     def scan(tag, ne, no, ngrid, band=3.0, **kw):
         n = ne + no
@@ -316,40 +364,61 @@ def main() -> int:
                 rec([*parts, c], rem - c, idx + 1)
 
         rec([], ngrid, 0)
-        pts = [(lambda v: v * 2 / v.sum())(np.maximum(np.array(comp, float) * (2.0 / ngrid), xmin))
-               for comp in comps]
+        pts = [
+            (lambda v: v * 2 / v.sum())(np.maximum(np.array(comp, float) * (2.0 / ngrid), xmin))
+            for comp in comps
+        ]
         phis = np.array([Phi_x(v, ne, **kw) for v in pts])
         imin = int(phis.argmin())
         core_mask = np.array([v.max() / v.min() <= band for v in pts])
         phic = phis[core_mask]
         ic = int(np.where(core_mask)[0][phic.argmin()]) if core_mask.any() else imin
         flag = "  <-- Phi<0 (imbalanced corner: R>K*)" if phis[imin] < -1e-4 else ""
-        print(f"    {tag:6} nodes={len(pts):<4} min Phi(all)={phis[imin]:+.5f} @R/K*={Rx(pts[imin], ne, **kw) / K_STAR:.3f}{flag}")
-        print(f"           min Phi(core,<=x{band:.0f})={phis[ic]:+.5f} @R/K*={Rx(pts[ic], ne, **kw) / K_STAR:.3f}  (>=0 => R<=K* on core)")
+        print(
+            f"    {tag:6} nodes={len(pts):<4} min Phi(all)={phis[imin]:+.5f} @R/K*={Rx(pts[imin], ne, **kw) / K_STAR:.3f}{flag}"
+        )
+        print(
+            f"           min Phi(core,<=x{band:.0f})={phis[ic]:+.5f} @R/K*={Rx(pts[ic], ne, **kw) / K_STAR:.3f}  (>=0 => R<=K* on core)"
+        )
         return phis[imin]
 
     scan("2+1", 2, 1, 34, n_theta=550, t_max=85.0)
     scan("2+2", 2, 2, 11, n_theta=550, t_max=85.0)
     scan("3+2", 3, 2, 8, n_theta=550, t_max=85.0)
     scan("3+3", 3, 3, 7, n_theta=550, t_max=85.0)
-    print("    >>> On the BALANCED CORE Phi >= 0 (R <= K*) with comfortable margin; over the full face the")
-    print("        grid min hugs 0 near the pair-tangency (R/K* ~ 0.98-0.998).  The actual K_star VIOLATION")
-    print("        lives at the IMBALANCED corners (one parity -> ~0), exhibited by the free ascent in (B)")
-    print("        (e.g. 3+2 -> (3,1), R > K*).  No clean global enclosure -- the closed simplex has real")
+    print(
+        "    >>> On the BALANCED CORE Phi >= 0 (R <= K*) with comfortable margin; over the full face the"
+    )
+    print(
+        "        grid min hugs 0 near the pair-tangency (R/K* ~ 0.98-0.998).  The actual K_star VIOLATION"
+    )
+    print(
+        "        lives at the IMBALANCED corners (one parity -> ~0), exhibited by the free ascent in (B)"
+    )
+    print(
+        "        (e.g. 3+2 -> (3,1), R > K*).  No clean global enclosure -- the closed simplex has real"
+    )
     print("        violators; the bound is a constrained (open balanced region) statement.")
 
     print("\n" + "=" * 100)
-    print("RESULT:", (
-        "DONE -- (A) the Kluyver engine matches the FFT density and the Julia values to ~1e-7; (B) over every\n"
-        "        BALANCED class the equal pair is the global max of R (R/K* = 1.0000), but the FREE class max\n"
-        "        ESCAPES to an imbalanced face with R > K_star; (C) R is NOT concave -- the multi-copy symmetric\n"
-        "        configs are SADDLES, only the pair is a strict concave max, so the concavity route FAILS; (D)\n"
-        "        Phi >= 0 on the balanced core but < 0 toward imbalanced corners.  The route is REFUTED; the\n"
-        "        pair remains the unique strict BALANCED maximizer (validated)."
-    ) if ok else "FAIL -- the engine/critical-point self-checks did not pass")
-    print("Rigor: VALIDATED, not PROVED, and the concavity ROUTE is REFUTED (twin of verify_dagger_concavity.jl).\n"
-          "       R has saddles at balanced multi-copy configs and imbalanced-boundary violators, so a >=3-copy\n"
-          "       proof must use the balance constraint actively -- not global concavity (R is not Schur-monotone).")
+    print(
+        "RESULT:",
+        (
+            "DONE -- (A) the Kluyver engine matches the FFT density and the Julia values to ~1e-7; (B) over every\n"
+            "        BALANCED class the equal pair is the global max of R (R/K* = 1.0000), but the FREE class max\n"
+            "        ESCAPES to an imbalanced face with R > K_star; (C) R is NOT concave -- the multi-copy symmetric\n"
+            "        configs are SADDLES, only the pair is a strict concave max, so the concavity route FAILS; (D)\n"
+            "        Phi >= 0 on the balanced core but < 0 toward imbalanced corners.  The route is REFUTED; the\n"
+            "        pair remains the unique strict BALANCED maximizer (validated)."
+        )
+        if ok
+        else "FAIL -- the engine/critical-point self-checks did not pass",
+    )
+    print(
+        "Rigor: VALIDATED, not PROVED, and the concavity ROUTE is REFUTED (twin of verify_dagger_concavity.jl).\n"
+        "       R has saddles at balanced multi-copy configs and imbalanced-boundary violators, so a >=3-copy\n"
+        "       proof must use the balance constraint actively -- not global concavity (R is not Schur-monotone)."
+    )
     return 0 if ok else 1
 
 

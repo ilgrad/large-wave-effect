@@ -109,7 +109,9 @@ from numpy import cos, pi, sin, sqrt
 from scipy.integrate import quad
 from scipy.special import ellipe, j0, jn_zeros
 
-H1 = 0.9580913983830018  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi)
+print = functools.partial(print, flush=True)
+
+H1 = 0.9580913986828501  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi)
 TAIL = sqrt(pi) / 2
 K_STAR = (H1 - TAIL) / 2  # 0.0359322...
 J01 = float(jn_zeros(0, 1)[0])  # 2.404826..., first zero of J0
@@ -176,7 +178,9 @@ def lam_conc(ev: np.ndarray, od: np.ndarray) -> float:
     return sum(xs[:2]) / sum(xs)
 
 
-def excess_kluyver(ev: np.ndarray, od: np.ndarray, n_theta: int = 2000, t_max: float = 200.0) -> float:
+def excess_kluyver(
+    ev: np.ndarray, od: np.ndarray, n_theta: int = 2000, t_max: float = 200.0
+) -> float:
     M, Mg, _ = _closures(ev, od, n_theta)
     return quad(lambda t: (Mg(t) - M(t)) / t**2, 1e-7, t_max, limit=600)[0]
 
@@ -195,8 +199,14 @@ def split_pieces(ev: np.ndarray, od: np.ndarray, n_theta: int = 2400, t_max: flo
     return head, true_tail, crude_tail
 
 
-def signed_tail_ub(ev: np.ndarray, od: np.ndarray, tstar: float = 20.0, omega: float = 0.7,
-                   n_theta: int = 2400, t_max: float = 200.0) -> float:
+def signed_tail_ub(
+    ev: np.ndarray,
+    od: np.ndarray,
+    tstar: float = 20.0,
+    omega: float = 0.7,
+    n_theta: int = 2400,
+    t_max: float = 200.0,
+) -> float:
     """Abel / 2nd-mean-value SIGNED upper bound on the excess (the verify_dagger_tail.py device):
     excess = head + int_{j01}^inf Mg/t^2 - int_{j01}^{t*} M/t^2 - int_{t*}^inf M/t^2,
     with the last term in [-Abel, +Abel], Abel = (sup|M| t^p) * t*^{-p-2} / omega (g decreasing, 2nd-MVT).
@@ -310,18 +320,22 @@ def phi_tangent_hessian(a0: np.ndarray, ne: int, h: float, n_theta: int, t_max: 
 
 # ==========================================================================================================
 def main() -> int:
-    global print
-    print = functools.partial(print, flush=True)
     ok = True
     print("=" * 100)
-    print(">=3-copy BALANCED (dagger): the (A)+(B) simplex decomposition -- attempted, and the EXACT gap")
-    print(f"  K_star = (h(1)-sqrt(pi)/2)/2 = {K_STAR:.10f}    j_(0,1) = {J01:.7f}    lambda = (top-2 a^2)/(sum a^2)")
+    print(
+        ">=3-copy BALANCED (dagger): the (A)+(B) simplex decomposition -- attempted, and the EXACT gap"
+    )
+    print(
+        f"  K_star = (h(1)-sqrt(pi)/2)/2 = {K_STAR:.10f}    j_(0,1) = {J01:.7f}    lambda = (top-2 a^2)/(sum a^2)"
+    )
     print("=" * 100)
 
     # ------------------------------------------------------------------------------------------------------
     # (E) engine cross-check: Kluyver excess vs FFT density (the foundation both routes share).
     # ------------------------------------------------------------------------------------------------------
-    print("\n(E) ENGINE: Kluyver excess  E|Z|-E|G| = int (Mg-M)/t^2  vs the FFT density (target <= 1e-6):")
+    print(
+        "\n(E) ENGINE: Kluyver excess  E|Z|-E|G| = int (Mg-M)/t^2  vs the FFT density (target <= 1e-6):"
+    )
     worst_id = 0.0
     for tag, ev, od in [
         ("pair {1}|{1}", [1.0], [1.0]),
@@ -343,11 +357,19 @@ def main() -> int:
     # ------------------------------------------------------------------------------------------------------
     # (A) NEAR-PAIR basin: Phi convex at/near the pair in AMPLITUDE coords (the x-coord cusp corrected).
     # ------------------------------------------------------------------------------------------------------
-    print("\n(A) NEAR-PAIR basin: tangent Hessian of Phi = K_star*D - excess on {Sigma2=1}, AMPLITUDE coords.")
-    print("    Pair = {1}|{1} (a critical zero-minimum of Phi).  If Hess Phi PSD on a convex box round the")
-    print("    pair, Phi>=0 there (R<=K_star).  [x=a^2 coords give a spurious -180 K* from the sqrt-cusp.]")
+    print(
+        "\n(A) NEAR-PAIR basin: tangent Hessian of Phi = K_star*D - excess on {Sigma2=1}, AMPLITUDE coords."
+    )
+    print(
+        "    Pair = {1}|{1} (a critical zero-minimum of Phi).  If Hess Phi PSD on a convex box round the"
+    )
+    print(
+        "    pair, Phi>=0 there (R<=K_star).  [x=a^2 coords give a spurious -180 K* from the sqrt-cusp.]"
+    )
     t0 = time.time()
-    print(f"    {'chart / point':30} {'lambda':>8} {'Phi/K*':>9} {'Hess eig/K* (Richardson-stable)':>34} {'PSD?':>5}")
+    print(
+        f"    {'chart / point':30} {'lambda':>8} {'Phi/K*':>9} {'Hess eig/K* (Richardson-stable)':>34} {'PSD?':>5}"
+    )
     a_basin_ok = True
     # the pair in the 3-copy chart even={1,a3->0}, odd={1}: a = [1, 1e-9, 1]
     for tag, a0, ne in [
@@ -363,15 +385,23 @@ def main() -> int:
         stable = float(np.max(np.abs(eg_h[0.02] - eg_h[0.01]))) < 0.05
         psd = eg.min() > 1e-3 and stable
         a_basin_ok &= psd
-        print(f"    {tag:30} {lam_conc(np.array(a0)[:ne], np.array(a0)[ne:]):>8.4f} {f0 / K_STAR:>+9.4f} "
-              f"[{', '.join(f'{e:+.3f}' for e in eg)}]{'':>{max(0, 34 - 2 - len(eg) * 8)}} {'yes' if psd else 'NO':>5}")
+        print(
+            f"    {tag:30} {lam_conc(np.array(a0)[:ne], np.array(a0)[ne:]):>8.4f} {f0 / K_STAR:>+9.4f} "
+            f"[{', '.join(f'{e:+.3f}' for e in eg)}]{'':>{max(0, 34 - 2 - len(eg) * 8)}} {'yes' if psd else 'NO':>5}"
+        )
     ok &= a_basin_ok
-    print(f"    => Phi is genuinely CONVEX at the pair (small eig = extra-copy dir ~ +0.386 K*): "
-          f"{'ok' if a_basin_ok else 'FAIL'}   ({time.time() - t0:.0f}s)")
+    print(
+        f"    => Phi is genuinely CONVEX at the pair (small eig = extra-copy dir ~ +0.386 K*): "
+        f"{'ok' if a_basin_ok else 'FAIL'}   ({time.time() - t0:.0f}s)"
+    )
 
     # grid-Lipschitz eigenvalue floor along the worst (symmetric 2-vs-1) path -> certified delta_A.
-    print("\n    grid-Lipschitz min-Hessian-eigenvalue floor along the symmetric 2-vs-1 path even={A,a3}|{A}:")
-    print(f"    {'a3':>6} {'lambda':>8} {'Phi/K*':>9} {'min eig(HessPhi)/K*':>21} {'PSD margin?':>12}")
+    print(
+        "\n    grid-Lipschitz min-Hessian-eigenvalue floor along the symmetric 2-vs-1 path even={A,a3}|{A}:"
+    )
+    print(
+        f"    {'a3':>6} {'lambda':>8} {'Phi/K*':>9} {'min eig(HessPhi)/K*':>21} {'PSD margin?':>12}"
+    )
     reach_lambda = 1.0
     for a3 in (0.0, 0.2, 0.4, 0.5, 0.6, 0.7):
         base = sqrt((2.0 - a3**2) / 2.0)
@@ -382,19 +412,31 @@ def main() -> int:
         psd = mineig > 0.02  # conservative floor (the 3rd-deriv slack lives in this margin)
         if psd:
             reach_lambda = min(reach_lambda, lv)
-        print(f"    {a3:>6.2f} {lv:>8.4f} {f0 / K_STAR:>+9.4f} {mineig:>21.4f} {'yes' if psd else 'NO (basin ends)':>12}")
+        print(
+            f"    {a3:>6.2f} {lv:>8.4f} {f0 / K_STAR:>+9.4f} {mineig:>21.4f} {'yes' if psd else 'NO (basin ends)':>12}"
+        )
     delta_A = 1.0 - reach_lambda
-    print(f"    => certified [A] reach: Hess Phi PSD (margin>0.02 K*) for lambda >= {reach_lambda:.3f}, "
-          f"i.e. delta_A ~ {delta_A:.2f}")
-    print("    RESIDUAL: closed interval Hessian blocked (mpmath.iv has no Bessel J0; no >=3-copy elliptic")
-    print("              reduction); per-chart, uniform-in-copy-count not closed in form (couplings ~0 measured).")
+    print(
+        f"    => certified [A] reach: Hess Phi PSD (margin>0.02 K*) for lambda >= {reach_lambda:.3f}, "
+        f"i.e. delta_A ~ {delta_A:.2f}"
+    )
+    print(
+        "    RESIDUAL: closed interval Hessian blocked (mpmath.iv has no Bessel J0; no >=3-copy elliptic"
+    )
+    print(
+        "              reduction); per-chart, uniform-in-copy-count not closed in form (couplings ~0 measured)."
+    )
 
     # ------------------------------------------------------------------------------------------------------
     # (B) BULK crude modulus bound: works for both-channels>=2 (lambda<=~0.83); FAILS on singleton channels.
     # ------------------------------------------------------------------------------------------------------
-    print("\n(B) BULK crude modulus tail  |M| <= (two largest |J0| per channel):  head + crude_tail vs K_star.")
-    print(f"    {'config':28} {'lambda':>8} {'head/K*':>8} {'crudeT/K*':>10} {'Rtrue/K*':>9} {'crude_ub/K*':>12} {'closes?':>8}")
-    b1_ok = True   # crude closes on both-channels>=2 cases
+    print(
+        "\n(B) BULK crude modulus tail  |M| <= (two largest |J0| per channel):  head + crude_tail vs K_star."
+    )
+    print(
+        f"    {'config':28} {'lambda':>8} {'head/K*':>8} {'crudeT/K*':>10} {'Rtrue/K*':>9} {'crude_ub/K*':>12} {'closes?':>8}"
+    )
+    b1_ok = True  # crude closes on both-channels>=2 cases
     b2_fail = True  # crude OVERSHOOTS on every singleton (2-vs-1) case
     cases = [
         ("2v2 [1,.45]|[1,.45]", [1.0, 0.45], [1.0, 0.45], "B1"),
@@ -417,12 +459,18 @@ def main() -> int:
             b1_ok = False
         if kind == "B2" and closes:
             b2_fail = False
-        print(f"    {tag:28} {lv:>8.4f} {h / d / K_STAR:>+8.4f} {ct / d / K_STAR:>+10.4f} "
-              f"{(h + tt) / d / K_STAR:>+9.4f} {crude_ub:>12.4f} {'YES' if closes else 'no':>8}")
+        print(
+            f"    {tag:28} {lv:>8.4f} {h / d / K_STAR:>+8.4f} {ct / d / K_STAR:>+10.4f} "
+            f"{(h + tt) / d / K_STAR:>+9.4f} {crude_ub:>12.4f} {'YES' if closes else 'no':>8}"
+        )
     ok &= b1_ok and b2_fail
-    print(f"    => crude CLOSES for both-channels-comparable at lambda<=~0.83: {'ok' if b1_ok else 'FAIL'}")
-    print(f"    => crude OVERSHOOTS (>=1.02 K*) for EVERY singleton-channel 2-vs-1 (no modulus route): "
-          f"{'ok' if b2_fail else 'FAIL'}")
+    print(
+        f"    => crude CLOSES for both-channels-comparable at lambda<=~0.83: {'ok' if b1_ok else 'FAIL'}"
+    )
+    print(
+        f"    => crude OVERSHOOTS (>=1.02 K*) for EVERY singleton-channel 2-vs-1 (no modulus route): "
+        f"{'ok' if b2_fail else 'FAIL'}"
+    )
 
     # variance-floor is also useless off the pair-sliver (overshoots) -- show one number.
     def R_varfloor(ev, od):
@@ -460,14 +508,20 @@ def main() -> int:
     rvf_22 = R_varfloor(np.array([1.0, 0.5]), np.array([1.0, 0.5])) / K_STAR
     vf_useless = rvf_gap > 1.0 and rvf_22 > 1.0
     ok &= vf_useless
-    print(f"    => PROVED variance-floor also OVERSHOOTS off the pair-sliver: R_vf(gap)/K*={rvf_gap:.3f}, "
-          f"R_vf(2v2 .5)/K*={rvf_22:.3f}  {'ok' if vf_useless else 'FAIL'}")
+    print(
+        f"    => PROVED variance-floor also OVERSHOOTS off the pair-sliver: R_vf(gap)/K*={rvf_gap:.3f}, "
+        f"R_vf(2v2 .5)/K*={rvf_22:.3f}  {'ok' if vf_useless else 'FAIL'}"
+    )
 
     # ------------------------------------------------------------------------------------------------------
     # (G) THE GAP: singleton-channel configs with lambda < [A]-reach -- exact worst R + tail; signed route.
     # ------------------------------------------------------------------------------------------------------
-    print("\n(G) THE GAP = singleton-channel (2-vs-1) configs with lambda < [A]-reach (neither [A] nor [B]).")
-    print("    Map the 2-vs-1 family even={1,p}|odd={q}; exact max R per lambda (must be < K_star throughout).")
+    print(
+        "\n(G) THE GAP = singleton-channel (2-vs-1) configs with lambda < [A]-reach (neither [A] nor [B])."
+    )
+    print(
+        "    Map the 2-vs-1 family even={1,p}|odd={q}; exact max R per lambda (must be < K_star throughout)."
+    )
     print(f"    {'lambda':>7} {'max R/K*':>9} {'(p,q)':>14}")
     bins: dict[float, tuple] = {}
     for p in np.linspace(0.0, 1.4, 15):
@@ -483,7 +537,9 @@ def main() -> int:
     for lv in sorted(bins, reverse=True):
         R, p, q = bins[lv]
         flag = ""
-        if 0.65 <= lv < reach_lambda:  # the gap band (below [A] reach, above the B1-coverable singleton-less)
+        if (
+            0.65 <= lv < reach_lambda
+        ):  # the gap band (below [A] reach, above the B1-coverable singleton-less)
             if gap_max < R:
                 gap_max, gap_at = R, (p, q, lv)
             flag = "  <- GAP band"
@@ -491,10 +547,14 @@ def main() -> int:
     gap_ok = gap_max < 1.0
     ok &= gap_ok
     if gap_at:
-        print(f"    => GAP worst: R/K* = {gap_max:.4f} at even={{1,{gap_at[0]:.2f}}}|odd={{{gap_at[1]:.2f}}}, "
-              f"lambda={gap_at[2]:.3f}  (< K_star, so the inequality HOLDS): {'ok' if gap_ok else 'FAIL'}")
+        print(
+            f"    => GAP worst: R/K* = {gap_max:.4f} at even={{1,{gap_at[0]:.2f}}}|odd={{{gap_at[1]:.2f}}}, "
+            f"lambda={gap_at[2]:.3f}  (< K_star, so the inequality HOLDS): {'ok' if gap_ok else 'FAIL'}"
+        )
 
-    print("\n    THE GAP IS CLOSABLE by the SIGNED Abel tail (verify_dagger_tail.py), NOT a modulus bound:")
+    print(
+        "\n    THE GAP IS CLOSABLE by the SIGNED Abel tail (verify_dagger_tail.py), NOT a modulus bound:"
+    )
     print(f"    {'config':24} {'lambda':>8} {'Rtrue/K*':>9} {'ub_signed/K*':>13} {'closes?':>8}")
     signed_ok = True
     for tag, ev, od in [
@@ -509,15 +569,21 @@ def main() -> int:
         ub = signed_tail_ub(ev, od) / K_STAR
         closes = ub <= 1.0 + 1e-3
         signed_ok &= closes
-        print(f"    {tag:24} {lam_conc(ev, od):>8.4f} {rt:>9.4f} {ub:>13.4f} {'YES' if closes else 'no':>8}")
+        print(
+            f"    {tag:24} {lam_conc(ev, od):>8.4f} {rt:>9.4f} {ub:>13.4f} {'YES' if closes else 'no':>8}"
+        )
     ok &= signed_ok
-    print(f"    => signed Abel tail closes every gap config (ub_signed = R_true to ~1e-4): "
-          f"{'ok' if signed_ok else 'FAIL'}")
+    print(
+        f"    => signed Abel tail closes every gap config (ub_signed = R_true to ~1e-4): "
+        f"{'ok' if signed_ok else 'FAIL'}"
+    )
 
     # ------------------------------------------------------------------------------------------------------
     # (C) coverage + the artifact audit: balanced max is at the pair; a flagged 'violator' is a quad artifact.
     # ------------------------------------------------------------------------------------------------------
-    print("\n(C) coverage audit: balanced max R/K* = 1 at the pair (Kluyver AND FFT agree); artifact ruled out.")
+    print(
+        "\n(C) coverage audit: balanced max R/K* = 1 at the pair (Kluyver AND FFT agree); artifact ruled out."
+    )
     # the lambda=0.60 'R/K*=1.0215' a low-accuracy search flagged: a=[1,.753,.588,.541,.399]; check all splits.
     amps = np.sqrt([1.000, 0.567, 0.346, 0.293, 0.159])
     import itertools
@@ -532,9 +598,13 @@ def main() -> int:
             best = max(best, R_density(ev, od) / K_STAR)
     artifact_ok = best < 1.0
     ok &= artifact_ok
-    print("    flagged lambda=0.60 'violator' a^2={1,.567,.346,.293,.159}: TRUE max over all balanced")
-    print(f"      parity splits (FFT density) = {best:.4f} < 1  => the '1.0215' was a quadrature artifact: "
-          f"{'ok' if artifact_ok else 'FAIL'}")
+    print(
+        "    flagged lambda=0.60 'violator' a^2={1,.567,.346,.293,.159}: TRUE max over all balanced"
+    )
+    print(
+        f"      parity splits (FFT density) = {best:.4f} < 1  => the '1.0215' was a quadrature artifact: "
+        f"{'ok' if artifact_ok else 'FAIL'}"
+    )
     # tiny balanced search at decent accuracy
     rng = np.random.default_rng(20260613)
     worst, ndone = 0.0, 0
@@ -549,29 +619,38 @@ def main() -> int:
         ndone += 1
     search_ok = worst <= 1.01
     ok &= search_ok
-    print(f"    {ndone}-config balanced search (n_theta=900): worst R/K* = {worst:.4f}  "
-          f"(<=1.01 incl. quad noise): {'ok' if search_ok else 'FAIL'}")
+    print(
+        f"    {ndone}-config balanced search (n_theta=900): worst R/K* = {worst:.4f}  "
+        f"(<=1.01 incl. quad noise): {'ok' if search_ok else 'FAIL'}"
+    )
 
     # ------------------------------------------------------------------------------------------------------
     print("\n" + "=" * 100)
-    print("RESULT:", (
-        "DONE -- the (A)+(B) decomposition is made rigorous as far as each leg goes, AND the exact gap is\n"
-        "        delivered.  (A) NEAR-PAIR: Phi is CONVEX at/near the pair in AMPLITUDE coords (the squared-\n"
-        "        amplitude 'non-convexity' is a sqrt-cusp artifact, corrected); grid-Lipschitz eigenvalue floor\n"
-        "        certifies a basin to lambda>=~0.82 (delta_A~0.18; small eig = extra-copy dir +0.386 K*).  (B)\n"
-        "        modulus closes for both-channels-comparable (lambda<=~0.83) but PROVABLY OVERSHOOTS (>=1.02\n"
-        "        K*) for EVERY singleton-channel 2-vs-1 config -- a singleton channel has no modulus route; the\n"
-        "        variance-floor overshoots too.  THE GAP = singleton-channel configs with lambda<[A]-reach,\n"
-        "        worst R/K*=0.908 at {1,.7}|{1.1} (< K*, inequality holds), is closable ONLY by the SIGNED Abel\n"
-        "        tail (= the two-copy machinery), not a crude bound.  So the clean (A)+(B) tiling does NOT close\n"
-        "        the balanced simplex; the residual is the SAME signed Bessel-ring tail, now over the 2-vs-1\n"
-        "        family, reduced by Abel to a finite interval-enclosable head."
-    ) if ok else "FAIL -- a checked invariant did not hold; see the failing block above.")
-    print("Rigor: PROVED (elsewhere) = two-copy core, Kluyver (K), E|G|, head positivity, Abel ineq, var-floor.\n"
-          "       CERTIFIED HERE = [A] Phi convex at pair (eig floor, grid-Lipschitz; iv-Bessel blocked); [B]\n"
-          "       crude closes both>=2 / OVERSHOOTS every singleton; the GAP worst R=0.908 and its signed-tail\n"
-          "       closure.  RESIDUAL = a closed interval Hessian for [A] (+ uniform-in-copy-count) and the fact\n"
-          "       that the singleton gap has NO crude certificate (only the signed tail).  validated != proved.")
+    print(
+        "RESULT:",
+        (
+            "DONE -- the (A)+(B) decomposition is made rigorous as far as each leg goes, AND the exact gap is\n"
+            "        delivered.  (A) NEAR-PAIR: Phi is CONVEX at/near the pair in AMPLITUDE coords (the squared-\n"
+            "        amplitude 'non-convexity' is a sqrt-cusp artifact, corrected); grid-Lipschitz eigenvalue floor\n"
+            "        certifies a basin to lambda>=~0.82 (delta_A~0.18; small eig = extra-copy dir +0.386 K*).  (B)\n"
+            "        modulus closes for both-channels-comparable (lambda<=~0.83) but PROVABLY OVERSHOOTS (>=1.02\n"
+            "        K*) for EVERY singleton-channel 2-vs-1 config -- a singleton channel has no modulus route; the\n"
+            "        variance-floor overshoots too.  THE GAP = singleton-channel configs with lambda<[A]-reach,\n"
+            "        worst R/K*=0.908 at {1,.7}|{1.1} (< K*, inequality holds), is closable ONLY by the SIGNED Abel\n"
+            "        tail (= the two-copy machinery), not a crude bound.  So the clean (A)+(B) tiling does NOT close\n"
+            "        the balanced simplex; the residual is the SAME signed Bessel-ring tail, now over the 2-vs-1\n"
+            "        family, reduced by Abel to a finite interval-enclosable head."
+        )
+        if ok
+        else "FAIL -- a checked invariant did not hold; see the failing block above.",
+    )
+    print(
+        "Rigor: PROVED (elsewhere) = two-copy core, Kluyver (K), E|G|, head positivity, Abel ineq, var-floor.\n"
+        "       CERTIFIED HERE = [A] Phi convex at pair (eig floor, grid-Lipschitz; iv-Bessel blocked); [B]\n"
+        "       crude closes both>=2 / OVERSHOOTS every singleton; the GAP worst R=0.908 and its signed-tail\n"
+        "       closure.  RESIDUAL = a closed interval Hessian for [A] (+ uniform-in-copy-count) and the fact\n"
+        "       that the singleton gap has NO crude certificate (only the signed tail).  validated != proved."
+    )
     return 0 if ok else 1
 
 

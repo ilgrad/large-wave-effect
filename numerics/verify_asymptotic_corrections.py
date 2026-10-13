@@ -65,8 +65,10 @@ def main() -> int:
     # residual after removing 1/N^2 should be O(1/N^4): error*N^4 roughly constant/decaying
     b_ok = worst < 5e-5 and errs[-1] < errs[0]
     ok &= b_ok
-    print(f"    worst |U_N - model| (N>=32) = {worst:.2e};  decreasing: {errs[-1] < errs[0]}  "
-          f"{'OK' if b_ok else 'FAIL'}")
+    print(
+        f"    worst |U_N - model| (N>=32) = {worst:.2e};  decreasing: {errs[-1] < errs[0]}  "
+        f"{'OK' if b_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 64)
     print("RESULT:", "ASYMPTOTIC CORRECTION VERIFIED" if ok else "CHECK FAILED")

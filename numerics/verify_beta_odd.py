@@ -37,7 +37,12 @@ def beta_odd_integral() -> float:
         b = (u * (2 - u)) ** -0.5
         val, _ = integrate.dblquad(
             lambda p, q: sqrt(a * cos(p) ** 2 + b * cos(q) ** 2),
-            0, pi, 0, pi, epsabs=1e-8, epsrel=1e-8,
+            0,
+            pi,
+            0,
+            pi,
+            epsabs=1e-8,
+            epsrel=1e-8,
         )
         return val / pi**2
 

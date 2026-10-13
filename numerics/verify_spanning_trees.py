@@ -39,7 +39,9 @@ def main() -> int:
         good = abs(prod2sin - n) / n < 1e-6 and abs(det_prime - n * n) / (n * n) < 1e-6
         good = good and abs(tau - n) / n < 1e-6
         ok &= good
-        print(f"  {n:>5} {prod2sin:>12.4f} {det_prime:>18.6g} {n * n:>10} {tau:>10.4f}  {'OK' if good else 'FAIL'}")
+        print(
+            f"  {n:>5} {prod2sin:>12.4f} {det_prime:>18.6g} {n * n:>10} {tau:>10.4f}  {'OK' if good else 'FAIL'}"
+        )
 
     # zeta'(0) = -log det' = -2 ln N  (spectral determinant via -sum log lambda)
     print("\n  zeta'_{L_N}(0) = -sum log lambda_r = -2 ln N  (spectral determinant = N^2)")
@@ -48,12 +50,16 @@ def main() -> int:
         zp0 = -float(np.sum(np.log(lambdas(n))))
         target = -2.0 * np.log(n)
         z_ok &= abs(zp0 - target) < 1e-9
-        print(f"    N={n:>4}: zeta'(0)={zp0:.5f}  -2 ln N={target:.5f}  {'OK' if abs(zp0 - target) < 1e-9 else 'FAIL'}")
+        print(
+            f"    N={n:>4}: zeta'(0)={zp0:.5f}  -2 ln N={target:.5f}  {'OK' if abs(zp0 - target) < 1e-9 else 'FAIL'}"
+        )
     ok &= z_ok
 
     print("\n" + "=" * 66)
     print("RESULT:", "SPANNING TREES / SPECTRAL DETERMINANT VERIFIED" if ok else "CHECK FAILED")
-    print("det'(L_N)=N^2, tau(C_N)=N: the s=0 value of the large-wave spectral zeta is a graph invariant.")
+    print(
+        "det'(L_N)=N^2, tau(C_N)=N: the s=0 value of the large-wave spectral zeta is a graph invariant."
+    )
     print("=" * 66)
     return 0 if ok else 1
 

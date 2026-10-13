@@ -44,10 +44,10 @@ def green_peak(n: int, t_max: float, dt: float = 0.1, block: int = 16384) -> tup
     ts = np.arange(0.0, t_max, dt)
     best, t_at = 0.0, 0.0
     for s in range(0, len(ts), block):
-        tb = ts[s:s + block]
+        tb = ts[s : s + block]
         coeff = np.zeros((len(tb), n))
         coeff[:, nz] = np.sin(np.outer(tb, om[nz])) / om[nz]
-        u = np.fft.ifft(coeff, axis=1).real          # ifft carries the 1/N -> equals G^{(s)}
+        u = np.fft.ifft(coeff, axis=1).real  # ifft carries the 1/N -> equals G^{(s)}
         amax = np.abs(u).max(axis=1)
         i = int(amax.argmax())
         if amax[i] > best:
@@ -62,8 +62,8 @@ def green_time_rms(n: int, t_max: float, dt: float = 0.05) -> float:
     ts = np.arange(0.0, t_max, dt)
     acc, cnt = 0.0, 0
     for s in range(0, len(ts), 16384):
-        tb = ts[s:s + 16384]
-        g0 = (np.sin(np.outer(tb, om[nz])) / om[nz]).sum(axis=1) / n   # G^{(s)}(0,t)
+        tb = ts[s : s + 16384]
+        g0 = (np.sin(np.outer(tb, om[nz])) / om[nz]).sum(axis=1) / n  # G^{(s)}(0,t)
         acc += float(np.sum(g0 * g0))
         cnt += len(tb)
     return float(np.sqrt(acc / cnt))
@@ -114,7 +114,11 @@ def main() -> int:
 
     # (C) the scan is truncation-limited -- the central methodological finding
     print("\n(C) Scan truncation: A_N(obs) keeps rising with window T; t* hugs the boundary")
-    header = "  {:>5} ".format("N") + " ".join(f"{'T=' + str(m) + 'N':>15}" for m in WINDOW_MULTS) + f" {'U_N':>8}"
+    header = (
+        "  {:>5} ".format("N")
+        + " ".join(f"{'T=' + str(m) + 'N':>15}" for m in WINDOW_MULTS)
+        + f" {'U_N':>8}"
+    )
     print(header)
     truncated = True
     bound_ok = True
@@ -130,8 +134,10 @@ def main() -> int:
             truncated = False
         if peaks[-1] > u * (1 + 1e-9):
             bound_ok = False
-    print(f"  -> A_N(obs) monotonically increasing in T (sup not reached): "
-          f"{'PASS' if truncated else 'FAIL'}")
+    print(
+        f"  -> A_N(obs) monotonically increasing in T (sup not reached): "
+        f"{'PASS' if truncated else 'FAIL'}"
+    )
     print(f"  -> every observed A_N stays below U_N: {'PASS' if bound_ok else 'FAIL'}")
     ok &= truncated and bound_ok
 

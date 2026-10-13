@@ -66,7 +66,9 @@ def prefix_weight(n: int, h: str) -> float:
 def main() -> int:
     ok = True
     for h, absh in [("K2", 2), ("P3", 3)]:
-        print(f"C_N box {h} (|H|={absh}):  prefix bound 2 L_pre - U  (>0 and growing => A=Theta(ln N))")
+        print(
+            f"C_N box {h} (|H|={absh}):  prefix bound 2 L_pre - U  (>0 and growing => A=Theta(ln N))"
+        )
         print(f"  {'N':>5} {'U':>8} {'L_pre':>8} {'2Lpre-U':>9}")
         vals = []
         for n in [256, 512, 1024, 2048]:
@@ -82,7 +84,10 @@ def main() -> int:
     print(f"\nembedded ring prefix Q-independent (N=512): rank {rank} = M={m}: {rank == m}")
     ok &= rank == m
     print("=" * 60)
-    print("RESULT:", "PASS -- A=Theta(ln N) on C_N box H (criterion + palindromic lemma)" if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- A=Theta(ln N) on C_N box H (criterion + palindromic lemma)" if ok else "FAIL",
+    )
     return 0 if ok else 1
 
 

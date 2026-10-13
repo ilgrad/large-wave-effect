@@ -134,7 +134,7 @@ def lambda_range(cert, box: Box) -> tuple[float, float] | None:
 
 
 def grid_boxes(cert, h: float, step: float, skip_handoff: bool) -> list[Box]:
-    boxes: list[Box] = []
+    boxes: list[tuple[Box, float]] = []
     # The singleton family is symmetric under a1 <-> a3; keep a1 >= a3 to avoid duplicated work.
     n = round((1.08 - 0.55) / step) + 1
     vals = [0.55 + i * step for i in range(n)]
@@ -153,10 +153,10 @@ def grid_boxes(cert, h: float, step: float, skip_handoff: bool) -> list[Box]:
                 continue
             if skip_handoff and lam_hi >= cert.LAM_HI:
                 continue
-            boxes.append(box)
+            boxes.append((box, lam_hi))
     # Prioritize low reference-risk boxes: away from the singleton/handoff boundary and with a1~a3 first.
-    boxes.sort(key=lambda b: (abs(b.a1 - b.a3), lambda_range(cert, b)[1]))
-    return boxes
+    boxes.sort(key=lambda bl: (abs(bl[0].a1 - bl[0].a3), bl[1]))
+    return [box for box, _ in boxes]
 
 
 def load_done(path: Path) -> set[str]:
@@ -224,14 +224,18 @@ def json_ready(value: object) -> object:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--preset", choices=sorted(PRESETS), default="demo")
-    parser.add_argument("--box", action="append", type=parse_box, help="target box a1,a3,h; repeatable")
+    parser.add_argument(
+        "--box", action="append", type=parse_box, help="target box a1,a3,h; repeatable"
+    )
     parser.add_argument("--h", type=float, default=0.015, help="grid box half-width")
     parser.add_argument("--step", type=float, default=0.03, help="grid center spacing")
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--jobs", type=int, default=1, help="parallel worker processes")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--include-handoff", action="store_true", help="include boxes with lambda_hi >= 0.82")
+    parser.add_argument(
+        "--include-handoff", action="store_true", help="include boxes with lambda_hi >= 0.82"
+    )
     args = parser.parse_args()
 
     if args.jobs < 1:
@@ -239,7 +243,11 @@ def main() -> int:
 
     cert = load_certificate_module()
     res = PRESETS[args.preset]
-    boxes = args.box if args.box else grid_boxes(cert, args.h, args.step, skip_handoff=not args.include_handoff)
+    boxes = (
+        args.box
+        if args.box
+        else grid_boxes(cert, args.h, args.step, skip_handoff=not args.include_handoff)
+    )
     done = load_done(args.out)
     boxes = [box for box in boxes if box.key not in done]
     if args.limit is not None:
@@ -248,12 +256,14 @@ def main() -> int:
     print(f"preset={args.preset} boxes={len(boxes)} jobs={args.jobs} out={args.out}")
     for box in boxes[:10]:
         lam = lambda_range(cert, box)
-        print(f"  {box.key} lambda=[{lam[0]:.3f},{lam[1]:.3f}]")
+        span = "outside the disc" if lam is None else f"lambda=[{lam[0]:.3f},{lam[1]:.3f}]"
+        print(f"  {box.key} {span}")
     if args.dry_run:
         return 0
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with args.out.open("a", encoding="utf-8") as fh:
+
         def write_row(row: dict[str, object]) -> None:
             fh.write(json.dumps(json_ready(row), sort_keys=True) + "\n")
             fh.flush()
@@ -268,7 +278,9 @@ def main() -> int:
 
         if args.jobs > 1:
             with ProcessPoolExecutor(max_workers=args.jobs) as pool:
-                futures = {pool.submit(run_box_worker, (box, args.preset, res)): box for box in boxes}
+                futures = {
+                    pool.submit(run_box_worker, (box, args.preset, res)): box for box in boxes
+                }
                 for i, fut in enumerate(as_completed(futures), start=1):
                     box = futures[fut]
                     print(f"[{i}/{len(boxes)}] {box.key}", flush=True)

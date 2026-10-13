@@ -98,7 +98,9 @@ def main() -> int:
     print("=" * 78)
     print("Multi-copy profile g(s) of the Schrodinger residual; the t>N/2 (s>1) tail")
     print("=" * 78)
-    print(f"references:  c_0/sqrt2 = {C0_OVER_SQRT2:.4f} (even, s=1/2),  beta_odd = {BETA_ODD:.4f} (odd, s=1)")
+    print(
+        f"references:  c_0/sqrt2 = {C0_OVER_SQRT2:.4f} (even, s=1/2),  beta_odd = {BETA_ODD:.4f} (odd, s=1)"
+    )
     ok = True
 
     # (a) the analytic profile reproduces the exact endpoints
@@ -113,7 +115,9 @@ def main() -> int:
 
     # (b) calibration against the exact FFT, all four N mod 4
     print("\n(b) analytic vs exact FFT (s-windowed), four N mod 4 classes (N ~ 24000):")
-    print(f"    {'s':>5} | {'odd:g':>7} {'N=1m4':>7} {'N=3m4':>7} | {'even:g':>7} {'N=0m4':>7} {'N=2m4':>7}")
+    print(
+        f"    {'s':>5} | {'odd:g':>7} {'N=1m4':>7} {'N=3m4':>7} | {'even:g':>7} {'N=0m4':>7} {'N=2m4':>7}"
+    )
     ns = {0: 24000, 1: 24001, 2: 24002, 3: 24003}
     max_dev = 0.0
     for s in (0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0):
@@ -124,12 +128,18 @@ def main() -> int:
         f0 = fft_g_windowed(ns[0], s)
         f2 = fft_g_windowed(ns[2], s)
         max_dev = max(max_dev, abs(go - f1), abs(go - f3), abs(ge - f0), abs(ge - f2))
-        print(f"    {s:>5.2f} | {go:>7.4f} {f1:>7.4f} {f3:>7.4f} | {ge:>7.4f} {f0:>7.4f} {f2:>7.4f}")
+        print(
+            f"    {s:>5.2f} | {go:>7.4f} {f1:>7.4f} {f3:>7.4f} | {ge:>7.4f} {f0:>7.4f} {f2:>7.4f}"
+        )
     cal_ok = max_dev < 0.012
     ok &= cal_ok
-    print(f"    -> max |analytic - FFT| = {max_dev:.4f} over s in [0.5,2], all four classes: "
-          f"{'PASS' if cal_ok else 'FAIL'}")
-    print("       (the two even classes coincide, the two odd classes coincide: only i^N real/imag matters)")
+    print(
+        f"    -> max |analytic - FFT| = {max_dev:.4f} over s in [0.5,2], all four classes: "
+        f"{'PASS' if cal_ok else 'FAIL'}"
+    )
+    print(
+        "       (the two even classes coincide, the two odd classes coincide: only i^N real/imag matters)"
+    )
 
     # (c) the t>N/2 verdict: is g maximized at s=1 (odd) / s=1/2 (even), and subdominant for s>1?
     print("\n(c) is t>N/2 (s>1) subdominant?  sup of the profile over s>1 vs the s=1 / s=1/2 peak:")
@@ -139,19 +149,27 @@ def main() -> int:
     g_odd_hi = np.array([g_profile(s, "odd") for s in s_hi])
     g_eve_lo = np.array([g_profile(s, "even") for s in s_lo])
     g_eve_hi = np.array([g_profile(s, "even") for s in s_hi])
-    print(f"    ODD : peak on s<=1 = {g_odd_lo.max():.4f} at s={s_lo[g_odd_lo.argmax()]:.2f}; "
-          f"sup on s>1 = {g_odd_hi.max():.4f} at s={s_hi[g_odd_hi.argmax()]:.2f}")
-    print(f"    EVEN: peak on s<=1 = {g_eve_lo.max():.4f} at s={s_lo[g_eve_lo.argmax()]:.2f}; "
-          f"sup on s>1 = {g_eve_hi.max():.4f} at s={s_hi[g_eve_hi.argmax()]:.2f}")
+    print(
+        f"    ODD : peak on s<=1 = {g_odd_lo.max():.4f} at s={s_lo[g_odd_lo.argmax()]:.2f}; "
+        f"sup on s>1 = {g_odd_hi.max():.4f} at s={s_hi[g_odd_hi.argmax()]:.2f}"
+    )
+    print(
+        f"    EVEN: peak on s<=1 = {g_eve_lo.max():.4f} at s={s_lo[g_eve_lo.argmax()]:.2f}; "
+        f"sup on s>1 = {g_eve_hi.max():.4f} at s={s_hi[g_eve_hi.argmax()]:.2f}"
+    )
     # the analytic Monte-Carlo carries ~0.003 noise; allow a small tolerance
     sub_odd = g_odd_hi.max() < BETA_ODD + 5e-3 and g_odd_lo.max() <= BETA_ODD + 5e-3
     sub_even = g_eve_hi.max() < C0_OVER_SQRT2 + 5e-3
     ok &= sub_odd and sub_even
-    print(f"    -> s>1 does not exceed the peak (odd: {'OK' if sub_odd else 'FAIL'}; "
-          f"even: {'OK' if sub_even else 'FAIL'})")
+    print(
+        f"    -> s>1 does not exceed the peak (odd: {'OK' if sub_odd else 'FAIL'}; "
+        f"even: {'OK' if sub_even else 'FAIL'})"
+    )
 
     # (c') exact FFT cross-check of the t>N/2 sup against the t=N/2 value (the literal B_N statement)
-    print("\n(c') exact FFT: sup_{t>N/2} ||K||_1/sqrt(N) vs the t=N/2 value, odd N (no model, no window):")
+    print(
+        "\n(c') exact FFT: sup_{t>N/2} ||K||_1/sqrt(N) vs the t=N/2 value, odd N (no model, no window):"
+    )
     print(f"    {'N':>7} {'sup_{t>N/2}':>11} {'at t=N/2':>9} {'beta_odd':>9}  verdict")
     fft_ok = True
     for n in (8001, 16001, 32001):
@@ -162,14 +180,24 @@ def main() -> int:
         fft_ok &= sup_hi <= at_half + 2e-3
         print(f"    {n:>7} {sup_hi:>11.4f} {at_half:>9.4f} {BETA_ODD:>9.4f}  {verdict}")
     ok &= fft_ok
-    print(f"    -> on the window t <= 1.25N the sup sits at t=N/2 (s=1): {'PASS' if fft_ok else 'FAIL'}")
+    print(
+        f"    -> on the window t <= 1.25N the sup sits at t=N/2 (s=1): {'PASS' if fft_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 78)
     print("RESULT:", "MULTI-COPY PROFILE VERIFIED -- t>N/2 SUBDOMINANT" if ok else "CHECK FAILED")
-    print("The limiting profile is the toral average of the coherent Poisson-copy Debye sum; it matches the")
-    print("FFT for all four N mod 4, peaks at s=1 (odd, beta_odd) / s=1/2 (even, c_0/sqrt2), and stays below")
-    print("that peak for s>1.  Rigorous on s<=1 (two-copy equidistribution); on s>1 the remaining gap is the")
-    print("joint equidistribution mod 2pi of the >=3 coherent copy phases (single-saddle vdC fails -> 0.61).")
+    print(
+        "The limiting profile is the toral average of the coherent Poisson-copy Debye sum; it matches the"
+    )
+    print(
+        "FFT for all four N mod 4, peaks at s=1 (odd, beta_odd) / s=1/2 (even, c_0/sqrt2), and stays below"
+    )
+    print(
+        "that peak for s>1.  Rigorous on s<=1 (two-copy equidistribution); on s>1 the remaining gap is the"
+    )
+    print(
+        "joint equidistribution mod 2pi of the >=3 coherent copy phases (single-saddle vdC fails -> 0.61)."
+    )
     print("=" * 78)
     return 0 if ok else 1
 

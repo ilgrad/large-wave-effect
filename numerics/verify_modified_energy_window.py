@@ -19,6 +19,7 @@ batched over mu (one batched FFT sweep).  Runs on CPU by default; for the GPU pa
   uv run --with cupy-cuda12x --with nvidia-cufft-cu12 --with nvidia-nvjitlink-cu12 \
          python numerics/verify_modified_energy_window.py
 """
+
 from __future__ import annotations
 
 import time
@@ -33,12 +34,12 @@ try:
     import ctypes as _ct
     import os as _os
 
-    import nvidia.cufft as _cf
-    import nvidia.nvjitlink as _nj
+    import nvidia.cufft as _cf  # ty: ignore[unresolved-import]
+    import nvidia.nvjitlink as _nj  # ty: ignore[unresolved-import]
 
     for _m, _so in [(_nj, "libnvJitLink.so.12"), (_cf, "libcufft.so.11")]:
         _ct.CDLL(_os.path.join(next(iter(_m.__path__)), "lib", _so), mode=_ct.RTLD_GLOBAL)
-    import cupy as _cp
+    import cupy as _cp  # ty: ignore[unresolved-import]
 
     XP: ModuleType = _cp if _cp.cuda.runtime.getDeviceCount() > 0 else np
 except Exception:
@@ -66,7 +67,9 @@ def run_sweep(n: int, mus: np.ndarray, t_final: float, xp: ModuleType) -> dict:
     b = xp.zeros((m, n), dtype=xp.complex128)
     b[:, 0] = 1.0  # single-site seed, ||b||^2 = 1
     n_steps = round(t_final / DT)
-    stride = max(1, n_steps // 2000)  # S varies on an O(1) t-scale; ~2000 samples resolve the running max
+    stride = max(
+        1, n_steps // 2000
+    )  # S varies on an O(1) t-scale; ~2000 samples resolve the running max
     maxS = np.zeros(m)
     minv2 = np.full(m, 2.0)
     for it in range(n_steps + 1):
@@ -114,8 +117,10 @@ def main() -> int:
         p_exp = float(np.polyfit(np.log(mus[win]), np.log(r["maxS"][win]), 1)[0])
         maxS_by_n[n] = r["maxS"]
         results.append((n, p_exp, fbar, r["maxS"][winf], r["minv2"][winf]))
-        print(f"N={n:>5}: mu-scaling p={p_exp:.2f}  Fbar_lin={fbar:.2e}  "
-              f"inf<v2>={r['minv2'][winf].min():.3f}  sup|dS|@1.5={r['maxS'][win][-1]:.3e}")
+        print(
+            f"N={n:>5}: mu-scaling p={p_exp:.2f}  Fbar_lin={fbar:.2e}  "
+            f"inf<v2>={r['minv2'][winf].min():.3f}  sup|dS|@1.5={r['maxS'][win][-1]:.3e}"
+        )
     # N-uniformity: spread of sup|dS| at a fixed mu across N
     j15 = int(np.argmin(abs(mus - 1.5)))
     vals = np.array([maxS_by_n[n][j15] for n in NS])
@@ -124,14 +129,19 @@ def main() -> int:
     fbar_max = max(abs(row[2]) for row in results)
     v2_min = min(row[4].min() for row in results)
     print("-" * 80)
-    print(f"mean mu-scaling exponent p = {p_all:.2f}  (p~2 => leading secular drift cancels; lemma)")
+    print(
+        f"mean mu-scaling exponent p = {p_all:.2f}  (p~2 => leading secular drift cancels; lemma)"
+    )
     print(f"max |Fbar_lin| = {fbar_max:.1e}  (~0 => no leading secular obstruction; lemma)")
     print(f"N-uniformity of sup|dS|@1.5 = {n_unif:.1e} (relative spread across N)")
     print(f"min <v^2> over window [0.43,4) = {v2_min:.3f}  (>0 => dispersive margin)")
-    print(f"elapsed {time.time()-t_start:.1f}s")
+    print(f"elapsed {time.time() - t_start:.1f}s")
     ok = (1.7 < p_all < 2.4) and (fbar_max < 1e-9) and (n_unif < 0.05) and (v2_min > 0.3)
     print("=" * 80)
-    print("RESULT:", "MODIFIED-ENERGY ROUTE SUPPORTED (drift O(mu^2), N-uniform)" if ok else "CHECK FAILED")
+    print(
+        "RESULT:",
+        "MODIFIED-ENERGY ROUTE SUPPORTED (drift O(mu^2), N-uniform)" if ok else "CHECK FAILED",
+    )
     print("=" * 80)
     return 0 if ok else 1
 

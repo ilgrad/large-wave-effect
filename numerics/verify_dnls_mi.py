@@ -34,17 +34,25 @@ def main() -> int:
         lmat[j, (j + 1) % n] -= 1.0
         lmat[j, (j - 1) % n] -= 1.0
     # [x_dot; y_dot] = [[0, -L],[L - 2 g A^2 I, 0]] [x; y]
-    op = np.block([[np.zeros((n, n)), -lmat], [lmat - 2 * gamma * a**2 * np.eye(n), np.zeros((n, n))]])
+    op = np.block(
+        [[np.zeros((n, n)), -lmat], [lmat - 2 * gamma * a**2 * np.eye(n), np.zeros((n, n))]]
+    )
     ev = np.linalg.eigvals(op)
     max_growth = float(np.max(ev.real))
 
-    sigma = np.array([sqrt(lam[q] * (2 * gamma * a**2 - lam[q])) if 0 < lam[q] < 2 * gamma * a**2 else 0.0
-                      for q in range(n)])
+    sigma = np.array(
+        [
+            sqrt(lam[q] * (2 * gamma * a**2 - lam[q])) if 0 < lam[q] < 2 * gamma * a**2 else 0.0
+            for q in range(n)
+        ]
+    )
     band = [q for q in range(n) if 0 < lam[q] < 2 * gamma * a**2]
 
     print(f"DNLS modulational instability (N={n}, gamma={gamma}, A={a}):")
-    print(f"  fastest growth: operator = {max_growth:.5f},  discrete max sigma_Q = {sigma.max():.5f}"
-          f"  (continuum bound gamma A^2 = {gamma * a**2:.2f})")
+    print(
+        f"  fastest growth: operator = {max_growth:.5f},  discrete max sigma_Q = {sigma.max():.5f}"
+        f"  (continuum bound gamma A^2 = {gamma * a**2:.2f})"
+    )
     print(f"  unstable band |{{Q: lam_Q < 2 gamma A^2}}| = {len(band)} modes")
     print(f"  {'Q':>3} {'lam_Q':>7} {'sigma_Q':>9} {'in operator spectrum?':>22}")
     ok = abs(max_growth - sigma.max()) < 1e-6  # operator spectrum matches the formula exactly
@@ -54,7 +62,9 @@ def main() -> int:
         print(f"  {q:>3} {lam[q]:>7.4f} {sigma[q]:>9.5f} {present!s:>22}")
 
     print("=" * 60)
-    print("RESULT:", "PASS -- MI growth rate sigma_Q = sqrt(lam_Q(2 g A^2 - lam_Q))" if ok else "FAIL")
+    print(
+        "RESULT:", "PASS -- MI growth rate sigma_Q = sqrt(lam_Q(2 g A^2 - lam_Q))" if ok else "FAIL"
+    )
     return 0 if ok else 1
 
 

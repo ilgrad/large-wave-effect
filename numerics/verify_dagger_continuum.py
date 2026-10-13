@@ -137,6 +137,8 @@ try:
 except ImportError:  # pragma: no cover - python-flint is required for the rigorous bound
     HAVE_FLINT = False
 
+print = functools.partial(print, flush=True)
+
 # ---- constants (consistent with the sibling dagger scripts) ----
 H1 = 0.9580913986828501  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi)
 K_STAR = (H1 - sqrt(pi) / 2) / 2  # = 0.035932236615...; the SHARP (dagger) constant
@@ -160,6 +162,14 @@ def b_of(a1: float, a3: float) -> float | None:
     """odd amplitude b fixed by Sigma_2 = 1 (a1^2 + a3^2 + b^2 = 2); None if outside the disc."""
     b2 = 2.0 - a1**2 - a3**2
     return float(sqrt(b2)) if b2 > 1e-9 else None
+
+
+def b_in_disc(a1: float, a3: float) -> float:
+    """b_of for an amplitude that must lie inside the disc."""
+    b = b_of(a1, a3)
+    if b is None:
+        raise ValueError(f"(a1, a3) = ({a1}, {a3}) lies outside the disc a1^2 + a3^2 < 2")
+    return b
 
 
 def EG(sx2: float, sy2: float) -> float:
@@ -195,19 +205,19 @@ def R_over_kstar_ref(a1: float, a3: float, b: float) -> float:
 # RIGOROUS Arb per-point primitives (mirrors verify_dagger_singleton.py; the t/theta Taylor model).  Each
 # returns a tight arb at a SINGLE amplitude -- the stencil node values for the amplitude Taylor model.
 # ==========================================================================================================
-def _J0_series(amp_trig: object, t0: object, order: int) -> object:
+def _J0_series(amp_trig: arb | acb, t0: acb, order: int) -> acb_series:
     z = acb_series([amp_trig * t0, amp_trig], order + 1)
     return acb_series.hypgeom([], [acb(1)], -(z * z) / 4, n=-1)
 
 
-def _P_term(amp_trig: object, t0: object, order: int) -> object:
+def _P_term(amp_trig: arb | acb, t0: acb, order: int) -> acb_series:
     """-log J0(amp_trig (t0+x)) - (amp_trig (t0+x))^2/4  (>= 0 on [0, j01))."""
     J = _J0_series(amp_trig, t0, order)
     z = acb_series([amp_trig * t0, amp_trig], order + 1)
     return -J.log() - (z * z) / 4
 
 
-def _box_integral(series: object, trad_mid: float) -> object:
+def _box_integral(series: acb_series, trad_mid: float) -> arb:
     cs = series.coeffs()
     val = acb(0)
     tr = arb(trad_mid)
@@ -216,7 +226,7 @@ def _box_integral(series: object, trad_mid: float) -> object:
     return val.real
 
 
-def _cauchy_tail(max_mod_R: float, R: float, trad: float, order: int) -> object:
+def _cauchy_tail(max_mod_R: float, R: float, trad: float, order: int) -> arb:
     """Cauchy bound on the dropped Taylor tail | int_{-trad}^{trad} sum_{k>order} c_k x^k dx |.  REQUIRES
     trad < R."""
     ratio = trad / R
@@ -233,14 +243,13 @@ def _cauchy_tail(max_mod_R: float, R: float, trad: float, order: int) -> object:
 
 def head_majorant_point(
     a1: float, a3: float, b: float, t1: float, nbox: int, nth: int, order: int, t_lo: float = 0.05
-) -> object:
+) -> arb:
     """Rigorous UPPER bound on int_0^{t1}(Mg-M)/t^2 via the cumulant majorant, at a single amplitude."""
     amax = max(a1, a3, b)
     if amax * t1 >= J01:
         raise ValueError(f"head precondition violated: a_max*t1={amax * t1:.3f} >= j01={J01:.3f}")
-    af1, af3, bf = a1, a3, b
-    a1, a3, b = arb(str(a1)), arb(str(a3)), arb(str(b))
-    sx2, sy2 = (a1 * a1 + a3 * a3) / 2, (b * b) / 2
+    A1, A3, B = arb(str(a1)), arb(str(a3)), arb(str(b))
+    sx2, sy2 = (A1 * A1 + A3 * A3) / 2, (B * B) / 2
     PI = arb.pi()
     bw = (arb(t1) - arb(t_lo)) / nbox
     bw_mid = float((bw / 2).mid())
@@ -255,30 +264,30 @@ def head_majorant_point(
         for ith in range(nth):
             thb = acb(arb(float(((dth * ith) + dth / 2).mid()), float((dth / 2).mid())))
             c, s = thb.cos(), thb.sin()
-            P = _P_term(a1 * c, t0, order) + _P_term(a3 * c, t0, order) + _P_term(b * s, t0, order)
+            P = _P_term(A1 * c, t0, order) + _P_term(A3 * c, t0, order) + _P_term(B * s, t0, order)
             q = sx2 * c * c + sy2 * s * s
             g = (-q * (tt * tt) / 2).exp()
             term = (g * P) * dth
             acc = term if acc is None else acc + term
         acc = (acb(2) / PI) * acc * ttinv
         R = min(0.15, 0.9 * t0c, 0.45 * (J01 / amax - t1))
-        rho = [a * (t0c + R) for a in (af1, af3, bf)]
+        rho = [a * (t0c + R) for a in (a1, a3, b)]
         maxP = sum(float(-np.log(j0(r)) - r**2 / 4) for r in rho)
         max_mod = maxP / (t0c - R) ** 2
         tot = tot + _cauchy_tail(max_mod, R, bw_mid, order)
-        tot = tot + _box_integral(acc, bw_mid)
-    c4 = af1**4 + af3**4 + bf**4
+        tot = tot + _box_integral(acc, bw_mid)  # ty: ignore[invalid-argument-type]  # astral-sh/ty#3967
+    c4 = a1**4 + a3**4 + b**4
     half = (t_lo**3 / 240.0) * c4
     return tot + arb(half, half)
 
 
 def middle_point(
     a1: float, a3: float, b: float, slices: list[tuple[float, float, int, int]], order: int = 4
-) -> object:
+) -> arb:
     """Rigorous (signed) enclosure of int_{T1}^{T2}(Mg-M)/t^2 by an acb Taylor model in t, single amplitude."""
     af1, af3, bf = float(a1), float(a3), float(b)
-    a1, a3, b = arb(str(a1)), arb(str(a3)), arb(str(b))
-    sx2, sy2 = (a1 * a1 + a3 * a3) / 2, (b * b) / 2
+    A1, A3, B = arb(str(a1)), arb(str(a3)), arb(str(b))
+    sx2, sy2 = (A1 * A1 + A3 * A3) / 2, (B * B) / 2
     PI = arb.pi()
     total = arb(0)
     for tlo, thi, nbox, nth in slices:
@@ -297,16 +306,16 @@ def middle_point(
                 thb = acb(arb(float(((dth * ith) + dth / 2).mid()), float((dth / 2).mid())))
                 c, s = thb.cos(), thb.sin()
                 p = (
-                    _J0_series(a1 * c, t0, order)
-                    * _J0_series(a3 * c, t0, order)
-                    * _J0_series(b * s, t0, order)
+                    _J0_series(A1 * c, t0, order)
+                    * _J0_series(A3 * c, t0, order)
+                    * _J0_series(B * s, t0, order)
                 )
                 q = sx2 * c * c + sy2 * s * s
                 g = (-q * (tt * tt) / 2).exp()
                 term = (g - p) * dth
                 acc = term if acc is None else acc + term
             acc = (acb(2) / PI) * acc * ttinv
-            total = total + _box_integral(acc, trad) + rem_box
+            total = total + _box_integral(acc, trad) + rem_box  # ty: ignore[invalid-argument-type]  # astral-sh/ty#3967
     return total
 
 
@@ -318,7 +327,7 @@ def middle_far_point(
     th_order: int = 8,
     rho: float = 0.05,
     kt: int = 2,
-) -> object:
+) -> arb:
     """Rigorous signed enclosure of int_far (Mg-M)/t^2 dt for LARGE t (t >= ~8), where middle_point's
     theta-BALL blows up: there the integrand oscillates fast in theta (frequency ~ amp*t), so a theta
     ball of width dth/2 inflates the rigorous radius like amp*t/nth (hopeless beyond t~12, the reason
@@ -336,7 +345,7 @@ def middle_far_point(
     asum, shr = af1 + af3 + bf, math.sinh(rho)
     PI = arb.pi()
 
-    def itheta_over_t2(tpt: float, nth: int) -> object:
+    def itheta_over_t2(tpt: float, nth: int) -> arb:
         """(2/pi) int_0^{pi/2} (-p(tpt, theta)) dtheta / tpt^2 at a POINT t=tpt (theta-Taylor)."""
         dth = (PI / 2) / nth
         thrad = float((dth / 2).mid())
@@ -389,7 +398,7 @@ def middle_far_point(
 # ----------------------------------------------------------------------------------------------------------
 # TAIL over the whole box: monotone capped Bessel envelope (box-sup at an explicit corner) + far bound.
 # ----------------------------------------------------------------------------------------------------------
-def _cap1(v: object) -> object:
+def _cap1(v: arb) -> arb:
     lo, hi = float(v.lower()), float(v.upper())
     hi = 1.0 if (not math.isfinite(hi) or hi != hi) else min(hi, 1.0)
     lo = 0.0 if (not math.isfinite(lo) or lo != lo or lo < 0) else min(lo, 1.0)
@@ -398,9 +407,7 @@ def _cap1(v: object) -> object:
     return arb((lo + hi) / 2.0, (hi - lo) / 2.0)
 
 
-def _envelope_point(
-    a1: object, a3: object, b: object, K2: object, PI: object, tval: object, nth: int
-) -> object:
+def _envelope_point(a1: arb, a3: arb, b: arb, K2: arb, PI: arb, tval: arb, nth: int) -> arb:
     """E(tval) = (2/pi) int_0^{pi/2} min(1, K2/(t c)) min(1, sqrt(2/(pi b t s))) dth at a POINT t."""
     dth = (PI / 2) / nth
     body = arb(0)
@@ -420,7 +427,7 @@ def tail_modulus_box(
     t2: float,
     segs: list[tuple[float, float, int, int]],
     T_far: float,
-) -> object:
+) -> arb:
     """Rigorous UPPER bound on sup_B int_{t2}^inf |M|/t^2 dt by the monotone capped Bessel envelope.
     E(t) = (2/pi) int min(1, K2/(t c)) min(1, sqrt(2/(pi b t s))) dth with K2 = 2/(pi sqrt(a1 a3)) is
     DECREASING in each of a1, a3, b (K2 decreases as a1,a3 grow; the b-factor decreases as b grows), so
@@ -443,7 +450,7 @@ def tail_modulus_box(
     return tot + far
 
 
-def mg_tail_box(qmin_lo: float, t2: float) -> object:
+def mg_tail_box(qmin_lo: float, t2: float) -> arb:
     """Rigorous UPPER bound on sup_B int_{t2}^inf Mg/t^2 dt.  Mg(t) <= exp(-qmin t^2/2),
     qmin = min(sx2, sy2); qmin_lo is a rigorous LOWER bound on qmin over the box.  Tiny."""
     bound = math.exp(-qmin_lo * t2**2 / 2) / (qmin_lo * t2**3)
@@ -474,7 +481,7 @@ class StencilModel:
 
 
 def build_stencil(
-    region_value: Callable[[float, float], object],
+    region_value: Callable[[float, float], arb],
     a1c: float,
     a3c: float,
     h: float,
@@ -636,11 +643,11 @@ def prove_box(
 
     nb, nt, ordr = head_res
 
-    def head_val(a1: float, a3: float) -> object:
-        return head_majorant_point(a1, a3, b_of(a1, a3), T1, nb, nt, ordr)
+    def head_val(a1: float, a3: float) -> arb:
+        return head_majorant_point(a1, a3, b_in_disc(a1, a3), T1, nb, nt, ordr)
 
-    def mid_val(a1: float, a3: float) -> object:
-        return middle_point(a1, a3, b_of(a1, a3), mid_slices)
+    def mid_val(a1: float, a3: float) -> arb:
+        return middle_point(a1, a3, b_in_disc(a1, a3), mid_slices)
 
     head_sup = build_stencil(head_val, a1c, a3c, h, delta, kspan=kspan).sup()
     mid_sup = build_stencil(mid_val, a1c, a3c, h, delta, kspan=kspan).sup()
@@ -648,8 +655,8 @@ def prove_box(
     far_sup = 0.0
     if far_slices is not None:
 
-        def far_val(a1: float, a3: float) -> object:
-            return middle_far_point(a1, a3, b_of(a1, a3), far_slices)
+        def far_val(a1: float, a3: float) -> arb:
+            return middle_far_point(a1, a3, b_in_disc(a1, a3), far_slices)
 
         far_sup = build_stencil(far_val, a1c, a3c, h, delta, kspan=kspan).sup()
 
@@ -663,7 +670,7 @@ def prove_box(
             for d3 in (-h, 0, h)
             if (bb := b_of(a1c + d1, a3c + d3)) is not None
         ),
-        default=b_of(a1c - h, a3c - h),
+        default=b_in_disc(a1c - h, a3c - h),
     )
     minD, qmin = _box_minD_and_qmin(a1c, a3c, h)
     tail = tail_modulus_box(a1min, a3min, bmin, t_tail, tail_segs, tail_far)
@@ -690,8 +697,6 @@ def prove_box(
 
 # ==========================================================================================================
 def main() -> int:
-    global print
-    print = functools.partial(print, flush=True)
     warnings.simplefilter("ignore", category=IntegrationWarning)
     if HAVE_FLINT:
         ctx.prec = 200
@@ -726,7 +731,7 @@ def main() -> int:
         (0.70, 0.70, "lam~0.755"),
         (0.74, 0.66, "lam~0.71"),
     ]:
-        b = b_of(a1, a3)
+        b = b_in_disc(a1, a3)
         sx2, sy2 = 0.5 * (a1**2 + a3**2), 0.5 * b**2
         D = a1**4 + a3**4 + b**4
         nth = 6000
@@ -801,7 +806,7 @@ def main() -> int:
                 g = (-q * (tt * tt) / 2).exp()
                 acc = (g * P) * dth if acc is None else acc + (g * P) * dth
             acc = (acb(2) / PI) * acc * ttinv
-            tot = tot + _box_integral(acc, float((bwd / 2).mid()))
+            tot = tot + _box_integral(acc, float((bwd / 2).mid()))  # ty: ignore[invalid-argument-type]  # astral-sh/ty#3967
         D = float(a1.mid()) ** 4 + float(a3.mid()) ** 4 + float(b.mid()) ** 4
         tagm = "tight (point)" if eps == 0 else "INFLATED ball"
         print(
@@ -820,7 +825,7 @@ def main() -> int:
         "\n(R) the BINDING method-margin: per-point MIDDLE theta-radius + capped-modulus TAIL looseness:"
     )
     a1, a3 = 0.78, 0.69
-    b = b_of(a1, a3)
+    b = b_in_disc(a1, a3)
     D = a1**4 + a3**4 + b**4
     mid_slices_R = [
         (1.5, 2.4048, 8, 700),
@@ -871,7 +876,7 @@ def main() -> int:
     tail_far = 200.0
     x_ok = True
     for a1c, a3c in [(0.74, 0.66), (0.78, 0.69)]:  # two representative centres (each ~20-30s)
-        bc = b_of(a1c, a3c)
+        bc = b_in_disc(a1c, a3c)
         ref = R_over_kstar_ref(a1c, a3c, bc)
         hpt = float(head_majorant_point(a1c, a3c, bc, T1, *head_res).upper())
         mpt = float(middle_point(a1c, a3c, bc, mid_slices).upper())
@@ -962,7 +967,7 @@ def main() -> int:
         f"({time.time() - t_b:.0f}s)"
     )
     print(
-        f"      (true ref R/K* = {R_over_kstar_ref(0.74, 0.66, b_of(0.74, 0.66)):.4f}; at REDUCED theta the"
+        f"      (true ref R/K* = {R_over_kstar_ref(0.74, 0.66, b_in_disc(0.74, 0.66)):.4f}; at REDUCED theta the"
     )
     print(
         "       middle theta-radius dominates sup_B -- NOT a closing certificate, a runtime demonstration that"

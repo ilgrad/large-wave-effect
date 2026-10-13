@@ -142,8 +142,10 @@ def main() -> int:
     doublings = [inc[i + 1] - inc[i] for i in range(len(inc) - 1)]
     a_ok = all(abs(d - np.log(2) / np.pi) < 0.03 for d in doublings)
     ok &= a_ok
-    print(f"    increment per doubling ~ (ln2)/pi={np.log(2) / np.pi:.4f}: "
-          f"{[f'{d:.4f}' for d in doublings]}  {'OK' if a_ok else 'FAIL'}")
+    print(
+        f"    increment per doubling ~ (ln2)/pi={np.log(2) / np.pi:.4f}: "
+        f"{[f'{d:.4f}' for d in doublings]}  {'OK' if a_ok else 'FAIL'}"
+    )
 
     print("\n(B) seg rank = min(N, phi(4(N+1))/2); full (=N) iff N+1 is prime or 2^m")
     print(f"    {'N':>4} {'seg rank':>9} {'min(N,phi/2)':>13} {'full?':>6} {'N+1 prime/2^m':>14}")
@@ -158,8 +160,10 @@ def main() -> int:
         if n <= 24:
             print(f"    {n:>4} {sr:>9} {formula:>13} {full!s:>6} {np1_special!s:>14}")
     ok &= formula_ok and charac_ok
-    print(f"    -> rank = min(N, phi(4(N+1))/2): {'PASS' if formula_ok else 'FAIL'};  "
-          f"full <=> N+1 prime/2^m: {'PASS' if charac_ok else 'FAIL'}")
+    print(
+        f"    -> rank = min(N, phi(4(N+1))/2): {'PASS' if formula_ok else 'FAIL'};  "
+        f"full <=> N+1 prime/2^m: {'PASS' if charac_ok else 'FAIL'}"
+    )
 
     print("\n(C) Unconditional Omega(ln N) for ALL N via the Q-independent low-mode prefix")
     print(f"    {'N':>5} {'K=floor(sqrt N)':>16} {'prefix rank':>12} {'independent?':>13}")
@@ -171,13 +175,19 @@ def main() -> int:
         c_ok &= indep
         print(f"    {n:>5} {k:>16} {pr:>12} {indep!s:>13}")
     ok &= c_ok
-    print(f"    -> prefix independent => A_N^Dir >= (1/pi)ln K - o(1) = Omega(ln N): "
-          f"{'OK' if c_ok else 'FAIL'}")
+    print(
+        f"    -> prefix independent => A_N^Dir >= (1/pi)ln K - o(1) = Omega(ln N): "
+        f"{'OK' if c_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 70)
     print("RESULT:", "SEGMENT BOUND VERIFIED" if ok else "CHECK FAILED")
-    print("Dirichlet segment: U_N^Dir ~ (1/pi)ln N; rank = min(N, phi(4(N+1))/2), full (=> A=U) iff N+1")
-    print("is prime or 2^m (ring analog shifted by the boundary); unconditional Theta(ln N) via prefix.")
+    print(
+        "Dirichlet segment: U_N^Dir ~ (1/pi)ln N; rank = min(N, phi(4(N+1))/2), full (=> A=U) iff N+1"
+    )
+    print(
+        "is prime or 2^m (ring analog shifted by the boundary); unconditional Theta(ln N) via prefix."
+    )
     print("=" * 70)
     return 0 if ok else 1
 

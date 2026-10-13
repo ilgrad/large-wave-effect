@@ -63,12 +63,12 @@ def main() -> int:
     x = np.linspace(-80, 80, n, endpoint=False)
     amp, w, b = 0.42, 14.0, 0.28  # weak amplitude, beam width, lens curvature
     dt, steps = 0.01, 2500
-    lens = amp * np.exp(-x**2 / (2 * w**2)) * np.exp(-1j * b * x**2 / 2)
+    lens = amp * np.exp(-(x**2) / (2 * w**2)) * np.exp(-1j * b * x**2 / 2)
     plane = amp * np.ones(n, dtype=complex)
 
-    r_lin = run(x, lens, gamma=0.0, dt=dt, steps=steps)    # caustic only
-    r_nl = run(x, lens, gamma=1.0, dt=dt, steps=steps)     # caustic + self-focusing
-    r_pw = run(x, plane, gamma=1.0, dt=dt, steps=steps)    # plane wave + nonlinearity
+    r_lin = run(x, lens, gamma=0.0, dt=dt, steps=steps)  # caustic only
+    r_nl = run(x, lens, gamma=1.0, dt=dt, steps=steps)  # caustic + self-focusing
+    r_pw = run(x, plane, gamma=1.0, dt=dt, steps=steps)  # plane wave + nonlinearity
 
     print(f"\n(A) Norm conservation (lens+NLS): drift = {r_nl['ndrift']:.2e}")
     a_ok = r_nl["ndrift"] < 1e-9
@@ -78,19 +78,25 @@ def main() -> int:
     print("\n(B) Linear lens focuses: caustic peak vs the flat input amplitude")
     b_ok = r_lin["peak"] > 1.5 * amp and r_lin["t_peak"] > 0
     ok &= b_ok
-    print(f"    input |psi|={amp:.2f} -> linear caustic peak={r_lin['peak']:.3f} at z_f={r_lin['t_peak']:.1f}  "
-          f"{'OK' if b_ok else 'FAIL'}")
+    print(
+        f"    input |psi|={amp:.2f} -> linear caustic peak={r_lin['peak']:.3f} at z_f={r_lin['t_peak']:.1f}  "
+        f"{'OK' if b_ok else 'FAIL'}"
+    )
 
     print("\n(C) Caustic SEEDS self-focusing: lens+NLS peak exceeds both references")
     print(f"    {'run':>26} {'peak':>8} {'/input':>8}")
     print(f"    {'(i) plane wave + NLS':>26} {r_pw['peak']:>8.3f} {r_pw['peak'] / amp:>8.2f}")
-    print(f"    {'(ii) lens, linear (caustic)':>26} {r_lin['peak']:>8.3f} {r_lin['peak'] / amp:>8.2f}")
+    print(
+        f"    {'(ii) lens, linear (caustic)':>26} {r_lin['peak']:>8.3f} {r_lin['peak'] / amp:>8.2f}"
+    )
     print(f"    {'(iii) lens + NLS':>26} {r_nl['peak']:>8.3f} {r_nl['peak'] / amp:>8.2f}")
     enh = r_nl["peak"] / r_lin["peak"] - 1
     c_ok = r_nl["peak"] > 1.08 * r_lin["peak"] and r_pw["peak"] < 1.3 * amp
     ok &= c_ok
-    print(f"    -> self-focusing adds {enh:.0%} on top of the caustic; the lensless plane wave stays "
-          f"flat ({r_pw['peak'] / amp:.2f}x): {'OK' if c_ok else 'FAIL'}")
+    print(
+        f"    -> self-focusing adds {enh:.0%} on top of the caustic; the lensless plane wave stays "
+        f"flat ({r_pw['peak'] / amp:.2f}x): {'OK' if c_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 72)
     print("RESULT:", "CAUSTIC-SEEDED SELF-FOCUSING VERIFIED" if ok else "CHECK FAILED")

@@ -30,6 +30,8 @@ A = 0.685  # large-b worst node near the residual diagonal
 
 def _load(prec):
     spec = importlib.util.spec_from_file_location("cert", CERTP)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load {CERTP}")
     m = importlib.util.module_from_spec(spec)
     sys.modules["cert"] = m
     spec.loader.exec_module(m)
@@ -49,10 +51,14 @@ def run(args):
 if __name__ == "__main__":
     cert = _load(200)
     b = cert.b_of(A, A)
-    print(f"signed middle on [16,20], a1=a3={A}, b={b:.4f} (z=b*20={b * 20:.1f}); midpoint vs RADIUS:")
+    print(
+        f"signed middle on [16,20], a1=a3={A}, b={b:.4f} (z=b*20={b * 20:.1f}); midpoint vs RADIUS:"
+    )
     print(f"{'prec':>6} {'nth':>7} {'mid':>14} {'radius':>12} {'sec':>6}")
     jobs = [(200, 500), (200, 1000), (200, 2000), (400, 1000), (800, 1000)]
     with ProcessPoolExecutor(max_workers=min(8, len(jobs))) as pool:
-        for (prec, nth, mid, rad, dt) in pool.map(run, jobs):
+        for prec, nth, mid, rad, dt in pool.map(run, jobs):
             print(f"{prec:>6} {nth:>7} {mid:14.6e} {rad:12.3e} {dt:6.1f}")
-    print("\nradius ~ 1/nth and ~independent of prec => theta-ball limit; use theta-Taylor beyond t~12.")
+    print(
+        "\nradius ~ 1/nth and ~independent of prec => theta-ball limit; use theta-Taylor beyond t~12."
+    )

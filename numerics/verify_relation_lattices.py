@@ -120,7 +120,9 @@ def main() -> int:
     print("=" * 78)
     print("Relation lattices Lambda_N and the mod-4 ceiling criterion")
     print("=" * 78)
-    print(f"\n  {'N':>4} {'class':>10} {'#freq':>6} {'rk Lambda':>10} {'sums mod 4':>14} {'A_N=U_N?':>9}")
+    print(
+        f"\n  {'N':>4} {'class':>10} {'#freq':>6} {'rk Lambda':>10} {'sums mod 4':>14} {'A_N=U_N?':>9}"
+    )
     ok = True
     for n in (5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 24):
         ker = integer_left_kernel(sin_coords(n))
@@ -136,8 +138,11 @@ def main() -> int:
     print("\n  Worked examples (a generating relation, read off the lattice basis vector):")
 
     def relation_str(k: list[int]) -> str:
-        terms = [f"{'+' if c > 0 else '-'}{abs(c) if abs(c) != 1 else ''}w{r + 1}"
-                 for r, c in enumerate(k) if c]
+        terms = [
+            f"{'+' if c > 0 else '-'}{abs(c) if abs(c) != 1 else ''}w{r + 1}"
+            for r, c in enumerate(k)
+            if c
+        ]
         s = " ".join(terms).lstrip("+")
         return f"{s} = 0   (coeff-sum {sum(k)} = {sum(k) % 4} mod 4)"
 
@@ -147,7 +152,9 @@ def main() -> int:
 
     print("\n" + "=" * 78)
     print("RESULT:", "RELATION LATTICES TABULATED" if ok else "CHECK FAILED")
-    print("Prime / 2^m have empty lattice (saturate); composite N carry a relation with sum != 0 mod 4.")
+    print(
+        "Prime / 2^m have empty lattice (saturate); composite N carry a relation with sum != 0 mod 4."
+    )
     print("=" * 78)
     return 0 if ok else 1
 

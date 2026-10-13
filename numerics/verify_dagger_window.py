@@ -53,8 +53,9 @@ The repo scripts now use this value.  A historical literal 0.9280193036689087668
 0.9280193036689088) agreed only to 9 significant figures (digit 10: ...0480... vs ...0366...) and has been
 corrected repo-wide.  The discrepancy was immaterial to every margin in the proof (they are 1e-3..1e-2, the
 discrepancy was 1e-9; K_max is unchanged to 5 digits whichever value is used) -- it was a citation/literal
-error, not a proof error.  Likewise h(1)=0.95809139868285... (script's 0.9580913983830018 is right to 9
-digits, off at digit 10); K_star=0.03593223661505... (script's 0.0359322 is correct).
+error, not a proof error.  Likewise h(1)=0.95809139868285...: the historical literal 0.9580913983830018 was
+right to 9 digits only (off at digit 10) and has been corrected repo-wide; K_star=0.03593223661505... (script's
+0.0359322 is correct).
 
 ==========================================================================================================
 NOTE on profile near-symmetry (corrects the working hypothesis).  The even/odd channels are NOT pointwise
@@ -91,15 +92,17 @@ from numpy import cos, pi, sin, sqrt
 from scipy.integrate import quad
 from scipy.special import ellipe, j0, jn_zeros
 
+print = functools.partial(print, flush=True)
+
 np.seterr(all="ignore")  # masked d<=0 powers in vectorized amplitudes; values are np.where-guarded
 
 # ---- constants (high-precision values from the mpmath block below) ----
-BETA_HP = 0.9280193048079311      # beta_odd (independent mpmath); see FINDING 3
-H1 = 0.9580913986828501           # h(1), corrected
+BETA_HP = 0.9280193048079311  # beta_odd (independent mpmath); see FINDING 3
+H1 = 0.9580913986828501  # h(1), corrected
 ROOT = sqrt(2 / pi)
-TAIL = sqrt(pi) / 2               # F_gauss(infinity)
-K_STAR = (H1 - TAIL) / 2          # 0.035932236615...
-J01 = float(jn_zeros(0, 1)[0])    # 2.404826...
+TAIL = sqrt(pi) / 2  # F_gauss(infinity)
+K_STAR = (H1 - TAIL) / 2  # 0.035932236615...
+J01 = float(jn_zeros(0, 1)[0])  # 2.404826...
 
 
 # ---- amplitudes (identical live set to verify_bn_profile_gaussian.amps; verified 0 mismatches) ----
@@ -111,7 +114,7 @@ def amps(u: float, s: float) -> tuple[np.ndarray, np.ndarray]:
     for ell in range(lmin, lmax + 1):
         d = s * s - (u + ell) ** 2
         if d > 1e-14:
-            (ev if ell % 2 == 0 else od).append(d ** -0.25)
+            (ev if ell % 2 == 0 else od).append(d**-0.25)
     return np.array(ev), np.array(od)
 
 
@@ -148,8 +151,8 @@ def fgauss_and_control(s: float, nper: int = 1200) -> tuple[float, float]:
         d = s * s - (uu[:, None] + ls[None, :]) ** 2
         live = d > 1e-13
         ds = np.where(live, d, 1.0)
-        a2 = np.where(live, ds ** -0.5, 0.0)   # a_l^2 = d^{-1/2}
-        a4 = np.where(live, ds ** -1.0, 0.0)   # a_l^4 = d^{-1}
+        a2 = np.where(live, ds**-0.5, 0.0)  # a_l^2 = d^{-1/2}
+        a4 = np.where(live, ds**-1.0, 0.0)  # a_l^4 = d^{-1}
         sx2 = 0.5 * np.sum(np.where((par == 0)[None, :], a2, 0.0), axis=1)
         sy2 = 0.5 * np.sum(np.where((par == 1)[None, :], a2, 0.0), axis=1)
         sig2 = sx2 + sy2
@@ -250,10 +253,11 @@ def F2_floor(s: float, nper: int = 400, L: float = 12.0, N: int = 1024) -> float
 
 
 # ---- exact Kluyver excess and its split at j_{0,1} (per-config R/K_star, tail/small fractions) ----
-def excess_split(ev: np.ndarray, od: np.ndarray, n_theta: int = 2000,
-                 t_max: float = 200.0) -> tuple[float, float]:
-    sx2 = 0.5 * float(np.sum(ev ** 2)) if len(ev) else 0.0
-    sy2 = 0.5 * float(np.sum(od ** 2)) if len(od) else 0.0
+def excess_split(
+    ev: np.ndarray, od: np.ndarray, n_theta: int = 2000, t_max: float = 200.0
+) -> tuple[float, float]:
+    sx2 = 0.5 * float(np.sum(ev**2)) if len(ev) else 0.0
+    sy2 = 0.5 * float(np.sum(od**2)) if len(od) else 0.0
     th = (np.arange(n_theta) + 0.5) / n_theta * (2 * pi)
     c, sn = cos(th), sin(th)
 
@@ -266,10 +270,10 @@ def excess_split(ev: np.ndarray, od: np.ndarray, n_theta: int = 2000,
         return float(p.mean())
 
     def mg(t: float) -> float:
-        return float(np.exp(-(sx2 * c ** 2 + sy2 * sn ** 2) * t * t / 2).mean())
+        return float(np.exp(-(sx2 * c**2 + sy2 * sn**2) * t * t / 2).mean())
 
     def integ(t: float) -> float:
-        return (mg(t) - mw(t)) / t ** 2
+        return (mg(t) - mw(t)) / t**2
 
     small, _ = quad(integ, 1e-7, J01, limit=300)
     tail, _ = quad(integ, J01, t_max, limit=500)
@@ -277,18 +281,16 @@ def excess_split(ev: np.ndarray, od: np.ndarray, n_theta: int = 2000,
 
 
 def R_over_Kstar(ev: np.ndarray, od: np.ndarray) -> float:
-    sig2 = 0.5 * (float(np.sum(ev ** 2)) + (float(np.sum(od ** 2)) if len(od) else 0.0))
-    c4 = float(np.sum(ev ** 4)) + (float(np.sum(od ** 4)) if len(od) else 0.0)
+    sig2 = 0.5 * (float(np.sum(ev**2)) + (float(np.sum(od**2)) if len(od) else 0.0))
+    c4 = float(np.sum(ev**4)) + (float(np.sum(od**4)) if len(od) else 0.0)
     if sig2 <= 0 or c4 <= 0:
         return 0.0
     sm, tl = excess_split(ev, od)
-    return (sm + tl) / (c4 / sig2 ** 1.5) / K_STAR
+    return (sm + tl) / (c4 / sig2**1.5) / K_STAR
 
 
 # ==========================================================================================================
 def main() -> int:
-    global print
-    print = functools.partial(print, flush=True)
     ok = True
     print("=" * 100)
     print("The admissible-constant WINDOW K_max(s) of the Gaussian-excess route, and the s>1 SPLIT")
@@ -296,9 +298,12 @@ def main() -> int:
     print("=" * 100)
 
     # ---- FINDING 3 first: high-precision constants (cheap, sets the beta used everywhere) ----
-    print("\n[C] high-precision constants (mpmath, one-elliptic-reduced integrals) reproduce the script HP values:")
+    print(
+        "\n[C] high-precision constants (mpmath, one-elliptic-reduced integrals) reproduce the script HP values:"
+    )
     try:
         import mpmath as mp
+
         mp.mp.dps = 30
         half = mp.pi / 2
 
@@ -306,7 +311,8 @@ def main() -> int:
             def fp(p: mp.mpf) -> mp.mpf:
                 d = 1 + mp.cos(p) ** 2
                 return mp.sqrt(d) * mp.ellipe(1 / d)
-            return mp.quad(fp, [0, half]) / half ** 2
+
+            return mp.quad(fp, [0, half]) / half**2
 
         def beta_hp() -> mp.mpf:
             def inner(u: mp.mpf) -> mp.mpf:
@@ -316,7 +322,9 @@ def main() -> int:
                 def fp(p: mp.mpf) -> mp.mpf:
                     c = a * mp.cos(p) ** 2 + b
                     return mp.sqrt(c) * mp.ellipe(b / c)
-                return mp.quad(fp, [0, half]) / half ** 2
+
+                return mp.quad(fp, [0, half]) / half**2
+
             return mp.sqrt(2 / mp.pi) * mp.quad(inner, [0, mp.mpf("0.5"), 1])
 
         h1_v = h1_hp()
@@ -326,8 +334,11 @@ def main() -> int:
         print(f"     h(1)           = {mp.nstr(h1_v, 22)}   (script float: 0.9580913986828501)")
         print(f"     K_star         = {mp.nstr(kstar_v, 22)}   (script float: 0.0359322)")
         # historical note: a former literal 0.9280193036689088 was wrong past digit 9; corrected repo-wide.
-        c_ok = (abs(float(beta_v) - BETA_HP) < 1e-12 and abs(float(h1_v) - H1) < 1e-12
-                and abs(float(kstar_v) - K_STAR) < 1e-9)
+        c_ok = (
+            abs(float(beta_v) - BETA_HP) < 1e-12
+            and abs(float(h1_v) - H1) < 1e-12
+            and abs(float(kstar_v) - K_STAR) < 1e-9
+        )
         ok &= c_ok
         print(f"     => constants reproduce the script's HP values   {'ok' if c_ok else 'FAIL'}")
     except Exception as exc:  # mpmath edge; constants are not load-bearing for the window verdict
@@ -337,15 +348,39 @@ def main() -> int:
     print("\n[A0] panel Gauss-Legendre node convergence at s=1.005 (the edge-singular, binding s):")
     for n in (400, 800, 1600):
         fg, ct = fgauss_and_control(1.005, n)
-        print(f"     nper={n:>5}: F_gauss={fg:.7f}  control={ct:.6f}  B(K_star)={fg + ROOT * K_STAR * ct:.7f}")
+        print(
+            f"     nper={n:>5}: F_gauss={fg:.7f}  control={ct:.6f}  B(K_star)={fg + ROOT * K_STAR * ct:.7f}"
+        )
     conv_ok = abs(fgauss_and_control(1.005, 400)[1] - fgauss_and_control(1.005, 1600)[1]) < 1e-4
     ok &= conv_ok
     print(f"     => control stable to <1e-4 by nper=400   {'ok' if conv_ok else 'FAIL'}")
 
     # ---- FINDING 1: the window, the true minimum, and the failure sliver ----
-    print("\n[A1] K_max(s) curve (CORRECTED): the minimum is at s->1+, BELOW K_star -- not 0.0402 at s=1.02:")
-    print(f"     {'s':>8} {'F_gauss':>9} {'control':>9} {'K_max':>9} {'B(K_star)':>10} {'B<beta?':>8}")
-    grid = [1.0005, 1.001, 1.002, 1.004, 1.005, 1.01, 1.02, 1.05, 1.1, 1.2, 1.3, 1.5, 2.0, 3.0, 5.0, 10.0, 20.0]
+    print(
+        "\n[A1] K_max(s) curve (CORRECTED): the minimum is at s->1+, BELOW K_star -- not 0.0402 at s=1.02:"
+    )
+    print(
+        f"     {'s':>8} {'F_gauss':>9} {'control':>9} {'K_max':>9} {'B(K_star)':>10} {'B<beta?':>8}"
+    )
+    grid = [
+        1.0005,
+        1.001,
+        1.002,
+        1.004,
+        1.005,
+        1.01,
+        1.02,
+        1.05,
+        1.1,
+        1.2,
+        1.3,
+        1.5,
+        2.0,
+        3.0,
+        5.0,
+        10.0,
+        20.0,
+    ]
     kmin_all = (1e9, 0.0)
     for s in grid:
         fg, ct = fgauss_and_control(s)
@@ -353,9 +388,13 @@ def main() -> int:
         b = fg + ROOT * K_STAR * ct
         if km < kmin_all[0]:
             kmin_all = (km, s)
-        print(f"     {s:>8.4f} {fg:>9.5f} {ct:>9.5f} {km:>9.5f} {b:>10.6f} {'yes' if b < BETA_HP else 'NO':>8}")
-    print(f"     => min over this grid: K_max={kmin_all[0]:.5f} at s={kmin_all[1]}  (K_star={K_STAR:.5f}; "
-          f"K_max<K_star near s=1 => route FAILS there)")
+        print(
+            f"     {s:>8.4f} {fg:>9.5f} {ct:>9.5f} {km:>9.5f} {b:>10.6f} {'yes' if b < BETA_HP else 'NO':>8}"
+        )
+    print(
+        f"     => min over this grid: K_max={kmin_all[0]:.5f} at s={kmin_all[1]}  (K_star={K_STAR:.5f}; "
+        f"K_max<K_star near s=1 => route FAILS there)"
+    )
     # the claim "0.0402 at 1.02" is the grid-start artifact; the true inf is below
     sliver_fail = kmin_all[0] < K_STAR
     ok &= sliver_fail  # we EXPECT the route to fail near s=1 (that is the finding)
@@ -363,6 +402,7 @@ def main() -> int:
     # crossover s* where B(s)=beta_odd
     def Bof(s: float) -> float:
         return B_majorant(s, K_STAR)
+
     lo, hi = 1.0002, 1.010
     for _ in range(26):
         mid = 0.5 * (lo + hi)
@@ -371,14 +411,20 @@ def main() -> int:
         else:
             hi = mid
     sstar = 0.5 * (lo + hi)
-    print(f"\n[A2] failure sliver of the K_star majorant:  B(s) > beta_odd on (1, s*),  s* = {sstar:.5f}")
-    print(f"     B(1.002)={Bof(1.002):.6f} > beta;  B(1.005)={Bof(1.005):.6f} < beta;  beta={BETA_HP:.6f}")
+    print(
+        f"\n[A2] failure sliver of the K_star majorant:  B(s) > beta_odd on (1, s*),  s* = {sstar:.5f}"
+    )
+    print(
+        f"     B(1.002)={Bof(1.002):.6f} > beta;  B(1.005)={Bof(1.005):.6f} < beta;  beta={BETA_HP:.6f}"
+    )
     sstar_ok = 1.003 < sstar < 1.006
     ok &= sstar_ok
     print(f"     => s* in (1.003,1.006): {'ok' if sstar_ok else 'FAIL'}")
 
     # ---- the TRUE F(s) stays below beta_odd on the sliver: the overshoot is K_star-non-sharpness ----
-    print("\n[A3] the TRUE profile F(s) (FFT density) stays < beta_odd on the sliver (no real violation):")
+    print(
+        "\n[A3] the TRUE profile F(s) (FFT density) stays < beta_odd on the sliver (no real violation):"
+    )
     print(f"     {'s':>8} {'F_true':>10} {'beta-F_true':>12}")
     ft_ok = True
     for s in (1.001, 1.002, 1.004, 1.01, 1.05):
@@ -386,40 +432,61 @@ def main() -> int:
         ft_ok &= ft < BETA_HP
         print(f"     {s:>8.4f} {ft:>10.6f} {BETA_HP - ft:>+12.6f}")
     ok &= ft_ok
-    print(f"     => F_true < beta_odd throughout: {'ok' if ft_ok else 'FAIL'}  (so the bound, not F, is at fault)")
+    print(
+        f"     => F_true < beta_odd throughout: {'ok' if ft_ok else 'FAIL'}  (so the bound, not F, is at fault)"
+    )
 
     # ---- FINDING 2: the SPLIT ----
-    print("\n[A4] SPLIT lower leg (1,1.005]: PROVED variance-floor F_2(s) (Lemma lem:varfloor) < beta_odd:")
+    print(
+        "\n[A4] SPLIT lower leg (1,1.005]: PROVED variance-floor F_2(s) (Lemma lem:varfloor) < beta_odd:"
+    )
     print(f"     {'s':>8} {'F_2':>10} {'beta-F_2':>10} {'<beta?':>7}")
     f2_ok = True
     for s in (1.001, 1.002, 1.004, 1.005, 1.01):
         f2 = F2_floor(s)
         f2_ok &= f2 < BETA_HP
-        print(f"     {s:>8.4f} {f2:>10.6f} {BETA_HP - f2:>+10.6f} {'yes' if f2 < BETA_HP else 'NO':>7}")
+        print(
+            f"     {s:>8.4f} {f2:>10.6f} {BETA_HP - f2:>+10.6f} {'yes' if f2 < BETA_HP else 'NO':>7}"
+        )
     ok &= f2_ok
     print(f"     => F_2 < beta_odd on the sliver (margin >= +0.0026): {'ok' if f2_ok else 'FAIL'}")
 
-    print("\n[A5] SPLIT upper leg [1.005,inf): inf_{s>=1.005} K_max(s) > K_star, and ANY K<=K_star clears it:")
-    ss = np.unique(np.concatenate([
-        np.linspace(1.005, 1.5, 60), np.linspace(1.5, 3.0, 40), np.linspace(3.0, 30.0, 30)]))
+    print(
+        "\n[A5] SPLIT upper leg [1.005,inf): inf_{s>=1.005} K_max(s) > K_star, and ANY K<=K_star clears it:"
+    )
+    ss = np.unique(
+        np.concatenate(
+            [np.linspace(1.005, 1.5, 60), np.linspace(1.5, 3.0, 40), np.linspace(3.0, 30.0, 30)]
+        )
+    )
     fg = np.array([fgauss_and_control(float(s), 800)[0] for s in ss])
     ct = np.array([fgauss_and_control(float(s), 800)[1] for s in ss])
     km = (BETA_HP - fg) / (ROOT * ct)
     i = int(np.argmin(km))
     Bk = fg + ROOT * K_STAR * ct
-    print(f"     inf_{{s>=1.005}} K_max = {km[i]:.6f} at s={ss[i]:.4f}  (> K_star={K_STAR:.6f}? {km[i] > K_STAR})")
-    print(f"     B(K_star) < beta_odd for all s in [1.005,30]? {bool(np.all(Bk < BETA_HP))}  "
-          f"(max B={Bk.max():.6f} at s={ss[int(np.argmax(Bk))]:.4f})")
+    print(
+        f"     inf_{{s>=1.005}} K_max = {km[i]:.6f} at s={ss[i]:.4f}  (> K_star={K_STAR:.6f}? {km[i] > K_STAR})"
+    )
+    print(
+        f"     B(K_star) < beta_odd for all s in [1.005,30]? {bool(np.all(Bk < BETA_HP))}  "
+        f"(max B={Bk.max():.6f} at s={ss[int(np.argmax(Bk))]:.4f})"
+    )
     Kcrude = 0.45 * K_STAR
     Bc = fg + ROOT * Kcrude * ct
-    print(f"     crude K=0.45*K_star={Kcrude:.5f}: B<beta_odd for all s>=1.005? {bool(np.all(Bc < BETA_HP))}  "
-          f"(max B={Bc.max():.6f}, margin>={BETA_HP - Bc.max():.4f})")
+    print(
+        f"     crude K=0.45*K_star={Kcrude:.5f}: B<beta_odd for all s>=1.005? {bool(np.all(Bc < BETA_HP))}  "
+        f"(max B={Bc.max():.6f}, margin>={BETA_HP - Bc.max():.4f})"
+    )
     upper_ok = km[i] > K_STAR and bool(np.all(Bk < BETA_HP)) and bool(np.all(Bc < BETA_HP))
     ok &= upper_ok
-    print(f"     => upper leg closes with the sharp OR a crude constant: {'ok' if upper_ok else 'FAIL'}")
+    print(
+        f"     => upper leg closes with the sharp OR a crude constant: {'ok' if upper_ok else 'FAIL'}"
+    )
 
     # ---- FINDING (profile): max_u R/K_star <= 1; channel-asymmetry note ----
-    print("\n[B] profile structure: max_u R(u,s)/K_star <= 1 (exact Kluyver), = 1 on u=0.5 (equal pair):")
+    print(
+        "\n[B] profile structure: max_u R(u,s)/K_star <= 1 (exact Kluyver), = 1 on u=0.5 (equal pair):"
+    )
     print(f"     {'s':>7} {'max_u R/K*':>11} {'at u':>7} {'asym max|sx2-sy2|/Sig2':>23}")
     prof_ok = True
     for s in (1.01, 1.1, 1.3, 1.5, 2.0, 3.0):
@@ -430,8 +497,8 @@ def main() -> int:
             ev, od = amps(float(u), s)
             if len(ev) + len(od) < 1:
                 continue
-            sx2 = 0.5 * float(np.sum(ev ** 2))
-            sy2 = 0.5 * float(np.sum(od ** 2))
+            sx2 = 0.5 * float(np.sum(ev**2))
+            sy2 = 0.5 * float(np.sum(od**2))
             sig2 = sx2 + sy2
             if sig2 > 0:
                 asym = max(asym, abs(sx2 - sy2) / sig2)
@@ -441,37 +508,50 @@ def main() -> int:
         prof_ok &= best <= 1.002
         print(f"     {s:>7.2f} {best:>11.5f} {ub:>7.3f} {asym:>23.4f}")
     ok &= prof_ok
-    print(f"     => profile max R/K_star <= 1 (sharp at u=0.5 for s<1.5); channels NOT pointwise symmetric "
-          f"(asym~0.98): {'ok' if prof_ok else 'FAIL'}")
+    print(
+        f"     => profile max R/K_star <= 1 (sharp at u=0.5 for s<1.5); channels NOT pointwise symmetric "
+        f"(asym~0.98): {'ok' if prof_ok else 'FAIL'}"
+    )
 
     # ---- the K_star excess split at the pair: 45% small-t, 55% Bessel-ring tail ----
     print("\n[C2] Kluyver excess split at the equal pair {1}|{1} (which half K_star comes from):")
     sm, tl = excess_split(np.array([1.0]), np.array([1.0]))
-    norm = 2.0 / 1.0 ** 1.5  # c4/Sigma2^{3/2} = 2 at the unit equal pair
+    norm = 2.0 / 1.0**1.5  # c4/Sigma2^{3/2} = 2 at the unit equal pair
     R_pair = (sm + tl) / norm
-    print(f"     total excess = {sm + tl:.6f}  -> R = {R_pair:.7f}  (= K_star? {abs(R_pair - K_STAR) < 2e-4})")
+    print(
+        f"     total excess = {sm + tl:.6f}  -> R = {R_pair:.7f}  (= K_star? {abs(R_pair - K_STAR) < 2e-4})"
+    )
     print(f"     small-t [0, j01] : {sm:+.6f}  = {sm / (sm + tl) * 100:.1f}% of K_star")
-    print(f"     ring tail [j01,inf]: {tl:+.6f}  = {tl / (sm + tl) * 100:.1f}% of K_star  "
-          f"(the residual the crude bound may keep lossy)")
+    print(
+        f"     ring tail [j01,inf]: {tl:+.6f}  = {tl / (sm + tl) * 100:.1f}% of K_star  "
+        f"(the residual the crude bound may keep lossy)"
+    )
     split_ok = abs(R_pair - K_STAR) < 2e-4 and 0.40 < sm / (sm + tl) < 0.50
     ok &= split_ok
     print(f"     => split ~45/55: {'ok' if split_ok else 'FAIL'}")
 
     print("\n" + "=" * 100)
-    print("RESULT:", (
-        "PASS -- the admissible window is re-derived with edge-resolving quadrature.  CORRECTIONS:\n"
-        "  (1) inf_{s>1} K_max = 0.0338 at s->1+ (NOT 0.0402 at 1.02 -- a grid-start artifact); the K_star\n"
-        "      majorant B(s) EXCEEDS beta_odd on the sliver (1, 1.00407], so 'B<beta on (1,20]' is false there.\n"
-        "  (2) the SPLIT closes the range: variance-floor F_2<beta_odd on (1,1.005] (PROVED, near-tight since\n"
-        "      the live set is ~2 copies there), and B<beta_odd with ANY K<=K_star on [1.005,inf) (inf K_max=\n"
-        "      0.0363>K_star) -- the sharp constant/tail estimate is NOT needed off the sliver.\n"
-        "  (3) beta_odd = 0.92801930480793... ; a former literal wrong past digit 9 has been corrected\n"
-        "      repo-wide (immaterial to all margins).  profile max_u R/K_star<=1 (sharp on u=0.5); channels\n"
-        "      are NOT pointwise symmetric (asym~0.98), only after the u-integral."
-    ) if ok else "FAIL -- a checked invariant did not hold; see the failing line above.")
-    print("Rigor: PROVED = F_gauss, variance-floor majorant, F(inf)=sqrt(pi)/2.  CERTIFIED (numerics, panel\n"
-          "       Gauss-Legendre + exact Kluyver) = the window, the sliver, the split, profile R/K_star<=1.\n"
-          "       RESIDUAL = a CRUDE (not sharp) Bessel-ring tail bound for (D) on [1.005,inf).  validated != proved.")
+    print(
+        "RESULT:",
+        (
+            "PASS -- the admissible window is re-derived with edge-resolving quadrature.  CORRECTIONS:\n"
+            "  (1) inf_{s>1} K_max = 0.0338 at s->1+ (NOT 0.0402 at 1.02 -- a grid-start artifact); the K_star\n"
+            "      majorant B(s) EXCEEDS beta_odd on the sliver (1, 1.00407], so 'B<beta on (1,20]' is false there.\n"
+            "  (2) the SPLIT closes the range: variance-floor F_2<beta_odd on (1,1.005] (PROVED, near-tight since\n"
+            "      the live set is ~2 copies there), and B<beta_odd with ANY K<=K_star on [1.005,inf) (inf K_max=\n"
+            "      0.0363>K_star) -- the sharp constant/tail estimate is NOT needed off the sliver.\n"
+            "  (3) beta_odd = 0.92801930480793... ; a former literal wrong past digit 9 has been corrected\n"
+            "      repo-wide (immaterial to all margins).  profile max_u R/K_star<=1 (sharp on u=0.5); channels\n"
+            "      are NOT pointwise symmetric (asym~0.98), only after the u-integral."
+        )
+        if ok
+        else "FAIL -- a checked invariant did not hold; see the failing line above.",
+    )
+    print(
+        "Rigor: PROVED = F_gauss, variance-floor majorant, F(inf)=sqrt(pi)/2.  CERTIFIED (numerics, panel\n"
+        "       Gauss-Legendre + exact Kluyver) = the window, the sliver, the split, profile R/K_star<=1.\n"
+        "       RESIDUAL = a CRUDE (not sharp) Bessel-ring tail bound for (D) on [1.005,inf).  validated != proved."
+    )
     return 0 if ok else 1
 
 

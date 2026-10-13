@@ -44,7 +44,7 @@ from __future__ import annotations
 import numpy as np
 
 BETA = 0.92801930480793112
-H1 = 0.9580913983830018  # h(1) = E sqrt(cos^2 + cos^2), the equal-pair ratio ceiling
+H1 = 0.9580913986828501  # h(1) = E sqrt(cos^2 + cos^2), the equal-pair ratio ceiling
 
 
 def _components(u: float, s: float) -> tuple[np.ndarray, np.ndarray]:
@@ -115,18 +115,24 @@ def main() -> int:
         us = (np.arange(20000) + 0.5) / 20000
         e = float(np.mean([_e2_r4(*_components(u, s))[0] for u in us]))
         worst_e = max(worst_e, abs(e - np.pi / 2))
-        print(f"    s={s:>5}:  int E|Z|^2 du = {e:.5f}   (pi/2 = {np.pi/2:.5f})")
+        print(f"    s={s:>5}:  int E|Z|^2 du = {e:.5f}   (pi/2 = {np.pi / 2:.5f})")
     ok &= worst_e < 1e-2  # residual is band-edge quadrature only; the value is exactly pi/2
-    print(f"    max deficit (band-edge quadrature) = {worst_e:.2e}   {'ok' if worst_e < 1e-2 else 'FAIL'}")
+    print(
+        f"    max deficit (band-edge quadrature) = {worst_e:.2e}   {'ok' if worst_e < 1e-2 else 'FAIL'}"
+    )
 
-    print("\n[C] concentration ceiling rho^2 <= 0.918 - 0.14(R4-1.25), and the closed-form bound F4(s):")
+    print(
+        "\n[C] concentration ceiling rho^2 <= 0.918 - 0.14(R4-1.25), and the closed-form bound F4(s):"
+    )
     print(f"    {'s':>6} {'F_MC':>8} {'F_FFT':>8} {'F4(<=bound)':>12} {'<beta?':>7}")
     sup_f4 = 0.0
     worst_mc_fft = 0.0
     f4_at_1 = _f4(1.0)
     for s in (1.0, 1.02, 1.05, 1.1, 1.2, 1.5, 2.0, 3.0, 5.0, 8.0, 12.0):
         f_mc = _f_mc(s, rng)
-        f_fft = _ez_fft(s, (1 << 16) - 1)  # ODD N: the beta_odd parity branch the channel profile models
+        f_fft = _ez_fft(
+            s, (1 << 16) - 1
+        )  # ODD N: the beta_odd parity branch the channel profile models
         f4 = _f4(s)
         if s > 1.0001:
             sup_f4 = max(sup_f4, f4)
@@ -136,13 +142,19 @@ def main() -> int:
         tag = "YES" if (s > 1.0001 and f4 < BETA) else ("peak" if s <= 1.0001 else "NO")
         print(f"    {s:>6.2f} {f_mc:>8.4f} {f_fft:>8.4f} {f4:>12.4f} {tag:>7}")
     ok &= worst_mc_fft < 0.02  # channel Monte-Carlo profile agrees with the true odd-N FFT norm
-    print(f"    max |F_MC - F_FFT| = {worst_mc_fft:.4f}  (independent cross-check)   "
-          f"{'ok' if worst_mc_fft < 0.02 else 'FAIL'}")
-    print(f"    F4(1) = {f4_at_1:.4f} >= beta (ceiling valid at the peak);  "
-          f"sup_(1,12] F4 = {sup_f4:.4f} {'< beta' if sup_f4 < BETA else '>= beta'}")
+    print(
+        f"    max |F_MC - F_FFT| = {worst_mc_fft:.4f}  (independent cross-check)   "
+        f"{'ok' if worst_mc_fft < 0.02 else 'FAIL'}"
+    )
+    print(
+        f"    F4(1) = {f4_at_1:.4f} >= beta (ceiling valid at the peak);  "
+        f"sup_(1,12] F4 = {sup_f4:.4f} {'< beta' if sup_f4 < BETA else '>= beta'}"
+    )
 
     # ceiling spot-check: rho <= h(1) and rho^2 <= 0.918-0.14(R4-1.25) up to MC error
-    print("\n    ceiling spot-check (rho from MC vs Phi(R4); excess beyond MC error flags a real violation):")
+    print(
+        "\n    ceiling spot-check (rho from MC vs Phi(R4); excess beyond MC error flags a real violation):"
+    )
     worst_excess = -1.0
     for s in (1.3, 2.0, 4.0, 8.0):
         for u in (0.17, 0.41, 0.63, 0.88):
@@ -153,13 +165,20 @@ def main() -> int:
             rho = _ez_mc(u, s, rng, 200000) / np.sqrt(e2)
             worst_excess = max(worst_excess, rho - np.sqrt(max(0.918 - 0.14 * (r4 - 1.25), 0.0)))
     ok &= worst_excess < 5e-3  # within the ~2.5e-3 MC s.e. on rho
-    print(f"    worst rho - Phi(R4) over the grid = {worst_excess:+.4f}  (MC s.e. ~ 2.5e-3)   "
-          f"{'ok' if worst_excess < 5e-3 else 'FAIL'}")
+    print(
+        f"    worst rho - Phi(R4) over the grid = {worst_excess:+.4f}  (MC s.e. ~ 2.5e-3)   "
+        f"{'ok' if worst_excess < 5e-3 else 'FAIL'}"
+    )
 
     print("=" * 96)
-    print("RESULT:", "PASS -- constant-energy identity exact; F(s)<beta_odd on (1,12] (MC+FFT); the closed-form "
-          "F4<beta_odd certifies it MODULO the validated 2-D-walk ceiling rho^2<=0.918-0.14(R4-1.25), which is "
-          "the single residual inequality (see header ledger)." if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- constant-energy identity exact; F(s)<beta_odd on (1,12] (MC+FFT); the closed-form "
+        "F4<beta_odd certifies it MODULO the validated 2-D-walk ceiling rho^2<=0.918-0.14(R4-1.25), which is "
+        "the single residual inequality (see header ledger)."
+        if ok
+        else "FAIL",
+    )
     return 0 if ok else 1
 
 

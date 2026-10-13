@@ -124,12 +124,15 @@ def main() -> int:
     for n in (5, 7, 8, 12, 15, 16, 24, 30, 36):
         rk = ring_rank(n)
         cls = "prime" if is_prime(n) else ("2^m" if (n & (n - 1)) == 0 else "composite")
-        print(f"  {n:>4} {rk:>5} {totient(2 * n) // 2:>10} {n // 2:>11} "
-              f"{rk == n // 2!s:>6} {cls:>10}")
+        print(
+            f"  {n:>4} {rk:>5} {totient(2 * n) // 2:>10} {n // 2:>11} {rk == n // 2!s:>6} {cls:>10}"
+        )
 
     print("\n" + "=" * 62)
     print("RESULT:", "Q-RANK FORMULA VERIFIED" if ok and full_iff else "CHECK FAILED")
-    print("d_Q(N)=phi(2N)/2; full rank (A_N=U_N) exactly for N prime or 2^m. One formula closes the map.")
+    print(
+        "d_Q(N)=phi(2N)/2; full rank (A_N=U_N) exactly for N prime or 2^m. One formula closes the map."
+    )
     print("=" * 62)
     return 0 if ok and full_iff else 1
 

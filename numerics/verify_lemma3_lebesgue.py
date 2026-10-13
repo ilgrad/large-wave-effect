@@ -98,7 +98,7 @@ def main() -> int:
         peaks.append(mx)
         print(f"  {z:>7.0f} {mx:>11.5f} {z ** (1 / 3) * mx:>12.5f}")
     slope = float(np.polyfit(np.log(zs), np.log(peaks), 1)[0])
-    print(f"  -> slope d ln(max)/d ln(2t) = {slope:.3f} (Airy front: -1/3 = {-1/3:.3f})")
+    print(f"  -> slope d ln(max)/d ln(2t) = {slope:.3f} (Airy front: -1/3 = {-1 / 3:.3f})")
     okC = abs(slope + 1 / 3) < 0.05
     print(f"  -> matches -1/3 (peak decays, no large wave on Z): {'PASS' if okC else 'FAIL'}")
     ok &= okC

@@ -23,6 +23,7 @@ as the hardware allows (GPU via CuPy if present, else all CPU cores):
 NOTE: the steeper ~0.63 per-unit-N slope sometimes quoted is the *pre-asymptotic* slope on N <= 19,
 inflated by the O(1) times at N = 5, 7; the asymptotic slope over N in [11, 47] is ~0.25-0.30.
 """
+
 from __future__ import annotations
 
 import time
@@ -32,7 +33,7 @@ from types import ModuleType
 import numpy as np
 
 try:
-    import cupy as _cupy
+    import cupy as _cupy  # ty: ignore[unresolved-import]
 
     HAVE_GPU = _cupy.cuda.runtime.getDeviceCount() > 0
 except Exception:
@@ -116,14 +117,18 @@ def _fit_law(rows: list[dict]) -> tuple[float, float, float]:
 def _fit_rate(rows: list[dict]) -> float:
     """Asymptotic per-unit-N slope of ln T_0.2 over reached N in [11, 47]."""
     ns = [r["n"] for r in rows if 11 <= r["n"] <= 47 and r["t_eps"][0.2] is not None]
-    lt = [np.log(r["t_eps"][0.2]) for r in rows if 11 <= r["n"] <= 47 and r["t_eps"][0.2] is not None]
+    lt = [
+        np.log(r["t_eps"][0.2]) for r in rows if 11 <= r["n"] <= 47 and r["t_eps"][0.2] is not None
+    ]
     return float(np.polyfit(np.asarray(ns, float), np.asarray(lt), 1)[0])
 
 
 def main() -> int:
     print("=" * 80)
     print("Finite-time LOWER bound (numerical evidence; rigorous bound is Diophantine and OPEN)")
-    print(f"backend: {'GPU (CuPy)' if HAVE_GPU else 'CPU (all cores)'}   primes<= {PRIMES[-1]}   T_max={T_MAX:g}")
+    print(
+        f"backend: {'GPU (CuPy)' if HAVE_GPU else 'CPU (all cores)'}   primes<= {PRIMES[-1]}   T_max={T_MAX:g}"
+    )
     print("=" * 80)
     t_start = time.time()
     if HAVE_GPU:
@@ -143,7 +148,11 @@ def main() -> int:
     print(f" {'N':>4} " + " ".join(f"{f'T_{e}':>13}" for e in EPS))
     for row in rows:
         cells = " ".join(
-            (f"{row['t_eps'][e]:>13.2f}" if row["t_eps"][e] is not None else f"{'>' + format(T_MAX, 'g'):>13}")
+            (
+                f"{row['t_eps'][e]:>13.2f}"
+                if row["t_eps"][e] is not None
+                else f"{'>' + format(T_MAX, 'g'):>13}"
+            )
             for e in EPS
         )
         print(f" {row['n']:>4} {cells}")
@@ -154,7 +163,9 @@ def main() -> int:
     f_lo = next(r["f"][tref] for r in rows if r["n"] == 11)
     f_hi = next(r["f"][tref] for r in rows if r["n"] == PRIMES[-1])
     print(f"\nlaw  ln T = a*m*ln(1/eps)+b :  a={a:.3f}  b={b:.3f}  R^2={r2:.3f}   (m=floor(N/2))")
-    print(f"asymptotic per-N slope of ln T_0.2 (N in [11,47]): {rate:.3f}  (vs pre-asymptotic ~0.63 on N<=19)")
+    print(
+        f"asymptotic per-N slope of ln T_0.2 (N in [11,47]): {rate:.3f}  (vs pre-asymptotic ~0.63 on N<=19)"
+    )
     print(f"efficiency decay at T={tref:g}: f(11)={f_lo:.3f} -> f({PRIMES[-1]})={f_hi:.3f}")
     print(f"elapsed: {elapsed:.1f}s")
 
@@ -166,17 +177,28 @@ def main() -> int:
         om = 2.0 * np.sin(np.pi * rr / n)
         bb = 1.0 / (n * np.sin(np.pi * rr / n))
         u_cap, mm = float(bb.sum()), len(rr)
-        pred = ((np.pi ** (mm / 2) / _gamma(mm / 2 + 1)) / np.sqrt(np.prod(bb))
-                / (2 * np.pi) ** mm * (2 * eps * u_cap) ** (mm / 2))
+        pred = (
+            (np.pi ** (mm / 2) / _gamma(mm / 2 + 1))
+            / np.sqrt(np.prod(bb))
+            / (2 * np.pi) ** mm
+            * (2 * eps * u_cap) ** (mm / 2)
+        )
         nt, cnt = int(t_max / dt), 0
         for s in range(0, nt, 2_000_000):
             tt = np.arange(s, min(s + 2_000_000, nt)) * dt
-            cnt += int(np.sum((np.sin(tt[:, None] * om[None, :]) * bb[None, :]).sum(axis=1) >= (1 - eps) * u_cap))
+            cnt += int(
+                np.sum(
+                    (np.sin(tt[:, None] * om[None, :]) * bb[None, :]).sum(axis=1)
+                    >= (1 - eps) * u_cap
+                )
+            )
         return (cnt / nt) / pred
 
     dens = [_density_ratio(7, e) for e in (0.1, 0.05, 0.02)]
     ok_dens = abs(dens[-1] - 1.0) < 0.12  # rho_emp/pred -> 1 as eps->0
-    print(f"density rho(eps)/pred (N=7, eps=0.1,0.05,0.02): {[round(x, 3) for x in dens]} -> 1 (Prop. reach-density)")
+    print(
+        f"density rho(eps)/pred (N=7, eps=0.1,0.05,0.02): {[round(x, 3) for x in dens]} -> 1 (Prop. reach-density)"
+    )
 
     ok_decay = f_hi < f_lo - 0.1
     ok_growth = rate > 0.1

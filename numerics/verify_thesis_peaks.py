@@ -61,7 +61,10 @@ def main() -> int:
         print(f"  {n:>5} {p:>10.4f} {ref:>13.3f} {('yes' if p > ref else 'NO'):>10}")
     ok = exceeds and near_two
     print("=" * 66)
-    print("RESULT:", "CONSISTENT (sup ~2 exceeds the finite-scan diploma values)" if ok else "UNEXPECTED")
+    print(
+        "RESULT:",
+        "CONSISTENT (sup ~2 exceeds the finite-scan diploma values)" if ok else "UNEXPECTED",
+    )
     print("Interpretation: the true large wave is ~2 for all N (exact, no scan). The diploma's")
     print("1.617 -> 1.397 are time-scan lower bounds whose decay with N is the expected worsening")
     print("of scan undershoot. The effect (peak > 1) is reproduced; the magnitude is corrected.")

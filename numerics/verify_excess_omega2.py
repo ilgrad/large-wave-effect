@@ -144,7 +144,9 @@ def integer_coord_matrix(n: int) -> np.ndarray:
     return c.astype(int)
 
 
-def optimize_AN(n: int, *, seed: int, starts: int, polish: bool = True) -> tuple[float, np.ndarray, np.ndarray]:
+def optimize_AN(
+    n: int, *, seed: int, starts: int, polish: bool = True
+) -> tuple[float, np.ndarray, np.ndarray]:
     """Multi-start L-BFGS + Newton polish for A_N = max g.  Returns (A_N, sin(phi) at optimum, b)."""
     rng = np.random.default_rng(seed)
     big_m = totient(2 * n) // 2
@@ -156,12 +158,11 @@ def optimize_AN(n: int, *, seed: int, starts: int, polish: bool = True) -> tuple
         ph = cf @ psi
         return -float(b @ np.sin(ph)), -(cf.T @ (b * np.cos(ph)))
 
-    best, bpsi = -np.inf, None
-    for _ in range(starts):
-        res = minimize(negf, rng.uniform(0, 2 * pi, big_m), jac=True, method="L-BFGS-B")
-        if -res.fun > best:
-            best, bpsi = -res.fun, res.x
-    psi = bpsi.copy()
+    runs = [
+        minimize(negf, rng.uniform(0, 2 * pi, big_m), jac=True, method="L-BFGS-B")
+        for _ in range(starts)
+    ]
+    psi = min(runs, key=lambda res: res.fun).x.copy()
     if polish:
         for _ in range(80):  # Newton: quadratic convergence to the stationary point
             ph = cf @ psi
@@ -296,9 +297,13 @@ def main() -> int:
     print("=" * 100)
 
     # ---- (1) deficit table, relation rank verified two ways (Python exact vs the m - phi(2N)/2 law) ----
-    print("\n[1] DEFICIT TABLE  (A_N is a LOWER bound from optimization => U_N - A_N is an UPPER bound)")
-    print(f"  {'N':>4} {'om':>3} {'factors':>9} {'M':>3} {'relrk':>5} {'relrk_gap':>9} "
-          f"{'U_N':>8} {'A_N':>8} {'U-A':>8} {'A/U':>6} {'excess':>8}")
+    print(
+        "\n[1] DEFICIT TABLE  (A_N is a LOWER bound from optimization => U_N - A_N is an UPPER bound)"
+    )
+    print(
+        f"  {'N':>4} {'om':>3} {'factors':>9} {'M':>3} {'relrk':>5} {'relrk_gap':>9} "
+        f"{'U_N':>8} {'A_N':>8} {'U-A':>8} {'A/U':>6} {'excess':>8}"
+    )
     rows = []
     for n in OMEGA2_NS:
         d = analyze(n)
@@ -307,12 +312,18 @@ def main() -> int:
         ok &= consistent
         rows.append(d)
         flag = "" if consistent else "  <-- RANK MISMATCH"
-        print(f"  {d['n']:>4} {2:>3} {d['factors']!s:>9} {d['M']:>3} {d['relrank']:>5} {rk_gap:>9} "
-              f"{d['U']:>8.5f} {d['A']:>8.5f} {d['defect']:>8.5f} {d['ratio']:>6.3f} {d['excess']:>+8.5f}{flag}")
-    led.append(f"relation rank = m - phi(2N)/2 verified two ways (lstsq-int C vs exact nullspace): {ok}")
+        print(
+            f"  {d['n']:>4} {2:>3} {d['factors']!s:>9} {d['M']:>3} {d['relrank']:>5} {rk_gap:>9} "
+            f"{d['U']:>8.5f} {d['A']:>8.5f} {d['defect']:>8.5f} {d['ratio']:>6.3f} {d['excess']:>+8.5f}{flag}"
+        )
+    led.append(
+        f"relation rank = m - phi(2N)/2 verified two ways (lstsq-int C vs exact nullspace): {ok}"
+    )
 
     # ---- (2) global-max sandwich for the smallest cases ------------------------------------------------
-    print("\n[2] GLOBAL-MAX CHECK  (optimizer A_N must not exceed the moment-SOS upper bound; if it equals")
+    print(
+        "\n[2] GLOBAL-MAX CHECK  (optimizer A_N must not exceed the moment-SOS upper bound; if it equals"
+    )
     print("    it to tolerance, the optimizer is at the TRUE global max -- not a local optimum)")
     sandwich_ok = True
     for n, sos in SOS_UPPER.items():
@@ -323,48 +334,74 @@ def main() -> int:
         below = a_opt <= sos + 1e-3
         matches = abs(a_opt - sos) < 2e-3
         sandwich_ok &= below and matches
-        print(f"  N={n}: A_opt={a_opt:.6f} (cross-seed spread {spread:.1e})  SOS upper={sos:.4f}  "
-              f"{'GLOBAL MAX (matches SOS)' if matches else 'BELOW SOS' if below else 'ABOVE SOS -- BUG'}")
+        print(
+            f"  N={n}: A_opt={a_opt:.6f} (cross-seed spread {spread:.1e})  SOS upper={sos:.4f}  "
+            f"{'GLOBAL MAX (matches SOS)' if matches else 'BELOW SOS' if below else 'ABOVE SOS -- BUG'}"
+        )
     ok &= sandwich_ok
-    led.append(f"optimizer A_N is the global max for N in {{15,21}} (sandwiched by moment-SOS): {sandwich_ok}")
+    led.append(
+        f"optimizer A_N is the global max for N in {{15,21}} (sandwiched by moment-SOS): {sandwich_ok}"
+    )
 
     # ---- (3) rigorous certified gap (Lipschitz grid) for the reachable case N = 15 --------------------
-    print("\n[3] CERTIFIED GAP A_N < U_N  (RIGOROUS Lipschitz-grid upper bound on A_N; no SDP solver)")
+    print(
+        "\n[3] CERTIFIED GAP A_N < U_N  (RIGOROUS Lipschitz-grid upper bound on A_N; no SDP solver)"
+    )
     cert_ok = True
     for n, cells in [(15, 64)]:
         gap, big_m = grid_certificate(n, cells)
         good = gap > 0
         cert_ok &= good
-        print(f"  N={n} M={big_m} cells={cells}: certified U_N - A_N >= {gap:.4f}  "
-              f"{'GAP CERTIFIED (A_N < U_N, rigorous)' if good else 'INCONCLUSIVE'}")
+        print(
+            f"  N={n} M={big_m} cells={cells}: certified U_N - A_N >= {gap:.4f}  "
+            f"{'GAP CERTIFIED (A_N < U_N, rigorous)' if good else 'INCONCLUSIVE'}"
+        )
     ok &= cert_ok
     led.append(f"rigorous (grid) certified gap A_N < U_N for N=15: {cert_ok}")
-    led.append("higher omega(m)=2 (N=21->M=6, N=33->M=10, ...) exceed the elementary grid (cost cells^M);")
+    led.append(
+        "higher omega(m)=2 (N=21->M=6, N=33->M=10, ...) exceed the elementary grid (cost cells^M);"
+    )
     led.append("  certified only at SDP solver tolerance -- see verify_defect_moment_sos.py.")
 
     # ---- (4) the obstruction: signed cancellation on the dependent band -------------------------------
-    print("\n[4] OBSTRUCTION  excess = prefix_deficit + dependent_net  (both grow; the SUM stays O(1))")
-    print(f"  {'N':>4} {'excess':>8} {'pre_defic':>10} {'dep_net':>9} {'dep_weight':>10} "
-          f"{'U-Lpre':>8} {'(1/pi)ln(m/phi)':>15}")
+    print(
+        "\n[4] OBSTRUCTION  excess = prefix_deficit + dependent_net  (both grow; the SUM stays O(1))"
+    )
+    print(
+        f"  {'N':>4} {'excess':>8} {'pre_defic':>10} {'dep_net':>9} {'dep_weight':>10} "
+        f"{'U-Lpre':>8} {'(1/pi)ln(m/phi)':>15}"
+    )
     excesses = []
     for d in rows:
         excesses.append(d["excess"])
         # identity check: excess == prefix_deficit + dependent_net (numerical exactness of the split)
         split = d["prefix_deficit"] + d["dependent_net"]
         assert abs(split - d["excess"]) < 1e-7, f"excess split inconsistent at N={d['n']}"
-        print(f"  {d['n']:>4} {d['excess']:>+8.4f} {d['prefix_deficit']:>+10.4f} {d['dependent_net']:>+9.4f} "
-              f"{d['dependent_weight']:>10.4f} {d['U_minus_Lpre']:>8.4f} {d['ln_m_over_phi']:>15.4f}")
+        print(
+            f"  {d['n']:>4} {d['excess']:>+8.4f} {d['prefix_deficit']:>+10.4f} {d['dependent_net']:>+9.4f} "
+            f"{d['dependent_weight']:>10.4f} {d['U_minus_Lpre']:>8.4f} {d['ln_m_over_phi']:>15.4f}"
+        )
     emin, emax = min(excesses), max(excesses)
     band_ok = emin >= 0.0 and emax <= 0.20  # the excess stays in a tight O(1) band
     ok &= band_ok
-    print(f"\n  excess band over omega(m)=2 set: [{emin:+.4f}, {emax:+.4f}]   "
-          f"(stays O(1) while U-Lpre and dependent weight grow)")
-    led.append(f"excess A_N - L_pre stays in a tight O(1) band [{emin:.3f},{emax:.3f}] (numerical): {band_ok}")
-    led.append("the excess is a near-cancellation of prefix_deficit (<0) and dependent_net (>0), each")
-    led.append("  growing with the dependent weight -> a SIGNED-cancellation statement, no modulus bound.")
+    print(
+        f"\n  excess band over omega(m)=2 set: [{emin:+.4f}, {emax:+.4f}]   "
+        f"(stays O(1) while U-Lpre and dependent weight grow)"
+    )
+    led.append(
+        f"excess A_N - L_pre stays in a tight O(1) band [{emin:.3f},{emax:.3f}] (numerical): {band_ok}"
+    )
+    led.append(
+        "the excess is a near-cancellation of prefix_deficit (<0) and dependent_net (>0), each"
+    )
+    led.append(
+        "  growing with the dependent weight -> a SIGNED-cancellation statement, no modulus bound."
+    )
 
     # ---- (5) the dependent band aligns by itself: dep_sup = dep_weight (obstruction is the trade-off) --
-    print("\n[5] DEPENDENT-BAND SUP  max_psi sum_{r>M} b_r sin phi_r  vs  dependent weight sum_{r>M} b_r")
+    print(
+        "\n[5] DEPENDENT-BAND SUP  max_psi sum_{r>M} b_r sin phi_r  vs  dependent weight sum_{r>M} b_r"
+    )
     print(f"  {'N':>4} {'dep_weight':>11} {'dep_sup':>9} {'ratio':>7}")
     dep_ok = True
     for n in OMEGA2_NS[:6]:
@@ -374,8 +411,12 @@ def main() -> int:
         dep_ok &= ratio > 0.99
         print(f"  {n:>4} {d['dependent_weight']:>11.5f} {ds:>9.5f} {ratio:>7.4f}")
     ok &= dep_ok
-    print("  -> dep_sup = dep_weight: the dependent band fully aligns ALONE; the excess is bounded by the")
-    print("     prefix TRADE-OFF, not by any single sup, so a pure Chowla/cut-norm sup bound cannot suffice.")
+    print(
+        "  -> dep_sup = dep_weight: the dependent band fully aligns ALONE; the excess is bounded by the"
+    )
+    print(
+        "     prefix TRADE-OFF, not by any single sup, so a pure Chowla/cut-norm sup bound cannot suffice."
+    )
     led.append(f"dependent-band sup equals its full weight (dep_sup/dep_weight > 0.99): {dep_ok}")
 
     # ---- honesty ledger -------------------------------------------------------------------------------
@@ -384,24 +425,38 @@ def main() -> int:
     print("=" * 100)
     print("  RIGOROUS (exact arithmetic / proof):")
     print("    * relation-lattice rank = m - phi(2N)/2; structure = chained alternating generators")
-    print("      (exact, exact/gap/excess_omega2.g): support 3 when 3|N, support 5 when 5|N & 3 not|N.")
+    print(
+        "      (exact, exact/gap/excess_omega2.g): support 3 when 3|N, support 5 when 5|N & 3 not|N."
+    )
     print("    * every omega(m)=2 case is non-saturating, A_N < U_N (mod-4 ceiling criterion).")
-    print("    * N=15: A_15 < U_15 certified with explicit gap U_15 - A_15 >= 0.0819 (Lipschitz grid).")
+    print(
+        "    * N=15: A_15 < U_15 certified with explicit gap U_15 - A_15 >= 0.0819 (Lipschitz grid)."
+    )
     print("  NUMERICAL (high-precision, not a proof):")
-    print("    * A_N values (multi-start + Newton, cross-seed stable to ~1e-9); GLOBAL max confirmed for")
+    print(
+        "    * A_N values (multi-start + Newton, cross-seed stable to ~1e-9); GLOBAL max confirmed for"
+    )
     print("      N=15,21 by the moment-SOS sandwich (SCS eps=1e-8, not rational-rounded).")
     print("    * the deficit table and the [0.05,0.10] excess band.")
     print("  OPEN:")
-    print("    * the excess lemma A_N <= L_pre + O(1) for GENERAL omega(m) = 2 (and omega(m) >= 2).")
-    print("      The obstruction is the SIGNED net of the Theta(N)-mode relation-locked dependent band:")
-    print("      a sup-side cancellation (primal McGehee-Pigno-Smith/Konyagin), no off-the-shelf theorem.")
+    print(
+        "    * the excess lemma A_N <= L_pre + O(1) for GENERAL omega(m) = 2 (and omega(m) >= 2)."
+    )
+    print(
+        "      The obstruction is the SIGNED net of the Theta(N)-mode relation-locked dependent band:"
+    )
+    print(
+        "      a sup-side cancellation (primal McGehee-Pigno-Smith/Konyagin), no off-the-shelf theorem."
+    )
     for line in led:
         print(f"    [ledger] {line}")
 
     print("\n" + "=" * 100)
-    print(f"RESULT: {'PASS' if ok else 'FAIL'}  "
-          f"(deficit table + structure reproduced; N=15 gap rigorous; general omega(m)=2 OPEN)  "
-          f"[{time.time() - t0:.1f}s]")
+    print(
+        f"RESULT: {'PASS' if ok else 'FAIL'}  "
+        f"(deficit table + structure reproduced; N=15 gap rigorous; general omega(m)=2 OPEN)  "
+        f"[{time.time() - t0:.1f}s]"
+    )
     print("=" * 100)
     return 0 if ok else 1
 

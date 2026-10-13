@@ -95,12 +95,16 @@ HONEST LEDGER.
 
 from __future__ import annotations
 
+import functools
+
 import numpy as np
 from numpy import cos, pi, sin, sqrt
 from scipy.integrate import quad
 from scipy.special import ellipe, j0
 
-H1 = 0.9580913983830018  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi), the equal-pair modulus
+print = functools.partial(print, flush=True)
+
+H1 = 0.9580913986828501  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi), the equal-pair modulus
 TAIL = sqrt(pi) / 2  # E|G| at sigma_X = sigma_Y = 0.8862269...
 K_STAR = (H1 - TAIL) / 2  # = 0.0359322; the SHARP constant of (dagger)
 
@@ -120,7 +124,9 @@ def EG(sx2: float, sy2: float) -> float:
 # --------------------------------------------------------------------------------------------------------
 # the exact excess via the Kluyver/Hankel identity (K) -- the engine for general configs
 # --------------------------------------------------------------------------------------------------------
-def excess_kluyver(ev: np.ndarray, od: np.ndarray, n_theta: int = 1500, t_max: float = 160.0) -> float:
+def excess_kluyver(
+    ev: np.ndarray, od: np.ndarray, n_theta: int = 1500, t_max: float = 160.0
+) -> float:
     """E|Z| - E|G| = int_0^inf (Mg(t) - M(t))/t^2 dt, the structure-explicit excess identity (K)."""
     sx2 = 0.5 * float(np.sum(ev**2)) if len(ev) else 0.0
     sy2 = 0.5 * float(np.sum(od**2)) if len(od) else 0.0
@@ -157,7 +163,9 @@ def ratio(ev: np.ndarray, od: np.ndarray) -> float:
 def EZ_cross(rho: float, n_phi: int = 4000) -> float:
     """E sqrt(cos^2 Phi + rho^2 cos^2 Psi) reduced over Psi to a single elliptic average over Phi:
     (2/pi) E_phi[ sqrt(cos^2 phi + rho^2) E( rho^2/(cos^2 phi + rho^2) ) ]  (cos^2 has period pi)."""
-    phi = (np.arange(n_phi) + 0.5) / n_phi * (pi / 2)  # average over [0,pi/2] by evenness/periodicity
+    phi = (
+        (np.arange(n_phi) + 0.5) / n_phi * (pi / 2)
+    )  # average over [0,pi/2] by evenness/periodicity
     A = cos(phi) ** 2
     m = rho**2 / (A + rho**2)
     return float((sqrt(A + rho**2) * ellipe(m)).mean()) * (2 / pi)
@@ -173,14 +181,12 @@ def R_cross(rho: float) -> float:
 
 # --------------------------------------------------------------------------------------------------------
 def main() -> int:
-    import functools
-
-    global print
-    print = functools.partial(print, flush=True)
     ok = True
     print("=" * 96)
     print("(dagger) extremal structure:  R(a) <= K_star, max at the equal two-copy pair")
-    print(f"  K_star = (h(1)-sqrt(pi)/2)/2 = {K_STAR:.10f}    h(1) = {H1:.10f}    sqrt(pi)/2 = {TAIL:.7f}")
+    print(
+        f"  K_star = (h(1)-sqrt(pi)/2)/2 = {K_STAR:.10f}    h(1) = {H1:.10f}    sqrt(pi)/2 = {TAIL:.7f}"
+    )
     print("=" * 96)
 
     # [R1] scale-invariance: R(lambda a) = R(a).
@@ -196,7 +202,9 @@ def main() -> int:
     print(f"     max drift = {worst_si:.1e}   {'ok' if worst_si < 1e-6 else 'FAIL'}")
 
     # [R2] same-channel splitting lowers R (exact: 2*(a/sqrt2)^4 = a^4/2, excess second order).
-    print("\n[R2] same-channel split a -> (a/sqrt2, a/sqrt2) LOWERS R  (PROVED algebra; ratio drops):")
+    print(
+        "\n[R2] same-channel split a -> (a/sqrt2, a/sqrt2) LOWERS R  (PROVED algebra; ratio drops):"
+    )
     r_pair = ratio(np.array([1.0]), np.array([1.0]))
     r_split = ratio(np.array([1 / sqrt(2), 1 / sqrt(2)]), np.array([1.0]))
     print(f"     equal pair {{1}}|{{1}}:           R/K* = {r_pair / K_STAR:.4f}")
@@ -217,46 +225,66 @@ def main() -> int:
     print(f"     => cross pair dominates: {'ok' if cross_ok else 'FAIL'}")
 
     # [R4] third copy strictly lowers R (negative curvature; R even in a3 so dR/da3=0 at 0).
-    print("\n[R4] THIRD copy strictly lowers R: R even in a3 (dR/da3=0), curvature d^2R/da3^2 < 0  (VALIDATED):")
+    print(
+        "\n[R4] THIRD copy strictly lowers R: R even in a3 (dR/da3=0), curvature d^2R/da3^2 < 0  (VALIDATED):"
+    )
     print("     coeff = (R(a3)-K_star)/a3^2 -> (1/2) d^2R/da3^2 < 0 as a3->0, in BOTH channels:")
     curv_ok = True
-    for chan, mk in (("even", lambda a3: (np.array([1.0, a3]), np.array([1.0]))),
-                     ("odd", lambda a3: (np.array([1.0]), np.array([1.0, a3])))):
+    for chan, mk in (
+        ("even", lambda a3: (np.array([1.0, a3]), np.array([1.0]))),
+        ("odd", lambda a3: (np.array([1.0]), np.array([1.0, a3]))),
+    ):
         coeffs = []
         for a3 in (0.10, 0.05, 0.03):
             ev, od = mk(a3)
             coeffs.append((ratio(ev, od) - K_STAR) / a3**2)
         curv_ok &= all(c < -1e-3 for c in coeffs)
-        print(f"     {chan:>5} 3rd copy: coeff(a3=.10,.05,.03) = "
-              f"{coeffs[0]:+.5f} {coeffs[1]:+.5f} {coeffs[2]:+.5f}   (-> ~-0.00345)")
+        print(
+            f"     {chan:>5} 3rd copy: coeff(a3=.10,.05,.03) = "
+            f"{coeffs[0]:+.5f} {coeffs[1]:+.5f} {coeffs[2]:+.5f}   (-> ~-0.00345)"
+        )
     ok &= curv_ok
-    print(f"     => third copy lowers R (negative curvature both channels): {'ok' if curv_ok else 'FAIL'}")
+    print(
+        f"     => third copy lowers R (negative curvature both channels): {'ok' if curv_ok else 'FAIL'}"
+    )
 
     # [R5] two-copy core: R(1,rho) <= K_star on a fine grid; strict local-max certificate at rho=1.
-    print("\n[R5] two-copy core  R(1,rho) <= K_star on a 1000-pt grid; max at rho=1  (VALIDATED + local cert):")
+    print(
+        "\n[R5] two-copy core  R(1,rho) <= K_star on a 1000-pt grid; max at rho=1  (VALIDATED + local cert):"
+    )
     rhos = (np.arange(1, 1001)) / 1000.0
     Rvals = np.array([R_cross(float(r)) for r in rhos])
     imax = int(np.argmax(Rvals))
     rho_argmax, R_max = float(rhos[imax]), float(Rvals[imax])
     imin = int(np.argmin(Rvals))
-    print(f"     grid max  R(1,rho) = {R_max:.8f} at rho = {rho_argmax:.3f}   (K_star = {K_STAR:.8f})")
-    print(f"     grid min  R(1,rho) = {float(Rvals[imin]):.8f} at rho = {float(rhos[imin]):.3f}   "
-          f"(R/K* dips to {float(Rvals[imin]) / K_STAR:.4f})")
+    print(
+        f"     grid max  R(1,rho) = {R_max:.8f} at rho = {rho_argmax:.3f}   (K_star = {K_STAR:.8f})"
+    )
+    print(
+        f"     grid min  R(1,rho) = {float(Rvals[imin]):.8f} at rho = {float(rhos[imin]):.3f}   "
+        f"(R/K* dips to {float(Rvals[imin]) / K_STAR:.4f})"
+    )
     # local certificate at rho=1: first/second derivative by central difference
     hh = 1e-5
     rp, rm, r0 = R_cross(1 + hh), R_cross(1 - hh), R_cross(1.0)
     d1 = (rp - rm) / (2 * hh)
     d2 = (rp - 2 * r0 + rm) / hh**2
-    print(f"     local cert at rho=1:  R'(1) = {d1:+.2e} (~0, critical),  R''(1) = {d2:+.5f} (<0, max)")
+    print(
+        f"     local cert at rho=1:  R'(1) = {d1:+.2e} (~0, critical),  R''(1) = {d2:+.5f} (<0, max)"
+    )
     grid_ok = R_max <= K_STAR + 1e-6 and abs(d1) < 1e-3 and d2 < 0
     ok &= grid_ok
-    print(f"     => R(1,rho) <= K_star with strict local max at rho=1: {'ok' if grid_ok else 'FAIL'}")
+    print(
+        f"     => R(1,rho) <= K_star with strict local max at rho=1: {'ok' if grid_ok else 'FAIL'}"
+    )
 
     # [G] GLOBALITY.  The bound is for the PROFILE's configs: the live set L(s)={l:|u+l|<s} is an interval
     # of CONSECUTIVE integers, so the even/odd channel counts differ by at most 1 (BALANCED).  Over balanced
     # configs the equal pair is the max.  The UNRESTRICTED bound is FALSE -- an imbalanced 1-even+5-odd config
     # exceeds K_star -- which is exactly why the restriction to the profile's balanced configs is essential.
-    print("\n[G] globality on BALANCED configs (|#even-#odd|<=1, the profile structure)  (VALIDATED):")
+    print(
+        "\n[G] globality on BALANCED configs (|#even-#odd|<=1, the profile structure)  (VALIDATED):"
+    )
     rng = np.random.default_rng(20260612)
     worst, worst_desc, n_done = 0.0, "", 0
     while n_done < 700:
@@ -274,26 +302,37 @@ def main() -> int:
     r_imbal = ratio(np.array([1.0]), np.full(5, 0.6)) / K_STAR  # imbalanced -- NOT a profile config
     print(f"     equal cross pair {{1}}|{{1}}:               R/K* = {r_eq:.4f}")
     print(f"     worst over {n_done} BALANCED configs:        R/K* = {worst:.4f}   ({worst_desc})")
-    print(f"     imbalanced 1-even+5-odd(.6) [not a profile config]:  R/K* = {r_imbal:.4f}  -- "
-          f"unrestricted bound FALSE")
+    print(
+        f"     imbalanced 1-even+5-odd(.6) [not a profile config]:  R/K* = {r_imbal:.4f}  -- "
+        f"unrestricted bound FALSE"
+    )
     glob_ok = worst <= 1.005 and r_imbal > 1.0
     ok &= glob_ok
-    print(f"     => balanced (profile) bound holds, max at the pair; the unrestricted bound fails as "
-          f"expected: {'ok' if glob_ok else 'FAIL'}")
+    print(
+        f"     => balanced (profile) bound holds, max at the pair; the unrestricted bound fails as "
+        f"expected: {'ok' if glob_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 96)
-    print("RESULT:", (
-        "PASS -- among the profile's BALANCED Debye configs (|#even-#odd|<=1) the equal two-copy pair\n"
-        "        maximizes R, with R=K_star; scale-invariance, same-channel splitting, and the third-copy/\n"
-        "        rho-direction negative curvatures hold, and the two-copy core R(1,rho)<=K_star is certified\n"
-        "        with a strict local max at rho=1.  The UNRESTRICTED bound is FALSE (an imbalanced 1-even+\n"
-        "        5-odd config exceeds K_star by ~9%); the live set being consecutive integers excludes it.\n"
-        "        Residual: the balanced two-copy/elliptic bound + ruling out non-pair balanced critical points."
-    ) if ok else "FAIL")
-    print("Rigor: PROVED = scale-invariance, Kluyver identity + t^4 onset, same-channel split, equal pair is a\n"
-          "       balanced critical point with negative curvature in the tested directions.  VALIDATED (not\n"
-          "       proved): cross>same, third-copy-lowers, the two-copy bound, and the BALANCED-config\n"
-          "       globality -- the unrestricted bound is FALSE, hence the essential balancing restriction.")
+    print(
+        "RESULT:",
+        (
+            "PASS -- among the profile's BALANCED Debye configs (|#even-#odd|<=1) the equal two-copy pair\n"
+            "        maximizes R, with R=K_star; scale-invariance, same-channel splitting, and the third-copy/\n"
+            "        rho-direction negative curvatures hold, and the two-copy core R(1,rho)<=K_star is certified\n"
+            "        with a strict local max at rho=1.  The UNRESTRICTED bound is FALSE (an imbalanced 1-even+\n"
+            "        5-odd config exceeds K_star by ~9%); the live set being consecutive integers excludes it.\n"
+            "        Residual: the balanced two-copy/elliptic bound + ruling out non-pair balanced critical points."
+        )
+        if ok
+        else "FAIL",
+    )
+    print(
+        "Rigor: PROVED = scale-invariance, Kluyver identity + t^4 onset, same-channel split, equal pair is a\n"
+        "       balanced critical point with negative curvature in the tested directions.  VALIDATED (not\n"
+        "       proved): cross>same, third-copy-lowers, the two-copy bound, and the BALANCED-config\n"
+        "       globality -- the unrestricted bound is FALSE, hence the essential balancing restriction."
+    )
     return 0 if ok else 1
 
 

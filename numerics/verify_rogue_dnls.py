@@ -48,8 +48,8 @@ def nls_residual(dx: float, dt: float) -> float:
 
 def dnls_step(z: np.ndarray, dt: float, gamma: float, lam: np.ndarray) -> np.ndarray:
     """One split-step Fourier step of i z' = -L_N z + gamma|z|^2 z on the ring."""
-    z = z * np.exp(-1j * gamma * np.abs(z) ** 2 * dt)          # nonlinear half-ish (full here)
-    z = np.fft.ifft(np.exp(1j * lam * dt) * np.fft.fft(z))     # linear part exp(i t L_N) (L_N psd)
+    z = z * np.exp(-1j * gamma * np.abs(z) ** 2 * dt)  # nonlinear half-ish (full here)
+    z = np.fft.ifft(np.exp(1j * lam * dt) * np.fft.fft(z))  # linear part exp(i t L_N) (L_N psd)
     return z
 
 
@@ -67,7 +67,9 @@ def main() -> int:
     a_ok = r2 < r1 and r2 < 5e-3 and abs(peak - 3.0) < 1e-9
     ok &= a_ok
     print(f"    residual: dx=0.02 -> {r1:.2e},  dx=0.01 -> {r2:.2e}  (decreasing)")
-    print(f"    peak |psi(0,0)| = {peak:.4f}  (rogue factor 3 over background 1)  {'OK' if a_ok else 'FAIL'}")
+    print(
+        f"    peak |psi(0,0)| = {peak:.4f}  (rogue factor 3 over background 1)  {'OK' if a_ok else 'FAIL'}"
+    )
 
     # (B) modulational instability rate sigma(kappa)=sqrt(lam_k (2 gamma A^2 - lam_k))
     print("\n(B) Modulational instability: sigma(kappa)=sqrt(lam_k (2 gamma A^2 - lam_k))")
@@ -94,8 +96,10 @@ def main() -> int:
         b_ok &= rel < 0.05
         print(f"    {kmode:>6} {slope:>10.4f} {sigma:>13.4f} {rel:>9.1%}")
     ok &= b_ok
-    print(f"    -> matches dispersion relation; max rate sigma_max=gamma A^2={gamma * ampl**2:.2f} at "
-          f"lam_k=gamma A^2 (peak mode saturates into an Akhmediev breather).")
+    print(
+        f"    -> matches dispersion relation; max rate sigma_max=gamma A^2={gamma * ampl**2:.2f} at "
+        f"lam_k=gamma A^2 (peak mode saturates into an Akhmediev breather)."
+    )
     print(f"    -> verified: {'OK' if b_ok else 'FAIL'}")
 
     # (C) DNLS on the ring: rogue spikes and a heavy-tailed (leptokurtic) amplitude histogram
@@ -118,14 +122,22 @@ def main() -> int:
     c_ok = peak > 2.2 * rms and kurt > 3.0
     ok &= c_ok
     print(f"    max amplitude / rms = {peak / rms:.2f}  (rogue if > ~2.2)")
-    print(f"    amplitude kurtosis = {kurt:.2f}  (Gaussian 3; LEPTOkurtic => heavy tails) "
-          f"{'OK' if c_ok else 'FAIL'}")
-    print("    contrast: the LINEAR large wave is platykurtic (kurt~2.4); nonlinearity makes it heavy-tailed.")
+    print(
+        f"    amplitude kurtosis = {kurt:.2f}  (Gaussian 3; LEPTOkurtic => heavy tails) "
+        f"{'OK' if c_ok else 'FAIL'}"
+    )
+    print(
+        "    contrast: the LINEAR large wave is platykurtic (kurt~2.4); nonlinearity makes it heavy-tailed."
+    )
 
     print("\n" + "=" * 74)
     print("RESULT:", "ROGUE / DNLS VERIFIED" if ok else "CHECK (B is approximate)")
-    print("Rogue waves are the nonlinear (focusing-NLS / DNLS) extension: linear part = L_N, continuum")
-    print("limit = focusing NLS. Peregrine factor 3, Benjamin-Feir instability, heavy-tailed spikes.")
+    print(
+        "Rogue waves are the nonlinear (focusing-NLS / DNLS) extension: linear part = L_N, continuum"
+    )
+    print(
+        "limit = focusing NLS. Peregrine factor 3, Benjamin-Feir instability, heavy-tailed spikes."
+    )
     print("=" * 74)
     return 0 if ok else 1
 

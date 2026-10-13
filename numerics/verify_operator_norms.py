@@ -32,8 +32,8 @@ def green(n: int, t: float) -> np.ndarray:
 
 def exact_norms(n: int) -> tuple[float, float, float]:
     """(ell2->ell2, ell2->ellinf, ell1->ellinf) suprema over t, closed forms."""
-    n22 = 1.0 / (2.0 * np.sin(np.pi / n))            # max_r 1/omega_r
-    n2inf = np.sqrt((n * n - 1) / (12 * n))          # sqrt(zeta(1)/N)
+    n22 = 1.0 / (2.0 * np.sin(np.pi / n))  # max_r 1/omega_r
+    n2inf = np.sqrt((n * n - 1) / (12 * n))  # sqrt(zeta(1)/N)
     n1inf = float(np.sum(1.0 / np.sin(np.pi * np.arange(1, n) / n)) / (2 * n))  # U_N
     return n22, n2inf, n1inf
 
@@ -66,16 +66,18 @@ def main() -> int:
             s1i = max(s1i, float(np.max(np.abs(g))))
         good = s22 <= e22 + 1e-9 and s2i <= e2i + 1e-9 and s1i <= e1i + 1e-9
         ok &= good
-        print(f"  {n:>5} {f'{s22:.3f}<={e22:.3f}':>16} {f'{s2i:.3f}<={e2i:.3f}':>17} "
-              f"{f'{s1i:.3f}<={e1i:.3f}':>15}  {'OK' if good else 'FAIL'}")
+        print(
+            f"  {n:>5} {f'{s22:.3f}<={e22:.3f}':>16} {f'{s2i:.3f}<={e2i:.3f}':>17} "
+            f"{f'{s1i:.3f}<={e1i:.3f}':>15}  {'OK' if good else 'FAIL'}"
+        )
 
     # (B) growth rates: N, sqrt(N), ln(N)
     print("\n(B) growth of the three suprema (closed forms)")
     ns = np.array([16, 32, 64, 128, 256, 512, 1024])
     e = np.array([exact_norms(int(n)) for n in ns])
-    a22, r22 = loglog(ns.astype(float), e[:, 0])              # linear in N
-    a2i, r2i = loglog(np.sqrt(ns), e[:, 1])                   # linear in sqrt N
-    a1i, r1i = loglog(np.log(ns), e[:, 2])                    # linear in ln N
+    a22, r22 = loglog(ns.astype(float), e[:, 0])  # linear in N
+    a2i, r2i = loglog(np.sqrt(ns), e[:, 1])  # linear in sqrt N
+    a1i, r1i = loglog(np.log(ns), e[:, 2])  # linear in ln N
     print(f"  ell2->ell2 ~ a*N      : a={a22:.4f} (1/2pi={1 / (2 * np.pi):.4f})  R^2={r22:.4f}")
     print(f"  ell2->ellinf ~ a*sqrtN: a={a2i:.4f} (1/sqrt12={1 / np.sqrt(12):.4f})  R^2={r2i:.4f}")
     print(f"  ell1->ellinf ~ a*lnN  : a={a1i:.4f} (1/pi={1 / np.pi:.4f})  R^2={r1i:.4f}")
@@ -85,7 +87,9 @@ def main() -> int:
     print("\n" + "=" * 78)
     print("RESULT:", "HIERARCHY VERIFIED" if ok else "CHECK FAILED")
     print("The large wave is the ell^1->ell^inf corner (ln N); the energy norm gives sqrt(N)")
-    print("(variational Theorem 1) and the spectral norm gives N. One propagator, three growth laws.")
+    print(
+        "(variational Theorem 1) and the spectral norm gives N. One propagator, three growth laws."
+    )
     print("=" * 78)
     return 0 if ok else 1
 

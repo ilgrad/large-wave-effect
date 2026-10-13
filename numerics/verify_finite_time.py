@@ -48,7 +48,9 @@ def t_eps(n: int, eps: float, t_max: float, dt: float = 0.02) -> float:
 
 def main() -> int:
     print("=" * 78)
-    print("Finite-time large wave: ceiling U_N ~ (1/pi) ln N reached only on Diophantine time scales")
+    print(
+        "Finite-time large wave: ceiling U_N ~ (1/pi) ln N reached only on Diophantine time scales"
+    )
     print("=" * 78)
     ok = True
 
@@ -74,8 +76,12 @@ def main() -> int:
         slope = np.polyfit(ns, lts, 1)[0]
         grows = slope > 0.1
         ok &= grows
-        print(f"    -> log T_0.20 grows ~ {slope:.2f} per unit N over N>=11 (super-polynomial): {'OK' if grows else 'FAIL'}")
-        print("       quantified law T_eps ~ eps^(-a m), a~0.32, over N<=71: verify_finite_time_lower_bound.py")
+        print(
+            f"    -> log T_0.20 grows ~ {slope:.2f} per unit N over N>=11 (super-polynomial): {'OK' if grows else 'FAIL'}"
+        )
+        print(
+            "       quantified law T_eps ~ eps^(-a m), a~0.32, over N<=71: verify_finite_time_lower_bound.py"
+        )
 
     print("\n(B) At a FIXED horizon T the finite-time amplitude saturates below the ceiling")
     print(f"    {'N':>4} {'U_N':>7} {'A_N(T=300)':>11} {'A_N(2e4)':>9} {'ratio@300':>10}")
@@ -90,7 +96,9 @@ def main() -> int:
     drops = sat[-1] < sat[0]
     ok &= drops
     print(f"    -> at fixed T=300, A_N(T)/U_N DECREASES with N ({sat[0]:.3f} -> {sat[-1]:.3f}):")
-    print(f"       more frequencies are harder to align in bounded time: {'OK' if drops else 'FAIL'}")
+    print(
+        f"       more frequencies are harder to align in bounded time: {'OK' if drops else 'FAIL'}"
+    )
 
     print("\n(C) Physical reading")
     print("    Infinite-time amplification:  A_N = U_N ~ (1/pi) ln N (grows without bound).")

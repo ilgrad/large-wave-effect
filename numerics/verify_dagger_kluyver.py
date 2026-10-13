@@ -86,6 +86,7 @@ WHAT IS PROVED, WHAT IS NOT (the honest ledger -- consistent with the two siblin
 
 from __future__ import annotations
 
+import functools
 import warnings
 
 import mpmath as mp
@@ -94,7 +95,9 @@ from numpy import cos, pi, sin, sqrt
 from scipy.integrate import IntegrationWarning, quad
 from scipy.special import ellipe, i0, j0
 
-H1 = 0.9580913983830018  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi), the equal-pair modulus
+print = functools.partial(print, flush=True)
+
+H1 = 0.9580913986828501  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi), the equal-pair modulus
 TAIL = sqrt(pi) / 2  # E|G| at sigma_X = sigma_Y = 0.8862269...
 K_STAR = (H1 - TAIL) / 2  # = 0.0359322; the SHARP constant of (dagger)
 J01 = 2.4048255576957727686  # j_{0,1}, first positive zero of J0
@@ -219,10 +222,6 @@ def R_cross(rho: float) -> float:
 
 # --------------------------------------------------------------------------------------------------------
 def main() -> int:
-    import functools
-
-    global print
-    print = functools.partial(print, flush=True)
     ok = True
     print("=" * 100)
     print(

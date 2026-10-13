@@ -282,7 +282,10 @@ class Geometry:
 def _dyadic(x: arb, bits: int = 64) -> arb:
     """A dyadic point close to the midpoint of x (exact binary, radius 0)."""
     scale = arb(2) ** bits
-    return arb(int((x.mid() * scale).floor().unique_fmpz())) / scale
+    n = (x.mid() * scale).floor().unique_fmpz()
+    if n is None:
+        raise ArithmeticError(f"the midpoint of {x} times 2^{bits} has no exact floor")
+    return arb(int(n)) / scale
 
 
 def box_geometry(a1c: str, a3c: str, h: str) -> Geometry:
@@ -321,7 +324,7 @@ def _panel_bound(alpha: arb, beta: arb, m: int, A: arb, kap: arb) -> arb:
     """L5 + L6: an upper bound on |int_alpha^beta F - GL_m| valid for every amplitude in the rectangle."""
     w = (beta - alpha) / 2
     c = (alpha + beta) / 2
-    best = None
+    bounds: list[arb] = []
     for rs in _RHO_MENU:
         rho = arb(rs)
         ae = w * (rho + 1 / rho) / 2
@@ -335,8 +338,8 @@ def _panel_bound(alpha: arb, beta: arb, m: int, A: arb, kap: arb) -> arb:
             Mdir = (gauss + (be * A).exp()) / (xmin * xmin)
             M = M.min(Mdir)
         bound = w * arb(64) / 15 * M * rho ** (2 - 2 * m) / (rho * rho - 1)
-        best = _up(bound) if best is None else best.min(_up(bound))
-    return best
+        bounds.append(_up(bound))
+    return functools.reduce(arb.min, bounds)
 
 
 def _theta_plan(t: arb, A: arb, tol: float, nmin: int) -> tuple[int, arb]:
@@ -646,23 +649,20 @@ def _higher(c: dict[tuple[int, int], arb], Hx: arb, Hy: arb) -> arb:
 def poly_sup(c: dict[tuple[int, int], arb], Hx: arb, Hy: arb, depth: int) -> tuple[arb, arb, arb]:
     """Upper bound of sup over the rectangle of the polynomial c; returns (bound, quadratic-part bound,
     higher-order bound) of the best level (the whole rectangle, or 4^d recentred sub-rectangles)."""
-    best = None
+    levels = []
     for d in range(depth + 1):
         k = 2**d
         hx, hy = Hx / k, Hy / k
-        level, qmax, hmax = None, None, None
+        cells = []
         for ix in range(k):
             for iy in range(k):
                 x0 = -Hx + hx * (2 * ix + 1)
                 y0 = -Hy + hy * (2 * iy + 1)
                 cc = c if d == 0 else _shift(c, x0, y0)
                 qv, hv = _sup_quad_rect(cc, hx, hy), _higher(cc, hx, hy)
-                v = _up(qv + hv)
-                if level is None or v > level:
-                    level, qmax, hmax = v, qv, hv
-        if best is None or level < best[0]:
-            best = (level, qmax, hmax)
-    return best
+                cells.append((_up(qv + hv), qv, hv))
+        levels.append(max(cells, key=lambda cell: cell[0]))
+    return min(levels, key=lambda level: level[0])
 
 
 # ==========================================================================================================

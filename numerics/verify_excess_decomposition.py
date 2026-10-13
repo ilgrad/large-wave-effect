@@ -15,6 +15,7 @@ these (comb generators of support>3 + shared prefix phases couple the relations)
 CRUX (honest): excess/(U-Lpre) ~ 0.33 along primorials (omega=2,3,4); U-Lpre ~ (1/pi)ln(m/phi(m)) ~ lnlnln N
 is ~flat, so O(1) vs Theta(lnlnln N) is numerically UNDECIDABLE -- the lemma's form needs proof, not numerics.
 """
+
 from __future__ import annotations
 
 import sys
@@ -33,8 +34,11 @@ def g_triplet(a: float, b: float, c: float, starts: int = 20) -> float:
     rng = np.random.default_rng(0)
     best = -np.inf
     for _ in range(starts):
-        r = minimize(lambda x: -(c * np.sin(x[0] + x[1]) - a * (1 - np.sin(x[0])) - b * (1 - np.sin(x[1]))),
-                     rng.uniform(0, 2 * pi, 2), method="L-BFGS-B")
+        r = minimize(
+            lambda x: -(c * np.sin(x[0] + x[1]) - a * (1 - np.sin(x[0])) - b * (1 - np.sin(x[1]))),
+            rng.uniform(0, 2 * pi, 2),
+            method="L-BFGS-B",
+        )
         best = max(best, -r.fun)
     return best
 
@@ -66,8 +70,11 @@ def main() -> int:
         c = integer_coord_matrix(n)
         m, big_m = n // 2, totient(2 * n) // 2
         _u, b, _o = weights(n)
-        trip = [(big_m + i, *np.where(row != 0)[0]) for i, row in enumerate(c[big_m:m])
-                if (row != 0).sum() == 2 and list(row[row != 0]) == [1, 1]]
+        trip = [
+            (big_m + i, *np.where(row != 0)[0])
+            for i, row in enumerate(c[big_m:m])
+            if (row != 0).sum() == 2 and list(row[row != 0]) == [1, 1]
+        ]
         idmax = max((abs((1 / b[a] + 1 / b[bb]) - 1 / b[ci]) for ci, a, bb in trip), default=0.0)
         ratios = [g_triplet(b[a], b[bb], b[ci]) / (b[ci] / 2) for ci, a, bb in trip]
         rmax = max(ratios, default=0.0)
@@ -77,18 +84,25 @@ def main() -> int:
     ok &= id_ok and bound_ok
 
     # (3) the crux: excess/(U-Lpre) along primorials (numerically undecidable O(1) vs Theta(lnlnln N))
-    print("\n[3] CRUX  excess/(U-Lpre)  along primorials  (ratio ~0.33; lnlnln-flat => form needs PROOF)")
+    print(
+        "\n[3] CRUX  excess/(U-Lpre)  along primorials  (ratio ~0.33; lnlnln-flat => form needs PROOF)"
+    )
     print(f"    {'N':>5} {'omega':>5} {'M':>5} {'excess':>8} {'U-Lpre':>8} {'ratio':>7}")
     for n in [15, 105, 1155]:
         starts = 150 if n <= 1155 else 40
         a_n, _sv, bb = optimize_AN(n, seed=0, starts=starts)
         big_m = totient(2 * n) // 2
         u, lp = float(bb.sum()), float(bb[:big_m].sum())
-        print(f"    {n:>5} {omega_count(n):>5} {big_m:>5} {a_n - lp:>8.4f} {u - lp:>8.4f} {(a_n - lp) / (u - lp):>7.4f}")
+        print(
+            f"    {n:>5} {omega_count(n):>5} {big_m:>5} {a_n - lp:>8.4f} {u - lp:>8.4f} {(a_n - lp) / (u - lp):>7.4f}"
+        )
 
     print("\n" + "=" * 88)
-    print("RESULT:", "LEMMA VERIFIED (per-relation bound; full excess open)" if ok else "CHECK FAILED",
-          f"[{time.time() - t0:.0f}s]")
+    print(
+        "RESULT:",
+        "LEMMA VERIFIED (per-relation bound; full excess open)" if ok else "CHECK FAILED",
+        f"[{time.time() - t0:.0f}s]",
+    )
     print("=" * 88)
     return 0 if ok else 1
 

@@ -38,6 +38,7 @@ certificate source; numerics/verify_dagger_rigorous.py re-checks them and the ba
 from __future__ import annotations
 
 import argparse
+import functools
 import importlib.util
 import json
 import math
@@ -71,12 +72,13 @@ FAR_SLICES = [
 ]
 TAIL_SEGS = [(24.0, 60.0, 16, 2400), (60.0, 200.0, 12, 6000)]
 T_TAIL, TAIL_FAR = 24.0, 200.0
-_CERT = None
 _NODES: dict[tuple[float, float], tuple] = {}
 
 
 def _load():
     spec = importlib.util.spec_from_file_location("dagger_cert", CERTP)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load {CERTP}")
     m = importlib.util.module_from_spec(spec)
     sys.modules["dagger_cert"] = m
     spec.loader.exec_module(m)
@@ -86,14 +88,18 @@ def _load():
     return m
 
 
+@functools.cache
+def _worker_cert():
+    return _load()
+
+
 def _init():
-    global _CERT
-    _CERT = _load()
+    _worker_cert()
 
 
 def eval_node(coord):
     a1, a3 = coord
-    cert = _CERT
+    cert = _worker_cert()
     b = cert.b_of(a1, a3)
     nb, nt, ordr = HEAD_RES
     hv = cert.head_majorant_point(a1, a3, b, cert.T1, nb, nt, ordr)
@@ -216,24 +222,28 @@ def uncovered_cells(cert, rows, origin=0.535):
 
 def _load_rigorous():
     spec = importlib.util.spec_from_file_location("dagger_rigorous", CERT_RIG)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load {CERT_RIG}")
     m = importlib.util.module_from_spec(spec)
     sys.modules["dagger_rigorous"] = m
     spec.loader.exec_module(m)
     return m
 
 
-_RIG = None
+@functools.cache
+def _worker_rigorous():
+    m = _load_rigorous()
+    m.kstar_enclosure()
+    return m
 
 
 def _init_rigorous():
-    global _RIG
-    _RIG = _load_rigorous()
-    _RIG.kstar_enclosure()
+    _worker_rigorous()
 
 
 def certify_rigorous(task):
     (a1, a3, h), depth = task
-    rec = _RIG.certify_box(a1, a3, h)
+    rec = _worker_rigorous().certify_box(a1, a3, h)
     rec["depth"] = depth
     return rec
 

@@ -49,12 +49,18 @@ def efficiency(omega: np.ndarray, c: np.ndarray, t_max: float, dt: float = 0.05)
 def main() -> int:
     rng = np.random.default_rng(0)
     print("=" * 80)
-    print("Disorder breaks resonances: composite N reaches its ceiling over long (not short) horizons")
+    print(
+        "Disorder breaks resonances: composite N reaches its ceiling over long (not short) horizons"
+    )
     print("=" * 80)
     ok = True
 
-    print("\n(A) The exact resonance residual jumps 0 -> O(eps): obstruction destroyed by any disorder (N=12)")
-    print("    C_12 carries the exact relation 2 omega_2 - omega_6 = 0 (modes lambda=1 and lambda=4);")
+    print(
+        "\n(A) The exact resonance residual jumps 0 -> O(eps): obstruction destroyed by any disorder (N=12)"
+    )
+    print(
+        "    C_12 carries the exact relation 2 omega_2 - omega_6 = 0 (modes lambda=1 and lambda=4);"
+    )
     print("    residual = |2 f1 - f2|, f1 = freq nearest 1, f2 = freq nearest 2")
 
     def residual(om: np.ndarray) -> float:
@@ -67,18 +73,35 @@ def main() -> int:
     print(f"    {0.0:>7.2f} {res0:>26.2e}")
     prev, mono = res0, True
     for eps in (0.02, 0.05, 0.10, 0.20):
-        mr = float(np.mean([residual(modal_response(12, 1.0 + eps * rng.uniform(-1, 1, 12))[0]) for _ in range(20)]))
+        mr = float(
+            np.mean(
+                [
+                    residual(modal_response(12, 1.0 + eps * rng.uniform(-1, 1, 12))[0])
+                    for _ in range(20)
+                ]
+            )
+        )
         mono &= mr > prev
         prev = mr
         print(f"    {eps:>7.2f} {mr:>26.2e}")
     ok &= mono and res0 < 1e-9
-    print(f"    -> residual is 0 when ordered and grows ~linearly with eps: {'OK' if mono and res0 < 1e-9 else 'FAIL'}")
+    print(
+        f"    -> residual is 0 when ordered and grows ~linearly with eps: {'OK' if mono and res0 < 1e-9 else 'FAIL'}"
+    )
 
-    print("\n(A') the eigenvalue map xi -> (lambda_r) is a SUBMERSION: Jacobian d(lambda_r)/dm_j = -lambda_r")
-    print("     v_r(j)^2 has full row rank N-1 at generic masses, so each relation F_k = sum k_r omega_r is")
-    print("     NOT identically zero (the 'nontrivial analytic condition' step of generic independence)")
+    print(
+        "\n(A') the eigenvalue map xi -> (lambda_r) is a SUBMERSION: Jacobian d(lambda_r)/dm_j = -lambda_r"
+    )
+    print(
+        "     v_r(j)^2 has full row rank N-1 at generic masses, so each relation F_k = sum k_r omega_r is"
+    )
+    print(
+        "     NOT identically zero (the 'nontrivial analytic condition' step of generic independence)"
+    )
     print(f"    {'N':>4} {'nonzero modes':>14} {'Jacobian rank':>14}")
-    aux = np.random.default_rng(2024)  # dedicated stream: keep the validated (B)/(C) draws untouched
+    aux = np.random.default_rng(
+        2024
+    )  # dedicated stream: keep the validated (B)/(C) draws untouched
     jac_ok = True
     for n in (5, 6, 8, 9, 12):
         rk, modes = 0, 0
@@ -95,11 +118,17 @@ def main() -> int:
         jac_ok &= rk == modes
         print(f"    {n:>4} {modes:>14} {rk:>14}  ({'FULL' if rk == modes else 'deficient'})")
     ok &= jac_ok
-    print(f"    -> submersion at generic masses => F_k != 0, so {{F_k=0}} is measure zero (countable union "
-          f"too): {'OK' if jac_ok else 'FAIL'}")
+    print(
+        f"    -> submersion at generic masses => F_k != 0, so {{F_k=0}} is measure zero (countable union "
+        f"too): {'OK' if jac_ok else 'FAIL'}"
+    )
 
-    print("\n(A'') finite-horizon continuity (Lemma disorder-finiteT): sup_{t<=T}|x0^eps - x0^0| <= C_N(1+T)eps")
-    print("      so a gain needs T >~ 1/eps, NOT exp(cT). Fixed direction xi, N=15; the ratio D/(eps(1+T))")
+    print(
+        "\n(A'') finite-horizon continuity (Lemma disorder-finiteT): sup_{t<=T}|x0^eps - x0^0| <= C_N(1+T)eps"
+    )
+    print(
+        "      so a gain needs T >~ 1/eps, NOT exp(cT). Fixed direction xi, N=15; the ratio D/(eps(1+T))"
+    )
     print("      must stay bounded and NOT grow with T (exponential sensitivity would blow it up)")
     xi = aux.uniform(-1, 1, 15)
     om0, c0 = modal_response(15, np.ones(15))
@@ -110,43 +139,85 @@ def main() -> int:
         ratios = []
         for tmax in (50.0, 300.0, 1000.0):
             t = np.arange(0.0, tmax, 0.05)
-            d = float(np.max(np.abs((np.sin(np.outer(t, om)) * c).sum(axis=1)
-                                    - (np.sin(np.outer(t, om0)) * c0).sum(axis=1))))
+            d = float(
+                np.max(
+                    np.abs(
+                        (np.sin(np.outer(t, om)) * c).sum(axis=1)
+                        - (np.sin(np.outer(t, om0)) * c0).sum(axis=1)
+                    )
+                )
+            )
             ratios.append(d / (eps * (1.0 + tmax)))
             print(f"    {eps:>6.2f} {tmax:>7.0f} {d:>12.4f} {ratios[-1]:>14.4f}")
         lip_ok &= ratios[-1] <= ratios[0] + 1e-9  # bounded/decreasing in T == no exp(cT) blow-up
     ok &= lip_ok
-    print(f"    -> D/(eps(1+T)) does not grow with T (the (1+T)eps law, not exponential): "
-          f"{'OK' if lip_ok else 'FAIL'}")
+    print(
+        f"    -> D/(eps(1+T)) does not grow with T (the (1+T)eps law, not exponential): "
+        f"{'OK' if lip_ok else 'FAIL'}"
+    )
 
-    print("\n(B) Long horizon (T=3e4): disorder lifts efficiency A/C above the blocked ordered value")
+    print(
+        "\n(B) Long horizon (T=3e4): disorder lifts efficiency A/C above the blocked ordered value"
+    )
     print(f"    {'N':>4} {'ordered A/C':>12} {'disordered A/C (eps=0.4, mean 8)':>34}")
     for n in (9, 12, 15):
         eff_ord = efficiency(*modal_response(n, np.ones(n)), 30000.0)
-        eff_dis = float(np.mean([efficiency(*modal_response(n, 1.0 + 0.4 * rng.uniform(-1, 1, n)), 30000.0)
-                                 for _ in range(8)]))
+        eff_dis = float(
+            np.mean(
+                [
+                    efficiency(*modal_response(n, 1.0 + 0.4 * rng.uniform(-1, 1, n)), 30000.0)
+                    for _ in range(8)
+                ]
+            )
+        )
         gain = eff_dis > eff_ord + 0.02
         ok &= gain
         print(f"    {n:>4} {eff_ord:>12.4f} {eff_dis:>28.4f}      ({'OK' if gain else 'FAIL'})")
-    print("    -> generic masses raise the achievable amplitude toward the full incoherent ceiling: OK")
+    print(
+        "    -> generic masses raise the achievable amplitude toward the full incoherent ceiling: OK"
+    )
 
-    print("\n(C) Short horizon (T=300): the same disorder gives NO gain -- the cost is recurrence time (N=15)")
+    print(
+        "\n(C) Short horizon (T=300): the same disorder gives NO gain -- the cost is recurrence time (N=15)"
+    )
     eff_ord_s = efficiency(*modal_response(15, np.ones(15)), 300.0)
-    eff_dis_s = float(np.mean([efficiency(*modal_response(15, 1.0 + 0.4 * rng.uniform(-1, 1, 15)), 300.0)
-                               for _ in range(8)]))
+    eff_dis_s = float(
+        np.mean(
+            [
+                efficiency(*modal_response(15, 1.0 + 0.4 * rng.uniform(-1, 1, 15)), 300.0)
+                for _ in range(8)
+            ]
+        )
+    )
     eff_ord_l = efficiency(*modal_response(15, np.ones(15)), 30000.0)
-    eff_dis_l = float(np.mean([efficiency(*modal_response(15, 1.0 + 0.4 * rng.uniform(-1, 1, 15)), 30000.0)
-                               for _ in range(8)]))
+    eff_dis_l = float(
+        np.mean(
+            [
+                efficiency(*modal_response(15, 1.0 + 0.4 * rng.uniform(-1, 1, 15)), 30000.0)
+                for _ in range(8)
+            ]
+        )
+    )
     no_short_gain = eff_dis_s <= eff_ord_s + 0.02
     yes_long_gain = eff_dis_l > eff_ord_l + 0.02
     ok &= no_short_gain and yes_long_gain
-    print(f"    short T=300:  ordered {eff_ord_s:.4f}  vs disordered {eff_dis_s:.4f}  (gain {eff_dis_s - eff_ord_s:+.4f})")
-    print(f"    long  T=3e4:  ordered {eff_ord_l:.4f}  vs disordered {eff_dis_l:.4f}  (gain {eff_dis_l - eff_ord_l:+.4f})")
-    print(f"    -> the disorder advantage exists only at long T (recurrence cost): "
-          f"{'OK' if no_short_gain and yes_long_gain else 'FAIL'}")
+    print(
+        f"    short T=300:  ordered {eff_ord_s:.4f}  vs disordered {eff_dis_s:.4f}  (gain {eff_dis_s - eff_ord_s:+.4f})"
+    )
+    print(
+        f"    long  T=3e4:  ordered {eff_ord_l:.4f}  vs disordered {eff_dis_l:.4f}  (gain {eff_dis_l - eff_ord_l:+.4f})"
+    )
+    print(
+        f"    -> the disorder advantage exists only at long T (recurrence cost): "
+        f"{'OK' if no_short_gain and yes_long_gain else 'FAIL'}"
+    )
 
-    print("\n(D) Physical reading: an infinitesimal perturbation makes the absolute ceiling attainable in")
-    print("    principle, yet only over Diophantine-long time. The clean arithmetic of prime / 2^m N is")
+    print(
+        "\n(D) Physical reading: an infinitesimal perturbation makes the absolute ceiling attainable in"
+    )
+    print(
+        "    principle, yet only over Diophantine-long time. The clean arithmetic of prime / 2^m N is"
+    )
     print("    what makes a large wave reachable QUICKLY -- the engineering-relevant statement.")
 
     print("\n" + "=" * 80)

@@ -94,13 +94,25 @@ def criterion_saturates(n: int, j: int, phi: list[int]) -> bool:
     if len(act) <= 1:
         return True
     deg = len(phi) - 1
-    cols = [[h + lo for h, lo in zip(_power_mod(k % (2 * n), phi), _power_mod((2 * n - k) % (2 * n), phi),
-                                     strict=True)] + [1] for k in act]
+    cols = [
+        [
+            h + lo
+            for h, lo in zip(
+                _power_mod(k % (2 * n), phi), _power_mod((2 * n - k) % (2 * n), phi), strict=True
+            )
+        ]
+        + [1]
+        for k in act
+    ]
     mat = [[cols[c][i] for c in range(len(act))] for i in range(deg + 1)]
     mstr = "[" + ";".join(",".join(str(x) for x in row) for row in mat) + "]"
-    script = (f"K=matkerint({mstr});if(type(K)==\"t_MAT\"&&matsize(K)[2]>0,"
-              f"for(c=1,matsize(K)[2],print(Vec(K[,c]))),print(\"E\"));quit")
-    out = subprocess.run(["gp", "-q"], input=script, capture_output=True, text=True, timeout=120).stdout
+    script = (
+        f'K=matkerint({mstr});if(type(K)=="t_MAT"&&matsize(K)[2]>0,'
+        f'for(c=1,matsize(K)[2],print(Vec(K[,c]))),print("E"));quit'
+    )
+    out = subprocess.run(
+        ["gp", "-q"], input=script, capture_output=True, text=True, timeout=120
+    ).stdout
     neg = [sin(pi * k * j / n) < 0 for k in act]
     for line in out.splitlines():
         line = line.strip()
@@ -164,24 +176,35 @@ def main() -> int:
             print(f"  {n:>3} {cls:>6}  (need gp)")
 
     if not HAVE_GP:
-        print("\nRESULT: gp not found -- install PARI/gp to run the exact criterion. Numerical law only.")
+        print(
+            "\nRESULT: gp not found -- install PARI/gp to run the exact criterion. Numerical law only."
+        )
         return 0
 
     # (B) corollaries
     print("\n(B) Corollaries")
-    c1 = all(criterion_saturates(n, 1, _cyclotomic(2 * n, cache))
-             and criterion_saturates(n, n - 1, _cyclotomic(2 * n, cache)) for n in range(3, 30))
+    c1 = all(
+        criterion_saturates(n, 1, _cyclotomic(2 * n, cache))
+        and criterion_saturates(n, n - 1, _cyclotomic(2 * n, cache))
+        for n in range(3, 30)
+    )
     print(f"    (i)  j=1 and j=N-1 always saturate (N<30): {'OK' if c1 else 'FAIL'}")
-    c2 = all(all(criterion_saturates(n, j, _cyclotomic(2 * n, cache)) for j in range(1, n))
-             for n in (5, 7, 11, 13, 4, 8, 16, 6, 10, 14, 22, 26))
-    print(f"    (ii) prime / 2^m / 2p (full cos-rank) saturate at every site: {'OK' if c2 else 'FAIL'}")
+    c2 = all(
+        all(criterion_saturates(n, j, _cyclotomic(2 * n, cache)) for j in range(1, n))
+        for n in (5, 7, 11, 13, 4, 8, 16, 6, 10, 14, 22, 26)
+    )
+    print(
+        f"    (ii) prime / 2^m / 2p (full cos-rank) saturate at every site: {'OK' if c2 else 'FAIL'}"
+    )
     # sign-dependence: N=24 coprime saturating sites are the subgroup {1,7,17,23}
     phi24 = _cyclotomic(48, cache)
     cop = [j for j in range(1, 24) if gcd(j, 24) == 1]
     sat24 = {j for j in cop if criterion_saturates(24, j, phi24)}
     c3 = sat24 == {1, 7, 17, 23}
-    print(f"    (iii) N=24 coprime saturating sites = {sorted(sat24)} (subgroup of (Z/24)*): "
-          f"{'OK' if c3 else 'FAIL'}")
+    print(
+        f"    (iii) N=24 coprime saturating sites = {sorted(sat24)} (subgroup of (Z/24)*): "
+        f"{'OK' if c3 else 'FAIL'}"
+    )
     ok &= c1 and c2 and c3
 
     print("\n" + "=" * 84)

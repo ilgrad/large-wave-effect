@@ -92,8 +92,10 @@ def cos_rank(n: int) -> int:
     m = 2 * n
     cache: dict[int, list[int]] = {}
     phi = cyclotomic(m, cache)
-    rows = [[h + lo for h, lo in zip(power_mod(k % m, phi), power_mod((m - k) % m, phi), strict=True)]
-            for k in range(1, n)]
+    rows = [
+        [h + lo for h, lo in zip(power_mod(k % m, phi), power_mod((m - k) % m, phi), strict=True)]
+        for k in range(1, n)
+    ]
     a = np.array(rows, dtype=np.int64) % _P
     nr, nc = a.shape
     rk = 0
@@ -134,14 +136,18 @@ def main() -> int:
     cf = np.where(k % 2 == 1, (2.0 / n) / np.tan(np.pi * k / (2 * n)), 0.0)
     err = float(np.max(np.abs(a - cf)))
     ok &= err < 1e-10
-    print(f"    N={n}: max|a_k - closed form| = {err:.2e}; a_k=0 for k even: {np.allclose(a[1::2], 0)}")
+    print(
+        f"    N={n}: max|a_k - closed form| = {err:.2e}; a_k=0 for k even: {np.allclose(a[1::2], 0)}"
+    )
 
     print("\n(B) Theorem 2:  d_j^N = C ln j + O(1) at large N=2^12; identify C")
     n = 4096
     d = d_jN(n)
     j = np.arange(2, 300)
     slope, intc = np.polyfit(np.log(j), d[j - 1], 1)
-    r2 = 1 - np.sum((d[j - 1] - (slope * np.log(j) + intc)) ** 2) / np.sum((d[j - 1] - d[j - 1].mean()) ** 2)
+    r2 = 1 - np.sum((d[j - 1] - (slope * np.log(j) + intc)) ** 2) / np.sum(
+        (d[j - 1] - d[j - 1].mean()) ** 2
+    )
     c_pred = 4.0 / np.pi**2
     good = abs(slope - c_pred) < 5e-3 and r2 > 0.999
     ok &= good
@@ -149,14 +155,22 @@ def main() -> int:
     print(f"    -> C = {slope:.4f} matches 4/pi^2 = {c_pred:.4f}: {'OK' if good else 'FAIL'}")
     # limiting integral C = (2/pi)*(2/pi): check the integral representation grows like (4/pi^2) ln j
     th = np.linspace(1e-5, np.pi / 2, 200000)
-    dint = np.array([(2 / np.pi) * np.trapezoid(1.0 / np.tan(th) * np.abs(np.sin(2 * jj * th)), th)
-                     for jj in (10, 100, 1000)])
+    dint = np.array(
+        [
+            (2 / np.pi) * np.trapezoid(1.0 / np.tan(th) * np.abs(np.sin(2 * jj * th)), th)
+            for jj in (10, 100, 1000)
+        ]
+    )
     cint = (dint[2] - dint[0]) / (np.log(1000) - np.log(10))
     ok &= abs(cint - c_pred) < 0.02
-    print(f"    limiting integral (2/pi)int cot|sin 2j th|: slope vs ln j = {cint:.4f} (~4/pi^2): "
-          f"{'OK' if abs(cint - c_pred) < 0.02 else 'FAIL'}")
+    print(
+        f"    limiting integral (2/pi)int cot|sin 2j th|: slope vs ln j = {cint:.4f} (~4/pi^2): "
+        f"{'OK' if abs(cint - c_pred) < 0.02 else 'FAIL'}"
+    )
 
-    print("\n(C) Full cos-rank (N-1)//2 holds exactly for prime / 2^m / 2*odd-prime: SUFFICIENT for all sites")
+    print(
+        "\n(C) Full cos-rank (N-1)//2 holds exactly for prime / 2^m / 2*odd-prime: SUFFICIENT for all sites"
+    )
     print(f"    {'N':>4} {'class':>10} {'rank':>5} {'(N-1)//2':>9} {'indep?':>7}")
 
     def _is2p(n: int) -> bool:  # twice an odd prime
@@ -166,14 +180,24 @@ def main() -> int:
         rk = cos_rank(nn)
         thr = (nn - 1) // 2
         is2m = (nn & (nn - 1)) == 0
-        cls = "2^m" if is2m else ("prime" if is_prime(nn) else ("2*prime" if _is2p(nn) else "composite"))
+        cls = (
+            "2^m"
+            if is2m
+            else ("prime" if is_prime(nn) else ("2*prime" if _is2p(nn) else "composite"))
+        )
         indep = rk == thr
         # full cos-rank <=> prime / 2^m / 2*odd-prime (the segment has the extra 2p family vs the ring)
         ok &= indep == (is_prime(nn) or is2m or _is2p(nn))
         print(f"    {nn:>4} {cls:>10} {rk:>5} {thr:>9} {indep!s:>7}")
-    print("    -> cos(pi k/N) full rank EXACTLY for prime / 2^m / 2*odd-prime -- NOT just prime/2^m: the")
-    print("       segment admits the extra 2p family (ring-p values for even k + primitive cos for odd k,")
-    print("       spanning Q(zeta_4p)^+); sufficient for sup_t|z_j|=d_j^N at every site (extends Filimonov).")
+    print(
+        "    -> cos(pi k/N) full rank EXACTLY for prime / 2^m / 2*odd-prime -- NOT just prime/2^m: the"
+    )
+    print(
+        "       segment admits the extra 2p family (ring-p values for even k + primitive cos for odd k,"
+    )
+    print(
+        "       spanning Q(zeta_4p)^+); sufficient for sup_t|z_j|=d_j^N at every site (extends Filimonov)."
+    )
 
     print("\n(C2) Closed form rank(N) = phi(2N)/2 - [N=2^m], and the proof's two key identities")
 
@@ -189,30 +213,55 @@ def main() -> int:
             r -= r // mm
         return r
 
-    cf_ok = all(cos_rank(N) == _phi(2 * N) // 2 - (1 if (N & (N - 1)) == 0 else 0) for N in range(2, 49))
+    cf_ok = all(
+        cos_rank(N) == _phi(2 * N) // 2 - (1 if (N & (N - 1)) == 0 else 0) for N in range(2, 49)
+    )
     print(f"    rank(N) = phi(2N)/2 - [N=2^m] for N=2..48: {'OK' if cf_ok else 'FAIL'}")
     # odd prime p|N => sum_{a=1}^{(p-1)/2} 2cos(2 pi a/p) = -1, each term a cosine of the family (k=2aN/p)
     mem_ok = True
     for nn, p in [(15, 3), (15, 5), (35, 7), (21, 3), (20, 5), (12, 3)]:
         s = sum(2 * np.cos(2 * np.pi * a / p) for a in range(1, (p - 1) // 2 + 1))
-        km = all(2 * a * nn % p == 0
-                 and abs(2 * np.cos(2 * np.pi * a / p) - 2 * np.cos(np.pi * (2 * a * nn // p) / nn)) < 1e-10
-                 for a in range(1, (p - 1) // 2 + 1))
+        km = all(
+            2 * a * nn % p == 0
+            and abs(2 * np.cos(2 * np.pi * a / p) - 2 * np.cos(np.pi * (2 * a * nn // p) / nn))
+            < 1e-10
+            for a in range(1, (p - 1) // 2 + 1)
+        )
         mem_ok &= abs(s + 1) < 1e-9 and km
-    print(f"    odd factor: sum 2cos(2 pi a/p) = -1, terms = cosines (k=2aN/p) -> 1 in span: "
-          f"{'OK' if mem_ok else 'FAIL'}")
+    print(
+        f"    odd factor: sum 2cos(2 pi a/p) = -1, terms = cosines (k=2aN/p) -> 1 in span: "
+        f"{'OK' if mem_ok else 'FAIL'}"
+    )
     xx = np.linspace(0.1, 0.5, 300)
     cc = np.cos(xx) ** 2
-    ch_ok = all(np.max(np.abs(np.polyval(np.polyfit(cc, np.cos(k * xx) / np.cos(xx), (k - 1) // 2), cc)
-                              - np.cos(k * xx) / np.cos(xx))) < 1e-9 for k in (1, 3, 5, 7, 9))
-    print(f"    2^m: cos(kx)/cos(x) is degree (k-1)/2 in cos^2 x (Chebyshev V_k): {'OK' if ch_ok else 'FAIL'}")
+    ch_ok = all(
+        np.max(
+            np.abs(
+                np.polyval(np.polyfit(cc, np.cos(k * xx) / np.cos(xx), (k - 1) // 2), cc)
+                - np.cos(k * xx) / np.cos(xx)
+            )
+        )
+        < 1e-9
+        for k in (1, 3, 5, 7, 9)
+    )
+    print(
+        f"    2^m: cos(kx)/cos(x) is degree (k-1)/2 in cos^2 x (Chebyshev V_k): {'OK' if ch_ok else 'FAIL'}"
+    )
 
     def _sin_rank(n: int) -> int:  # 2 sin(pi r/N) = 2 cos(pi(N-2r)/(2N)) = zeta_{4N}^|N-2r| + conj
         m = 4 * n
         phip = cyclotomic(m, {})
-        rows = [[h + lo for h, lo in zip(power_mod(abs(n - 2 * r) % m, phip),
-                                         power_mod((m - abs(n - 2 * r)) % m, phip), strict=True)]
-                for r in range(1, n)]
+        rows = [
+            [
+                h + lo
+                for h, lo in zip(
+                    power_mod(abs(n - 2 * r) % m, phip),
+                    power_mod((m - abs(n - 2 * r)) % m, phip),
+                    strict=True,
+                )
+            ]
+            for r in range(1, n)
+        ]
         a = np.array(rows, dtype=np.int64) % _P
         nr, rk = a.shape[0], 0
         for col in range(a.shape[1]):
@@ -233,8 +282,10 @@ def main() -> int:
         return rk
 
     sr_ok = all(_sin_rank(N) == _phi(2 * N) // 2 for N in range(3, 33))
-    print(f"    sine companion (ring): rank{{2sin(pi r/N)}} = phi(2N)/2, NO exception, N=3..32: "
-          f"{'OK' if sr_ok else 'FAIL'}")
+    print(
+        f"    sine companion (ring): rank{{2sin(pi r/N)}} = phi(2N)/2, NO exception, N=3..32: "
+        f"{'OK' if sr_ok else 'FAIL'}"
+    )
     ok &= cf_ok and mem_ok and ch_ok and sr_ok
 
     print("\n(D) Ceiling holds: |z_j(t)| <= d_j^N for all sampled t (triangle inequality)")
@@ -250,9 +301,13 @@ def main() -> int:
         z = np.abs((amp[None, :] * np.exp(-2j * np.outer(ts, w))).sum(axis=1))
         hold &= z.max() <= d[jq - 1] + 1e-9
     ok &= hold
-    print(f"    N=256: max_t|z_j| <= d_j^N at j=16,64,128: {hold} (finite scan undershoots the sup)")
+    print(
+        f"    N=256: max_t|z_j| <= d_j^N at j=16,64,128: {hold} (finite scan undershoots the sup)"
+    )
 
-    print("\n(E) Full rank is NOT necessary: composite N still saturates sup_t|z_j|=d_j^N at some site")
+    print(
+        "\n(E) Full rank is NOT necessary: composite N still saturates sup_t|z_j|=d_j^N at some site"
+    )
     e_ok = True
     for nn in (6, 9, 10, 12):
         d = d_jN(nn)
@@ -266,16 +321,26 @@ def main() -> int:
             z = np.abs((amp[None, :] * np.exp(-2j * np.outer(ts, w))).sum(axis=1))
             ratio = max(ratio, z.max() / max(d[jq - 1], 1e-15))
         e_ok &= ratio > 0.999
-        print(f"    N={nn:>3} (composite): max_j sup_t|z_j|/d_j^N = {ratio:.4f}  "
-              f"{'saturates' if ratio > 0.999 else 'GAP'}")
+        print(
+            f"    N={nn:>3} (composite): max_j sup_t|z_j|/d_j^N = {ratio:.4f}  "
+            f"{'saturates' if ratio > 0.999 else 'GAP'}"
+        )
     ok &= e_ok
-    print("    -> composite N reaches the ceiling at individual sites; full cos-rank is a SUFFICIENT,")
-    print("       not necessary, condition. The exact site-wise classification: verify_segment_sitewise.py.")
+    print(
+        "    -> composite N reaches the ceiling at individual sites; full cos-rank is a SUFFICIENT,"
+    )
+    print(
+        "       not necessary, condition. The exact site-wise classification: verify_segment_sitewise.py."
+    )
 
     print("\n" + "=" * 78)
     print("RESULT:", "FILIMONOV SCHRODINGER LARGE WAVE REPRODUCED" if ok else "CHECK FAILED")
-    print("Thm 1 (sup=d_j^N) + Thm 2 (d_j^N ~ C ln j); identified C = 4/pi^2. Full cos-rank (prime/2^m)")
-    print("is SUFFICIENT for saturation at all sites, not necessary -- composite N can saturate too.")
+    print(
+        "Thm 1 (sup=d_j^N) + Thm 2 (d_j^N ~ C ln j); identified C = 4/pi^2. Full cos-rank (prime/2^m)"
+    )
+    print(
+        "is SUFFICIENT for saturation at all sites, not necessary -- composite N can saturate too."
+    )
     print("=" * 78)
     return 0 if ok else 1
 

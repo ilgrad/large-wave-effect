@@ -84,7 +84,7 @@ def main() -> int:
 
     # ---- N = 6: explicit radical closed form ----
     print("\n[N=6]  separable blocks -> closed form in radicals")
-    a6_closed = np.sqrt(3) / 9 + (3 + np.sqrt(3)) * 3 ** 0.25 / (12 * np.sqrt(2))
+    a6_closed = np.sqrt(3) / 9 + (3 + np.sqrt(3)) * 3**0.25 / (12 * np.sqrt(2))
     # independent numeric max over the 2-D subtorus (phi1 free, phi2 free; phi3 = 2 phi1)
     g = np.linspace(0, 2 * np.pi, 4000)
     block1 = np.max(g * 0 + (1 / 3) * np.sin(g) + (1 / 12) * np.sin(2 * g))  # 1-var, refine below

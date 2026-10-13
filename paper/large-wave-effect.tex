@@ -71,6 +71,7 @@
 
 \title[Large-wave amplification on discrete lattices]{Large-wave amplification on periodic discrete lattices: linear theory and a nonlinear extension}
 \author{Ilia Gradina}
+\urladdr{\url{https://orcid.org/0009-0008-0911-8765}}
 \date{June 2026}
 
 \begin{abstract}
@@ -393,14 +394,17 @@ equidistributed (Theorem~\ref{thm:joint-equi}, a van der Corput second-derivativ
 band edges, an $O(\varepsilon^{3/4})$ bound on the edge strips), alongside the variance-floor inequality and the
 tail $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). Two steps separate this from the windowed
 constant of Conjecture~\ref{conj:bn-window}: convergence uniform in $s$ (on $t\le N/2$ as on
-$t>N/2$), and the validated Gaussian-excess inequality
+$t>N/2$), and the Gaussian-excess inequality
 $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$, $K_\star=(h(1)-\sqrt\pi/2)/2$, for
 the \emph{balanced} Debye configurations of the profile (the live set is an interval of consecutive integers,
 so $|\#\,\mathrm{even}-\#\,\mathrm{odd}|\le1$; sharp at the two-copy pair, while imbalanced configurations
 violate the unrestricted bound), whose integrated majorant clears $\beta_{\mathrm{odd}}$ on $[1.005,\infty)$
-(the variance floor covers $(1,1.005]$); proving
-it needs a bound on the Bessel-ring tail of the Kluyver excess
-(\texttt{verify\_bn\_profile\_gaussian.py}, \texttt{verify\_bandedge\_transfer.py}).
+(the variance floor covers $(1,1.005]$). That inequality is now proved, by a rigorous Arb certificate, on the
+singleton-channel family (one channel a single copy; \texttt{dagger\_rigorous.py},
+\texttt{verify\_dagger\_rigorous.py}); on the near-pair basin and on configurations with more than three copies
+it is only validated, and proving it there needs a bound on the Bessel-ring tail of the Kluyver excess uniform
+over the balanced configurations (the discussion after Lemma~\ref{lem:varfloor};
+\texttt{verify\_bn\_profile\_gaussian.py}, \texttt{verify\_bandedge\_transfer.py}).
 \item A rigorous nonlinear theory of the discrete NLS \eqref{eq:dnls} on the ring
 (Section~\ref{sec:rogue}). Settled: the linear large wave persists in the weakly
 nonlinear regime (Proposition~\ref{prop:dnls-persist}); the modulational-instability band and growth

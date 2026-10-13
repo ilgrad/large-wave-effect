@@ -97,13 +97,17 @@ verify_bn_profile_concentration.py (the kurtosis-surrogate route this one supers
 
 from __future__ import annotations
 
+import functools
+
 import numpy as np
 from numpy import cos, pi, sin, sqrt
 from scipy.integrate import quad
 from scipy.special import ellipe, j0
 
+print = functools.partial(print, flush=True)
+
 BETA_ODD = 0.92801930480793112  # eq:beta-odd, s=1 two-copy peak (high-precision)
-H1 = 0.9580913983830018  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi), the equal-pair modulus
+H1 = 0.9580913986828501  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi), the equal-pair modulus
 ROOT = sqrt(2 / pi)
 TAIL = sqrt(pi) / 2  # F_gauss(infinity) = E|G| at sigma_X=sigma_Y = 0.8862269...
 K_STAR = (H1 - TAIL) / 2  # = 0.0359322; the SHARP constant of the pointwise excess inequality (D)
@@ -175,7 +179,9 @@ def B_majorant(s: float, K: float = K_STAR, nu: int = 6000) -> float:
 # --------------------------------------------------------------------------------------------------------
 # the exact excess via the Kluyver/Hankel identity (K) -- the independent check on the density engine
 # --------------------------------------------------------------------------------------------------------
-def excess_kluyver(ev: np.ndarray, od: np.ndarray, n_theta: int = 600, t_max: float = 80.0) -> float:
+def excess_kluyver(
+    ev: np.ndarray, od: np.ndarray, n_theta: int = 600, t_max: float = 80.0
+) -> float:
     """E|Z| - E|G| = int_0^inf (Mg(t) - M(t))/t^2 dt, the structure-explicit excess identity (K)."""
     sx2 = 0.5 * float(np.sum(ev**2)) if len(ev) else 0.0
     sy2 = 0.5 * float(np.sum(od**2)) if len(od) else 0.0
@@ -240,19 +246,21 @@ def F_fft_oddN(s: float, n: int, n_t: int = 24) -> float:
 
 # --------------------------------------------------------------------------------------------------------
 def main() -> int:
-    import functools
-
-    global print
-    print = functools.partial(print, flush=True)
     ok = True
     print("=" * 96)
-    print("Residual (ii) via Gaussian comparison:  F(s) < beta_odd on s>1  (multi-copy large-wave profile)")
-    print(f"  beta_odd = {BETA_ODD:.10f}    K_star = (h(1)-sqrt(pi)/2)/2 = {K_STAR:.10f}    "
-          f"sqrt(pi)/2 = {TAIL:.7f}")
+    print(
+        "Residual (ii) via Gaussian comparison:  F(s) < beta_odd on s>1  (multi-copy large-wave profile)"
+    )
+    print(
+        f"  beta_odd = {BETA_ODD:.10f}    K_star = (h(1)-sqrt(pi)/2)/2 = {K_STAR:.10f}    "
+        f"sqrt(pi)/2 = {TAIL:.7f}"
+    )
     print("=" * 96)
 
     # [0] the exact Kluyver excess identity (K) reproduces the FFT-density excess (engine validation).
-    print("\n[0] exact excess identity  E|Z|-E|G| = int (Mg-M)/t^2 dt  vs the FFT density (must agree ~1e-6):")
+    print(
+        "\n[0] exact excess identity  E|Z|-E|G| = int (Mg-M)/t^2 dt  vs the FFT density (must agree ~1e-6):"
+    )
     worst_id = 0.0
     for u, s in [(0.30, 2.0), (0.50, 3.0), (0.17, 5.0), (0.41, 1.5)]:
         ev, od = amps(u, s)
@@ -260,24 +268,32 @@ def main() -> int:
         ek = excess_kluyver(ev, od)
         ed = EZ_density(ev, od) - EG(sx2, sy2)
         worst_id = max(worst_id, abs(ek - ed))
-        print(f"    u={u} s={s}:  kluyver={ek:+.6f}  density={ed:+.6f}  |diff|={abs(ek-ed):.1e}")
+        print(f"    u={u} s={s}:  kluyver={ek:+.6f}  density={ed:+.6f}  |diff|={abs(ek - ed):.1e}")
     ok &= worst_id < 1e-5
     print(f"    max |kluyver - density| = {worst_id:.1e}   {'ok' if worst_id < 1e-5 else 'FAIL'}")
 
     # [i] the matched-Gaussian floor F_gauss(s) is itself < beta_odd, with a comfortable margin.
-    print("\n[i] Gaussian floor  F_gauss(s) = sqrt(2/pi) int E|G| du  < beta_odd (margin 0.045-0.093):")
+    print(
+        "\n[i] Gaussian floor  F_gauss(s) = sqrt(2/pi) int E|G| du  < beta_odd (margin 0.045-0.093):"
+    )
     worst_fg = 0.0
     for s in (1.05, 1.2, 1.5, 2.0, 3.0, 5.0, 10.0, 20.0):
         fg = F_gauss(s)
         worst_fg = max(worst_fg, fg)
         print(f"    s={s:5.2f}:  F_gauss = {fg:.5f}   (beta_odd - F_gauss = {BETA_ODD - fg:.4f})")
     ok &= worst_fg < BETA_ODD
-    print(f"    sup F_gauss = {worst_fg:.5f} < beta_odd   {'ok' if worst_fg < BETA_ODD else 'FAIL'}")
+    print(
+        f"    sup F_gauss = {worst_fg:.5f} < beta_odd   {'ok' if worst_fg < BETA_ODD else 'FAIL'}"
+    )
 
     # [ii] the pointwise excess inequality (D) for the PROFILE'S BALANCED configs (|#even-#odd|<=1, since the
     # live set is consecutive integers): ratio <= 1, max at the equal pair.  The UNRESTRICTED bound is FALSE.
-    print("\n[ii] pointwise inequality (D)  E|Z|-E|G| <= K_star (sum a^4)/Sigma2^{3/2}  for BALANCED configs:")
-    print("     equal two-copy a=b is the extremizer (ratio -> 1); checked over balanced extremes + search.")
+    print(
+        "\n[ii] pointwise inequality (D)  E|Z|-E|G| <= K_star (sum a^4)/Sigma2^{3/2}  for BALANCED configs:"
+    )
+    print(
+        "     equal two-copy a=b is the extremizer (ratio -> 1); checked over balanced extremes + search."
+    )
     cases = {
         "equal pair a=b=1": (np.array([1.0]), np.array([1.0])),
         "single channel": (np.array([1.0]), np.array([])),
@@ -293,9 +309,13 @@ def main() -> int:
         ek = excess_kluyver(ev, od)
         ratio = ek / (K_STAR * c4 / sig2**1.5)
         worst_ratio = max(worst_ratio, ratio)
-        print(f"    {name:22}: excess={ek:+.5f}  ratio_to_bound={ratio:.4f}  "
-              f"{'ok' if ratio <= 1.0005 else 'VIOLATION'}")
-    rng = np.random.default_rng(123)  # BALANCED random search (|ne - no| <= 1, the profile structure)
+        print(
+            f"    {name:22}: excess={ek:+.5f}  ratio_to_bound={ratio:.4f}  "
+            f"{'ok' if ratio <= 1.0005 else 'VIOLATION'}"
+        )
+    rng = np.random.default_rng(
+        123
+    )  # BALANCED random search (|ne - no| <= 1, the profile structure)
     rand_worst = 0.0
     for _ in range(400):
         ne = int(rng.integers(1, 6))
@@ -308,19 +328,37 @@ def main() -> int:
             continue
         rand_worst = max(rand_worst, excess_kluyver(ev, od) / (K_STAR * c4 / sig2**1.5))
     worst_ratio = max(worst_ratio, rand_worst)
-    ev_i, od_i = np.array([1.0]), np.full(5, 0.6)  # imbalanced counterexample (NOT a profile config)
-    imbal = excess_kluyver(ev_i, od_i) / (K_STAR * float(np.sum(ev_i**4) + np.sum(od_i**4))
-                                          / (0.5 * float(np.sum(ev_i**2) + np.sum(od_i**2))) ** 1.5)
+    ev_i, od_i = (
+        np.array([1.0]),
+        np.full(5, 0.6),
+    )  # imbalanced counterexample (NOT a profile config)
+    imbal = excess_kluyver(ev_i, od_i) / (
+        K_STAR
+        * float(np.sum(ev_i**4) + np.sum(od_i**4))
+        / (0.5 * float(np.sum(ev_i**2) + np.sum(od_i**2))) ** 1.5
+    )
     ok &= worst_ratio <= 1.0005 and imbal > 1.0
-    print(f"    400 BALANCED-config search worst = {rand_worst:.4f};  overall balanced worst = {worst_ratio:.4f}")
-    print(f"    imbalanced 1-even+5-odd(.6) [not a profile config]: ratio = {imbal:.4f}  -- unrestricted (D) FALSE")
-    print(f"    => (D) holds for balanced/profile configs, sharp at the pair; unrestricted (D) fails: "
-          f"{'ok' if worst_ratio <= 1.0005 and imbal > 1.0 else 'FAIL'}")
+    print(
+        f"    400 BALANCED-config search worst = {rand_worst:.4f};  overall balanced worst = {worst_ratio:.4f}"
+    )
+    print(
+        f"    imbalanced 1-even+5-odd(.6) [not a profile config]: ratio = {imbal:.4f}  -- unrestricted (D) FALSE"
+    )
+    print(
+        f"    => (D) holds for balanced/profile configs, sharp at the pair; unrestricted (D) fails: "
+        f"{'ok' if worst_ratio <= 1.0005 and imbal > 1.0 else 'FAIL'}"
+    )
 
     # [iii] the integrated majorant B(s) >= F(s) is < beta_odd on (1, 20], cross-checked vs the odd-N FFT.
-    print("\n[iii] majorant  B(s) = F_gauss + sqrt(2/pi) K_star int (sum a^4)/Sigma2^{3/2} du  < beta_odd:")
-    print("      cross-check: the ODD-N FFT norm F_FFT (N=2^16-1) -- B must sit ABOVE it and BELOW beta.")
-    print(f"      {'s':>5} {'F_FFT(true)':>12} {'B(s)':>9} {'B-F_FFT':>9} {'beta-B':>9} {'< beta?':>8}")
+    print(
+        "\n[iii] majorant  B(s) = F_gauss + sqrt(2/pi) K_star int (sum a^4)/Sigma2^{3/2} du  < beta_odd:"
+    )
+    print(
+        "      cross-check: the ODD-N FFT norm F_FFT (N=2^16-1) -- B must sit ABOVE it and BELOW beta."
+    )
+    print(
+        f"      {'s':>5} {'F_FFT(true)':>12} {'B(s)':>9} {'B-F_FFT':>9} {'beta-B':>9} {'< beta?':>8}"
+    )
     n_odd = (1 << 16) - 1
     worst_b = -1.0
     worst_gap = 1e9
@@ -330,22 +368,32 @@ def main() -> int:
         worst_b = max(worst_b, b)
         worst_gap = min(worst_gap, b - ff)
         below = b < BETA_ODD
-        ok &= below and (b - ff) > -5e-3  # B is a majorant of the true profile (FFT), up to FFT u-wobble
-        print(f"      {s:5.3f} {ff:12.5f} {b:9.5f} {b - ff:9.5f} {BETA_ODD - b:9.5f} "
-              f"{'yes' if below else 'NO':>8}")
+        ok &= (
+            below and (b - ff) > -5e-3
+        )  # B is a majorant of the true profile (FFT), up to FFT u-wobble
+        print(
+            f"      {s:5.3f} {ff:12.5f} {b:9.5f} {b - ff:9.5f} {BETA_ODD - b:9.5f} "
+            f"{'yes' if below else 'NO':>8}"
+        )
     # The sliver (1, 1.005]: the K_star majorant does NOT clear beta_odd (K_max dips below K_star -- see [iv]);
     # there F is covered instead by the PROVED variance floor F <= F_2 < beta_odd (Lemma lem:varfloor),
     # the live set being essentially two copies (verify_dagger_window.py).
     b_sliver = B_majorant(1.002)
-    print(f"      sliver s=1.002: B={b_sliver:.5f} {'> beta (K_star majorant fails here)' if b_sliver > BETA_ODD else ''}"
-          f"  -- covered by the variance floor F<=F_2<beta_odd, NOT by B (verify_dagger_window.py)")
-    print(f"      => sup_[1.005,20] B = {worst_b:.5f} < beta_odd = {BETA_ODD:.5f}  (worst margin "
-          f"{BETA_ODD - worst_b:.4f}, at s~1.005);  min (B - F_FFT) = {worst_gap:+.4f} (B majorizes)")
+    print(
+        f"      sliver s=1.002: B={b_sliver:.5f} {'> beta (K_star majorant fails here)' if b_sliver > BETA_ODD else ''}"
+        f"  -- covered by the variance floor F<=F_2<beta_odd, NOT by B (verify_dagger_window.py)"
+    )
+    print(
+        f"      => sup_[1.005,20] B = {worst_b:.5f} < beta_odd = {BETA_ODD:.5f}  (worst margin "
+        f"{BETA_ODD - worst_b:.4f}, at s~1.005);  min (B - F_FFT) = {worst_gap:+.4f} (B majorizes)"
+    )
 
     # [iv] tightness: K_max(s) is the largest admissible constant.  It DIPS BELOW K_star on the sliver
     # (1, 1.005] (so B alone cannot clear beta there -> variance floor); on [1.005, inf) K_max > K_star.
     print("\n[iv] tightness -- K_max(s) = (beta_odd - F_gauss)/(sqrt(2/pi) int control):")
-    print("      K_max dips < K_star on the sliver (1,1.005] (variance-floor zone); >= K_star on [1.005,inf):")
+    print(
+        "      K_max dips < K_star on the sliver (1,1.005] (variance-floor zone); >= K_star on [1.005,inf):"
+    )
     kmin = 1e9
     for s in (1.002, 1.005, 1.02, 1.05, 1.2, 1.5, 2.0, 3.0):
         ic = ROOT * excess_control_integral(s)
@@ -354,22 +402,31 @@ def main() -> int:
             kmin = min(kmin, kmax)
         flag = "  < K_star  (sliver -> variance floor)" if kmax < K_STAR else ""
         print(f"      s={s:5.3f}:  K_max = {kmax:.5f}{flag}")
-    print(f"      => min_[1.005,inf) K_max = {kmin:.5f} vs sharp K_star = {K_STAR:.5f} "
-          f"(headroom {kmin - K_STAR:.5f}); sliver covered by the variance floor   "
-          f"{'ok' if kmin > K_STAR else 'FAIL'}")
+    print(
+        f"      => min_[1.005,inf) K_max = {kmin:.5f} vs sharp K_star = {K_STAR:.5f} "
+        f"(headroom {kmin - K_STAR:.5f}); sliver covered by the variance floor   "
+        f"{'ok' if kmin > K_STAR else 'FAIL'}"
+    )
     ok &= kmin > K_STAR
 
     print("\n" + "=" * 96)
-    print("RESULT:", (
-        "PASS -- F_gauss < beta_odd and the exact Kluyver excess identity are PROVED; the pointwise excess\n"
-        "        inequality (D) with the SHARP closed-form K_star=(h(1)-sqrt(pi)/2)/2 is VALIDATED (extremal\n"
-        "        at the equal two-copy pair), and the integrated majorant B(s) < beta_odd on (1,20], above the\n"
-        "        odd-N FFT profile.  The single residual is the tail (t>2.405) half of (D); see the ledger."
-    ) if ok else "FAIL")
-    print("Rigor: VALIDATED is not PROVED.  The off-the-shelf 1-D Wasserstein/Esseen CLT bound (sharp constant\n"
-          "       1/2) overshoots the 0.045 margin by ~10x; only the fourth-cumulant control kappa, which decays\n"
-          "       as the energy spreads, fits the thin (0.004) admissible window -- and its proof needs the\n"
-          "       Bessel-ring tail estimate of the Kluyver identity (K), the one expected-modulus residual.")
+    print(
+        "RESULT:",
+        (
+            "PASS -- F_gauss < beta_odd and the exact Kluyver excess identity are PROVED; the pointwise excess\n"
+            "        inequality (D) with the SHARP closed-form K_star=(h(1)-sqrt(pi)/2)/2 is VALIDATED (extremal\n"
+            "        at the equal two-copy pair), and the integrated majorant B(s) < beta_odd on (1,20], above the\n"
+            "        odd-N FFT profile.  The single residual is the tail (t>2.405) half of (D); see the ledger."
+        )
+        if ok
+        else "FAIL",
+    )
+    print(
+        "Rigor: VALIDATED is not PROVED.  The off-the-shelf 1-D Wasserstein/Esseen CLT bound (sharp constant\n"
+        "       1/2) overshoots the 0.045 margin by ~10x; only the fourth-cumulant control kappa, which decays\n"
+        "       as the energy spreads, fits the thin (0.004) admissible window -- and its proof needs the\n"
+        "       Bessel-ring tail estimate of the Kluyver identity (K), the one expected-modulus residual."
+    )
     return 0 if ok else 1
 
 

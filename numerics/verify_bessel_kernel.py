@@ -29,7 +29,7 @@ def ring_kernel(n: int, t: float) -> np.ndarray:
 
 
 def k_inf(n: np.ndarray, t: float) -> np.ndarray:
-    return np.exp(-2j * t) * (1j ** n) * jv(n, 2 * t)
+    return np.exp(-2j * t) * (1j**n) * jv(n, 2 * t)
 
 
 def main() -> int:
@@ -74,7 +74,9 @@ def main() -> int:
 
     print("\n" + "=" * 70)
     print("RESULT:", "BESSEL KERNEL VERIFIED" if ok else "CHECK FAILED")
-    print("The ring Schrodinger kernel is the periodized Bessel kernel; the ballistic front and its")
+    print(
+        "The ring Schrodinger kernel is the periodized Bessel kernel; the ballistic front and its"
+    )
     print("(2t)^{-1/3} decay underlie B_N ~ sqrt(N) and the vanishing of the effect on Z.")
     print("=" * 70)
     return 0 if ok else 1

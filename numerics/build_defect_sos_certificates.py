@@ -56,7 +56,7 @@ def solve(n: int, spec: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, float]
     cons = [qv >> 0]
     for d, pairs in groups.items():
         if d != zero and d > tuple(-x for x in d):  # one of each conjugate pair
-            cons.append(sum(qv[a, k] for a, k in pairs) == target.get(d, 0))
+            cons.append(cp.sum([qv[a, k] for a, k in pairs]) == target.get(d, 0))
     cp.Problem(cp.Minimize(cp.real(cp.trace(qv))), cons).solve(solver="CLARABEL")
     q = np.array(qv.value, dtype=complex)
     q = (q + q.conj().T) / 2

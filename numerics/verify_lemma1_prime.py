@@ -86,11 +86,11 @@ def exact_rank(matrix: np.ndarray) -> int:
 def reconstruct_ok(p: int, rows: np.ndarray) -> float:
     """Max error between integer-coordinate reconstruction and the true 2i*sin(pi r/p)."""
     eta = np.exp(1j * np.pi / p)
-    powers = eta ** np.arange(p - 1)               # eta^0 .. eta^{p-2}
+    powers = eta ** np.arange(p - 1)  # eta^0 .. eta^{p-2}
     worst = 0.0
     for idx, r in enumerate(range(1, (p - 1) // 2 + 1)):
         recon = complex(np.dot(rows[idx].astype(np.complex128), powers))
-        true = eta**r - eta ** (-r)                # = 2i sin(pi r/p)
+        true = eta**r - eta ** (-r)  # = 2i sin(pi r/p)
         worst = max(worst, abs(recon - true))
     return worst
 
@@ -112,7 +112,9 @@ def main() -> int:
     print("=" * 70)
     print("RESULT:", "ALL PRIMES CERTIFIED" if ok else "FAILURE")
     print("Consequence: for odd prime p the ring frequencies {2 sin(pi r/p)} are Q-independent,")
-    print("so Bohr/Kronecker give UNCONDITIONALLY A_p = U_p ~ (1/pi) ln p (large wave on the ring).")
+    print(
+        "so Bohr/Kronecker give UNCONDITIONALLY A_p = U_p ~ (1/pi) ln p (large wave on the ring)."
+    )
     print("=" * 70)
     return 0 if ok else 1
 

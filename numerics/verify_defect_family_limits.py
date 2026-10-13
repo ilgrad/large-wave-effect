@@ -58,12 +58,11 @@ def node0_defect(n: int, starts: int) -> float:
         ph = cf @ psi
         return -float(b @ np.sin(ph)), -(cf.T @ (b * np.cos(ph)))
 
-    best, bpsi = -np.inf, None
-    for _ in range(starts):
-        res = minimize(negf, RNG.uniform(0, 2 * pi, big_m), jac=True, method="L-BFGS-B")
-        if -res.fun > best:
-            best, bpsi = -res.fun, res.x
-    psi = bpsi.copy()
+    runs = [
+        minimize(negf, RNG.uniform(0, 2 * pi, big_m), jac=True, method="L-BFGS-B")
+        for _ in range(starts)
+    ]
+    psi = min(runs, key=lambda res: res.fun).x.copy()
     for _ in range(60):  # Newton polish: quadratic convergence to the stationary point
         ph = cf @ psi
         g = cf.T @ (b * np.cos(ph))
@@ -95,10 +94,15 @@ def main() -> int:
         good = abs(lim - targets[m]) < 5e-5 and resid < 1e-5
         ok &= good
         seq = ", ".join(f"{d:.7f}" for d in ds)
-        print(f"  m={m}: d = [{seq}]  ->  L = {lim:.7f} (target {targets[m]}), fit residual {resid:.1e}  "
-              f"{'ok' if good else 'FAIL'}")
+        print(
+            f"  m={m}: d = [{seq}]  ->  L = {lim:.7f} (target {targets[m]}), fit residual {resid:.1e}  "
+            f"{'ok' if good else 'FAIL'}"
+        )
     print("=" * 64)
-    print("RESULT:", "PASS -- family limits reproduced; new constants (no closed form found)" if ok else "FAIL")
+    print(
+        "RESULT:",
+        "PASS -- family limits reproduced; new constants (no closed form found)" if ok else "FAIL",
+    )
     return 0 if ok else 1
 
 

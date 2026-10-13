@@ -60,8 +60,15 @@ def propagate(n: int, vrms: float, corr: float, dz: float, zsteps: int) -> dict:
             fields.append(inten.copy())
         if s % (zsteps // 10) == 0:
             ndrift = max(ndrift, abs(np.sum(np.abs(psi) ** 2) - norm0) / norm0)
-    return {"v": v, "sci": np.array(sci), "z": np.array(zs), "ndrift": ndrift,
-            "field": np.array(fields), "best_field": best_field, "final": np.abs(psi) ** 2}
+    return {
+        "v": v,
+        "sci": np.array(sci),
+        "z": np.array(zs),
+        "ndrift": ndrift,
+        "field": np.array(fields),
+        "best_field": best_field,
+        "final": np.abs(psi) ** 2,
+    }
 
 
 def main() -> int:
@@ -87,24 +94,34 @@ def main() -> int:
         print(f"    {zz[i]:>7.1f} {sci[i]:>9.2f}")
     b_ok = sci[0] < 1.2 and sci_max > 8 and 0 < z_f < zz[-1]
     ok &= b_ok
-    print(f"    -> hot spots form: index 1 -> {sci_max:.1f} at focal distance z_f={z_f:.1f} "
-          f"{'OK' if b_ok else 'FAIL'}")
+    print(
+        f"    -> hot spots form: index 1 -> {sci_max:.1f} at focal distance z_f={z_f:.1f} "
+        f"{'OK' if b_ok else 'FAIL'}"
+    )
 
     # (C) heavy-tailed intensity at the focal (max-scintillation) plane
     inten = r["best_field"] / r["best_field"].mean()
-    kurt = float((inten**2).mean() / inten.mean() ** 2)  # <I^2>/<I>^2; =2 for exponential (Rayleigh)
+    kurt = float(
+        (inten**2).mean() / inten.mean() ** 2
+    )  # <I^2>/<I>^2; =2 for exponential (Rayleigh)
     frac = float(np.mean(inten > 8))  # P(I > 8<I>): exponential gives e^-8=3.4e-4
     c_ok = kurt > 2.3 and frac > 5 * np.exp(-8.0)
     ok &= c_ok
-    print(f"\n(C) Intensity at the focal plane: <I^2>/<I>^2 = {kurt:.2f} (exponential field = 2.0), "
-          f"P(I>8<I>) = {frac:.2e}")
-    print(f"    -> heavy-tailed: variance above exponential, tail {frac / np.exp(-8.0):.0f}x the "
-          f"exponential law e^-8={np.exp(-8.0):.1e}: {'OK' if c_ok else 'FAIL'}")
+    print(
+        f"\n(C) Intensity at the focal plane: <I^2>/<I>^2 = {kurt:.2f} (exponential field = 2.0), "
+        f"P(I>8<I>) = {frac:.2e}"
+    )
+    print(
+        f"    -> heavy-tailed: variance above exponential, tail {frac / np.exp(-8.0):.0f}x the "
+        f"exponential law e^-8={np.exp(-8.0):.1e}: {'OK' if c_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 70)
     print("RESULT:", "BRANCHED FLOW VERIFIED" if ok else "CHECK FAILED")
     print("A weak random current refracts a uniform wave into caustic hot spots with heavy-tailed")
-    print("intensity -- the linear refractive route to rogue waves (the Agulhas-type lens), distinct")
+    print(
+        "intensity -- the linear refractive route to rogue waves (the Agulhas-type lens), distinct"
+    )
     print("from and complementary to the nonlinear self-focusing of Part II.")
     print("=" * 70)
     return 0 if ok else 1

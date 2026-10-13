@@ -37,7 +37,7 @@ def solve_potential(leader: np.ndarray) -> np.ndarray:
     phi[-1, :] = 1.0  # ground electrode
     free = ~leader.copy()
     free[-1, :] = False  # ground row fixed
-    free[0, :] = False   # top row fixed at 0 (cloud plane)
+    free[0, :] = False  # top row fixed at 0 (cloud plane)
     idx = -np.ones((ny, nx), dtype=int)
     coords = np.argwhere(free)
     for m, (i, j) in enumerate(coords):
@@ -69,8 +69,13 @@ def grow(ny: int, nx: int, steps: int, eta: float = 1.0) -> dict:
     for s in range(steps):
         phi = solve_potential(leader)
         if s == steps // 2:  # check harmonicity once, mid-run
-            lap = (np.roll(phi, 1, 0) + np.roll(phi, -1, 0) + np.roll(phi, 1, 1)
-                   + np.roll(phi, -1, 1) - 4 * phi)
+            lap = (
+                np.roll(phi, 1, 0)
+                + np.roll(phi, -1, 0)
+                + np.roll(phi, 1, 1)
+                + np.roll(phi, -1, 1)
+                - 4 * phi
+            )
             interior = ~leader
             interior[0, :] = interior[-1, :] = False
             laplace_err = float(np.max(np.abs(lap[interior])))
@@ -97,8 +102,14 @@ def grow(ny: int, nx: int, steps: int, eta: float = 1.0) -> dict:
         if ci[pick] == ny - 2:
             reached = True
             break
-    return {"leader": leader, "mass": np.array(masses), "rg": np.array(radii),
-            "laplace_err": laplace_err, "tip_ratio": np.array(tip_ratio), "reached": reached}
+    return {
+        "leader": leader,
+        "mass": np.array(masses),
+        "rg": np.array(radii),
+        "laplace_err": laplace_err,
+        "tip_ratio": np.array(tip_ratio),
+        "reached": reached,
+    }
 
 
 def main() -> int:
@@ -111,27 +122,39 @@ def main() -> int:
     print(f"\n(A) Discrete-Laplace solver: max |L^(2) phi| off the leader = {r['laplace_err']:.2e}")
     a_ok = r["laplace_err"] < 1e-9
     ok &= a_ok
-    print(f"    phi is harmonic (the discrete Laplacian is the field solver): {'OK' if a_ok else 'FAIL'}")
+    print(
+        f"    phi is harmonic (the discrete Laplacian is the field solver): {'OK' if a_ok else 'FAIL'}"
+    )
 
     m, rg = r["mass"], r["rg"]
     win = m > 25  # fit the scaling regime
     d_frac = float(np.polyfit(np.log(rg[win]), np.log(m[win]), 1)[0])
     b_ok = 1.4 < d_frac < 1.9
     ok &= b_ok
-    print(f"\n(B) Fractal dimension from M ~ R_g^D: D = {d_frac:.2f} (branched; compact would be 2.0): "
-          f"{'OK' if b_ok else 'FAIL'} (final mass {m[-1]}, {'reached ground' if r['reached'] else 'grew'})")
+    print(
+        f"\n(B) Fractal dimension from M ~ R_g^D: D = {d_frac:.2f} (branched; compact would be 2.0): "
+        f"{'OK' if b_ok else 'FAIL'} (final mass {m[-1]}, {'reached ground' if r['reached'] else 'grew'})"
+    )
 
     tr = float(np.median(r["tip_ratio"]))
     c_ok = tr > 3.0
     ok &= c_ok
-    print(f"\n(C) Field concentration at tips: median max/mean candidate field = {tr:.1f} "
-          f"(>> 1 => energy at the tips): {'OK' if c_ok else 'FAIL'}")
+    print(
+        f"\n(C) Field concentration at tips: median max/mean candidate field = {tr:.1f} "
+        f"(>> 1 => energy at the tips): {'OK' if c_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 72)
     print("RESULT:", "LAPLACIAN-GROWTH LIGHTNING VERIFIED" if ok else "CHECK FAILED")
-    print("The discrete Laplacian also concentrates energy electrostatically: it solves the field of a")
-    print("dielectric breakdown, growing a branched fractal lightning leader with the field at its tips.")
-    print("A different (elliptic, dissipative) mechanism sharing the operator and the branched morphology.")
+    print(
+        "The discrete Laplacian also concentrates energy electrostatically: it solves the field of a"
+    )
+    print(
+        "dielectric breakdown, growing a branched fractal lightning leader with the field at its tips."
+    )
+    print(
+        "A different (elliptic, dissipative) mechanism sharing the operator and the branched morphology."
+    )
     print("=" * 72)
     return 0 if ok else 1
 

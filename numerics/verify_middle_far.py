@@ -24,7 +24,11 @@ from scipy.integrate import quad
 from scipy.special import j0
 
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location("cert", ROOT / "numerics" / "verify_dagger_continuum.py")
+spec = importlib.util.spec_from_file_location(
+    "cert", ROOT / "numerics" / "verify_dagger_continuum.py"
+)
+if spec is None or spec.loader is None:
+    raise RuntimeError("cannot load numerics/verify_dagger_continuum.py")
 cert = importlib.util.module_from_spec(spec)
 sys.modules["cert"] = cert
 spec.loader.exec_module(cert)
@@ -45,13 +49,27 @@ def true_far(a1: float, a3: float, b: float, t0: float, t1: float) -> float:
 
 
 def main() -> int:
-    slices = [(8.0, 12.0, 16, 160), (12.0, 16.0, 12, 130), (16.0, 20.0, 12, 110), (20.0, 24.0, 12, 110)]
+    slices = [
+        (8.0, 12.0, 16, 160),
+        (12.0, 16.0, 12, 130),
+        (16.0, 20.0, 12, 110),
+        (20.0, 24.0, 12, 110),
+    ]
     t0, t1 = 8.0, 24.0
     print("=" * 92)
     print("middle_far_point (theta-Taylor + t-collocation) vs scipy reference on [8,24]:")
-    print(f"  {'a1':>6} {'a3':>6} {'b':>7} {'true':>13} {'rig mid':>13} {'rig rad':>10} {'contains':>9}")
+    print(
+        f"  {'a1':>6} {'a3':>6} {'b':>7} {'true':>13} {'rig mid':>13} {'rig rad':>10} {'contains':>9}"
+    )
     ok = True
-    for (a1, a3) in [(0.73, 0.73), (0.70, 0.70), (0.685, 0.685), (0.82, 0.591), (0.66, 0.66), (0.78, 0.69)]:
+    for a1, a3 in [
+        (0.73, 0.73),
+        (0.70, 0.70),
+        (0.685, 0.685),
+        (0.82, 0.591),
+        (0.66, 0.66),
+        (0.78, 0.69),
+    ]:
         b = cert.b_of(a1, a3)
         rig = cert.middle_far_point(a1, a3, b, slices)
         tr = true_far(a1, a3, b, t0, t1)
@@ -59,11 +77,15 @@ def main() -> int:
         contains = lo <= tr <= hi
         small = float(rig.rad()) < 1e-4
         ok &= contains and small
-        print(f"  {a1:6.3f} {a3:6.3f} {b:7.4f} {tr:13.6e} {float(rig.mid()):13.6e} {float(rig.rad()):10.2e} "
-              f"{'YES' if contains else 'NO!!':>9}")
+        print(
+            f"  {a1:6.3f} {a3:6.3f} {b:7.4f} {tr:13.6e} {float(rig.mid()):13.6e} {float(rig.rad()):10.2e} "
+            f"{'YES' if contains else 'NO!!':>9}"
+        )
     print("=" * 92)
-    print(f"RESULT: {'PASS' if ok else 'FAIL'} -- middle_far enclosure contains the reference with small radius "
-          f"(sound + tight)")
+    print(
+        f"RESULT: {'PASS' if ok else 'FAIL'} -- middle_far enclosure contains the reference with small radius "
+        f"(sound + tight)"
+    )
     return 0 if ok else 1
 
 

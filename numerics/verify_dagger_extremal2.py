@@ -124,6 +124,7 @@ from __future__ import annotations
 
 import functools
 import time
+from typing import Any
 
 import mpmath as mp
 import numpy as np
@@ -131,10 +132,12 @@ from numpy import cos, pi, sin, sqrt
 from scipy.integrate import quad
 from scipy.special import ellipe, j0
 
+print = functools.partial(print, flush=True)
+
 # ----------------------------------------------------------------------------------------------------------
 # constants (identical to verify_dagger_extremal.py)
 # ----------------------------------------------------------------------------------------------------------
-H1 = 0.9580913983830018  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi), the equal-pair modulus
+H1 = 0.9580913986828501  # h(1) = E sqrt(cos^2 Phi + cos^2 Psi), the equal-pair modulus
 TAIL = sqrt(pi) / 2  # E|G| at sigma_X = sigma_Y, = sqrt(pi)/2 = 0.8862269...
 K_STAR = (H1 - TAIL) / 2  # = 0.0359322; the SHARP constant of (dagger)
 
@@ -146,6 +149,8 @@ RHO_D = mp.mpf("0.60")  # zone boundary: Phi'' >= 0 on [RHO_D, 1], Phi >= 0 on (
 # ==========================================================================================================
 iv = mp.iv
 iv.prec = 120  # ~36 digits; the Phi'' cancellation-free margin needs only a few
+# an mpmath.iv interval: mpmath attaches its arithmetic at run time, so no static type describes it
+Interval = Any
 
 _PI = iv.pi
 _K_IV = iv.mpf([K_STAR, K_STAR])
@@ -153,17 +158,19 @@ _P2 = 4 / (_PI * _PI)
 _P1 = 1 / iv.sqrt(_PI)
 
 
-def _cos2(x: object) -> object:
+def _cos2(x: Interval) -> Interval:
     c = iv.cos(x)
-    return c**2  # iv ** 2 yields a proper [0, .] square; c*c would admit a spurious negative lower bound
+    return (
+        c**2
+    )  # iv ** 2 yields a proper [0, .] square; c*c would admit a spurious negative lower bound
 
 
-def _sin2(x: object) -> object:
+def _sin2(x: Interval) -> Interval:
     s = iv.sin(x)
     return s**2
 
 
-def _clamp(v: object, env: object) -> object:
+def _clamp(v: Interval, env: Interval) -> Interval:
     """Intersect the interval v with [0, env.b]; replaces a +inf/NaN upper end (singular corner box) by the
     finite analytic envelope.  Valid because the true integrand lies in [0, env] on that box."""
     lo = v.a if (v.a == v.a and v.a >= 0) else mp.mpf(0)
@@ -175,7 +182,7 @@ def _clamp(v: object, env: object) -> object:
     return iv.mpf([lo, hi])
 
 
-def _rect2(f, n: int, env=None) -> object:
+def _rect2(f, n: int, env=None) -> Interval:
     """Rigorous interval rectangle-sum enclosure of int_0^{pi/2} int_0^{pi/2} f dP dQ over n x n boxes."""
     h = mp.pi / 2 / n
     tot = iv.mpf([0, 0])
@@ -190,7 +197,7 @@ def _rect2(f, n: int, env=None) -> object:
     return tot
 
 
-def _rect1(f, n: int) -> object:
+def _rect1(f, n: int) -> Interval:
     h = mp.pi / 2 / n
     tot = iv.mpf([0, 0])
     for i in range(n):
@@ -198,16 +205,16 @@ def _rect1(f, n: int) -> object:
     return tot
 
 
-def _endpts(v: object) -> tuple[str, str]:
+def _endpts(v: Interval) -> tuple[str, str]:
     """Plain decimal strings for the two endpoints of an iv interval (mp.nstr on an iv endpoint shows [.,.])."""
     return mp.nstr(mp.mpf(v.a), 4), mp.nstr(mp.mpf(v.b), 4)
 
 
-def _P_iv(r: object) -> object:
+def _P_iv(r: Interval) -> Interval:
     return (1 + r**4) * iv.mpf(2) ** iv.mpf(1.5) / (1 + r * r) ** iv.mpf(1.5)
 
 
-def _Ppp_iv(r: object) -> object:
+def _Ppp_iv(r: Interval) -> Interval:
     """P''(rho), elementary:  P = 2^{3/2} f g,  f = 1+rho^4,  g = (1+rho^2)^{-3/2}."""
     rt = iv.mpf(2) ** iv.mpf(1.5)
     f, fp, fpp = 1 + r**4, 4 * r**3, 12 * r * r
@@ -217,7 +224,7 @@ def _Ppp_iv(r: object) -> object:
     return rt * (fpp * g + 2 * fp * gp + f * gpp)
 
 
-def enclose_Phi(rlo: mp.mpf, rhi: mp.mpf, n2: int, n1: int) -> object:
+def enclose_Phi(rlo: mp.mpf, rhi: mp.mpf, n2: int, n1: int) -> Interval:
     """Interval enclosure of Phi(rho) = K_star P - (EZ - EG) for rho in [rlo, rhi]; left end > 0 => R < K_star."""
     r = iv.mpf([rlo, rhi])
     ez = _rect2(lambda P, Q: iv.sqrt(_cos2(P) + r * r * _cos2(Q)), n2) * _P2
@@ -225,19 +232,27 @@ def enclose_Phi(rlo: mp.mpf, rhi: mp.mpf, n2: int, n1: int) -> object:
     return _K_IV * _P_iv(r) + eg - ez
 
 
-def enclose_Phipp(rlo: mp.mpf, rhi: mp.mpf, n2: int, n1: int) -> object:
+def enclose_Phipp(rlo: mp.mpf, rhi: mp.mpf, n2: int, n1: int) -> Interval:
     """Interval enclosure of Phi''(rho) = K_star P'' - (EZ'' - EG'') for rho in [rlo, rhi]; left end > 0 needed."""
     r = iv.mpf([rlo, rhi])
 
     def den(P, Q):
         return _cos2(P) + r * r * _cos2(Q)
 
-    ezpp = _rect2(
-        lambda P, Q: _cos2(P) * _cos2(Q) / den(P, Q) ** iv.mpf(1.5),
-        n2,
-        env=lambda P, Q: iv.sqrt(_cos2(P) + _cos2(Q)) / (4 * r**3),  # PROVED corner envelope (rho<=1)
-    ) * _P2
-    egpp = _rect1(lambda T: _sin2(T) * _cos2(T) / (r * r + (1 - r * r) * _cos2(T)) ** iv.mpf(1.5), n1) * _P1
+    ezpp = (
+        _rect2(
+            lambda P, Q: _cos2(P) * _cos2(Q) / den(P, Q) ** iv.mpf(1.5),
+            n2,
+            env=lambda P, Q: (
+                iv.sqrt(_cos2(P) + _cos2(Q)) / (4 * r**3)
+            ),  # PROVED corner envelope (rho<=1)
+        )
+        * _P2
+    )
+    egpp = (
+        _rect1(lambda T: _sin2(T) * _cos2(T) / (r * r + (1 - r * r) * _cos2(T)) ** iv.mpf(1.5), n1)
+        * _P1
+    )
     return _K_IV * _Ppp_iv(r) - (ezpp - egpp)
 
 
@@ -252,7 +267,9 @@ def EG_np(sx2: float, sy2: float) -> float:
     return sqrt(a2) * sqrt(2 / pi) * ellipe(1 - b2 / a2)
 
 
-def excess_kluyver(ev: np.ndarray, od: np.ndarray, n_theta: int = 2000, t_max: float = 160.0) -> float:
+def excess_kluyver(
+    ev: np.ndarray, od: np.ndarray, n_theta: int = 2000, t_max: float = 160.0
+) -> float:
     """E|Z| - E|G| = int_0^inf (Mg(t) - M(t))/t^2 dt, the structure-explicit Kluyver excess identity (K)."""
     sx2 = 0.5 * float(np.sum(ev**2)) if len(ev) else 0.0
     sy2 = 0.5 * float(np.sum(od**2)) if len(od) else 0.0
@@ -270,7 +287,9 @@ def excess_kluyver(ev: np.ndarray, od: np.ndarray, n_theta: int = 2000, t_max: f
     def m_gauss(t: float) -> float:
         return float(np.exp(-(sx2 * c**2 + sy2 * sn**2) * t**2 / 2).mean())
 
-    val, _ = quad(lambda t: (m_gauss(t) - m_walk(t)) / t**2, 1e-7, t_max, limit=max(200, int(4 * t_max)))
+    val, _ = quad(
+        lambda t: (m_gauss(t) - m_walk(t)) / t**2, 1e-7, t_max, limit=max(200, int(4 * t_max))
+    )
     return val
 
 
@@ -330,7 +349,9 @@ def _cdiff(f, r: mp.mpf, order: int, h: mp.mpf) -> mp.mpf:
     return (f(r + 2 * h) - 4 * f(r + h) + 6 * f(r) - 4 * f(r - h) + f(r - 2 * h)) / h**4
 
 
-def grid_lipschitz_inf(f, lo: float, hi: float, order: int, delta: float, h: mp.mpf) -> tuple[mp.mpf, dict]:
+def grid_lipschitz_inf(
+    f, lo: float, hi: float, order: int, delta: float, h: mp.mpf
+) -> tuple[mp.mpf, dict]:
     """Rigorous lower bound on inf_{[lo,hi]} f^(order) by a grid-Lipschitz estimate (the verify_bn_profile_max
     method, one derivative deeper):  inf f^(k) >= min_i f^(k)(r_i) - (delta/2)(max_i|f^(k+1)| + (delta/2) max_i
     |f^(k+2)|),  the r_i the cell midpoints of an equispaced grid of step delta.  Returns (bound, diagnostics)."""
@@ -347,22 +368,30 @@ def grid_lipschitz_inf(f, lo: float, hi: float, order: int, delta: float, h: mp.
 
 # ==========================================================================================================
 def main() -> int:
-    global print
-    print = functools.partial(print, flush=True)
     ok = True
     print("=" * 100)
-    print("(dagger) TWO-COPY CORE as a THEOREM:  R(1,rho) <= K_star on (0,1], equality only at rho=1")
-    print(f"  K_star = (h(1)-sqrt(pi)/2)/2 = {K_STAR:.10f}    h(1) = {H1:.10f}    sqrt(pi)/2 = {TAIL:.7f}")
+    print(
+        "(dagger) TWO-COPY CORE as a THEOREM:  R(1,rho) <= K_star on (0,1], equality only at rho=1"
+    )
+    print(
+        f"  K_star = (h(1)-sqrt(pi)/2)/2 = {K_STAR:.10f}    h(1) = {H1:.10f}    sqrt(pi)/2 = {TAIL:.7f}"
+    )
     print("=" * 100)
 
     # ------------------------------------------------------------------------------------------------------
     # [S,B] exact structural identities: symmetry => R'(1)=0, boundary R(1,1)=K_star.
     # ------------------------------------------------------------------------------------------------------
     print("\n[S,B] exact identities (analytic):  R(1,rho)=R(1,1/rho) => R'(1)=0;  R(1,1)=K_star")
-    sym = max(abs(float(R_cross_hp(f"{r}")) - float(R_cross_hp(f"{1 / r}"))) for r in (0.3, 0.55, 0.8))
+    sym = max(
+        abs(float(R_cross_hp(f"{r}")) - float(R_cross_hp(f"{1 / r}"))) for r in (0.3, 0.55, 0.8)
+    )
     r11 = float(R_cross_hp("1.0"))
-    print(f"      symmetry  max|R(1,rho)-R(1,1/rho)| over rho=.3,.55,.8 = {sym:.2e}  (=> R'(1)=0, tangency)")
-    print(f"      boundary  R(1,1) = {r11:.10f}   K_star = {K_STAR:.10f}   |diff| = {abs(r11 - K_STAR):.2e}")
+    print(
+        f"      symmetry  max|R(1,rho)-R(1,1/rho)| over rho=.3,.55,.8 = {sym:.2e}  (=> R'(1)=0, tangency)"
+    )
+    print(
+        f"      boundary  R(1,1) = {r11:.10f}   K_star = {K_STAR:.10f}   |diff| = {abs(r11 - K_STAR):.2e}"
+    )
     sb_ok = sym < 1e-7 and abs(r11 - K_STAR) < 1e-6
     ok &= sb_ok
     print(f"      => structural identities hold: {'ok' if sb_ok else 'FAIL'}")
@@ -372,18 +401,28 @@ def main() -> int:
     #     Primary cert = grid-Lipschitz on Phi'' (fast, high-precision 1-D-elliptic values, the
     #     verify_bn_profile_max method one derivative deeper).  Plus genuine mpmath.iv spot-checks.
     # ------------------------------------------------------------------------------------------------------
-    print(f"\n[T] TOP zone [{float(RHO_D)}, 1]:  Phi'' = K_star P'' - (EZ'' - EG'') >= 0  (grid-Lipschitz cert)")
-    print("     + exact Phi(1)=Phi'(1)=0  =>  Phi(rho)=int_rho^1 (x-rho)Phi'' dx >= 0  =>  R(1,rho) <= K_star")
+    print(
+        f"\n[T] TOP zone [{float(RHO_D)}, 1]:  Phi'' = K_star P'' - (EZ'' - EG'') >= 0  (grid-Lipschitz cert)"
+    )
+    print(
+        "     + exact Phi(1)=Phi'(1)=0  =>  Phi(rho)=int_rho^1 (x-rho)Phi'' dx >= 0  =>  R(1,rho) <= K_star"
+    )
     t0 = time.time()
     delta_t, h_t = 0.02, mp.mpf("3e-3")
     bound_t, diag_t = grid_lipschitz_inf(Phi_hp, float(RHO_D), 1.0, 2, delta_t, h_t)
     top_ok = bound_t > 0
     ok &= top_ok
-    print(f"     grid (step {delta_t}, {diag_t['n']} cells): min Phi'' = {mp.nstr(diag_t['min'], 5)}, "
-          f"max|Phi'''| = {mp.nstr(diag_t['maxd1'], 4)}, max|Phi''''| = {mp.nstr(diag_t['maxd2'], 4)}")
-    print(f"     => inf Phi'' on [{float(RHO_D)},1] >= {mp.nstr(bound_t, 5)}  (> 0 ? {top_ok});  "
-          f"{time.time() - t0:.0f}s")
-    print("     mpmath.iv spot-checks (genuine enclosure on representative subintervals, width 0.01):")
+    print(
+        f"     grid (step {delta_t}, {diag_t['n']} cells): min Phi'' = {mp.nstr(diag_t['min'], 5)}, "
+        f"max|Phi'''| = {mp.nstr(diag_t['maxd1'], 4)}, max|Phi''''| = {mp.nstr(diag_t['maxd2'], 4)}"
+    )
+    print(
+        f"     => inf Phi'' on [{float(RHO_D)},1] >= {mp.nstr(bound_t, 5)}  (> 0 ? {top_ok});  "
+        f"{time.time() - t0:.0f}s"
+    )
+    print(
+        "     mpmath.iv spot-checks (genuine enclosure on representative subintervals, width 0.01):"
+    )
     spot_t_ok = True
     for lo, hi in (("0.60", "0.61"), ("0.78", "0.79"), ("0.99", "1.00")):
         v = enclose_Phipp(mp.mpf(lo), mp.mpf(hi), 200, 300)
@@ -395,75 +434,113 @@ def main() -> int:
     # ------------------------------------------------------------------------------------------------------
     # [L] LOWER zone (0, RHO_D]:  Phi = K_star P - (EZ - EG) >= 0  (grid-Lipschitz on Phi + iv spot-checks).
     # ------------------------------------------------------------------------------------------------------
-    print(f"\n[L] LOWER zone (0, {float(RHO_D)}]:  Phi = K_star P - (EZ - EG) >= 0  (grid-Lipschitz cert)")
+    print(
+        f"\n[L] LOWER zone (0, {float(RHO_D)}]:  Phi = K_star P - (EZ - EG) >= 0  (grid-Lipschitz cert)"
+    )
     t0 = time.time()
     delta_l, h_l = 0.02, mp.mpf("1e-3")
     bound_l, diag_l = grid_lipschitz_inf(Phi_hp, 0.0, float(RHO_D), 0, delta_l, h_l)
     lo_ok = bound_l > 0
     ok &= lo_ok
-    print(f"     grid (step {delta_l}, {diag_l['n']} cells): min Phi = {mp.nstr(diag_l['min'], 5)}, "
-          f"max|Phi'| = {mp.nstr(diag_l['maxd1'], 4)}, max|Phi''| = {mp.nstr(diag_l['maxd2'], 4)}")
-    print(f"     => inf Phi on (0,{float(RHO_D)}] >= {mp.nstr(bound_l, 5)}  (> 0 ? {lo_ok});  {time.time() - t0:.0f}s")
-    print("     mpmath.iv spot-checks (genuine enclosure; the binding edge rho->RHO_D is the thinnest cell):")
+    print(
+        f"     grid (step {delta_l}, {diag_l['n']} cells): min Phi = {mp.nstr(diag_l['min'], 5)}, "
+        f"max|Phi'| = {mp.nstr(diag_l['maxd1'], 4)}, max|Phi''| = {mp.nstr(diag_l['maxd2'], 4)}"
+    )
+    print(
+        f"     => inf Phi on (0,{float(RHO_D)}] >= {mp.nstr(bound_l, 5)}  (> 0 ? {lo_ok});  {time.time() - t0:.0f}s"
+    )
+    print(
+        "     mpmath.iv spot-checks (genuine enclosure; the binding edge rho->RHO_D is the thinnest cell):"
+    )
     spot_l_ok = True
     for lo, hi, n2 in (("0.010", "0.020", 200), ("0.300", "0.310", 240), ("0.595", "0.600", 320)):
         v = enclose_Phi(mp.mpf(lo), mp.mpf(hi), n2, 320)
         spot_l_ok &= v.a > 0
         ea, eb = _endpts(v)
-        print(f"       rho in [{lo},{hi}] (n={n2}): Phi in [{ea}, {eb}]  {'ok' if v.a > 0 else 'FAIL'}")
+        print(
+            f"       rho in [{lo},{hi}] (n={n2}): Phi in [{ea}, {eb}]  {'ok' if v.a > 0 else 'FAIL'}"
+        )
     ok &= spot_l_ok
     # the open endpoint (0, h_grid] near rho=0 is closed analytically by the exact limit, below K_star:
     R0 = (2 / pi - 1 / sqrt(pi)) / 2**1.5  # R(0+) = (EZ(0)-EG(0))/P(0)
     end_ok = R0 < K_STAR
     ok &= end_ok
-    print(f"     endpoint  R(0+) = (2/pi - 1/sqrt(pi))/2^(3/2) = {R0:.7f} < K_star = {K_STAR:.7f}  "
-          f"(closes rho->0): {'ok' if end_ok else 'FAIL'}")
+    print(
+        f"     endpoint  R(0+) = (2/pi - 1/sqrt(pi))/2^(3/2) = {R0:.7f} < K_star = {K_STAR:.7f}  "
+        f"(closes rho->0): {'ok' if end_ok else 'FAIL'}"
+    )
     if top_ok and lo_ok and sb_ok and end_ok and spot_t_ok and spot_l_ok:
-        print("\n  *** TWO-COPY CORE PROVED: R(1,rho) <= K_star on (0,1], equality only at rho=1. ***")
+        print(
+            "\n  *** TWO-COPY CORE PROVED: R(1,rho) <= K_star on (0,1], equality only at rho=1. ***"
+        )
 
     # ------------------------------------------------------------------------------------------------------
     # [C] the curve, for the record: R(1,rho) DIPS then RISES (so it is NOT monotone -- the dip min is the
     #     interior minimum the two-zone certificate routes around).
     # ------------------------------------------------------------------------------------------------------
-    print("\n[C] the two-copy curve R(1,rho)/K_star (dip-then-rise; the claimed 'monotone increasing' is FALSE):")
+    print(
+        "\n[C] the two-copy curve R(1,rho)/K_star (dip-then-rise; the claimed 'monotone increasing' is FALSE):"
+    )
     for rho in ("0.05", "0.157", "0.30", "0.60", "0.90", "1.0"):
         rr = float(R_cross_hp(rho)) / K_STAR
-        tag = "  <- interior MIN (~0.700)" if rho == "0.157" else ("  <- max = K_star" if rho == "1.0" else "")
+        tag = (
+            "  <- interior MIN (~0.700)"
+            if rho == "0.157"
+            else ("  <- max = K_star" if rho == "1.0" else "")
+        )
         print(f"      rho={rho:>6}:  R/K* = {rr:.5f}{tag}")
 
     # ------------------------------------------------------------------------------------------------------
     # [D] DISPROOF of the pointwise factor heuristic:  J0(z) <= exp(-z^2/4) is FALSE on the Bessel rings.
     # ------------------------------------------------------------------------------------------------------
-    print("\n[D] heuristic check:  J0(z) <= exp(-z^2/4)?  (the 'monotone factor' step) -- FALSE on the rings:")
+    print(
+        "\n[D] heuristic check:  J0(z) <= exp(-z^2/4)?  (the 'monotone factor' step) -- FALSE on the rings:"
+    )
     zs = np.linspace(0.0, 12.0, 240001)
     gap = j0(zs) - np.exp(-(zs**2) / 4)
     zmax = float(zs[gap.argmax()])
-    print(f"      max_z [J0(z) - exp(-z^2/4)] = {gap.max():+.4f} at z = {zmax:.3f}  (>0 => inequality FAILS)")
-    print("      holds only on [0, j_(0,1)] = [0, 2.405]; on the rings J0 exceeds the Gaussian "
-          "(the t>2.405 tail).")
+    print(
+        f"      max_z [J0(z) - exp(-z^2/4)] = {gap.max():+.4f} at z = {zmax:.3f}  (>0 => inequality FAILS)"
+    )
+    print(
+        "      holds only on [0, j_(0,1)] = [0, 2.405]; on the rings J0 exceeds the Gaussian "
+        "(the t>2.405 tail)."
+    )
     dis_ok = gap.max() > 0.2  # the violation is real and large
     ok &= dis_ok
 
     # ------------------------------------------------------------------------------------------------------
     # [M] the >2-copy reduction is NOT monotone: balance-preserving split can RAISE R.
     # ------------------------------------------------------------------------------------------------------
-    print("\n[M] 'splitting/merging lowers R' inside the balanced class -- FALSE (balance-preserving split):")
+    print(
+        "\n[M] 'splitting/merging lowers R' inside the balanced class -- FALSE (balance-preserving split):"
+    )
     ev0, od0 = np.array([1.0, 0.8]), np.array([1.0, 0.8])
     r_before = ratio_np(ev0, od0) / K_STAR
-    ev1 = np.array([0.8, 1.0 / sqrt(2), 1.0 / sqrt(2)])  # split the even '1' -> two .707 (keeps even variance)
-    od1 = np.array([0.8, 1.0 / sqrt(2), 1.0 / sqrt(2)])  # and the odd '1' likewise (balance preserved, 3|3)
+    ev1 = np.array(
+        [0.8, 1.0 / sqrt(2), 1.0 / sqrt(2)]
+    )  # split the even '1' -> two .707 (keeps even variance)
+    od1 = np.array(
+        [0.8, 1.0 / sqrt(2), 1.0 / sqrt(2)]
+    )  # and the odd '1' likewise (balance preserved, 3|3)
     r_after = ratio_np(ev1, od1) / K_STAR
-    print(f"      {{1,0.8}}|{{1,0.8}}  R/K* = {r_before:.4f}   --split both-->   "
-          f"{{.707,.707,0.8}}|{{.707,.707,0.8}}  R/K* = {r_after:.4f}")
+    print(
+        f"      {{1,0.8}}|{{1,0.8}}  R/K* = {r_before:.4f}   --split both-->   "
+        f"{{.707,.707,0.8}}|{{.707,.707,0.8}}  R/K* = {r_after:.4f}"
+    )
     rose = r_after > r_before
-    print(f"      => R {'ROSE' if rose else 'fell'} under a balance-preserving split: no monotone chain to the "
-          f"pair {'(confirmed)' if rose else ''}")
+    print(
+        f"      => R {'ROSE' if rose else 'fell'} under a balance-preserving split: no monotone chain to the "
+        f"pair {'(confirmed)' if rose else ''}"
+    )
     ok &= rose
 
     # ------------------------------------------------------------------------------------------------------
     # [G] GLOBALITY on BALANCED configs (VALIDATED): the equal pair is the max; the imbalanced 1+5 exceeds it.
     # ------------------------------------------------------------------------------------------------------
-    print("\n[G] globality on BALANCED configs (|#even-#odd|<=1)  (VALIDATED: family sweep + 600 search):")
+    print(
+        "\n[G] globality on BALANCED configs (|#even-#odd|<=1)  (VALIDATED: family sweep + 600 search):"
+    )
     fams = {
         "pair {1}|{1}": (np.array([1.0]), np.array([1.0])),
         "single {1}|{}": (np.array([1.0]), np.array([])),
@@ -488,30 +565,45 @@ def main() -> int:
             continue
         worst_rand = max(worst_rand, ratio_np(ev, od, fast=True) / K_STAR)
         n_done += 1
-    r_imbal = ratio_np(np.array([1.0]), np.full(5, 0.6)) / K_STAR  # imbalanced -- NOT a profile config
+    r_imbal = (
+        ratio_np(np.array([1.0]), np.full(5, 0.6)) / K_STAR
+    )  # imbalanced -- NOT a profile config
     worst_bal = max(worst_fam, worst_rand)
-    print(f"      worst over {n_done} balanced random configs: R/K* = {worst_rand:.4f}  "
-          f"(family worst {worst_fam:.4f} at {worst_name})")
-    print(f"      imbalanced 1-even+5-odd(.6) [NOT a profile config]: R/K* = {r_imbal:.4f}  -- "
-          f"unrestricted bound FALSE")
+    print(
+        f"      worst over {n_done} balanced random configs: R/K* = {worst_rand:.4f}  "
+        f"(family worst {worst_fam:.4f} at {worst_name})"
+    )
+    print(
+        f"      imbalanced 1-even+5-odd(.6) [NOT a profile config]: R/K* = {r_imbal:.4f}  -- "
+        f"unrestricted bound FALSE"
+    )
     glob_ok = worst_bal <= 1.0005 and r_imbal > 1.0
     ok &= glob_ok
-    print(f"      => balanced max at the pair (R/K* = {worst_bal:.4f}); imbalanced exceeds K_star: "
-          f"{'ok' if glob_ok else 'FAIL'}")
+    print(
+        f"      => balanced max at the pair (R/K* = {worst_bal:.4f}); imbalanced exceeds K_star: "
+        f"{'ok' if glob_ok else 'FAIL'}"
+    )
 
     # ------------------------------------------------------------------------------------------------------
     print("\n" + "=" * 100)
-    print("RESULT:", (
-        "PASS -- TWO-COPY CORE is a THEOREM: R(1,rho) <= K_star on (0,1] (equality only at rho=1), proved by\n"
-        "        the interval certificate Phi>=0 on (0,0.6] and Phi''>=0 on [0.6,1] plus the exact tangency\n"
-        "        R'(1)=0 (symmetry) and R(1,1)=K_star.  This upgrades verify_dagger_extremal.py (R5) to proved.\n"
-        "        The >2-copy reduction is NOT a monotone splitting/merging chain (counterexample [M]); the\n"
-        "        balanced globality stays VALIDATED (equal pair maximal in a 600-config search), and three\n"
-        "        heuristics ('R monotone', 'J0<=Gaussian', 'splitting lowers R') are explicitly DISPROVED."
-    ) if ok else "FAIL -- see the failing block above")
-    print("Rigor: PROVED = the two-copy-core inequality (interval + exact tangency).  VALIDATED (not proved) =\n"
-          "       the balanced >2-copy globality.  The residual is a genuine multivariate problem, NOT a\n"
-          "       reduction to the two-copy core, because splitting/merging does not monotonically order R.")
+    print(
+        "RESULT:",
+        (
+            "PASS -- TWO-COPY CORE is a THEOREM: R(1,rho) <= K_star on (0,1] (equality only at rho=1), proved by\n"
+            "        the interval certificate Phi>=0 on (0,0.6] and Phi''>=0 on [0.6,1] plus the exact tangency\n"
+            "        R'(1)=0 (symmetry) and R(1,1)=K_star.  This upgrades verify_dagger_extremal.py (R5) to proved.\n"
+            "        The >2-copy reduction is NOT a monotone splitting/merging chain (counterexample [M]); the\n"
+            "        balanced globality stays VALIDATED (equal pair maximal in a 600-config search), and three\n"
+            "        heuristics ('R monotone', 'J0<=Gaussian', 'splitting lowers R') are explicitly DISPROVED."
+        )
+        if ok
+        else "FAIL -- see the failing block above",
+    )
+    print(
+        "Rigor: PROVED = the two-copy-core inequality (interval + exact tangency).  VALIDATED (not proved) =\n"
+        "       the balanced >2-copy globality.  The residual is a genuine multivariate problem, NOT a\n"
+        "       reduction to the two-copy core, because splitting/merging does not monotonically order R."
+    )
     return 0 if ok else 1
 
 

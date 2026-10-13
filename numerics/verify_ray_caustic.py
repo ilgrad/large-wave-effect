@@ -30,12 +30,12 @@ def trace(x0: np.ndarray, k: float, sigma: float, dz: float, zsteps: int) -> np.
     """Leapfrog ray positions x(z); returns array (zsteps+1, n_rays). x'' = -k x exp(-x^2/2 sigma^2)."""
     x = x0.copy()
     v = np.zeros_like(x0)
-    acc = -k * x * np.exp(-x**2 / (2 * sigma**2))
+    acc = -k * x * np.exp(-(x**2) / (2 * sigma**2))
     out = [x.copy()]
     for _ in range(zsteps):
         v += 0.5 * dz * acc
         x = x + dz * v
-        acc = -k * x * np.exp(-x**2 / (2 * sigma**2))
+        acc = -k * x * np.exp(-(x**2) / (2 * sigma**2))
         v += 0.5 * dz * acc
         out.append(x.copy())
     return np.array(out)
@@ -61,8 +61,10 @@ def main() -> int:
     z_focus = z[int(spread.argmin())]
     a_ok = 0 < z_c < z[-1] and abs(z_c - z_focus) < 0.2 * z_c + 5
     ok &= a_ok
-    print(f"\n(A) Caustic: Jacobian first vanishes at z_c = {z_c:.1f}; bundle focal z = {z_focus:.1f}  "
-          f"{'OK' if a_ok else 'FAIL'}")
+    print(
+        f"\n(A) Caustic: Jacobian first vanishes at z_c = {z_c:.1f}; bundle focal z = {z_focus:.1f}  "
+        f"{'OK' if a_ok else 'FAIL'}"
+    )
 
     # (B) fold: at a plane past z_c, count rays reaching a target transverse point (1 -> 3)
     zp = int((caustic_idx + zsteps) / 2)
@@ -71,21 +73,29 @@ def main() -> int:
     crossings = int(np.sum(np.abs(np.diff(np.sign(xp - target))) > 0))
     b_ok = crossings >= 3
     ok &= b_ok
-    print(f"(B) Past the caustic (z={z[zp]:.0f}): {crossings} rays reach x=0 (fold gives >=3): "
-          f"{'OK' if b_ok else 'FAIL'}")
+    print(
+        f"(B) Past the caustic (z={z[zp]:.0f}): {crossings} rays reach x=0 (fold gives >=3): "
+        f"{'OK' if b_ok else 'FAIL'}"
+    )
 
     # (C) no lens (K=0): rays stay parallel, no caustic
     xz0 = trace(x0, 0.0, sigma, dz, zsteps)
     j0 = np.gradient(xz0, x0, axis=1)
     c_ok = bool(np.all(j0 > 0.99))
     ok &= c_ok
-    print(f"(C) No lens (K=0): min Jacobian = {j0.min():.3f} (==1, rays parallel): "
-          f"{'OK' if c_ok else 'FAIL'}")
+    print(
+        f"(C) No lens (K=0): min Jacobian = {j0.min():.3f} (==1, rays parallel): "
+        f"{'OK' if c_ok else 'FAIL'}"
+    )
 
     print("\n" + "=" * 70)
     print("RESULT:", "RAY CAUSTIC VERIFIED" if ok else "CHECK FAILED")
-    print("A current-jet lens bends parallel rays into a caustic (fold), where the ray density and the")
-    print("linear wave amplitude concentrate -- the geometric-optics skeleton of refractive focusing.")
+    print(
+        "A current-jet lens bends parallel rays into a caustic (fold), where the ray density and the"
+    )
+    print(
+        "linear wave amplitude concentrate -- the geometric-optics skeleton of refractive focusing."
+    )
     print("=" * 70)
     return 0 if ok else 1
 

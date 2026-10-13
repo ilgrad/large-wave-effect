@@ -100,7 +100,9 @@ def main() -> int:
     print("=" * 74)
     print("Lemma 4: independent low-mode prefix carries a logarithmic budget (all N)")
     print("=" * 74)
-    print(f"  {'N':>4} {'floor(N/2)':>10} {'M(N)':>5} {'L_pre':>8} {'U_N':>8} {'L_pre/lnN':>10} {'kind':>9}")
+    print(
+        f"  {'N':>4} {'floor(N/2)':>10} {'M(N)':>5} {'L_pre':>8} {'U_N':>8} {'L_pre/lnN':>10} {'kind':>9}"
+    )
 
     def kind(n: int) -> str:
         if all(n % d for d in range(2, int(n**0.5) + 1)):
@@ -109,10 +111,57 @@ def main() -> int:
             return "2^m"
         return "composite"
 
-    ns = sorted({3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 127,
-                 4, 8, 16, 32, 64, 128, 256,
-                 6, 9, 10, 12, 14, 15, 18, 20, 21, 24, 25, 27, 30, 33, 35, 36, 40, 45, 48, 50, 60,
-                 120, 180, 210, 240})  # incl. highly composite worst cases
+    ns = sorted(
+        {
+            3,
+            5,
+            7,
+            11,
+            13,
+            17,
+            19,
+            23,
+            29,
+            31,
+            37,
+            41,
+            43,
+            47,
+            127,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128,
+            256,
+            6,
+            9,
+            10,
+            12,
+            14,
+            15,
+            18,
+            20,
+            21,
+            24,
+            25,
+            27,
+            30,
+            33,
+            35,
+            36,
+            40,
+            45,
+            48,
+            50,
+            60,
+            120,
+            180,
+            210,
+            240,
+        }
+    )  # incl. highly composite worst cases
     logs, budgets = [], []
     for n in ns:
         m = independent_prefix(n)
@@ -121,13 +170,17 @@ def main() -> int:
         u_n = float(1.0 / (2 * n) * np.sum(1.0 / np.sin(np.pi * np.arange(1, n) / n)))
         logs.append(np.log(n))
         budgets.append(l_pre)
-        print(f"  {n:>4} {n // 2:>10} {m:>5} {l_pre:>8.4f} {u_n:>8.4f} "
-              f"{l_pre / np.log(n):>10.4f} {kind(n):>9}")
+        print(
+            f"  {n:>4} {n // 2:>10} {m:>5} {l_pre:>8.4f} {u_n:>8.4f} "
+            f"{l_pre / np.log(n):>10.4f} {kind(n):>9}"
+        )
 
     logs_a, budgets_a = np.array(logs), np.array(budgets)
     a, b = np.polyfit(logs_a, budgets_a, 1)
     pred = a * logs_a + b
-    r2 = 1 - float(np.sum((budgets_a - pred) ** 2)) / float(np.sum((budgets_a - budgets_a.mean()) ** 2))
+    r2 = 1 - float(np.sum((budgets_a - pred) ** 2)) / float(
+        np.sum((budgets_a - budgets_a.mean()) ** 2)
+    )
     min_ratio = float(np.min(budgets_a / logs_a))
     print("\n  fit L_pre ~ a ln N + b:  a =", f"{a:.4f}", " R^2 =", f"{r2:.4f}")
     print(f"  min over all N of L_pre/lnN = {min_ratio:.4f}  (>0 => budget never collapses)")
@@ -136,7 +189,9 @@ def main() -> int:
     print("\n" + "=" * 74)
     print("RESULT:", "BUDGET GROWS ~ln N FOR ALL N" if ok else "BUDGET COLLAPSES (unexpected)")
     print("=> independent low modes alone give A_N >~ c ln N for every N (primes, 2^m, composite);")
-    print("   the remaining rigor is controlling out-of-prefix interference (Lebesgue-constant route).")
+    print(
+        "   the remaining rigor is controlling out-of-prefix interference (Lebesgue-constant route)."
+    )
     print("=" * 74)
     return 0 if ok else 1
 

@@ -96,7 +96,7 @@ def max_over_subtorus(coeff: np.ndarray, c_mat: np.ndarray, starts: int) -> floa
 def ring_AN(n: int, starts: int = 30) -> tuple[float, float]:
     r = np.arange(1, n)
     omega = 2.0 * np.sin(np.pi * r / n)
-    c_mat = sin_coords(2 * n, list(r))
+    c_mat = sin_coords(2 * n, r.tolist())
     u_n = float(np.sum(1.0 / np.sin(np.pi * r / n)) / (2 * n))
     best = 0.0
     for j in range(n // 2 + 1):

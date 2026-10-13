@@ -24,11 +24,13 @@ def b_over_sqrt(n: int) -> tuple[float, float]:
     """Return (B_N/sqrt(N) from a dense scan, value at the proven point t=N/8)."""
     lam = 2.0 - 2.0 * np.cos(2.0 * np.pi * np.arange(n) / n)
     # dense uniform scan plus the Talbot grid t = pi a / N and the Bessel point N/8
-    ts = np.concatenate([
-        np.linspace(0.01, 2.0 * n, 4000),
-        np.pi * np.arange(1, n + 1) / n,
-        np.array([n / 8.0]),
-    ])
+    ts = np.concatenate(
+        [
+            np.linspace(0.01, 2.0 * n, 4000),
+            np.pi * np.arange(1, n + 1) / n,
+            np.array([n / 8.0]),
+        ]
+    )
     vals = [kernel_l1(n, float(t), lam) for t in ts]
     return max(vals) / np.sqrt(n), kernel_l1(n, n / 8.0, lam) / np.sqrt(n)
 
@@ -48,8 +50,12 @@ def main() -> int:
         print(f"  {n:>6} {scan:>11.5f} {low:>12.5f} {within!s:>16}")
     band = 0.6 < sup_ratio < 1.0
     ok &= band
-    print(f"\n  -> empirical sup_N B_N/sqrt(N) ~ {sup_ratio:.4f}, inside the proven band (0.63, 1].")
-    print("     The exact constant lim B_N/sqrt(N) remains open (an almost-periodic / Gauss-sum sup).")
+    print(
+        f"\n  -> empirical sup_N B_N/sqrt(N) ~ {sup_ratio:.4f}, inside the proven band (0.63, 1]."
+    )
+    print(
+        "     The exact constant lim B_N/sqrt(N) remains open (an almost-periodic / Gauss-sum sup)."
+    )
     print("\n" + "=" * 70)
     print("RESULT:", "B_N CONSTANT MAPPED" if ok else "CHECK FAILED")
     print("=" * 70)
