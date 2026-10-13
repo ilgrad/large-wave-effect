@@ -20,9 +20,19 @@ by numerics/verify_middle_far.py); Arb is CPU-only, so process parallelism is th
 values are cached, so adjacent boxes share their common stencil nodes.  --coverage checks that the
 certified boxes in the JSONL cover the band.
 
+--rigorous replaces the per-box certificate by numerics/dagger_rigorous.py (every bound an Arb enclosure:
+exact signed Kluyver integral on [0, 24] by Gauss-Legendre x periodic midpoint rule with analytic error
+bounds, an exact degree-10 amplitude Taylor polynomial with a Cauchy remainder, an exact quadratic maximum
+over the box, the capped-envelope tail).  Boxes are exact decimals; the base grid is every lattice box of
+half-width h whose interval enclosure meets the band, so a run in which every box proves covers the band by
+construction; one box costs ~1.5 s, so boxes (not nodes) are the parallel unit.  Rows go to
+dagger_campaign_rigorous.jsonl with the Arb balls of every term, the parameters and the SHA-256 of the
+certificate source; numerics/verify_dagger_rigorous.py re-checks them and the band coverage.
+
     uv run --script numerics/run_dagger_campaign.py --dry-run
     uv run --script numerics/run_dagger_campaign.py --h 0.0075 --step 0.015 --jobs 14
     uv run --script numerics/run_dagger_campaign.py --coverage
+    uv run --script numerics/run_dagger_campaign.py --rigorous --jobs 8
 """
 
 from __future__ import annotations
@@ -33,12 +43,18 @@ import json
 import math
 import sys
 import time
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
+from decimal import Decimal, localcontext
+from fractions import Fraction
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CERTP = ROOT / "numerics" / "verify_dagger_continuum.py"
 OUT = ROOT / "numerics" / "dagger_campaign.jsonl"
+CERT_RIG = ROOT / "numerics" / "dagger_rigorous.py"
+OUT_RIG = ROOT / "numerics" / "dagger_campaign_rigorous.jsonl"
+ORIGIN = Fraction("0.535")  # box edges sit on ORIGIN + k * (2h)
+M_BAND = (Fraction("0.36"), Fraction("0.7"))  # lambda = 1 - min(a1^2, a3^2, b^2)/2 in [0.65, 0.82)
 
 HEAD_RES = (30, 600, 6)
 MID_SLICES = [
@@ -198,6 +214,131 @@ def uncovered_cells(cert, rows, origin=0.535):
     return out
 
 
+def _load_rigorous():
+    spec = importlib.util.spec_from_file_location("dagger_rigorous", CERT_RIG)
+    m = importlib.util.module_from_spec(spec)
+    sys.modules["dagger_rigorous"] = m
+    spec.loader.exec_module(m)
+    return m
+
+
+_RIG = None
+
+
+def _init_rigorous():
+    global _RIG
+    _RIG = _load_rigorous()
+    _RIG.kstar_enclosure()
+
+
+def certify_rigorous(task):
+    (a1, a3, h), depth = task
+    rec = _RIG.certify_box(a1, a3, h)
+    rec["depth"] = depth
+    return rec
+
+
+def dec(x: Fraction) -> str:
+    """Exact decimal string of a Fraction with denominator 2^i 5^j."""
+    d = x.denominator
+    for p in (2, 5):
+        while d % p == 0:
+            d //= p
+    if d != 1:
+        raise ValueError(f"{x} has no finite decimal expansion")
+    with localcontext() as c:
+        c.prec = 80
+        s = format((Decimal(x.numerator) / Decimal(x.denominator)).normalize(), "f")
+    if Fraction(s) != x:
+        raise ArithmeticError(f"decimal conversion of {x} is inexact")
+    return s
+
+
+def meets_band(x0: Fraction, x1: Fraction, y0: Fraction, y1: Fraction) -> bool:
+    """Exact interval test: can min(a1^2, a3^2, b^2) on [x0,x1]x[y0,y1] fall in the band (0.36, 0.7]?"""
+    m_lo = min(x0 * x0, y0 * y0, 2 - x1 * x1 - y1 * y1)
+    m_hi = min(x1 * x1, y1 * y1, 2 - x0 * x0 - y0 * y0)
+    return m_hi > M_BAND[0] and m_lo <= M_BAND[1]
+
+
+def band_boxes(h: Fraction) -> list[tuple[str, str, str]]:
+    """Every box [a1c +- h] x [a3c +- h] of the lattice ORIGIN + 2hk with a1c >= a3c, inside the disc,
+    whose interval enclosure meets the band (exact rational arithmetic)."""
+    out = []
+    k = 0
+    while ORIGIN + 2 * h * k < Fraction(3, 2):
+        x0 = ORIGIN + 2 * h * k
+        for j in range(k + 1):
+            y0 = ORIGIN + 2 * h * j
+            x1, y1 = x0 + 2 * h, y0 + 2 * h
+            if x1 * x1 + y1 * y1 < 2 and meets_band(x0, x1, y0, y1):
+                out.append((dec(x0 + h), dec(y0 + h), dec(h)))
+        k += 1
+    out.sort(key=lambda b: (abs(Fraction(b[0]) - Fraction(b[1])), b))
+    return out
+
+
+def run_rigorous(args) -> int:
+    out = Path(args.out) if args.out else OUT_RIG
+    if args.box:
+        base = [tuple(dec(Fraction(x.strip())) for x in spec.split(",")) for spec in args.box]
+    else:
+        base = band_boxes(Fraction(str(args.h)))
+    tasks = [(b, 0) for b in base]
+    if args.limit:
+        tasks = tasks[: args.limit]
+    print(
+        f"rigorous: base boxes={len(tasks)} h={args.h} jobs={args.jobs} max_depth={args.max_depth}"
+    )
+    print(f"  output {out}")
+    if args.dry_run:
+        for b, _d in tasks[:12]:
+            print(f"  {b}")
+        return 0
+    ok = fail = 0
+    t0 = time.time()
+    with (
+        out.open("a", encoding="utf-8") as fh,
+        ProcessPoolExecutor(max_workers=args.jobs, initializer=_init_rigorous) as pool,
+    ):
+        pending = {pool.submit(certify_rigorous, t): t for t in tasks}
+        while pending:
+            done, _ = wait(pending, return_when=FIRST_COMPLETED)
+            for fut in done:
+                (a1, a3, h), depth = pending.pop(fut)
+                rec = fut.result()
+                fh.write(json.dumps(rec, sort_keys=True) + "\n")
+                fh.flush()
+                if rec["proves"]:
+                    ok += 1
+                elif depth < args.max_depth:
+                    hh = Fraction(h) / 2
+                    for s1 in (-1, 1):
+                        for s3 in (-1, 1):
+                            child = (
+                                dec(Fraction(a1) + s1 * hh),
+                                dec(Fraction(a3) + s3 * hh),
+                                dec(hh),
+                            )
+                            pending[pool.submit(certify_rigorous, (child, depth + 1))] = (
+                                child,
+                                depth + 1,
+                            )
+                    print(f"  SPLIT ({a1},{a3},{h}) upper={rec['upper']:.5f} -> depth {depth + 1}")
+                else:
+                    fail += 1
+                    print(f"  FAIL ({a1},{a3},{h}) upper={rec['upper']:.5f} at max depth")
+                print(
+                    f"  [{ok} ok, {fail} fail, {len(pending)} pending] {time.time() - t0:.0f}s "
+                    f"({a1},{a3},h={h}) upper={rec['upper']:.5f} ({rec['seconds']['total']:.1f}s)",
+                    flush=True,
+                )
+    print(
+        f"\nDONE: {ok} certified, {fail} failed at max depth [{time.time() - t0:.0f}s]  ->  {out}"
+    )
+    return 0 if fail == 0 else 1
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--h", type=float, default=0.015)
@@ -212,7 +353,18 @@ def main():
     ap.add_argument(
         "--coverage", action="store_true", help="check that the certified boxes cover the band"
     )
+    ap.add_argument(
+        "--rigorous",
+        action="store_true",
+        help="use the fully rigorous per-box certificate numerics/dagger_rigorous.py",
+    )
+    ap.add_argument("--out", default=None, help="JSONL output (rigorous mode)")
     args = ap.parse_args()
+    if args.rigorous:
+        if args.coverage:
+            print("rigorous rows: run numerics/verify_dagger_rigorous.py (exact coverage + checks)")
+            return 2
+        return run_rigorous(args)
     cert = _load()
     if args.coverage:
         rows = [json.loads(s) for s in OUT.read_text(encoding="utf-8").splitlines() if s.strip()]

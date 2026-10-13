@@ -9,6 +9,12 @@ verify_dagger_singleton.py (the per-point three-region Arb bound, worst config ~
 verify_dagger_tail.py (the signed two-ring tail), verify_dagger_kluyver.py (head positivity + exact cumulant
 head), verify_dagger_extremal2.py (the two-copy core, a THEOREM), and dagger_singleton_rings.mac.
 
+SUPERSEDED FOR THE PER-BOX CLAIM by numerics/dagger_rigorous.py, a fully rigorous certificate (every bound
+an Arb enclosure: the exact signed Kluyver integral with Gauss-Legendre x periodic-midpoint error bounds,
+an exact amplitude Taylor polynomial with a Cauchy remainder, an exact quadratic maximum over the box).
+The prove_box / build_stencil / StencilModel.sup path below is the VALIDATED historical pipeline
+(finite-difference amplitude and far-collocation remainders, a 41x41 grid maximum), kept for reference.
+
 ==========================================================================================================
 THE CLAIM.  For the SINGLETON-CHANNEL family  even = {a1, a3},  odd = {b},  Sigma_2 = (a1^2+a3^2+b^2)/2 = 1
 (so a1^2+a3^2+b^2 = 2), the balanced Gaussian-excess inequality holds with the SHARP constant

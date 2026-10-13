@@ -21,15 +21,19 @@ the paper:
    central open question for the effect.
 2. **Classifies saturation:** A_N = U_N (the ceiling) if and only if N is prime or a power of two —
    equivalently, every integer frequency relation has coefficient-sum divisible by four — via an explicit
-   root-of-unity obstruction valid for every composite N that is not a power of two.
+   root-of-unity obstruction valid for every composite N that is not a power of two. The obstruction is
+   quantitative: U_N − A_N ≥ 1/(16p²) for p the least odd prime factor, above 0.043 whenever 3 | N, and
+   asymptotic to π³/(16N²) for N = 2p.
 3. **Locates the infinite-time saturation of the discrete Schrödinger amplification:** B_N = Θ(√N)
    in the ℓ∞ operator norm, with liminf B_N/√N ≥ c₀/√2 proved; B_N = √N exactly when the orbit closure (of
    dimension φ(N)/2) contains a flat phase vector, which holds for N = p and N = p² (the ε-uniform mixing
    of Godsil–Mullin–Roy and Cao–Zhu) and fails for every even N ≥ 6 (new for the even squares; for the
-   other even N it also follows from Monterde's bipartite conditions) and for N = 15 (an exact Nullstellensatz
-   certificate, computer-assisted), so limsup B_N/√N = 1. On the
+   other even N it also follows from Monterde's bipartite conditions) and for N = 15 and N = 21 (exact
+   Nullstellensatz certificates, computer-assisted; for C_21 this is new even for exact uniform mixing, the
+   case Gray–Patel–Young name as the next open one), so limsup B_N/√N = 1. On the
    dispersive time scale t = O(N) the constant splits by parity; the odd-N value β_odd = 0.928… is an elliptic-integral constant with no elementary closed form, and its
-   windowed sharp upper bound is reduced to one validated residual inequality and an s-uniform transfer.
+   windowed sharp upper bound is reduced to one residual inequality (proved by a computer-assisted Arb
+   certificate on its singleton-channel family, validated on the rest) and an s-uniform transfer.
 4. **Extends and continues:** the order law to the Dirichlet segment and to every ring product C_N □ H; and
    a rigorous chain for the focusing discrete NLS (weak-nonlinear persistence, the modulational-instability
    band from the L_N spectrum, no dispersal of a single-site excitation above γP = 4 and on-site trapping

@@ -467,10 +467,13 @@ the accessible range ($\omega(m)\le3$) shows the small
 excess is a \emph{balance} of a positive dependent net ($\approx0.17$) against a negative prefix deficit
 ($\approx-0.08$) rather than near-total sign cancellation, so the asymptotic mechanism remains conjectural
 (Conjecture~\ref{conj:excess}).
-For small $N$ the strict gap
-$A_N<U_N$ is \emph{certified}: the Lipschitz-grid certificate (double precision without directed rounding,
+For every non-saturating $N$ the gap has an explicit lower bound
+(Proposition~\ref{prop:deficit-lower}): $U_N-A_N>0.043$ whenever $3\mid N$, $U_N-A_N\ge1/(16p^2)$ with $p$ the least
+odd prime factor, and $U_N-A_N\sim\pi^3/(16N^2)$ for $N=2p$; these bounds do not grow. For small $N$ the gap is
+pinned down further. The Lipschitz-grid certificate (double precision without directed rounding,
 its slack exceeding the rounding error by orders of magnitude) gives
-$U_N-A_N\ge0.048,0.056,0.029,0.081$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}). For odd
+$U_N-A_N\ge0.048,0.056,0.029,0.081$ for $N=6,9,12,15$ (\texttt{verify\_defect\_certified.py}; for $N=9,12$
+Proposition~\ref{prop:deficit-lower}(i) gives $0.0564$ and $0.0431$ in exact arithmetic). For odd
 $N=9,15,21$ an exact sum-of-squares certificate pins the defect. Parametrize the orbit closure by the
 prefix phases, $\varphi_r=\langle n_r,\psi\rangle$ with $\psi\in\mathbb T^M$ and $n_r\in\Z^M$ (each relation
 $\omega_r=\sum_sn_{rs}\omega_s$ is checked in $\Q(\zeta_{2N})$), put $z_s=\eu^{\mathrm i\psi_s}$, and let $v=(z^{B_a})_a$ be a
@@ -937,7 +940,8 @@ revival on paths and cycles is characterized through the same Kronecker lemma~\c
 $2+0-1\equiv3\ (4)\ne0$, so by Theorem~\ref{thm:ceiling} $A_6<U_6$; quantitatively a Lipschitz-grid
 (branch-and-bound) certificate on the two-dimensional subtorus, in double precision, brackets
 $A_6\in[0.5594,0.5604]$, so $U_6-A_6\ge0.048>0$, while the prime
-$N=5$ returns $A_5=U_5$ (\texttt{verify\_sos\_certified.py}).
+$N=5$ returns $A_5=U_5$ (\texttt{verify\_sos\_certified.py}). Explicit lower bounds for every composite $N$
+follow in Proposition~\ref{prop:deficit-lower}.
 
 \begin{proposition}[twice a prime: the sharp constant on a composite family]\label{prop:2p}
 For $N=2p$ with $p$ an odd prime, $A_N=U_N-O(1/N)=\tfrac1\pi\ln(2p)+O(1)$; the sharp constant $1/\pi$
@@ -962,6 +966,119 @@ $\tfrac2N\sum_{r=1}^{p-1}\omega_r^{-1}=\tfrac1N\sum_{r=1}^{p-1}\csc\tfrac{\pi r}
 we get $\sup_t u_0(t)\ge U_N-\tfrac1N$. As $A_N\le U_N$ always, $A_N\in[U_N-\tfrac1N,\,U_N]$
 (\texttt{verify\_2p\_family.py}).
 \end{proof}
+
+\noindent The deficit is in fact of order $N^{-2}$ on this family (Proposition~\ref{prop:deficit-lower}(ii)).
+Theorem~\ref{thm:classification} is qualitative; one relation per class of residues makes it quantitative.
+
+\begin{lemma}[the defect of one relation]\label{lem:rel-defect}
+Let $k\in\Lambda_N$ have odd coefficient sum $\sum_rk_r$, and let $w_r>0$. For every $\varphi$ in the orbit
+closure $\mathbb T_N$, with the sums over the support of $k$,
+\[
+  \sum_rw_r\bigl(1-\sin\varphi_r\bigr)\ \ge\ \Bigl(2\sum_r\frac{k_r^2}{w_r}\Bigr)^{-1}
+  \qquad\text{and}\qquad
+  \sum_rw_r\bigl(1-(-1)^r\sin\varphi_r\bigr)\ \ge\ \Bigl(2\sum_r\frac{k_r^2}{w_r}\Bigr)^{-1}.
+\]
+\end{lemma}
+
+\begin{proof}
+Write $\varphi_r=\tfrac\pi2+\delta_r$, resp.\ $\varphi_r=\tfrac\pi2+\pi r+\delta_r$, with $\delta_r\in(-\pi,\pi]$,
+so that each summand is $w_r(1-\cos\delta_r)$. On $\mathbb T_N$, $\sum_rk_r\varphi_r\equiv0\pmod{2\pi}$, so
+$\sum_rk_r\delta_r$ is congruent to $-\tfrac\pi2\sum_rk_r$, resp.\ $-\tfrac\pi2\sum_rk_r-\pi\sum_rrk_r$, an odd
+multiple of $\tfrac\pi2$; hence $|\sum_rk_r\delta_r|\ge\tfrac\pi2$. Jordan's inequality gives
+$1-\cos\delta=2\sin^2\tfrac\delta2\ge\tfrac2{\pi^2}\delta^2$ on $[-\pi,\pi]$, and Cauchy--Schwarz gives
+$\sum_rw_r\delta_r^2\ge(\sum_r|k_r\delta_r|)^2/\sum_rk_r^2/w_r\ge\tfrac{\pi^2}4/\sum_rk_r^2/w_r$.
+\end{proof}
+
+\begin{proposition}[explicit deficit lower bounds]\label{prop:deficit-lower}
+Let $N$ be composite and not a power of two, $p$ an odd prime factor of $N$, and $s=N/p$. Then
+\[
+  U_N-A_N\ \ge\ \frac{(s-1)\sin\frac\pi{2p}}{8ps}\ \ge\ \frac1{16p^2}.
+\]
+Moreover:
+\begin{itemize}
+\item[\textup{(i)}] if $3\mid N$ and $N\ge9$, then
+$U_N-A_N\ge\tfrac12\sum_{1\le a<N/6}b_{N/3+a}\ge\tfrac1{2\pi}\ln\cot\bigl(\tfrac\pi6+\tfrac\pi{2N}\bigr)$; the
+sum is at least $0.0431$ (its minimum, at $N=12$) and tends to $\tfrac{\ln3}{4\pi}\approx0.0874$. With
+$U_6-A_6=0.0497$ (Proposition~\ref{prop:closed}), $U_N-A_N>0.043$ whenever $3\mid N$;
+\item[\textup{(ii)}] if $N=2p$, then, with $S=4p\csc\tfrac\pi{2p}$,
+\[
+  \Bigl(1-\frac{\pi^3}{48p}\Bigr)\frac{\pi^2}{8S}\ \le\ U_N-A_N\ \le\ \frac{\pi^2}{8S},\qquad\text{so}\qquad
+  U_N-A_N=\frac{\pi^3}{16N^2}\bigl(1+O(N^{-1})\bigr).
+\]
+\end{itemize}
+\end{proposition}
+
+\begin{proof}
+\emph{Nodes.} As in the proof of Theorem~\ref{thm:ceiling}, $u_j(t)=\sum_rb_r\cos\tfrac{2\pi rj}N\sin(\omega_rt)$.
+For $j\notin\{0,\tfrac N2\}$ let $n=N/\gcd(j,N)\ge3$. Since $b_r\ge\tfrac1N$ for $r<\tfrac N2$ and the Nyquist
+term has $|\cos\pi j|=1$,
+\[
+  U_N-\sup_t|u_j(t)|\ \ge\ \sum_rb_r\Bigl(1-\Bigl|\cos\frac{2\pi rj}N\Bigr|\Bigr)\ \ge\ \frac1{2N}\sum_{r=0}^{N-1}
+  \Bigl(1-\Bigl|\cos\frac{2\pi rj}N\Bigr|\Bigr)=\frac1{2n}\sum_{k=0}^{n-1}\Bigl(1-\Bigl|\cos\frac{2\pi k}n\Bigr|\Bigr)
+  \ \ge\ \frac16 .
+\]
+The last step uses $\sum_{k<n}|\cos\tfrac{2\pi k}n|\le\tfrac{2n}3$. For odd $n$ the angles $\tfrac{2\pi k}n$
+reduce modulo $\pi$ to $n$ points spaced $\tfrac\pi n$, and for $m$ points $\phi+\tfrac{\pi i}m$, $\phi\in[0,\tfrac\pi m)$,
+one has $\sum_i|\sin(\phi+\tfrac{\pi i}m)|=\cos(\phi-\tfrac\pi{2m})/\sin\tfrac\pi{2m}\le\csc\tfrac\pi{2m}$ (the same
+holds for $|\cos|$, a shifted $|\sin|$). For $n=2m$ the sum is twice that of $m$ such points. In both cases the
+bound is at most $\tfrac{2n}3$, because $m\sin\tfrac\pi{2m}$ increases from $\tfrac32$ at $m=3$ (and $n=4$
+gives $2$). All the bounds claimed are below
+$\tfrac16$. As $\mathbb T_N=-\mathbb T_N$, it remains to bound $\sum_rb_r(1-\sin\varphi_r)$ (node $0$) and
+$\sum_rb_r(1-(-1)^r\sin\varphi_r)$ (node $\tfrac N2$) from below on $\mathbb T_N$.
+
+\emph{The general bound.} Let $q=2s$. For $x\not\equiv0,s\pmod q$ the $p$ numbers $\zeta_{2N}^{x+qj}$,
+$0\le j<p$, sum to zero, as in the proof of Theorem~\ref{thm:classification}. None of them is $\pm1$, since that
+needs $x\equiv0$ or $x\equiv N\equiv s\pmod q$. Taking imaginary parts and folding each
+$\sin\tfrac{\pi e}N$ to $\pm\sin\tfrac{\pi r}N$, $1\le r\le\tfrac N2$, gives a relation $k^{(x)}\in\Lambda_N$ with
+odd coefficient sum. The four residues $\pm r$, $N\pm r$ of a mode $r$ lie in the classes $\pm r$, $s\pm r$
+modulo $q$. Hence $x$, $-x$, $x+s$ and $s-x$ give the same relation, distinct orbits give disjoint supports,
+and there are at least $\tfrac{q-2}4=\tfrac{s-1}2$ orbits. A class holds at most two residues of one mode (two
+only when $2r\equiv s$) and at most one of the Nyquist mode, since $\tfrac{3N}2-\tfrac N2\equiv s$. A mode hit twice
+has $k_r^2/b_r\le4N\sin\tfrac{\pi r}N$, a mode hit once $N\sin\tfrac{\pi r}N$, and the Nyquist mode $2N$; in each
+case this is at most $2N$ times the sum of $|\sin\tfrac{\pi e}N|$ over its residues $e$ in the class. So
+\[
+  \sum_r\frac{(k^{(x)}_r)^2}{b_r}\ \le\ 2N\sum_{j<p}\Bigl|\sin\frac{\pi(x+qj)}N\Bigr|\ \le\ 2N\csc\frac\pi{2p},
+\]
+because the $p$ angles $\tfrac{\pi x}N+\tfrac{2\pi j}p$ reduce modulo $\pi$ to $p$ points spaced $\tfrac\pi p$.
+Lemma~\ref{lem:rel-defect} on each orbit, summed over the disjoint supports, gives
+$U_N-A_N\ge\tfrac{s-1}2\cdot\tfrac{\sin(\pi/2p)}{4N}$. The second inequality follows from $s\ge2$ and
+$\sin\tfrac\pi{2p}\ge\tfrac1p$.
+
+\emph{(i)} The standard triplets $(a,\tfrac N3-a,\tfrac N3+a)$, $1\le a<\tfrac N6$, of
+Lemma~\ref{lem:cleancomb} are vertex-disjoint, and $\varphi_{N/3+a}=\varphi_a+\varphi_{N/3-a}$ on
+$\mathbb T_N$. Lemma~\ref{lem:triplet} bounds the node-$0$ sum of each triplet by
+$b_a+b_{N/3-a}+\tfrac12b_{N/3+a}$. At node $\tfrac N2$ the shift $\varphi_r\mapsto\varphi_r+\pi r$ turns a
+triplet into $b_a\sin u+b_b\sin v\pm b_c\sin(u+v)$. The proof of Lemma~\ref{lem:triplet} bounds
+$|\sin(u+v)|$, not only $\sin(u+v)$, so the same bound holds. Hence
+$U_N-A_N\ge\tfrac12\sum_ab_{N/3+a}=\tfrac1{2N}\sum_a\csc(\tfrac\pi3+\tfrac{\pi a}N)$. The function $\csc$
+decreases on $[\tfrac\pi3,\tfrac\pi2]$ and the last point plus $\tfrac\pi N$ reaches $\tfrac\pi2$, so the sum is at
+least $\tfrac1{2\pi}\int_{\pi/3+\pi/N}^{\pi/2}\csc x\,dx=\tfrac1{2\pi}\ln\cot(\tfrac\pi6+\tfrac\pi{2N})$. This floor
+increases with $N$ and exceeds $0.050$ for $N\ge15$; the sum is $0.0564$ at $N=9$ and $0.0431$ at $N=12$, and as
+a Riemann sum it tends to $\tfrac1{2\pi}\ln\sqrt3$.
+
+\emph{(ii)} By Proposition~\ref{prop:2p} the prefix $\omega_1,\dots,\omega_{p-1}$ is independent, so
+$\Lambda_N=\Z k$ for the relation $k$ of the single orbit $\{1,3\}\bmod4$ ($k$ is primitive). Of the $p$
+residues $1+4j$, one is the Nyquist mode and the others fold in pairs ($e\leftrightarrow2p-e$,
+$e\leftrightarrow6p-e$) onto $\tfrac{p-1}2$ modes with equal signs. So $k$ is $\pm1$ at the Nyquist mode and
+$\pm2$ on its other modes, and $S:=\sum_rk_r^2/b_r=2N\sum_{j<p}|\sin\tfrac{\pi(1+4j)}{2p}|=2N\csc\tfrac\pi{2p}$. \emph{Upper bound:} the point
+$\varphi_r=\tfrac\pi2+\lambda k_r/b_r$, with $\lambda S=\pm\tfrac\pi2$ chosen so that
+$\sum_rk_r\varphi_r\equiv0$ (and all other phases $\tfrac\pi2$), lies on $\mathbb T_N$. Its node-$0$ deficit is
+$\sum_rb_r(1-\cos\delta_r)\le\tfrac12\sum_rb_r\delta_r^2=\tfrac12\lambda^2S=\tfrac{\pi^2}{8S}$.
+\emph{Lower bound} (at both nodes): put $\eta^2=\pi^3/4p$, so $\eta<\pi$. If some $|\delta_r|\ge\eta$, the deficit
+is at least $\tfrac1{2N}(1-\cos\eta)\ge\tfrac{\eta^2}{4N}(1-\tfrac{\eta^2}{12})\ge\tfrac{\pi^2}{8S}$, using
+$\sin\tfrac\pi{2p}\le\tfrac\pi{2p}$ and $p\ge3$. Otherwise $1-\cos\delta_r\ge\tfrac{\delta_r^2}2(1-\tfrac{\eta^2}{12})$
+for every $r$, and the Cauchy--Schwarz step of Lemma~\ref{lem:rel-defect} gives
+$(1-\tfrac{\pi^3}{48p})\tfrac{\pi^2}{8S}$. Finally $\tfrac{\pi^2}{8S}=\tfrac{\pi^2}{32p}\sin\tfrac\pi{2p}$
+(\texttt{verify\_defect\_lower\_bound.py}; every relation and the certified bounds for all non-saturating
+$N\le240$ are checked in exact arithmetic by \texttt{exact/pari/defect\_lower\_bound.gp}).
+\end{proof}
+
+\noindent For $3\mid N$ the bound is close to the truth: its limit $\tfrac{\ln3}{4\pi}=0.0874$ is $84\%$ of the
+family limit $\mathrm{defect}_\infty(3)=0.1037$ (Table~\ref{tab:famlim}), and at $N=57$ it gives $0.0824$ against
+the optimizer's $0.1013$. Part (ii) is sharp to $O(N^{-1})$ in relative terms ($N^2(U_N-A_N)=1.9364$ at $N=62$
+against $\pi^3/16=1.9379$). The general constant is crude but of the right order in $p$:
+$p^2\,\mathrm{defect}_\infty(5)=0.956$, against $0.19$ from the bound. The bounds do \emph{not} grow along
+primorials, so the growth of the deficit stays open (Remark~\ref{rem:defect}).
 
 \begin{figure}[ht]\centering
 \includegraphics[width=.78\textwidth]{fig_ring.pdf}
@@ -1277,7 +1394,7 @@ admits $\varepsilon$-uniform mixing for every $\varepsilon>0$.
 \item $\dim H_N=\rank_\Q\{\lambda_r\}=\tfrac12\varphi(N)$ for every $N\ge3$.
 \item If $N=p$ or $N=p^2$ with $p$ an odd prime, then $B_N=\sqrt N$. Hence $\limsup_NB_N/\sqrt N=1$.
 \item If $N\ge6$ is even, then $B_N<\sqrt N$.
-\item $B_{15}<\sqrt{15}$ (computer-assisted).
+\item $B_{15}<\sqrt{15}$ and $B_{21}<\sqrt{21}$ (computer-assisted).
 \end{enumerate}
 \end{theorem}
 
@@ -1356,6 +1473,39 @@ a polynomial in $X=(X_1,\dots,X_4)$. An explicit identity $D\,X_2^4=\sum_jN_j\,m
 $X_2\ne0$, so $H_{15}$ has no flat point. The identity is found by Dixon's $p$-adic lifting of the linear system
 for multipliers of degree $\le18-\deg f_l$ and checked in exact integer arithmetic, and independently by polynomial
 arithmetic in PARI/GP (\texttt{exact/julia/c15\_flat\_certificate.jl}, \texttt{exact/pari/c15\_flat\_check.gp}).
+
+For $N=21$ we use coordinates adapted to $\Z_N\cong\Z_3\times\Z_q$ ($q=7$), whose symmetries shrink the
+certificate. The vectors
+$(\varphi(\lambda_r))_r$, for $\Q$-linear $\varphi:\Q(\zeta_N+\zeta_N^{-1})\to\R$, are the real solutions of the
+relations $\Lambda_N$. Expanding $\varphi$ in the embeddings $\zeta_N\mapsto\zeta_N^k$, $k\in\Z_N^\times$, shows with~(1)
+that $H_N=\{\eu^{-\mathrm if}\}$, where $f$ runs over the real even functions with $f(0)=0$ whose discrete
+Fourier transform vanishes at every nonzero non-unit. For $N=3q$, $q\ne3$ prime, write $x(b,a)$ for $x_r$ with
+$r\equiv b\pmod3$ and $r\equiv a\pmod q$. The nonzero non-units are the nonzero multiples of $3$ and of $q$, and
+the transform vanishes there iff the array $f(b,a)$ has constant column sums and constant row sums. Removing the
+mean and using evenness, a short computation shows that the points of $H_N$ are exactly the unimodular multiples of
+\[
+  x(1,a)=y_a,\qquad x(2,a)=y_{-a},\qquad x(0,a)=(y_ay_{-a})^{-1}\qquad\bigl(y\in\mathbb T^q,\ \textstyle\prod_ay_a=1\bigr).
+\]
+Such a point is flat iff its periodic autocorrelations vanish at every nonzero shift. They are real and even, and with $\bar y_a=y_a^{-1}$
+the ones at the shifts $(1,s)$, $s\in\Z_q$, and $(0,s)$, $1\le s\le\frac{q-1}2$, are
+\[
+  I_s=\sum_a\Bigl(y_{a+s}y_ay_{-a}+\frac1{y_{a+s}y_ay_{-a}}+\frac{y_{-a-s}}{y_a}\Bigr),\qquad
+  II_s=\sum_a\Bigl(\frac{y_ay_{-a}}{y_{a+s}y_{-a-s}}+\frac{y_{a+s}}{y_a}+\frac{y_a}{y_{a+s}}\Bigr),
+\]
+elements of the group ring $\Q[L]$ of $L=\Z^q/\Z(1,\dots,1)$, the characters of the torus $\prod_ay_a=1$. The
+multipliers $a\mapsto ua$ ($u\in\Z_q^\times$) and the inversion $y\mapsto y^{-1}$ permute them:
+$I_s\mapsto I_{us}$, $II_s\mapsto II_{\pm us}$. An explicit identity
+\[
+  1=g_0\,I_0+\sum_{u\in\Z_q^\times}u\cdot(g_1I_1)+\sum_{u=1}^{(q-1)/2}u\cdot(h_1\,II_1)\qquad\text{in }\Q[L]
+\]
+shows that the autocorrelations have no common zero on the torus, so $H_{21}$ has no flat point. Here $g_0,g_1,h_1$
+are invariant under the stabilizers of $I_0,I_1,II_1$, every term has an exponent $e$ with
+$\sum_a|e_a-\operatorname{med}(e)|\le8$, and there are $4005$ orbit coefficients over a common denominator of $614$
+digits. The identity is found by solving the invariant linear system ($6707$ equations, $5896$ unknowns) over $\Q$
+with FLINT and checked in exact rational arithmetic. \textsc{PARI/GP} rebuilds the parametrization and the
+autocorrelations from their definitions and re-checks it (\texttt{bn\_flat\_certificate\_3q.py},
+\texttt{exact/pari/c3q\_flat\_check.gp}). The same construction with $q=5$ (radius $6$, $208$ orbit coefficients)
+gives a second proof for $N=15$.
 \end{proof}
 
 \begin{remark}[what is known, and what the numerics say]\label{rem:bn-saturation}
@@ -1372,13 +1522,15 @@ exists for $N>4$ is open in the refereed literature.
 \emph{Instantaneous} uniform mixing
 occurs on $C_N$ for $N=2,3,4$ (for $N=3$ at $t=2\pi/9$, where $|1+2\eu^{-3\mathrm it}|=|1-\eu^{-3\mathrm it}|=\sqrt3$)
 and is conjectured to occur for no other $N$~\cite{ABTW}; besides the even $N\ge6$,
-it is excluded for the primes $p\ge5$~\cite{GMR17} and for $N=9,15$~\cite{CaoZhu26,GPY}. So for $N=p\ge5$ and $N=9$
+it is excluded for the primes $p\ge5$~\cite{GMR17}, for $N=9,15$~\cite{CaoZhu26,GPY}, and for $N=21$ by~(4). So for $N=p\ge5$ and $N=9$
 the value $\sqrt N$ is approached but never attained, and the approach is slow: the times are Kronecker times
 for $\tfrac12\varphi(N)$ independent phases. For example $\|K_5(\cdot,t)\|_1/\sqrt5=0.9999998$ at $t=2006.85$ and
-$\|K_7(\cdot,t)\|_1/\sqrt7=0.99998$ at $t=707.483$. Part~(4) also follows from the proof that $C_{15}$ has no exact uniform
+$\|K_7(\cdot,t)\|_1/\sqrt7=0.99998$ at $t=707.483$. For $N=15$, Part~(4) also follows from the proof that $C_{15}$ has no exact uniform
 mixing~\cite[Thm.~3.2]{CaoZhu26}, which gives more than it states: its Gr\"obner basis is computed in the
 coordinates $X$ of the proof of~(4), which range over all of $\mathbb T^4$, and it has no zero with all four
-coordinates nonzero. For the other odd composites that are not prime squares, the question is open. We maximized $\|\check x\|_1$ numerically over an explicit parametrization of $H_N$
+coordinates nonzero. For $N=21$, Part~(4) is new even for exact uniform mixing: Gray, Patel and Young name $C_{21}$
+as the next open case, out of reach of their Gr\"obner computation~\cite{GPY}. For the other odd composites that
+are not prime squares, the smallest being $N=27,33,35$, the question is open. We maximized $\|\check x\|_1$ numerically over an explicit parametrization of $H_N$
 (multi-start quasi-Newton). Every value found is attained on $H_N$, so it is a lower bound for $B_N/\sqrt N$.
 The results are $0.99890$ ($N=15$), $0.99861$ ($21$), $0.99992$ ($27$, the same over $2000$ starts),
 $0.99915$ ($33$) and $0.99965$ ($35$), and values in $[0.996,0.9997]$ for $N=39,45,51,55,57,63,75,81$.
@@ -1402,7 +1554,7 @@ For $N\ge2$, $B_N=\sqrt N$ if and only if $N$ is a prime or the square of a prim
 
 \noindent The ``if'' direction is Theorem~\ref{thm:bn-saturation}(2) together with $N=2,4$
 (Remark~\ref{rem:bn-saturation}). The ``only if'' direction holds for even $N$
-(Theorem~\ref{thm:bn-saturation}(3)) and for $N=15$ (Theorem~\ref{thm:bn-saturation}(4)); for the other odd
+(Theorem~\ref{thm:bn-saturation}(3)) and for $N=15,21$ (Theorem~\ref{thm:bn-saturation}(4)); for the other odd
 composites that are not prime squares it is open.
 
 The aligning times behind Theorem~\ref{thm:bn-saturation}(2) are Diophantine-long (they align
@@ -1900,14 +2052,26 @@ cancellation inflate the radius); it is validated against the reference enclosur
 $\sim10^{-7}$; \texttt{verify\_middle\_far.py}). With the split $\mathrm{mid}[1.5,8]+\mathrm{far}[8,24]+\mathrm{tail}[24,\infty)$
 through \texttt{prove\_box($\dots$,\,far\_slices=$\dots$)} the previously-failing boxes certify
 (e.g.\ $(0.70,0.70)\to0.9915$; the campaign's hardest boxes sit at the high-$\lambda$ edge
-$a_3\simeq0.61$, each closed by one refinement, the worst certified leaf reaching $0.9999$). The full singleton-band cover is the adaptive, node-parallel, checkpointed tiling
-\texttt{run\_dagger\_campaign.py}, which certified all $136$ leaf boxes with $0$ failures (worst upper
-bound $0.9999$), and its \texttt{--coverage} mode checks, cell by cell on the box lattice with interval bounds on
-$\lambda$, that these boxes cover the whole band. The residual inequality is thereby validated across the band at
-the certificate's validated-enclosure standard, not proved, and the cover is not rigorous either: the far
-$t$-collocation remainder and the amplitude stencil's third derivatives come from finite differences, and the box
-maximum of the quadratic model is taken on a grid. The windowed constant of Conjecture~\ref{conj:bn-window} awaits
-upgrading that one expected-modulus estimate from validated to proved, together with the $s$-uniform transfer. The honest status is that the multi-copy region is
+$a_3\simeq0.61$, each closed by one refinement, the worst certified leaf reaching $0.9999$). That validated
+tiling ($136$ leaf boxes, \texttt{run\_dagger\_campaign.py}) took its far $t$-collocation remainder and the
+amplitude stencil's third derivatives from finite differences and maximized the quadratic model on a grid. It is
+now superseded by a \emph{rigorous} certificate (\texttt{dagger\_rigorous.py}). In the coordinates $u=a_1^2$,
+$v=a_3^2$, where $J_0(a_1y)={}_0F_1(;1;-uy^2/4)$ and $D=\sum_\ell a_\ell^4$ is quadratic, the signed excess on
+$[0,24]$ is computed by composite Gauss--Legendre quadrature in $t$ and the periodic midpoint rule in $\theta$, with
+error bounds from the Bernstein ellipse and the strip of analyticity, as an exact degree-$10$ Taylor polynomial in
+$(u,v)$ about the box centre with a Cauchy remainder. The supremum of that polynomial minus $K_\star D$ over the box
+is bounded exactly (the quadratic part maximized over the rectangle, the higher terms by absolute values), and the
+tail $[24,\infty)$ by the envelope $|J_0(x)|\le\min(1,\sqrt{2/(\pi x)})$. Every bound is an Arb ball, $K_\star$
+included. All $111$ boxes of half-width $0.015$ that meet the band ($a_1\ge a_3$) prove, the worst with
+$R\le0.9205\,K_\star$ at $(a_1,a_3)=(0.85,0.61)$. An independent checker re-derives every verdict from the stored
+balls, recomputes the worst boxes bit for bit, and checks in exact rational arithmetic that the boxes cover the
+band (\texttt{verify\_dagger\_rigorous.py}). So the residual inequality is \emph{proved}, computer-assisted, on the
+singleton-channel ($2$-vs-$1$) family. Elsewhere it stays validated: on the near-pair basin $\lambda\ge0.82$ (a
+grid-Lipschitz Hessian floor per copy-count chart, with no interval Bessel enclosure and no bound uniform in the
+number of copies) and on the configurations with more than three copies (the crude modulus bound where both
+channels carry comparable copies, otherwise only a high-precision numerical search). The
+windowed constant of Conjecture~\ref{conj:bn-window} awaits those two pieces, together with the $s$-uniform
+transfer. The honest status is that the multi-copy region is
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
 constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
@@ -2251,9 +2415,11 @@ $\Phi_{4p}(1)=\Phi_p(-1)=1$ that drive Theorems~\ref{thm:prime},~\ref{thm:two} a
 Proposition~\ref{prop:2p} (\texttt{exact/pari/crosscheck.gp}); \textsc{FriCAS} reproduces the $\csc$
 Laurent series and the antiderivative of Appendix~\ref{app:bernoulli} symbolically and evaluates its two
 constants numerically (\texttt{exact/fricas/asymptotics.input}). \textsc{Julia} computes the certificate of
-Theorem~\ref{thm:bn-saturation}(4) and checks it over $\Z$, and \textsc{PARI/GP} rebuilds the flatness
+Theorem~\ref{thm:bn-saturation}(4) for $N=15$ and checks it over $\Z$, and \textsc{PARI/GP} rebuilds the flatness
 polynomials independently and re-checks it (\texttt{exact/julia/c15\_flat\_certificate.jl},
-\texttt{exact/pari/c15\_flat\_check.gp}).
+\texttt{exact/pari/c15\_flat\_check.gp}). The certificates for $N=15$ and $N=21$ in the $\Z_3\times\Z_q$
+coordinates are computed with FLINT and re-checked in \textsc{PARI/GP} from the definitions of $H_N$ and of the
+autocorrelations (\texttt{bn\_flat\_certificate\_3q.py}, \texttt{exact/pari/c3q\_flat\_check.gp}).
 
 \begin{observation}[structure of the composite obstruction]\label{obs:psq}
 For $N=p^2$ with $p$ an odd prime, the minimal mod-$4$ obstruction---the shortest frequency relation with
@@ -2388,12 +2554,16 @@ Multivariate concavity refuted (saddles) & \texttt{verify\_dagger\_concavity.py}
 Near-pair basin $\lambda\ge0.82$; singleton-channel gap & \texttt{verify\_dagger\_decomp.py}\\
 Singleton band $<K_\star$: three-region Arb bound & \texttt{verify\_dagger\_singleton.py}\\
 Continuum lift: multivariate amplitude Taylor model & \texttt{verify\_dagger\_continuum.py}\\
+Singleton band proved: rigorous Arb per-box certificate & \texttt{dagger\_rigorous.py}\\
+\quad$\hookrightarrow$ $111$ boxes; re-decision, exact band coverage, manifest & \texttt{verify\_dagger\_rigorous.py}\\
 Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\
 Certified gap $A_N<U_N$, $N\le15$ (Lipschitz grid) & \texttt{verify\_defect\_certified.py}\\
 Exact SOS defect certificates, $N=9,15,21$ (PARI; Rem.~\ref{rem:defect}) & \texttt{exact/pari/defect\_sos.gp}\\
 \quad$\hookrightarrow$ certificate generator (SDP, rounded Gram matrices) & \texttt{build\_defect\_sos\_certificates.py}\\
+Explicit deficit lower bounds, every $N$ (Prop.~\ref{prop:deficit-lower}) & \texttt{verify\_defect\_lower\_bound.py}\\
+\quad$\hookrightarrow$ exact relations and certified bounds, $N\le240$ (PARI) & \texttt{exact/pari/defect\_lower\_bound.gp}\\
 Spectral-dimension threshold $d_s{=}1$ & \texttt{verify\_spectral\_dimension.py}\\
 Finite-time recurrence $T_\varepsilon(N)$ & \texttt{verify\_finite\_time.py}\\
 \quad$\hookrightarrow$ certified upper bound $T_{0.2}(N)\le\tilde t$, small primes (interval) & \texttt{verify\_finite\_time\_certified.py}\\
@@ -2415,6 +2585,8 @@ Saturation $B_N{=}\sqrt N$ (Thm.~\ref{thm:bn-saturation}) & \texttt{verify\_bn\_
 \quad$\hookrightarrow$ rank and $p^a$ lattice, second implementation (GAP) & \texttt{exact/gap/schrodinger\_saturation.g}\\
 \quad$\hookrightarrow$ $B_{15}<\sqrt{15}$: Nullstellensatz certificate (Julia) & \texttt{exact/julia/c15\_flat\_certificate.jl}\\
 \quad$\hookrightarrow$ the same certificate re-checked (PARI) & \texttt{exact/pari/c15\_flat\_check.gp}\\
+\quad$\hookrightarrow$ $B_{21}<\sqrt{21}$, $B_{15}<\sqrt{15}$: invariant certificates (FLINT) & \texttt{bn\_flat\_certificate\_3q.py}\\
+\quad$\hookrightarrow$ both re-checked from the definitions (PARI) & \texttt{exact/pari/c3q\_flat\_check.gp}\\
 Machine-checked mod-4 criterion (Rocq) & \texttt{formal/rocq/Mod4Criterion.v}\\
 Machine-checked classification core, all $N$ (Rocq) & \texttt{formal/rocq/Classification.v}\\
 F92 splash table: segment $4/\pi^2$ vs ring $1/\pi$ & \texttt{verify\_filimonov\_table.py}\\

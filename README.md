@@ -37,7 +37,11 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   (`verify_classification_proof.py`, `exact/gap/scan_classification.g`).
 - **Composite deficit.** The order theorem gives the general upper envelope
   `0 ≤ U_N − A_N = O(ln ln ln N)`. The strict gap `A_N < U_N` for every composite non-power-of-two follows from
-  the saturation classification; quantitative small-`N` gaps are certified by a Lipschitz grid
+  the saturation classification, and it is quantitative (Proposition `deficit-lower`): one relation per residue
+  class gives `U_N − A_N ≥ 1/(16p²)` for `p` the least odd prime factor, the vertex-disjoint triplets give
+  `U_N − A_N > 0.043` whenever `3 | N` (limit `ln 3/(4π)`), and for `N = 2p` the deficit is
+  `(π³/16) N⁻² (1 + O(1/N))` (`verify_defect_lower_bound.py`, exact check `exact/pari/defect_lower_bound.gp`).
+  Sharper small-`N` gaps are certified by a Lipschitz grid
   (`N = 6, 9, 12, 15`) and by exact rational sum-of-squares certificates (`exact/pari/defect_sos.gp`):
   `U_N − A_N ≥ 0.06717197, 0.14754945, 0.11208183` for `N = 9, 15, 21`, within `10⁻⁷` of the optimizer. The sharper excess law
   `U_N − A_N = (1/π) ln(m/φ(m)) + O(1)` for odd part `m` remains open beyond prime-power odd part. The
@@ -54,9 +58,16 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   conditions, arXiv:2603.20977, so the even squares `16, 36, 64, …` are the new cases). It fails for `N = 15` as well (computer-assisted): an exact
   Nullstellensatz certificate `D y⁴ = Σ N_j m_j f_j` (2159 terms) puts `y⁴` in the flatness ideal, `y` a coordinate
   of the orbit-closure torus (`exact/julia/c15_flat_certificate.jl`, re-checked in `exact/pari/c15_flat_check.gp`);
-  the Gröbner basis in Cao–Zhu's Thm 3.2 implies it too, as it lives on the whole closure. That `B_N = √N`
-  iff `N` is a prime or a prime square is a conjecture: the other odd composites that are not prime squares
-  are open; numerically `B_N/√N < 1` there, closest at `N = 27` (`0.99992`)
+  the Gröbner basis in Cao–Zhu's Thm 3.2 implies it too, as it lives on the whole closure. It fails for
+  `N = 21` (computer-assisted, new): in coordinates adapted to `Z_21 = Z_3 × Z_7` the orbit closure is the
+  6-torus `x(1,a) = y_a, x(2,a) = y_{-a}, x(0,a) = 1/(y_a y_{-a})`, `Π y_a = 1`, and an exact invariant
+  certificate `1 = g_0 I_0 + Σ_u u·(g_1 I_1) + Σ_u u·(h_1 II_1)` over the autocorrelations (4005 orbit
+  coefficients, 614-digit denominator) shows they have no common zero (`numerics/bn_flat_certificate_3q.py`,
+  re-checked from the definitions in `exact/pari/c3q_flat_check.gp`; the same code reproves `N = 15`). So `C_21`
+  admits no uniform mixing, exact or ε-approximate — the case Gray–Patel–Young (arXiv:2607.28345) name as the
+  next open one. That `B_N = √N` iff `N` is a prime or a prime square is a conjecture: the other odd composites
+  that are not prime squares (from `N = 27` on) are open; numerically `B_N/√N < 1` there, closest at `N = 27`
+  (`0.99992`)
   (`verify_bn_saturation.py`, `exact/pari/bn_saturation.gp`; a second implementation of the prime and
   prime-square cases in `verify_bn_prime_flat.py`, `exact/pari/bn_prime_flat.gp`,
   `exact/pari/bn_prime_square.gp`). **Windowed constant.** On the
@@ -75,10 +86,11 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   (`K⋆ = (h(1) − √π/2)/2`) for the profile's **balanced** Debye configurations (the live set is an
   interval of consecutive integers, so the even/odd channel counts differ by `≤ 1`; sharp at the two-copy
   pair — imbalanced configs violate the unrestricted bound) whose integrated majorant clears
-  `β_odd` — and whose residual is now **validated across the whole band** (the θ-Taylor enclosure `middle_far_point`
-  plus a 136-box tiling with 0 failures, whose band coverage `run_dagger_campaign.py --coverage` checks; see
-  open problem (1) for what "validated" leaves out). So the windowed constant `limsup_N B_N(SN/2)/√N = β_odd`
-  (fixed `S`) holds modulo this numerically-validated inequality and the `s`-uniform transfer. On the **Dirichlet segment**
+  `β_odd` — and whose residual is now **proved on its singleton-channel (2-vs-1) band** by a rigorous Arb
+  certificate (`dagger_rigorous.py`: 111 boxes, 0 failures, worst `R ≤ 0.9205 K⋆`, band coverage checked in
+  exact rational arithmetic by `verify_dagger_rigorous.py`), and validated elsewhere (see open problem (1)). So
+  the windowed constant `limsup_N B_N(SN/2)/√N = β_odd` (fixed `S`) holds modulo the rest of this inequality and
+  the `s`-uniform transfer. On the **Dirichlet segment**
   `d_j^N ~ (4/π²) ln j` for `N+1` prime/`2^m` (the constant `C = 4/π²` is the published
   Myshkis–Filimonov 2003 value). Three large-wave laws on one Laplacian.
 - **Dimension, products & circulants (theorem).** The large wave lives exactly at spectral dimension
@@ -111,7 +123,7 @@ for `γP < 0.43`, and numerically the seed disperses up to `γP ≈ 3.4` and kee
 route to chaos remain computational/exploratory.
 
 **Open problems** (each reduced to a clean statement, with the proven part marked). (1) The Schrödinger
-constant. Over infinite time: is `B_N < √N` for every odd composite `N` that is not a prime square (known for `N = 15`), and is
+constant. Over infinite time: is `B_N < √N` for every odd composite `N` that is not a prime square (known for `N = 15, 21`), and is
 `liminf B_N/√N = 1`? On the dispersive window: the windowed constant
 `limsup_N sup_{t ≤ SN/2} ‖K_N(·,t)‖_1/√N = β_odd` for each fixed `S`. For each fixed `s ≤ 1` (odd `N`) the
 profile maximizer is **proved** (`max F = β_odd`, validated interval arithmetic), and for `t > N/2` the entire
@@ -127,16 +139,19 @@ middle could not reach (its rigorous radius blows up past `t = 12`; the true rat
 it was enclosure-limited, not tight) is now covered by a **θ-Taylor + t-collocation** enclosure
 (`middle_far_point`, validated against the reference in `verify_middle_far.py`): the previously-failing
 boxes certify (e.g. `(0.70, 0.70) → 0.9915`; the hardest boxes sit at the high-λ edge `a_3 ≈ 0.61` and close
-under one refinement, worst leaf `0.9999`). The full singleton-band
-cover is now **validated across the whole band** — the adaptive, node-parallel, checkpointed tiling `run_dagger_campaign.py`
-certified all 136 leaf boxes with 0 failures, and its `--coverage` mode checks, with interval bounds on `λ`,
-that they cover the band. "Validated" is the accurate word, not "rigorous": besides the
-residual inequality itself, the box enclosures rest on non-rigorous steps — the far `t`-collocation
-remainder and the third derivatives of the amplitude stencil come from finite differences, not derivative
-bounds (and the stencil ignores the error propagated through its least-squares fit), the maximum of the
-quadratic model over a box is taken on a 41×41 float grid, and the campaign records no manifest (library
-versions, precision, hashes). So the window part of problem (1) is reduced to the `s`-uniform transfer plus a
-proof of that one inequality (or a fully rigorous cover). (2) The **excess lemma**
+under one refinement, worst leaf `0.9999`). That validated 136-box tiling (`run_dagger_campaign.py`) took
+the far `t`-collocation remainder and the stencil's third derivatives from finite differences and maximized
+the quadratic model on a float grid. It is now **superseded by a rigorous certificate**
+(`dagger_rigorous.py`, `run_dagger_campaign.py --rigorous`): in `u = a_1²`, `v = a_3²` the signed excess on
+`[0, 24]` is an exact degree-10 Taylor polynomial of a Gauss–Legendre × periodic-midpoint quadrature with
+analytic (Bernstein-ellipse, strip) error bounds and a Cauchy remainder, its box maximum minus `K⋆ D` is bounded
+exactly, the tail uses `|J_0(x)| ≤ min(1, √(2/(πx)))`, and every bound is an Arb ball. All 111 boxes meeting the
+band prove (worst `R ≤ 0.9205 K⋆`, 33 s on 8 cores); `verify_dagger_rigorous.py` re-derives every verdict from
+the stored balls, recomputes the worst boxes bit for bit, checks the band coverage in exact rational arithmetic
+and pins hashes and versions in `numerics/dagger_rigorous_manifest.json`. So the inequality is **proved**
+(computer-assisted) on the singleton-channel family; it stays validated on the near-pair basin `λ ≥ 0.82`
+(grid-Lipschitz Hessian floor per copy-count chart) and on configurations with more than three copies. The
+window part of problem (1) is reduced to the `s`-uniform transfer plus those two pieces. (2) The **excess lemma**
 `A_N ≤ L_pre + O(1)` (equivalent to a rigorous *growing* deficit bound) — proved when the odd
 part of `N` is a prime power (`N = 2p` sharp at `1/(2N)`, `N = 4p`), and **unconditional for any fixed `ω(m)`**
 via the Kronecker sandwich `|A_N − L_pre| ≤ U_N − L_pre = (1/π) ln(m/φ(m))`. The open
@@ -189,7 +204,8 @@ tiled by the adaptive, checkpointed campaign:
 
 **Exact-arithmetic + formal layer** (Fedora: `dnf install gap pari-gp fricas rocq-prover`; Julia from juliaup). The
 linear-theory arithmetic is reproduced floating-point-free in **GAP** and **PARI/GP**, symbolically in
-**FriCAS**, the `N = 15` exclusion `B_15 < √15` is certified in **Julia** and re-checked in PARI/GP, and the
+**FriCAS**, the `N = 15` exclusion `B_15 < √15` is certified in **Julia** and re-checked in PARI/GP, the
+`N = 21` exclusion `B_21 < √21` is certified with python-flint and re-checked in PARI/GP, and the
 mod-4 criterion is machine-checked in **Rocq** — see [`exact/`](exact/) and
 [`formal/rocq/`](formal/rocq/). One driver runs the lot and cross-checks against the Python core (missing
 tools are skipped, not failed):

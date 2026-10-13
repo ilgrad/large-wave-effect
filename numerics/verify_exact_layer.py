@@ -19,6 +19,9 @@ machine-checked criterion certificate, then verifies they agree with src/large_w
           orbit closure that satisfy every eigenvalue relation, checked exactly.
   * PARI  (exact/pari/defect_sos.gp)         -- exact SOS certificates of the defect U_N - A_N for
           N = 9, 15, 21, with mutated certificates that must be rejected.
+  * PARI  (exact/pari/defect_lower_bound.gp) -- Proposition deficit-lower: the class relations of every
+          odd prime p | N, checked in Q(zeta_2N), and the rational lower bounds for all
+          non-saturating N <= 240 (triplets for 3 | N, the N = 2p sandwich).
   * PARI  (exact/pari/kjump_relations.gp)    -- exact Q-relation lattices of the k-jump circulant
           frequencies for N <= 126 (relations of C_N({1,3}) at N = 28, 56, 84, 112) and their mod-4 test.
   * PARI  (exact/pari/kjump_nnn_primes.gp)   -- the exact identities behind A_p = U_p for C_p({1,2}),
@@ -33,6 +36,11 @@ machine-checked criterion certificate, then verifies they agree with src/large_w
           for the N = 15 flatness system, by P-adic lifting, checked over Z: H_15 has no flat point.
   * PARI  (exact/pari/c15_flat_check.gp)     -- rebuilds the N = 15 flatness polynomials and re-checks
           that certificate by exact polynomial arithmetic.
+  * Python (numerics/bn_flat_certificate_3q.py) -- equivariant Nullstellensatz certificates 1 = sum g_j A_j
+          over the autocorrelations of the y-parametrized torus, N = 15 and 21, solved and checked over Q
+          with python-flint: H_15 and H_21 have no flat point.
+  * PARI  (exact/pari/c3q_flat_check.gp)     -- rebuilds the y-parametrization and the autocorrelations
+          from their definitions and re-checks both certificates exactly in Z[L].
   * Rocq  (formal/rocq/Mod4Criterion.v)      -- machine-checks (vm_compute) that the mod-4
           criterion on the GAP lattices reproduces the prime/2^m verdict; Classification.v and
           StaggeredCurrent.v are compiled as well.
@@ -134,6 +142,12 @@ def main() -> int:
         print(f"[pari]   defect SOS certificates N=9,15,21  : {'PASS' if ds_ok else 'FAIL'}")
         ok &= ds_ok
         rc, out = run(
+            ["gp", "-q", "-f", "exact/pari/defect_lower_bound.gp"], stdin_file=Path("/dev/null")
+        )
+        dl_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
+        print(f"[pari]   deficit lower bounds, N<=240       : {'PASS' if dl_ok else 'FAIL'}")
+        ok &= dl_ok
+        rc, out = run(
             ["gp", "-q", "-f", "exact/pari/kjump_relations.gp"], stdin_file=Path("/dev/null")
         )
         kr_ok = rc == 0 and "***" not in out and "RESULT: PASS" in out
@@ -180,6 +194,32 @@ def main() -> int:
                 ok &= chk_ok
     else:
         print("[julia]  SKIP (julia not on PATH)")
+
+    # --- python-flint: N = 15 and N = 21 certificates in the y-parametrization, re-checked in PARI ---
+    if shutil.which("uv"):
+        with tempfile.TemporaryDirectory() as tmp:
+            for q in (5, 7):
+                cert = Path(tmp) / f"c{3 * q}_y_certificate.txt"
+                py = ["uv", "run", "--script", "numerics/bn_flat_certificate_3q.py", str(q)]
+                rc, out = run([*py, "--out", str(cert)], timeout=1200)
+                py_ok = rc == 0 and "RESULT: PASS" in out
+                print(
+                    f"[flint]  N={3 * q} y-certificate, no flat point  : {'PASS' if py_ok else 'FAIL'}"
+                )
+                ok &= py_ok
+                if py_ok and shutil.which("gp"):
+                    gp = ["gp", "-q", "-f", "exact/pari/c3q_flat_check.gp"]
+                    rc, out = run(
+                        gp, stdin_file=Path("/dev/null"), timeout=600, env={"C3Q_CERT": str(cert)}
+                    )
+                    chk_ok = rc == 0 and "RESULT: PASS" in out and "***" not in out
+                    print(
+                        f"[pari]   N={3 * q} y-certificate re-checked      : "
+                        f"{'PASS' if chk_ok else 'FAIL'}"
+                    )
+                    ok &= chk_ok
+    else:
+        print("[flint]  SKIP (uv not on PATH)")
 
     # --- Rocq: machine-checked certificates ---
     if shutil.which("rocq"):

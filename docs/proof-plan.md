@@ -25,6 +25,9 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
   (`lem:disorder-finiteT`, gain needs `T≳1/eps`).
 - Exact-`A_N` table: `A_N<U_N` certified with explicit gap (Lipschitz grid `N=6,9,12,15`; exact rational
   SOS `N=9,15,21`, within `1e-7` of the optimizer, `exact/pari/defect_sos.gp`).
+- Deficit lower bounds for every `N` (`prop:deficit-lower`, 2026-10-13): `U_N-A_N >= 1/(16p^2)` from one
+  relation per residue class (`lem:rel-defect`), `> 0.043` for `3|N` (triplets + `lem:triplet`), and
+  `(pi^3/16) N^-2 (1+O(1/N))` for `N=2p`. Constant along primorials, so the growth question is untouched.
 - Breather **dichotomy** CAP (exact rational): site `n(L_+)=1` STABLE, bond `n(L_+)=2` UNSTABLE.
 - Finite-time **upper** bound `T_{0.2}(N)≤t~` certified (interval) for concrete primes `N=5,7,11,13`.
 - (Earlier in session: classification, `A_N~(1/π)ln N`, mod-4, β_odd profile/transfer/two-copy — see A2.)
@@ -45,7 +48,7 @@ to an executable tiling (see A2). So only **A1** (and the self-trapping window, 
 - Self-trapping window `gP∈[0.43,4)` — same focusing-sign motif (§C).
 
 **Open — execution / resource (idea exists, not a one-shot).**
-- β_odd full band tiling — **DONE** (`run_dagger_campaign.py`: 136 leaf boxes, 0 fail, ~7.2 h, band coverage checked by `--coverage`; A2 reduced to one validated inequality; the cover itself is validated, not rigorous — see A2);
+- β_odd full band tiling — **DONE, RIGOROUS since 2026-10-13** (`dagger_rigorous.py` via `run_dagger_campaign.py --rigorous`: 111 boxes, 0 fail, worst `0.9205 K*`, 33 s on 8 cores; `verify_dagger_rigorous.py` re-decides, recomputes, checks coverage exactly, writes the manifest; the old 136-box validated tiling is superseded — see A2);
   finite-time **lower** bound (+ damping, conditional on it);
   FPUT small-energy (Nekhoroshev, 4-wave resonances) and chaos (CAPD); arbitrary graphs (non-cyclotomic).
 
@@ -118,8 +121,16 @@ true for `N = p` (Gauss chirp; Godsil–Mullin–Roy) and `N = p^2` (even Frank 
 `verify_bn_prime_flat.py`, `exact/pari/bn_prime_flat.gp`, `exact/pari/bn_prime_square.gp`. So
 `limsup B_N/sqrt(N) = 1`. Also false for `N = 15`: exact Nullstellensatz certificate `D y^4 = sum N_j m_j f_j`
 (`exact/julia/c15_flat_certificate.jl`, re-checked in PARI); Cao–Zhu's Thm 3.2 Gröbner basis implies it too.
-Open (paper `conj:bn-psq`): the other odd composite non-prime-square `N` (numerics `< 1`, closest `N = 27`,
-`0.99992`). `thm:joint-equi` and `thm:uniform-transfer` hold for each FIXED `s = 2t/N`. The statement the
+Also false for `N = 21` (2026-10-13): `Z_21 = Z_3 x Z_7` coordinates make `H_21` the 6-torus
+`x(1,a) = y_a, x(2,a) = y_{-a}, x(0,a) = 1/(y_a y_{-a})`, `prod y = 1`; an invariant Laurent Nullstellensatz
+certificate in `Q[Z^7/Z(1..1)]` at median-norm radius 8 (6707 orbit equations, 5896 unknowns, rank 5484 mod p;
+4005 coefficients, 614-digit denominator; FLINT solve ~3 min) — `numerics/bn_flat_certificate_3q.py`, re-checked
+from the definitions in `exact/pari/c3q_flat_check.gp`; `q = 5` (radius 6) reproves `N = 15`. GPY
+(arXiv:2607.28345) named `C_21` the next open case for exact uniform mixing. `N = 33` (`q = 11`) is out of reach
+this way so far: msolve F4 mod p reached degree 7 at 8.7 GB and was stopped before exhausting RAM, and the
+invariant system at radius 8 would be ~63k x 25k (the radius actually needed is unknown).
+Open (paper `conj:bn-psq`): the other odd composite non-prime-square `N`, from `N = 27` on (numerics `< 1`,
+closest `N = 27`, `0.99992`). `thm:joint-equi` and `thm:uniform-transfer` hold for each FIXED `s = 2t/N`. The statement the
 analysis supports is the windowed one (paper `conj:bn-window`): for each fixed `S`, it needs (i) the ≥3-copy
 dagger inequality and (ii) the transfer uniform in `s` on `[1, S]` (and on `t <= N/2` as well). Polynomial
 windows `t <= N^C`: open.
@@ -165,11 +176,26 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
   with interval bounds (`--coverage`), and `bmin` is attained at the sampled corner because
   `b = sqrt(2 − a1² − a3²)` decreases in both amplitudes (up to float rounding); (f) no manifest — library
   versions, precision, hashes.
+- RIGOROUS COVER (2026-10-13; `dagger_rigorous.py`, `verify_dagger_rigorous.py`): (a)–(f) are all removed. In
+  `u = a1², v = a3²` the signed Kluyver integral on `[0, 24]` is a Gauss–Legendre (t) × periodic midpoint (θ)
+  sum with analytic error bounds (Trefethen ATAP Thm 19.3 on Bernstein ellipses; strip aliasing bound), carried
+  as an EXACT degree-10 Taylor polynomial in `(u, v)` (Arb power series through every `J0 = 0F1`) with a
+  bivariate Cauchy remainder; `sup_box (P − K_lo D)` is bounded exactly (quadratic part over the rectangle,
+  higher terms by absolute values, 4^d recentring); the tail uses Watson 13.74's `|J0(x)| ≤ sqrt(2/(πx))` in
+  an upper Riemann sum; `K*` is enclosed by `acb.integral` (cross-checked in Maxima: `0.03593223661504624`).
+  111 boxes (h = 0.015, a1 ≥ a3) prove, worst `0.92050` at `(0.85, 0.61)`; the checker re-decides every row
+  from its stored balls, recomputes the 3 worst bit for bit, checks band coverage in exact rationals, and pins
+  source/data SHA-256, parameters and versions in `numerics/dagger_rigorous_manifest.json`. Assumed, not
+  re-proved: (K), Watson 13.74, ATAP 19.3, the a1 ↔ a3 symmetry, Arb / python-flint 0.9.0.
+- STILL VALIDATED (not touched by the rigorous cover): the near-pair basin `λ ≥ 0.82` (grid-Lipschitz Hessian
+  floor per copy-count chart, `verify_dagger_decomp.py`: no interval J0, no bound uniform in the copy count)
+  and the configurations with more than three copies (crude modulus bound where both channels carry
+  comparable copies; elsewhere a high-precision search).
 - FIXED: the `beta_odd` literal (was wrong past digit 9).
 
-**A1 remains the signed-cancellation wall; A2's continuum cover is validated across the band (136 boxes, 0 fail,
-coverage checked; above), reducing the windowed A2 to one numerically-validated ≥3-copy inequality plus the
-`s`-uniform transfer (not a proof: the cover has the non-rigorous steps (a)–(c), (f) listed above).**
+**A1 remains the signed-cancellation wall; A2's singleton-band (2-vs-1) cover is now RIGOROUS (111 boxes, 0 fail,
+exact coverage; above), reducing the windowed A2 to the `s`-uniform transfer plus the near-pair basin and the
+>3-copy configurations, which stay validated.**
 
 ---
 
