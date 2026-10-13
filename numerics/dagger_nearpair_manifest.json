@@ -1,0 +1,105 @@
+{
+  "K_star": [
+    {
+      "mid": "0.0359322366150455933915340033996",
+      "rad": "5.96032e-31"
+    },
+    {
+      "mid": "0.0359322366150469510163498693568",
+      "rad": "6.58908e-31"
+    }
+  ],
+  "U": [
+    "13/16",
+    "3/2",
+    "7/16"
+  ],
+  "data": "dagger_nearpair.jsonl",
+  "data_sha256": "b70cb14582b7d042aec06a575740dbca76b99a5e32a2bf26f4802af28d976fee",
+  "params": {
+    "b_side": "1/32",
+    "graded": 20,
+    "graded_b": 40,
+    "hess_h": "1/64",
+    "m_b": 14,
+    "m_graded": 8,
+    "m_main": 16,
+    "max_depth": 4,
+    "prec": 96,
+    "t0": "1",
+    "t_cut": 40,
+    "t_cut_b": 200,
+    "u_x0": "13/16",
+    "u_x1": "3/2",
+    "u_y1": "7/16",
+    "value_side": "1/16",
+    "width": "1",
+    "width_b": "1.5"
+  },
+  "precision_bits": 96,
+  "proved_boxes": {
+    "hessian": 308,
+    "mono_A": 17,
+    "mono_B": 622,
+    "taylor": 284
+  },
+  "python_flint_version": "0.9.0",
+  "python_flint_version_rows": [
+    "0.9.0"
+  ],
+  "python_version": "3.15.0",
+  "rows": 1255,
+  "schema": "beta-odd-dagger-nearpair-cover-v1",
+  "source_sha256": {
+    "dagger_nearpair.py": "695f928f2da23e1c42fd0e2dc3e4186fcfc3d201330d600ec6e70b94350e0f73",
+    "dagger_rigorous.py": "14c81c358d13b51e50b7d234fdf540bb528b5e2eacfff197a69d4f1e10b3a044",
+    "verify_dagger_nearpair.py": "1204795154df944ee4ab9ee612220af437847b7db8abee2b2dff4899a32f7c24"
+  },
+  "status": "pass",
+  "tightest": {
+    "hessian": {
+      "box": [
+        "95/64",
+        "1/64",
+        "1/64"
+      ],
+      "margin": {
+        "mid": "0.000140336795028326334572846942116",
+        "rad": "6.64909e-33"
+      }
+    },
+    "mono_A": {
+      "box": [
+        "5/32",
+        "7/32",
+        "1/32"
+      ],
+      "margin": {
+        "mid": "0.00289526610362855209422125547446",
+        "rad": "1.42051e-29"
+      }
+    },
+    "mono_B": {
+      "box": [
+        "15/64",
+        "31/64",
+        "1/64"
+      ],
+      "margin": {
+        "mid": "8.14492588151833681604014846446e-5",
+        "rad": "1.42030e-29"
+      }
+    },
+    "taylor": {
+      "box": [
+        "31/32",
+        "15/32",
+        "1/32"
+      ],
+      "margin": {
+        "mid": "0.000718034914914504597778512846449",
+        "rad": "4.94724e-32"
+      }
+    }
+  }
+}

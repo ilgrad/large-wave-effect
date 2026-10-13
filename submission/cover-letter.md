@@ -33,8 +33,8 @@ the paper:
    Nullstellensatz certificates, computer-assisted; for C_21 this is new even for exact uniform mixing, the
    case Gray–Patel–Young name as the next open one), so limsup B_N/√N = 1. On the
    dispersive time scale t = O(N) the constant splits by parity; the odd-N value β_odd = 0.928… is an elliptic-integral constant with no elementary closed form, and its
-   windowed sharp upper bound is reduced to one residual inequality (proved by a computer-assisted Arb
-   certificate on its singleton-channel family, validated on the rest) and an s-uniform transfer.
+   windowed sharp upper bound is reduced to one residual inequality (proved by computer-assisted Arb
+   certificates for every configuration with at most three copies, validated beyond) and an s-uniform transfer.
 4. **Extends and continues:** the order law to the Dirichlet segment and to every ring product C_N □ H; and
    a rigorous chain for the focusing discrete NLS (weak-nonlinear persistence, the modulational-instability
    band from the L_N spectrum, no dispersal of a single-site excitation above γP = 4 and on-site trapping

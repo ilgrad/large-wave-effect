@@ -324,8 +324,8 @@ $B_N/\sqrt N\ge0.93$. On the dispersive window $t=O(N)$ the constant splits by p
 (Remark~\ref{rem:bn-parity}): $c_0/\sqrt2$ for even $N$ (attained numerically) and $\beta_{\mathrm{odd}}\approx0.928$
 for odd $N$. The $t>N/2$ reduction is rigorous for each fixed $s$ (joint equidistribution and its uniform-in-$u$
 transfer to $F(s)$, Theorems~\ref{thm:joint-equi},~\ref{thm:uniform-transfer}), leaving one sharp
-inequality (a Gaussian-excess/expected-modulus bound, proved by a computer-assisted Arb certificate on its
-singleton-channel family and validated elsewhere) and uniformity in $s$ before the windowed constant
+inequality (a Gaussian-excess/expected-modulus bound, proved by computer-assisted Arb certificates for every
+configuration with at most three copies and validated beyond) and uniformity in $s$ before the windowed constant
 $\limsup_NB_N(SN/2)/\sqrt N=\beta_{\mathrm{odd}}$ (Conjecture~\ref{conj:bn-window}). The segment constant $C=4/\pi^2$ (Section~\ref{sub:filimonov}) is \emph{not} ours: it is the
 published Myshkis--Filimonov value~\cite[Thm.~2]{MF03}, which the Schr\"odinger ceiling inherits because the
 two ceilings coincide. (iv)~On the Dirichlet segment the rank, saturation, \emph{and} order are now fully
@@ -399,11 +399,12 @@ $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$, $K_\s
 the \emph{balanced} Debye configurations of the profile (the live set is an interval of consecutive integers,
 so $|\#\,\mathrm{even}-\#\,\mathrm{odd}|\le1$; sharp at the two-copy pair, while imbalanced configurations
 violate the unrestricted bound), whose integrated majorant clears $\beta_{\mathrm{odd}}$ on $[1.005,\infty)$
-(the variance floor covers $(1,1.005]$). That inequality is now proved, by a rigorous Arb certificate, on the
-singleton-channel family (one channel a single copy; \texttt{dagger\_rigorous.py},
-\texttt{verify\_dagger\_rigorous.py}); on the near-pair basin and on configurations with more than three copies
-it is only validated, and proving it there needs a bound on the Bessel-ring tail of the Kluyver excess uniform
-over the balanced configurations (the discussion after Lemma~\ref{lem:varfloor};
+(the variance floor covers $(1,1.005]$). That inequality is now proved, by rigorous Arb certificates, for every
+balanced configuration with at most three copies: the singleton-channel band (\texttt{dagger\_rigorous.py},
+\texttt{verify\_dagger\_rigorous.py}) and the near-pair basin (\texttt{dagger\_nearpair.py},
+\texttt{verify\_dagger\_nearpair.py}). On configurations with more than three copies it is only validated, and
+proving it there needs a bound on the Bessel-ring tail of the Kluyver excess uniform over the balanced
+configurations (the discussion after Lemma~\ref{lem:varfloor};
 \texttt{verify\_bn\_profile\_gaussian.py}, \texttt{verify\_bandedge\_transfer.py}).
 \item A rigorous nonlinear theory of the discrete NLS \eqref{eq:dnls} on the ring
 (Section~\ref{sec:rogue}). Settled: the linear large wave persists in the weakly

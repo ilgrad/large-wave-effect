@@ -187,15 +187,23 @@ arithmetic on a compact `s`-range; Gaussian majorant for the multi-copy overlap.
   from its stored balls, recomputes the 3 worst bit for bit, checks band coverage in exact rationals, and pins
   source/data SHA-256, parameters and versions in `numerics/dagger_rigorous_manifest.json`. Assumed, not
   re-proved: (K), Watson 13.74, ATAP 19.3, the a1 ↔ a3 symmetry, Arb / python-flint 0.9.0.
-- STILL VALIDATED (not touched by the rigorous cover): the near-pair basin `λ ≥ 0.82` (grid-Lipschitz Hessian
-  floor per copy-count chart, `verify_dagger_decomp.py`: no interval J0, no bound uniform in the copy count)
-  and the configurations with more than three copies (crude modulus bound where both channels carry
-  comparable copies; elsewhere a high-precision search).
+- PROVED 2026-10-13 (three copies): the near-pair basin `λ ≥ 0.82` of the 2-vs-1 family, `dagger_nearpair.py`
+  + `verify_dagger_nearpair.py`. Exact 1-D form in the slice `b = 1`:
+  `E|Z| = 2/π + (1/π) ∫ ĝ(t)(1 − J0(a1 t)J0(a3 t))/t² dt`, `ĝ(s) = 2 − 2s I1(s/2) K0(s/2)`; the part
+  `2t/(1+t²) + 5t/(1+t²)²` of `ĝ` in closed form (`I0K0`, `I1K0`, `I0K1`), the `O(t^-5)` rest by GL with
+  Bernstein-ellipse bounds and a `C_g t^-5` tail (`C_g = 80.9`, sampled max 42.4). Hess `Φ` certified PD on
+  `[13/16, 3/2] × [0, 7/16]` (308 boxes; `Φ(p) = ∇Φ(p) = 0`), 923 value boxes (Taylor or monotone) on the rest
+  of A (slice `b = 1`) and B (slice `a1 = 1`, `w ≤ 0.36`); 1231 boxes, 0 fail, exact coverage. Arb's K0 needs
+  `3z + 32` extra bits at the exact midpoint (it loses ~2z/ln 2 bits, far more on a ball).
+- STILL VALIDATED: the configurations with more than three copies (near the pair a grid-Lipschitz Hessian
+  floor per copy-count chart, `verify_dagger_decomp.py`: no interval J0, no bound uniform in the copy count;
+  elsewhere the crude modulus bound where both channels carry comparable copies, else a high-precision
+  search).
 - FIXED: the `beta_odd` literal (was wrong past digit 9).
 
-**A1 remains the signed-cancellation wall; A2's singleton-band (2-vs-1) cover is now RIGOROUS (111 boxes, 0 fail,
-exact coverage; above), reducing the windowed A2 to the `s`-uniform transfer plus the near-pair basin and the
->3-copy configurations, which stay validated.**
+**A1 remains the signed-cancellation wall; A2's whole three-copy (2-vs-1) family is now RIGOROUS (band: 111
+boxes; near-pair basin: 1231 boxes; 0 fail, exact coverage; above), reducing the windowed A2 to the `s`-uniform
+transfer plus the >3-copy configurations, which stay validated.**
 
 ---
 

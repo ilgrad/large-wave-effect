@@ -51,6 +51,10 @@ exact:
 dagger:
     timeout 1800 uv run --script numerics/verify_dagger_rigorous.py --recompute 3 --crosscheck
 
+# Re-decide, recompute and check the coverage of the rigorous near-pair basin certificate.
+nearpair:
+    timeout 1800 uv run --script numerics/verify_dagger_nearpair.py --recompute 3 --crosscheck
+
 # Build the paper and fail on unresolved references (latexmk exits 0 with "??" in the PDF).
 paper:
     #!/usr/bin/env bash

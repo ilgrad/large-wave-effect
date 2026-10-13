@@ -1576,7 +1576,8 @@ For every fixed $S\ge1$, $\limsup_N B_N(SN/2)/\sqrt N=\beta_{\mathrm{odd}}$, the
 \noindent For $S=1$ the window is the two-copy range: at each fixed $s=2t/N\le1$ the limit is the profile
 $F(s)$ of Proposition~\ref{prop:bn-profile}, whose maximum is $F(1)=\beta_{\mathrm{odd}}$, and the supremum over
 the window needs that convergence uniformly in $s$ (Remark~\ref{rem:bn-parity}). For $S>1$ two steps remain open: the
-$\ge3$-copy expected-modulus inequality of \S\ref{sub:multicopy} (validated numerically, not proved), and a
+expected-modulus inequality of \S\ref{sub:multicopy} for balanced configurations with more than three copies
+(proved, computer-assisted, for at most three copies; validated numerically beyond), and a
 version of Theorem~\ref{thm:uniform-transfer} that is uniform in $s$ on $[1,S]$ (the theorem holds for each fixed
 $s$, with constants that depend on $s$). Some restriction of the window is necessary, since over all times the
 constant is $1$ (Theorem~\ref{thm:bn-saturation}); whether polynomial windows $t\le N^C$ keep the value
@@ -1986,8 +1987,9 @@ bound---one even copy against five odd exceeds $K_\star$ by $\approx9\%$
 symmetry $R(1,\rho)=R(1,1/\rho)$ forces $R'(1)=0$, so with $\Phi=K_\star P-(\mathbb E|Z|-\mathbb E|G|)$ one has
 $\Phi(1)=\Phi'(1)=0$, $\Phi''\ge0$ on $[0.6,1]$ and $\Phi\ge0$ on $(0,0.6]$ (validated interval arithmetic),
 whence $\Phi(\rho)=\int_\rho^1(x-\rho)\Phi''\,dx\ge0$ (\texttt{verify\_dagger\_extremal2.py}). The
-$\ge3$-copy balanced case stays \emph{validated} (no balanced configuration beats the pair) and---since $R$
-is \emph{not} Schur-monotone---does \emph{not} reduce to the two-copy core.
+$\ge3$-copy balanced case does \emph{not} reduce to the two-copy core, since $R$ is \emph{not} Schur-monotone;
+its three-copy family is proved below by Arb certificates, and beyond three copies it stays \emph{validated}
+(no balanced configuration beats the pair).
 
 Feeding the bound through the $u$-integral gives the majorant
 \[
@@ -1999,7 +2001,8 @@ On the thin sliver $(1,1.005]$ the majorant is \emph{not} used---there $K_{\max}
 $B$ alone would not clear $\beta_{\mathrm{odd}}$---and instead the \emph{proved} variance floor $F\le F_K$
 (Lemma~\ref{lem:varfloor}) gives $F\le F_2<\beta_{\mathrm{odd}}$ directly (the live set is essentially two
 copies, margin $\ge0.003$; \texttt{verify\_dagger\_window.py}). So $\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$
-modulo the single $\ge3$-copy balanced expected-modulus inequality. The off-the-shelf routes fail
+modulo the balanced expected-modulus inequality for more than three copies (the three-copy case is proved
+below). The off-the-shelf routes fail
 quantitatively: the $1$-D Wasserstein/Esseen CLT bound (Esseen's sharp constant $\tfrac12$) overshoots the
 margin tenfold because $\sum a_\ell^3/\sigma^2$ stays $\Theta(1)$; the crude Bessel-ring tail bound also
 overshoots ($\approx1.7K_\star$, the excess being a \emph{signed} ring sum whose cancellation a modulus bound
@@ -2012,14 +2015,14 @@ destroys), so the residual genuinely needs the signed tail or a multivariate con
 unconditionally---the former residue (i) is closed (the band-edge strips contribute $O(\varepsilon^{3/4})$, and
 the coalescing points $u=-(\ell+\ell')/2$ need no special treatment). There also hold the variance-floor inequality $F\le F_K$ and the tail limit
 $\sqrt\pi/2<\beta_{\mathrm{odd}}$ (Lemma~\ref{lem:varfloor}). \emph{A single residual estimate}, validated
-numerically and proved on its singleton-channel family (below), now separates this from $\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$, and, with convergence uniform
+numerically and proved for at most three copies (below), now separates this from $\max_{s\ge1}F(s)=F(1)=\beta_{\mathrm{odd}}$, and, with convergence uniform
 in $s\in[1,S]$ (Remark~\ref{rem:bn-parity}), from the windowed constant of Conjecture~\ref{conj:bn-window} (the
 infinite-time $\limsup_NB_N/\sqrt N$ is $1$, Theorem~\ref{thm:bn-saturation}): the
 $\ge3$-copy case of the balanced Gaussian-excess inequality $\mathbb E|Z|-\mathbb E|G|\le K_\star\,\Sigma_2^{-3/2}\sum_\ell a_\ell^4$
 above (the former residue (ii)). Its \emph{two-copy core} $R(1,\rho)\le K_\star$ is \emph{proved}
 (\texttt{verify\_dagger\_extremal2.py}), the sliver $s\in(1,1.005]$ is covered by the proved variance floor
-$F\le F_2<\beta_{\mathrm{odd}}$, and the $\ge3$-copy balanced configurations are validated never to beat the
-pair; but $R$ is not Schur-monotone, so this last step does not reduce to the two-copy core. The two natural
+$F\le F_2<\beta_{\mathrm{odd}}$, and the three-copy configurations are proved (below) and those with more copies validated never to beat
+the pair; but $R$ is not Schur-monotone, so this last step does not reduce to the two-copy core. The two natural
 routes are now mapped, and neither closes it cleanly: $R$ is \emph{not} concave on the balanced simplex (its
 multi-copy critical points are saddles whose ascent directions run toward the imbalanced violators, so the
 balance must be used \emph{actively}), while the signed Bessel-ring tail---a two-frequency alternating sum
@@ -2066,12 +2069,28 @@ included. All $111$ boxes of half-width $0.015$ that meet the band ($a_1\ge a_3$
 $R\le0.9205\,K_\star$ at $(a_1,a_3)=(0.85,0.61)$. An independent checker re-derives every verdict from the stored
 balls, recomputes the worst boxes bit for bit, and checks in exact rational arithmetic that the boxes cover the
 band (\texttt{verify\_dagger\_rigorous.py}). So the residual inequality is \emph{proved}, computer-assisted, on the
-singleton-channel ($2$-vs-$1$) family. Elsewhere it stays validated: on the near-pair basin $\lambda\ge0.82$ (a
-grid-Lipschitz Hessian floor per copy-count chart, with no interval Bessel enclosure and no bound uniform in the
-number of copies) and on the configurations with more than three copies (the crude modulus bound where both
-channels carry comparable copies, otherwise only a high-precision numerical search). The
-windowed constant of Conjecture~\ref{conj:bn-window} awaits those two pieces, together with the $s$-uniform
-transfer. The honest status is that the multi-copy region is
+singleton-channel ($2$-vs-$1$) band. A second certificate proves it on the near-pair basin $\lambda\ge0.82$ of the
+same three-copy family (\texttt{dagger\_nearpair.py}). There the excess has an exact one-dimensional form: the odd
+copy enters through the kernel $\hat g(s)=2-2sI_1(s/2)K_0(s/2)$, the Fourier transform of
+$\partial_X^2\,\mathbb E_Q\sqrt{X^2+\cos^2Q}$, so that in the slice $b=1$
+\[
+  \mathbb E|Z|=\frac2\pi+\frac1\pi\int_0^\infty\hat g(t)\,\frac{1-J_0(a_1t)J_0(a_3t)}{t^2}\,dt .
+\]
+The part $2t/(1+t^2)+5t/(1+t^2)^2$ of $\hat g$ integrates in closed form through $I_0K_0$, $I_1K_0$ and $I_0K_1$;
+the $O(t^{-5})$ remainder is enclosed by Gauss--Legendre quadrature with Bernstein-ellipse error bounds and an
+explicit tail. Around the pair the certificate is convexity: in the slice $b=1$, Arb Taylor models bound the
+Hessian of $\Phi$ positive definite on the rectangle $a_1\in[\tfrac{13}{16},\tfrac32]$, $|a_3|\le\tfrac7{16}$
+($308$ boxes), while $\Phi$ and $\nabla\Phi$ vanish at the pair (by the definition of $K_\star$, by evenness in
+$a_3$, and by the symmetry $R(1,\rho)=R(1,1/\rho)$), so $\Phi\ge0$ there with equality only at the pair. The rest
+of the basin, the two-copy line included, is covered by $923$ value boxes (Taylor models, or the monotonicity of
+$\mathbb E|Z|$ and $\mathbb E|G|$ in each amplitude). An independent checker re-decides every box from its stored
+balls, recomputes the tightest ones bit for bit, and checks the coverage in exact rational arithmetic
+(\texttt{verify\_dagger\_nearpair.py}). So the residual inequality is \emph{proved}, computer-assisted, for every
+balanced configuration with at most three copies, with equality only at the pair. It stays validated on the
+configurations with more than three copies (near the pair a grid-Lipschitz Hessian floor per copy-count chart,
+with no interval Bessel enclosure and no bound uniform in the number of copies; elsewhere the crude modulus bound
+where both channels carry comparable copies, otherwise only a high-precision numerical search). The windowed
+constant of Conjecture~\ref{conj:bn-window} awaits that piece, together with the $s$-uniform transfer. The honest status is that the multi-copy region is
 reduced from a black-box Weyl-sum/anti-flatness problem to one sharply localized expected-modulus
 estimate---the entire $N\to\infty$ reduction (joint equidistribution and its uniform transfer to the $L^1$
 constant $F(s)$) being now rigorous, a strict improvement over the ``only unitarity is rigorous'' status of
@@ -2556,6 +2575,8 @@ Singleton band $<K_\star$: three-region Arb bound & \texttt{verify\_dagger\_sing
 Continuum lift: multivariate amplitude Taylor model & \texttt{verify\_dagger\_continuum.py}\\
 Singleton band proved: rigorous Arb per-box certificate & \texttt{dagger\_rigorous.py}\\
 \quad$\hookrightarrow$ $111$ boxes; re-decision, exact band coverage, manifest & \texttt{verify\_dagger\_rigorous.py}\\
+Near-pair basin proved (three copies): convexity $+$ value boxes & \texttt{dagger\_nearpair.py}\\
+\quad$\hookrightarrow$ $1231$ boxes; re-decision, exact coverage, manifest & \texttt{verify\_dagger\_nearpair.py}\\
 Multi-copy profile $F(s)$, $t>N/2$ subdominant (Prop.~\ref{prop:multicopy}) & \texttt{verify\_bn\_residual\_profile.py}\\
 Defect grows with $\omega(m)$ (unbounded, Rem.~\ref{rem:defect}) & \texttt{verify\_defect\_growth.py}\\
 Family limits $\mathrm{defect}_\infty(m)$ (Table~\ref{tab:famlim}) & \texttt{verify\_defect\_family\_limits.py}\\

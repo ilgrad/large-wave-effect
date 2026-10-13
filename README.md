@@ -86,11 +86,13 @@ Proved results are kept strictly separate from numerical evidence and the (sharp
   (`K⋆ = (h(1) − √π/2)/2`) for the profile's **balanced** Debye configurations (the live set is an
   interval of consecutive integers, so the even/odd channel counts differ by `≤ 1`; sharp at the two-copy
   pair — imbalanced configs violate the unrestricted bound) whose integrated majorant clears
-  `β_odd` — and whose residual is now **proved on its singleton-channel (2-vs-1) band** by a rigorous Arb
-  certificate (`dagger_rigorous.py`: 111 boxes, 0 failures, worst `R ≤ 0.9205 K⋆`, band coverage checked in
-  exact rational arithmetic by `verify_dagger_rigorous.py`), and validated elsewhere (see open problem (1)). So
-  the windowed constant `limsup_N B_N(SN/2)/√N = β_odd` (fixed `S`) holds modulo the rest of this inequality and
-  the `s`-uniform transfer. On the **Dirichlet segment**
+  `β_odd` — and whose residual is now **proved for every configuration with at most three copies** by
+  rigorous Arb certificates (the singleton-channel band, `dagger_rigorous.py`: 111 boxes, worst
+  `R ≤ 0.9205 K⋆`; the near-pair basin, `dagger_nearpair.py`: 1231 boxes, convexity around the pair; coverage
+  checked in exact rational arithmetic by `verify_dagger_rigorous.py` and `verify_dagger_nearpair.py`), and
+  validated beyond three copies (see open problem (1)). So the windowed constant
+  `limsup_N B_N(SN/2)/√N = β_odd` (fixed `S`) holds modulo the rest of this inequality and the `s`-uniform
+  transfer. On the **Dirichlet segment**
   `d_j^N ~ (4/π²) ln j` for `N+1` prime/`2^m` (the constant `C = 4/π²` is the published
   Myshkis–Filimonov 2003 value). Three large-wave laws on one Laplacian.
 - **Dimension, products & circulants (theorem).** The large wave lives exactly at spectral dimension
@@ -148,10 +150,16 @@ analytic (Bernstein-ellipse, strip) error bounds and a Cauchy remainder, its box
 exactly, the tail uses `|J_0(x)| ≤ min(1, √(2/(πx)))`, and every bound is an Arb ball. All 111 boxes meeting the
 band prove (worst `R ≤ 0.9205 K⋆`, 33 s on 8 cores); `verify_dagger_rigorous.py` re-derives every verdict from
 the stored balls, recomputes the worst boxes bit for bit, checks the band coverage in exact rational arithmetic
-and pins hashes and versions in `numerics/dagger_rigorous_manifest.json`. So the inequality is **proved**
-(computer-assisted) on the singleton-channel family; it stays validated on the near-pair basin `λ ≥ 0.82`
-(grid-Lipschitz Hessian floor per copy-count chart) and on configurations with more than three copies. The
-window part of problem (1) is reduced to the `s`-uniform transfer plus those two pieces. (2) The **excess lemma**
+and pins hashes and versions in `numerics/dagger_rigorous_manifest.json`. The near-pair
+basin `λ ≥ 0.82` of the same three-copy family is proved by `dagger_nearpair.py`: the exact 1-D form
+`E|Z| = 2/π + (1/π) ∫ ĝ(t) (1 − J_0(a_1 t) J_0(a_3 t)) t^{−2} dt` (slice `b = 1`) with the odd-copy kernel
+`ĝ(s) = 2 − 2s I_1(s/2) K_0(s/2)`, a closed-form leading part, Gauss–Legendre with Bernstein-ellipse bounds,
+certified convexity of `Φ` on a rectangle around the pair (308 Hessian boxes) and 923 value boxes elsewhere
+(1231 boxes, ~75 s on 12 workers); `verify_dagger_nearpair.py` re-decides every box, recomputes the tightest
+ones bit for bit, checks the coverage in exact rational arithmetic and pins hashes in
+`numerics/dagger_nearpair_manifest.json`. So the inequality is **proved** (computer-assisted) for every
+configuration with at most three copies; it stays validated on configurations with more than three copies. The
+window part of problem (1) is reduced to the `s`-uniform transfer plus that piece. (2) The **excess lemma**
 `A_N ≤ L_pre + O(1)` (equivalent to a rigorous *growing* deficit bound) — proved when the odd
 part of `N` is a prime power (`N = 2p` sharp at `1/(2N)`, `N = 4p`), and **unconditional for any fixed `ω(m)`**
 via the Kronecker sandwich `|A_N − L_pre| ≤ U_N − L_pre = (1/π) ln(m/φ(m))`. The open
